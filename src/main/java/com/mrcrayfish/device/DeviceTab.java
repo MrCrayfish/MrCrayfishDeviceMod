@@ -1,4 +1,4 @@
-package com.mrcryafish.device;
+package com.mrcrayfish.device;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;

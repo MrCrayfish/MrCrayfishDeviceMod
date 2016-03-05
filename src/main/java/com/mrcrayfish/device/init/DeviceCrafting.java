@@ -1,4 +1,4 @@
-package com.mrcryafish.device.init;
+package com.mrcrayfish.device.init;
 
 public class DeviceCrafting 
 {

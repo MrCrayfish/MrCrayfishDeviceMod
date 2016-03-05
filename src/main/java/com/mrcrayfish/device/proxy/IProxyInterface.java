@@ -1,4 +1,4 @@
-package com.mrcryafish.device.proxy;
+package com.mrcrayfish.device.proxy;
 
 public interface IProxyInterface 
 {

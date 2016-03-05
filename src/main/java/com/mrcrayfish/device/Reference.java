@@ -1,4 +1,4 @@
-package com.mrcryafish.device;
+package com.mrcrayfish.device;
 
 public class Reference 
 {

@@ -1,4 +1,4 @@
-package com.mrcryafish.device.gui;
+package com.mrcrayfish.device.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

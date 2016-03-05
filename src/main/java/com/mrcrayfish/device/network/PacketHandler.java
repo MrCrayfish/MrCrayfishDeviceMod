@@ -1,6 +1,6 @@
-package com.mrcryafish.device.network;
+package com.mrcrayfish.device.network;
 
-import com.mrcryafish.device.Reference;
+import com.mrcrayfish.device.Reference;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;

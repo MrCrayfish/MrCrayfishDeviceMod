@@ -1,6 +1,6 @@
-package com.mrcryafish.device.proxy;
+package com.mrcrayfish.device.proxy;
 
-public class ClientProxy implements IProxyInterface 
+public class ServerProxy implements IProxyInterface
 {
 	@Override
 	public void preInit() {}

@@ -1,4 +1,4 @@
-package com.mrcryafish.device.util;
+package com.mrcrayfish.device.util;
 
 import net.minecraft.block.Block;
 

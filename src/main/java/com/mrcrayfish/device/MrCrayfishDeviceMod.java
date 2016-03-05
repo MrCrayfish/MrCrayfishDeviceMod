@@ -1,11 +1,11 @@
-package com.mrcryafish.device;
+package com.mrcrayfish.device;
 
-import com.mrcryafish.device.gui.GuiHandler;
-import com.mrcryafish.device.init.DeviceBlocks;
-import com.mrcryafish.device.init.DeviceCrafting;
-import com.mrcryafish.device.init.DeviceTileEntites;
-import com.mrcryafish.device.network.PacketHandler;
-import com.mrcryafish.device.proxy.IProxyInterface;
+import com.mrcrayfish.device.gui.GuiHandler;
+import com.mrcrayfish.device.init.DeviceBlocks;
+import com.mrcrayfish.device.init.DeviceCrafting;
+import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.network.PacketHandler;
+import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
