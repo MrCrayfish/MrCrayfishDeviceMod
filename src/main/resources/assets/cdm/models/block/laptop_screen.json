@@ -1,8 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "textures": {
-        "0": "blocks/cauldron_side",
-        "1": "blocks/cauldron_inner"
+        "0": "blocks/cauldron_side"
     },
     "display": {
         "gui": {
@@ -44,44 +43,41 @@
     "elements": [
         {
             "name": "screen",
-            "from": [ 1.0, 1.7, 2.5 ], 
-            "to": [ 15.0, 11.7, 3.5 ], 
-            "rotation": { "origin": [ 8.0, 1.4999999925494194, 3.0 ], "axis": "x", "angle": -22.5 },
+            "from": [ 1.0, -0.0, 1.0 ], 
+            "to": [ 15.0, 1.0, 11.0 ], 
             "faces": {
-                "north": { "texture": "#0", "uv": [ 1.0, 0.0, 15.0, 10.0 ] },
-                "east": { "texture": "#0", "uv": [ 1.0, 0.0, 2.0, 10.0 ] },
-                "south": { "texture": "#0", "uv": [ 2.0, 0.0, 14.0, 8.0 ] },
-                "west": { "texture": "#0", "uv": [ 14.0, 0.0, 15.0, 10.0 ] },
-                "up": { "texture": "#0", "uv": [ 1.0, 0.0, 15.0, 1.0 ] },
-                "down": { "texture": "#0", "uv": [ 1.0, 10.0, 15.0, 11.0 ] }
+                "north": { "texture": "#0", "uv": [ 1.0, 0.0, 15.0, 1.0 ] },
+                "east": { "texture": "#0", "uv": [ 1.0, 0.0, 11.0, 1.0 ] },
+                "south": { "texture": "#0", "uv": [ 2.0, 0.0, 16.0, 1.0 ] },
+                "west": { "texture": "#0", "uv": [ 14.0, 0.0, 24.0, 1.0 ] },
+                "up": { "texture": "#0", "uv": [ 1.0, 1.0, 15.0, 11.0 ] },
+                "down": { "texture": "#0", "uv": [ 1.0, 1.0, 15.0, 11.0 ] }
             }
         },
         {
             "name": "screen_mount",
-            "from": [ 4.2, 0.3, 2.6 ], 
-            "to": [ 11.8, 1.7, 3.5 ], 
-            "rotation": { "origin": [ 8.0, 1.4999999925494194, 3.0 ], "axis": "x", "angle": -22.5 },
+            "from": [ 4.2, -0.0, -0.5 ], 
+            "to": [ 11.8, 0.9, 1.0 ], 
             "faces": {
-                "north": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "east": { "texture": "#1", "uv": [ 0.0, 0.0, 0.9, 1.4 ] },
-                "south": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "west": { "texture": "#1", "uv": [ 0.0, 0.0, 0.9, 1.4 ] },
-                "up": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "down": { "texture": "#1", "uv": [ 0.0, 0.0, 1.0, 1.0 ] }
+                "north": { "texture": "#0", "uv": [ 0.0, 0.0, 7.6, 0.9 ] },
+                "east": { "texture": "#0", "uv": [ 7.0, 0.0, 8.5, 0.9 ] },
+                "south": { "texture": "#0", "uv": [ 0.0, 0.0, 7.6, 0.9 ] },
+                "west": { "texture": "#0", "uv": [ 7.0, 0.0, 8.5, 0.9 ] },
+                "up": { "texture": "#0", "uv": [ 4.0, 0.0, 11.6, 1.5 ] },
+                "down": { "texture": "#0", "uv": [ 4.0, 0.0, 11.6, 1.5 ] }
             }
         },
         {
             "name": "actual_screen",
-            "from": [ 2.0, 2.7, 3.5 ], 
-            "to": [ 14.0, 10.7, 3.6 ], 
-            "rotation": { "origin": [ 8.0, 1.4999999925494194, 3.0 ], "axis": "x", "angle": -22.5 },
+            "from": [ 2.0, -0.1, 2.0 ], 
+            "to": [ 14.0, 0.0, 10.0 ], 
             "faces": {
-                "north": { "texture": "#0", "uv": [ 1.0, 0.0, 13.0, 8.0 ] },
-                "east": { "texture": "#0", "uv": [ 1.0, 0.0, 1.1, 8.0 ] },
+                "north": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] },
+                "east": { "texture": "#0", "uv": [ 0.0, 15.0, 1.1, 16.0 ] },
                 "south": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] },
-                "west": { "texture": "#0", "uv": [ 14.0, 0.0, 14.1, 8.0 ] },
-                "up": { "texture": "#0", "uv": [ 1.0, 0.0, 15.0, 1.0 ] },
-                "down": { "texture": "#0", "uv": [ 1.0, 10.0, 13.0, 10.1 ] }
+                "west": { "texture": "#0", "uv": [ 0.0, 15.0, 1.1, 16.0 ] },
+                "up": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] },
+                "down": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] }
             }
         }
     ]

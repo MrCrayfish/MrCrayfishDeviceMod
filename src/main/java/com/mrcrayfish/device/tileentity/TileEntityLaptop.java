@@ -12,7 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityLaptop extends TileEntity implements ITickable
 {
-	public int rotation = 0;
+	public float rotation = 0;
+	public float prevRotation = 0;
 	public boolean open = false;
 	
 	public void openClose()
@@ -25,18 +26,19 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	@Override
 	public void update() 
 	{
+		prevRotation = rotation;
 		if(!open)
 		{
 			if(rotation > 0)
 			{
-				rotation -= 2;
+				rotation -= 10F;
 			}
 		}
 		else
 		{
-			if(rotation < 112.5)
+			if(rotation < 110)
 			{
-				rotation += 2;
+				rotation += 10F;
 			}
 		}
 	}
