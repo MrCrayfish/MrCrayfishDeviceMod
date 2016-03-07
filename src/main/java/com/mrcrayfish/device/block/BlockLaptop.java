@@ -2,6 +2,8 @@ package com.mrcrayfish.device.block;
 
 import java.util.List;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.block.BlockDirectional;
@@ -66,15 +68,24 @@ public class BlockLaptop extends BlockDirectional implements ITileEntityProvider
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(!worldIn.isRemote)
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if(tileEntity instanceof TileEntityLaptop)
 		{
+			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
+			
 			if(playerIn.isSneaking())
 			{
-				TileEntity tileEntity = worldIn.getTileEntity(pos);
-				if(tileEntity instanceof TileEntityLaptop)
+				if(!worldIn.isRemote)
 				{
-					TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
 					laptop.openClose();
+				}
+			}
+			else
+			{
+				if(laptop.open)
+				{
+					System.out.println("Opening");
+					playerIn.openGui(MrCrayfishDeviceMod.instance, GuiLaptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 				}
 			}
 		}
