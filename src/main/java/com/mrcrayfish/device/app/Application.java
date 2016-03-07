@@ -38,4 +38,9 @@ public abstract class Application
 	
 	public abstract void hideAllButtons();
 	
+	public String getDisplayName()
+	{
+		return displayName;
+	}
+	
 }

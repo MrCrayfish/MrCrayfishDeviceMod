@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Window 
 {
-	private final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/window.png");
+	private static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/window.png");
 	
 	private int x, y;
 	private int width, height;
