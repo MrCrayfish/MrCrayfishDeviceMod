@@ -39,7 +39,6 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 			GlStateManager.rotate(-f, 1, 0, 0);
 			
 			GlStateManager.disableLighting();
-			
 			Tessellator tessellator = Tessellator.getInstance();
 			WorldRenderer renderer = tessellator.getWorldRenderer();
 			renderer.begin(7, DefaultVertexFormats.BLOCK);
@@ -51,7 +50,6 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 			
 			renderer.setTranslation(0.0D, 0.0D, 0.0D);
 			tessellator.draw();
-			
 			GlStateManager.enableLighting();
 		 }
 		 GlStateManager.popMatrix();

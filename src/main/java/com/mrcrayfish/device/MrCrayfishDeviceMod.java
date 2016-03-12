@@ -1,6 +1,10 @@
 package com.mrcrayfish.device;
 
+import com.mrcrayfish.device.app.ApplicationNoteStash;
+import com.mrcrayfish.device.app.components.Application;
+import com.mrcrayfish.device.app.components.ApplicationBar;
 import com.mrcrayfish.device.gui.GuiHandler;
+import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceTileEntites;
@@ -8,6 +12,7 @@ import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -58,6 +63,12 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
 	{
+		ApplicationBar.registerApplication(new ApplicationNoteStash());
+		
+		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
+		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
+		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
+		
 		proxy.postInit();
 	}
 	

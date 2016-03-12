@@ -1,6 +1,11 @@
 package com.mrcrayfish.device.gui;
 
+import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -19,8 +24,12 @@ public class GuiHandler implements IGuiHandler
 		System.out.println("Calledc");
 		if(ID == GuiLaptop.ID)
 		{
-			System.out.println("Opening on client");
-			return new GuiLaptop();
+			TileEntity tileEntity = player.worldObj.getTileEntity(new BlockPos(x, y, z));
+			if(tileEntity instanceof TileEntityLaptop)
+			{
+				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
+				return new GuiLaptop(laptop.getAppData(), x, y, z);
+			}
 		}
 		return null;
 	}

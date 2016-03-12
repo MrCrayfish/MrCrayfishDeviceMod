@@ -16,9 +16,27 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public float prevRotation = 0;
 	public boolean open = false;
 	
+	private NBTTagCompound data;
+	
+	public TileEntityLaptop() 
+	{
+		this.data = new NBTTagCompound();
+	}
+	
+	public NBTTagCompound getAppData() 
+	{
+		return data;
+	}
+	
+	public void setAppData(NBTTagCompound data) 
+	{
+		this.data = data;
+		worldObj.markBlockForUpdate(pos);
+		markDirty();
+	}
+	
 	public void openClose()
 	{
-		System.out.println("Open and Closing");
 		open = !open;
 		worldObj.markBlockForUpdate(pos);
 	}
@@ -48,6 +66,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.readFromNBT(compound);
 		this.open = compound.getBoolean("open");
+		this.data = compound.getCompoundTag("AppData");
 	}
 	
 	@Override
@@ -55,6 +74,8 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
+		compound.setTag("AppData", data);
+		System.out.println("Writing");
 	}
 	
 	@Override
