@@ -24,7 +24,7 @@ public class Window
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
-	private Application app;
+	public Application app;
 	public int width, height;
 	public int offsetX, offsetY;
 	
@@ -102,7 +102,7 @@ public class Window
 	{
 		if(button.equals(btnClose))
 		{
-			laptop.closeApplication();
+			laptop.closeApplication(app.getID());
 		}
 	}
 	

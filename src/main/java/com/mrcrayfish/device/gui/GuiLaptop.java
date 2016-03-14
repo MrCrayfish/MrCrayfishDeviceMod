@@ -3,6 +3,8 @@ package com.mrcrayfish.device.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -38,7 +40,7 @@ public class GuiLaptop extends GuiScreen
 	private int HEIGHT = 216;
 
 	private ApplicationBar bar;
-	private Window window;
+	private Map<String, Window> windows;
 	private NBTTagCompound data;
 	
 	public static int currentWallpaper;
@@ -58,6 +60,7 @@ public class GuiLaptop extends GuiScreen
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
 		}
+		this.windows = new ConcurrentHashMap<String, Window>();
 	}
 	
 	@Override
@@ -74,7 +77,11 @@ public class GuiLaptop extends GuiScreen
 	public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
-        closeApplication();
+        
+        for(Window window : windows.values())
+		{
+        	closeApplication(window.app.getID());
+		}
         
         data.setInteger("CurrentWallpaper", this.currentWallpaper);
         
@@ -84,16 +91,16 @@ public class GuiLaptop extends GuiScreen
         }
         
         bar = null;
-        window = null;
+        windows = null;
         data = null;
     }
 	
 	@Override
 	public void updateScreen() 
 	{
-		if(this.window != null)
+		for(Window window : windows.values())
 		{
-			this.window.onTick();
+			window.onTick();
 		}
 	}
 	
@@ -130,9 +137,9 @@ public class GuiLaptop extends GuiScreen
 		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, WIDTH - 20, HEIGHT - 20, 256, 144);
 
 		/* Window */
-		if(this.window != null)
+		for(Window window : windows.values())
 		{
-			window.render(this, mc, getWindowX(), getWindowY(), mouseX, mouseY);
+			window.render(this, mc, getWindowX(window), getWindowY(window), mouseX, mouseY);
 		}
 		
 		/* Application Bar */
@@ -152,12 +159,12 @@ public class GuiLaptop extends GuiScreen
 		
 		this.bar.handleClick(this, posX + 10, posY + HEIGHT - 28, mouseX, mouseY, mouseButton);
 		
-		if(window != null)
+		for(Window window : windows.values())
 		{
-			int windowX = getWindowX();
-			int windowY = getWindowY();
+			int windowX = getWindowX(window);
+			int windowY = getWindowY(window);
 			
-			this.window.handleClick(this, windowX, windowY, mouseX, mouseY, mouseButton);
+			window.handleClick(this, windowX, windowY, mouseX, mouseY, mouseButton);
 
 			if(mouseX >= windowX + window.offsetX + 1 && mouseX <= windowX + window.offsetX + window.width - 13)
 			{
@@ -182,9 +189,9 @@ public class GuiLaptop extends GuiScreen
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException 
 	{
-		if(window != null)
+		for(Window window : windows.values())
 		{
-			this.window.handleKeyTyped(typedChar, keyCode);
+			window.handleKeyTyped(typedChar, keyCode);
 		}
 		super.keyTyped(typedChar, keyCode);
 	}
@@ -194,15 +201,18 @@ public class GuiLaptop extends GuiScreen
 	{
 		int posX = (width - WIDTH) / 2;
 		int posY = (height - HEIGHT) / 2;
-		if(dragging && window != null)
+		for(Window window : windows.values())
 		{
-			if(mouseX >= posX + 10 && mouseX <= posX + WIDTH - 20 && mouseY >= posY + 10 && mouseY <= posY + HEIGHT - 20)
+			if(dragging && window != null)
 			{
-				window.handleDrag(this, getWindowX(), getWindowY(), -(lastMouseX - mouseX), -(lastMouseY - mouseY), posX + 10, posY + 10);
-			}
-			else
-			{
-				dragging = false;
+				if(mouseX >= posX + 10 && mouseX <= posX + WIDTH - 20 && mouseY >= posY + 10 && mouseY <= posY + HEIGHT - 20)
+				{
+					window.handleDrag(this, getWindowX(window), getWindowY(window), -(lastMouseX - mouseX), -(lastMouseY - mouseY), posX + 10, posY + 10);
+				}
+				else
+				{
+					dragging = false;
+				}
 			}
 		}
 		this.lastMouseX = mouseX;
@@ -212,7 +222,7 @@ public class GuiLaptop extends GuiScreen
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException 
 	{
-		if(window != null)
+		for(Window window : windows.values())
 		{
 			window.handleButtonClick(this, button);
 		}
@@ -226,18 +236,22 @@ public class GuiLaptop extends GuiScreen
 	
 	public void openApplication(Application app)
 	{
-		closeApplication();
-		window = new Window(app);
-		window.init(buttonList, getWindowX(), getWindowY());
-		if(data.hasKey(app.getID()))
+		if(!windows.containsKey(app.getID()))
 		{
-			app.load(data.getCompoundTag(app.getID()));
+			Window window = new Window(app);
+			window.init(buttonList, getWindowX(window), getWindowY(window));
+			if(data.hasKey(app.getID()))
+			{
+				app.load(data.getCompoundTag(app.getID()));
+			}
+			windows.put(app.getID(), window);
+		    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 		}
-	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 	}
 	
-	public void closeApplication()
+	public void closeApplication(String appId)
 	{
+		Window window = windows.get(appId);
 		if(window != null)
 		{
 			if(window.save(data))
@@ -246,10 +260,11 @@ public class GuiLaptop extends GuiScreen
 			}
 			window.handleClose(buttonList);
 			window = null;
+			windows.remove(appId);
 		}
 	}
 	
-	public int getWindowX()
+	public int getWindowX(Window window)
 	{
 		if(window != null)
 		{
@@ -259,7 +274,7 @@ public class GuiLaptop extends GuiScreen
 		return -1;
 	}
 	
-	public int getWindowY()
+	public int getWindowY(Window window)
 	{
 		if(window != null)
 		{

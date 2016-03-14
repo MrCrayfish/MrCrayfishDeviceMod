@@ -53,6 +53,8 @@ public class ApplicationAppStore extends Application
 		
 		list.setListItemRenderer(renderer);
 		this.addComponent(list);
+		
+		this.restoreDefaultLayout();
 	}
 
 	@Override

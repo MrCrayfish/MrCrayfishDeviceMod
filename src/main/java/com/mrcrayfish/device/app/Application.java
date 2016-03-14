@@ -59,6 +59,7 @@ public abstract class Application
 	
 	public void init(int x, int y)
 	{
+		this.setCurrentLayout(defaultLayout);
 		this.startX = x;
 		this.startY = y;
 	}
@@ -116,7 +117,8 @@ public abstract class Application
 	
 	public void onClose()
 	{
-		
+		defaultLayout.components.clear();
+		currentLayout.components.clear();
 	}
 
 	public abstract void load(NBTTagCompound tagCompound);
