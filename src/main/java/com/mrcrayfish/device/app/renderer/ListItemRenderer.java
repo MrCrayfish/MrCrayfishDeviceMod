@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.app.components;
+package com.mrcrayfish.device.app.renderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

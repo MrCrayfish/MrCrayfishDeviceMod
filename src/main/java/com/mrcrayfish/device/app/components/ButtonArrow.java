@@ -1,25 +1,23 @@
-package com.mrcrayfish.device.gui;
+package com.mrcrayfish.device.app.components;
 
-import com.mrcrayfish.device.app.components.ApplicationBar;
+import com.mrcrayfish.device.app.ApplicationBar;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class GuiButtonApp extends GuiButton
+public class ButtonArrow extends Button
 {
-	private boolean selected = false;
-	private final int appIndex;
+	private Type type;
 	
-	public GuiButtonApp(int appIndex, int x, int y) 
+	public ButtonArrow(int x, int y, int left, int top, Type type) 
 	{
-		super(0, x, y, 12, 12, "");
-		this.appIndex = appIndex;
+		super("", x, y, left, top, 12, 12);
+		this.type = type;
 	}
 	
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY)
+	public void render(Minecraft mc, int mouseX, int mouseY)
 	{
 		if (this.visible)
 		{
@@ -33,13 +31,18 @@ public class GuiButtonApp extends GuiButton
 			GlStateManager.blendFunc(770, 771);
 
 			int state = this.getHoverState(this.hovered);
-			this.drawTexturedModalRect(this.xPosition, this.yPosition, state * this.width, 18, this.width, this.height);
+			this.drawTexturedModalRect(this.xPosition, this.yPosition, state * this.width + type.i * 36, 18, this.width, this.height);
 		}
 	}
-
-	public void setSelected(boolean selected)
-	{
-		this.selected = selected;
-	}
 	
+	public static enum Type 
+	{
+		LEFT(0), UP(1), RIGHT(2), DOWN(3);
+		
+		public int i;
+		Type(int i) 
+		{
+			this.i = i;
+		}
+	}
 }

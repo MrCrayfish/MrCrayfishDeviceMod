@@ -1,21 +1,19 @@
 package com.mrcrayfish.device.app;
 
 import java.awt.Color;
-import java.util.List;
 
-import com.mrcrayfish.device.app.components.Application;
-import com.mrcrayfish.device.gui.GuiButtonArrow;
+import com.mrcrayfish.device.app.components.Button;
+import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.gui.GuiLaptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationSettings extends Application
 {
-	private GuiButton btnWallpaperNext;
-	private GuiButton btnWallpaperPrev;
+	private Button btnWallpaperNext;
+	private Button btnWallpaperPrev;
 	
 	public ApplicationSettings() 
 	{
@@ -23,23 +21,22 @@ public class ApplicationSettings extends Application
 	}
 
 	@Override
-	public void init(List<GuiButton> buttons, int x, int y) 
+	public void init(int x, int y) 
 	{
-		btnWallpaperNext = new GuiButtonArrow(0, x + 40, y + 16, GuiButtonArrow.Type.RIGHT);
-		btnWallpaperPrev = new GuiButtonArrow(0, x + 5, y + 16, GuiButtonArrow.Type.LEFT);
-		buttons.add(btnWallpaperNext);
-		buttons.add(btnWallpaperPrev);
+		//btnWallpaperNext = new GuiButtonArrow(0, x + 40, y + 16, GuiButtonArrow.Type.RIGHT);
+		//btnWallpaperPrev = new GuiButtonArrow(0, x + 5, y + 16, GuiButtonArrow.Type.LEFT);
+		//TODO Add to component list
 	}
 
 	@Override
-	public void render(Gui gui, Minecraft mc, int x, int y) 
+	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY) 
 	{
 		gui.drawString(mc.fontRendererObj, "Wallpaper", x + 5, y + 5, Color.WHITE.getRGB());
 		gui.drawCenteredString(mc.fontRendererObj, Integer.toString(GuiLaptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
 	}
 
 	@Override
-	public void handleButtonClick(GuiButton button) 
+	public void handleButtonClick(Button button) 
 	{
 		if(button == btnWallpaperNext)
 		{
@@ -49,22 +46,6 @@ public class ApplicationSettings extends Application
 		{
 			GuiLaptop.prevWallpaper();
 		}
-	}
-
-	@Override
-	public void updateButtons(int x, int y) 
-	{
-		btnWallpaperNext.xPosition = x + 40;
-		btnWallpaperNext.yPosition = y + 16;
-		btnWallpaperPrev.xPosition = x + 5;
-		btnWallpaperPrev.yPosition = y + 16;
-	}
-
-	@Override
-	public void hideButtons(List<GuiButton> buttons) 
-	{
-		buttons.remove(btnWallpaperNext);
-		buttons.remove(btnWallpaperPrev);
 	}
 
 	@Override

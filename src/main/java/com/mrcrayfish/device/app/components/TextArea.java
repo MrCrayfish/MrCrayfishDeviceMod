@@ -1,8 +1,11 @@
-package com.mrcrayfish.device.gui;
+package com.mrcrayfish.device.app.components;
 
 import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
+
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.Component;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -13,11 +16,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.EnumChatFormatting;
 
-public class GuiTextArea extends Gui
+public class TextArea extends Component
 {
 	private FontRenderer fontRendererObj;
 	private String text = "";
-	public int xPosition, yPosition;
 	private int width, height;
 	private int maxLines;
 	private int padding = 2;
@@ -29,11 +31,10 @@ public class GuiTextArea extends Gui
 	private int backgroundColour = Color.DARK_GRAY.getRGB();
 	private int borderColour = Color.BLACK.getRGB();
 
-	public GuiTextArea(FontRenderer fontRendererObj, int x, int y, int width, int height) 
+	public TextArea(FontRenderer fontRendererObj, int x, int y, int left, int top, int width, int height) 
 	{
+		super(x, y, left, top);
 		this.fontRendererObj = fontRendererObj;
-		this.xPosition = x;
-		this.yPosition = y;
 		this.width = width;
 		this.height = height;
 		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
@@ -44,7 +45,8 @@ public class GuiTextArea extends Gui
 		updateCount++;
 	}
 	
-	public void draw()
+	@Override
+	public void render(Minecraft mc, int mouseX, int mouseY)
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, backgroundColour);
@@ -64,13 +66,15 @@ public class GuiTextArea extends Gui
 		this.fontRendererObj.drawSplitString(text, xPosition + padding, yPosition + padding, width - padding * 2, textColour);
 	}
 	
-	public void onMouseClicked(int mouseX, int mouseY, int mouseButton)
+	@Override
+	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
 	{
 		boolean within = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
 		this.isFocused = within;
 	}
 	
-	public void onKeyTyped(char character, int code)
+	@Override
+	public void handleKeyTyped(char character, int code)
 	{
 		if(!isFocused)
 		{

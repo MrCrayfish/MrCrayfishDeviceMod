@@ -1,9 +1,9 @@
 package com.mrcrayfish.device;
 
+import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.ApplicationAppStore;
+import com.mrcrayfish.device.app.ApplicationBar;
 import com.mrcrayfish.device.app.ApplicationNoteStash;
-import com.mrcrayfish.device.app.components.Application;
-import com.mrcrayfish.device.app.components.ApplicationBar;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.init.DeviceBlocks;

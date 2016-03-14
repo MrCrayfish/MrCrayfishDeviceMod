@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.gui;
 
-import com.mrcrayfish.device.app.components.ApplicationBar;
-import com.mrcrayfish.device.app.components.Window;
+import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.Window;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

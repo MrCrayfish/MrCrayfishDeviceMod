@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.app.components;
+package com.mrcrayfish.device.app;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -7,40 +7,35 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mrcrayfish.device.app.ApplicationSettings;
-import com.mrcrayfish.device.gui.GuiButtonArrow;
-import com.mrcrayfish.device.gui.GuiButtonArrow.Type;
+import com.mrcrayfish.device.app.components.Button;
+import com.mrcrayfish.device.app.components.ButtonArrow;
+import com.mrcrayfish.device.app.components.ButtonArrow.Type;
 import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
-public class ApplicationBar extends Component
+public class ApplicationBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 	
 	private static final List<Application> APPS = new ArrayList<Application>();
 	private static Application settings = new ApplicationSettings();
 	
-	private GuiButton btnLeft;
-	private GuiButton btnRight;
+	private Button btnLeft;
+	private Button btnRight;
 
-	@Override
-	public void init(List<GuiButton> buttons, int posX, int posY)
+	public void init(int posX, int posY)
 	{
-		btnLeft = new GuiButtonArrow(0, posX + 3, posY + 3, Type.LEFT);
-		btnRight = new GuiButtonArrow(0, posX + 100, posY + 3, Type.RIGHT);
-		buttons.add(btnLeft);
-		buttons.add(btnRight);
+		btnLeft = new ButtonArrow(posX, posY, 3, 3, Type.LEFT);
+		btnRight = new ButtonArrow(posX, posY, 100, 3, Type.RIGHT);
 	}
 	
-	@Override
 	public void render(GuiLaptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
@@ -78,13 +73,26 @@ public class ApplicationBar extends Component
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.disableStandardItemLighting();
 		
+		btnLeft.render(mc, mouseX, mouseY);
+		btnRight.render(mc, mouseX, mouseY);
+		
 		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 336, y + 5, Color.WHITE.getRGB(), true);
 	}
 	
-	@Override
 	public void handleClick(GuiLaptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
-		System.out.println(mouseX + " " + mouseY);
+		if(isMouseInside(mouseX, mouseY, btnLeft.xPosition, btnLeft.yPosition, btnLeft.xPosition + btnLeft.width, btnLeft.yPosition + btnLeft.height))
+		{
+			btnLeft.playClickSound(gui.mc.getSoundHandler());
+			return;
+		}
+		
+		if(isMouseInside(mouseX, mouseY, btnRight.xPosition, btnRight.yPosition, btnRight.xPosition + btnRight.width, btnRight.yPosition + btnRight.height))
+		{
+			btnRight.playClickSound(gui.mc.getSoundHandler());
+			return;
+		}
+		
 		if(isMouseInside(mouseX, mouseY, x + 181, y + 1, x + 197, y + 16))
 		{
 			gui.openApplication(settings);

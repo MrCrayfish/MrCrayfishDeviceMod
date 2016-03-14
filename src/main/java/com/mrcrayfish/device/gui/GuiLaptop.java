@@ -7,9 +7,9 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.mrcrayfish.device.app.components.Application;
-import com.mrcrayfish.device.app.components.ApplicationBar;
-import com.mrcrayfish.device.app.components.Window;
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.Window;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageSaveData;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -67,7 +67,7 @@ public class GuiLaptop extends GuiScreen
 		int posX = (width - WIDTH) / 2;
 		int posY = (height - HEIGHT) / 2;
 		bar = new ApplicationBar();
-		bar.init(buttonList, posX + 10, posY + HEIGHT - 28);
+		bar.init(posX + 10, posY + HEIGHT - 28);
 	}
 	
 	@Override

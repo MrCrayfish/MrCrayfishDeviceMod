@@ -1,22 +1,18 @@
-package com.mrcrayfish.device.gui;
+package com.mrcrayfish.device.app.components;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mrcrayfish.device.app.components.ListItemRenderer;
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.ItemRenderer;
 
-public class GuiList<E> extends Gui
+public class ItemList<E> extends Component
 {
-	public int xPosition;
-	public int yPosition;
-	
 	private int width;
 	private int visibleItems;
 	private int offset;
@@ -25,35 +21,37 @@ public class GuiList<E> extends Gui
 	private List<E> items = new ArrayList<E>();
 	private ListItemRenderer<E> renderer = null;
 	
-	private GuiButton btnUp;
-	private GuiButton btnDown;
+	private Button btnUp;
+	private Button btnDown;
 	
 	private int textColour = Color.WHITE.getRGB();
 	private int backgroundColour = Color.GRAY.getRGB();
 	private int borderColour = Color.BLACK.getRGB();
 	
-	public GuiList(int x, int y, int width, int visibleItems) 
+	public ItemList(int x, int y, int left, int top, int width, int visibleItems) 
 	{
-		this.xPosition = x;
-		this.yPosition = y;
+		super(x, y, left, top);
 		this.width = width;
 		this.visibleItems = visibleItems;
 	}
 	
-	public void init(List<GuiButton> buttons)
+	@Override
+	public void init(Application app)
 	{
-		btnUp = new GuiButtonArrow(0, xPosition + width + 2, yPosition - 1, GuiButtonArrow.Type.RIGHT);
+		btnUp = new ButtonArrow(xPosition, yPosition, width + 2, -1, ButtonArrow.Type.UP);
 		btnUp.enabled = false;
-		btnDown = new GuiButtonArrow(0, xPosition + width + 2, yPosition + 12, GuiButtonArrow.Type.LEFT);
-		buttons.add(btnUp);
-		buttons.add(btnDown);
+		app.addComponent(btnUp);
+		
+		btnDown = new ButtonArrow(xPosition, yPosition, width + 2, 12, ButtonArrow.Type.DOWN);
+		app.addComponent(btnDown);
 	}
 	
-	public void render(Gui gui, Minecraft mc)
+	@Override
+	public void render(Minecraft mc, int mouseX, int mouseY)
 	{
-		gui.drawRect(xPosition - 1, yPosition - 1, xPosition + width, yPosition, borderColour);
-		gui.drawRect(xPosition - 1, yPosition - 1, xPosition, yPosition + visibleItems * renderer.getHeight(), borderColour);
-		gui.drawRect(xPosition + width, yPosition - 1, xPosition + width + 1, yPosition + visibleItems * renderer.getHeight(), borderColour);
+		drawRect(xPosition - 1, yPosition - 1, xPosition + width, yPosition, borderColour);
+		drawRect(xPosition - 1, yPosition - 1, xPosition, yPosition + visibleItems * renderer.getHeight(), borderColour);
+		drawRect(xPosition + width, yPosition - 1, xPosition + width + 1, yPosition + visibleItems * renderer.getHeight(), borderColour);
 		for(int i = 0; i < visibleItems; i++)
 		{
 			E item = getItem(i);
@@ -61,19 +59,20 @@ public class GuiList<E> extends Gui
 			{
 				if(renderer != null)
 				{
-					renderer.render(item, gui, mc, xPosition, yPosition + (i * (renderer.getHeight())), width, (i + offset) == selected);
-					gui.drawRect(xPosition - 1, yPosition + (i + 1) * renderer.getHeight() - 1, xPosition + width, yPosition + (i + 1) * renderer.getHeight(), borderColour);
+					renderer.render(item, this, mc, xPosition, yPosition + (i * (renderer.getHeight())), width, (i + offset) == selected);
+					drawRect(xPosition - 1, yPosition + (i + 1) * renderer.getHeight() - 1, xPosition + width, yPosition + (i + 1) * renderer.getHeight(), borderColour);
 				}
 				else
 				{
-					gui.drawRect(xPosition, yPosition + (i * 14), xPosition + width, yPosition + 13 + (i * 14), backgroundColour);
-					gui.drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
+					drawRect(xPosition, yPosition + (i * 14), xPosition + width, yPosition + 13 + (i * 14), backgroundColour);
+					drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
 				}
 			}
 		}
 	}
-	
-	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
+
+	@Override
+	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
 	{
 		int height = 10;
 		if(renderer != null) height = renderer.getHeight();
@@ -89,8 +88,10 @@ public class GuiList<E> extends Gui
 		}
 	}
 	
-	public void handleButtonClick(GuiButton button)
+	@Override
+	public void handleButtonClick(Button button)
 	{
+		System.out.println("Test");
 		if(items.size() > 3)
 		{
 			if(button == btnUp)
@@ -118,12 +119,6 @@ public class GuiList<E> extends Gui
 				}
 			}
 		}
-	}
-	
-	public void handleClose(List<GuiButton> buttons)
-	{
-		buttons.remove(btnUp);
-		buttons.remove(btnDown);
 	}
 	
 	public void setListItemRenderer(ListItemRenderer<E> renderer)

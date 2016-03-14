@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.app.components;
+package com.mrcrayfish.device.app;
 
 import java.awt.Color;
 import java.util.List;
@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-public class Window extends Component
+public class Window
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
@@ -55,13 +55,12 @@ public class Window extends Component
 		}
 	}
 
-	@Override
 	public void init(List<GuiButton> buttons, int x, int y)
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
 		buttons.add(btnClose);
 		
-		app.init(buttons, x + offsetX + 1, y + offsetY + 13);
+		app.init(x + offsetX + 1, y + offsetY + 13);
 	}
 	
 	public void onTick() 
@@ -69,7 +68,6 @@ public class Window extends Component
 		app.onTick();
 	}
 	
-	@Override
 	public void render(GuiLaptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
@@ -95,37 +93,29 @@ public class Window extends Component
 		
 		GlStateManager.disableBlend();
 
-		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13);
+		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY);
 		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	@Override
 	public void handleButtonClick(GuiLaptop laptop, GuiButton button) 
 	{
 		if(button.equals(btnClose))
 		{
 			laptop.closeApplication();
 		}
-		else
-		{
-			app.handleButtonClick(button);
-		}
 	}
 	
-	@Override
 	public void handleClick(GuiLaptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		app.handleClick(gui, mouseX, mouseY, mouseButton);
+		app.handleClick(mouseX, mouseY, mouseButton);
 	}
 	
-	@Override
 	public void handleKeyTyped(char character, int code)
 	{
 		app.handleKeyTyped(character, code);
 	}
 	
-	@Override
 	public void handleDrag(GuiScreen gui, int x, int y, int mouseDX, int mouseDY, int screenStartX, int screenStartY)
 	{
 		int newX = x + offsetX + mouseDX;
@@ -158,24 +148,21 @@ public class Window extends Component
 		}
 		
 		updateComponents(x, y);
-		app.updateButtons(x + offsetX + 1, y + offsetY + 13);
+		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
 	}
 	
-	@Override
 	public void handleClose(List<GuiButton> buttons)
 	{
 		buttons.remove(btnClose);
-		app.hideButtons(buttons);
+		app.onClose();
 	}
 	
-	@Override
 	public void updateComponents(int x, int y)
 	{
 		btnClose.xPosition = x + offsetX + width - 12;
 		btnClose.yPosition = y + offsetY + 1;
 	}
 	
-	@Override
 	public boolean save(NBTTagCompound tagCompound) 
 	{
 		if(app.isDirty())

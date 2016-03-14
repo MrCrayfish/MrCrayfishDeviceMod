@@ -1,23 +1,21 @@
 package com.mrcrayfish.device.app;
 
 import java.awt.Color;
-import java.util.List;
 
-import com.mrcrayfish.device.app.components.Application;
-import com.mrcrayfish.device.app.components.ListItemRenderer;
-import com.mrcrayfish.device.gui.GuiCheckBox;
-import com.mrcrayfish.device.gui.GuiList;
+import com.mrcrayfish.device.app.components.Button;
+import com.mrcrayfish.device.app.components.CheckBox;
+import com.mrcrayfish.device.app.components.ItemList;
+import com.mrcrayfish.device.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.object.AppInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationAppStore extends Application
 {
-	private GuiList<AppInfo> list;
-	private GuiCheckBox checkBox;
+	private ItemList<AppInfo> list;
+	private CheckBox checkBox;
 	
 	public ApplicationAppStore() 
 	{
@@ -25,12 +23,13 @@ public class ApplicationAppStore extends Application
 	}
 
 	@Override
-	public void init(List<GuiButton> buttons, int x, int y)
+	public void init(int x, int y)
 	{
-		checkBox = new GuiCheckBox("Check Box", x + 130, y + 16);
+		checkBox = new CheckBox("Check Box", x, y, 130, 16);
+		this.addComponent(checkBox);
 		
-		list = new GuiList<AppInfo>(x + 5, y + 16, 100, 4);
-		list.init(buttons);
+		list = new ItemList<AppInfo>(x, y, 5, 16, 100, 4);
+		list.init(this);
 		list.addItem(new AppInfo("Hello"));
 		list.addItem(new AppInfo("Cheese"));
 		list.addItem(new AppInfo("Crackers"));
@@ -53,42 +52,14 @@ public class ApplicationAppStore extends Application
 		};
 		
 		list.setListItemRenderer(renderer);
+		this.addComponent(list);
 	}
 
 	@Override
-	public void render(Gui gui, Minecraft mc, int x, int y) 
+	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY) 
 	{
+		super.render(gui, mc, x, y, mouseX, mouseY);
 		gui.drawString(mc.fontRendererObj, "Apps", x + 5, y + 5, Color.GREEN.getRGB());
-		list.render(gui, mc);
-		checkBox.render(mc);
-	}
-	
-	@Override
-	public void handleClick(Gui gui, int mouseX, int mouseY, int mouseButton) 
-	{
-		list.handleMouseClick(mouseX, mouseY, mouseButton);
-		checkBox.onMouseClick(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	public void handleButtonClick(GuiButton button) 
-	{
-		list.handleButtonClick(button);
-	}
-
-	@Override
-	public void updateButtons(int x, int y) 
-	{
-		list.xPosition = x + 5;
-		list.yPosition = y + 16;
-		checkBox.xPosition = x + 130;
-		checkBox.yPosition = y + 16;
-	}
-
-	@Override
-	public void hideButtons(List<GuiButton> buttons) 
-	{
-		list.handleClose(buttons);
 	}
 
 	@Override

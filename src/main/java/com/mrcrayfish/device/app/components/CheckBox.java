@@ -1,27 +1,28 @@
-package com.mrcrayfish.device.gui;
+package com.mrcrayfish.device.app.components;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-public class GuiCheckBox extends Gui 
+public class CheckBox extends Component
 {
 	public final String name;
-	public int xPosition, yPosition;
 	private boolean checked = false;
 	private boolean enabled = true;
 	
-	public GuiCheckBox(String name, int x, int y) 
+	public CheckBox(String name, int x, int y, int left, int top) 
 	{
+		super(x, y, left, top);
 		this.name = name;
-		this.xPosition = x;
-		this.yPosition = y;
 	}
 	
-	public void render(Minecraft mc)
+	@Override
+	public void render(Minecraft mc, int mouseX, int mouseY)
 	{
 		drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, Color.BLACK.getRGB());
 		drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, Color.GRAY.getRGB());
@@ -32,7 +33,8 @@ public class GuiCheckBox extends Gui
 		drawString(mc.fontRendererObj, name, xPosition + 12, yPosition + 1, Color.WHITE.getRGB());
 	}
 	
-	public void onMouseClick(int mouseX, int mouseY, int mouseButton)
+	@Override
+	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
 	{
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + 10, yPosition + 10))
 		{
