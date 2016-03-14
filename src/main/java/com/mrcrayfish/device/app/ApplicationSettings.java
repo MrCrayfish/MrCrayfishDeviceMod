@@ -23,14 +23,18 @@ public class ApplicationSettings extends Application
 	@Override
 	public void init(int x, int y) 
 	{
-		//btnWallpaperNext = new GuiButtonArrow(0, x + 40, y + 16, GuiButtonArrow.Type.RIGHT);
-		//btnWallpaperPrev = new GuiButtonArrow(0, x + 5, y + 16, GuiButtonArrow.Type.LEFT);
-		//TODO Add to component list
+		super.init(x, y);
+		btnWallpaperNext = new ButtonArrow(x, y, 40, 16, ButtonArrow.Type.RIGHT);
+		this.addComponent(btnWallpaperNext);
+		
+		btnWallpaperPrev = new ButtonArrow(x, y, 5, 16, ButtonArrow.Type.LEFT);
+		this.addComponent(btnWallpaperPrev);
 	}
 
 	@Override
 	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY) 
 	{
+		super.render(gui, mc, x, y, mouseX, mouseY);
 		gui.drawString(mc.fontRendererObj, "Wallpaper", x + 5, y + 5, Color.WHITE.getRGB());
 		gui.drawCenteredString(mc.fontRendererObj, Integer.toString(GuiLaptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
 	}
@@ -42,7 +46,7 @@ public class ApplicationSettings extends Application
 		{
 			GuiLaptop.nextWallpaper();
 		}
-		if(button == btnWallpaperPrev)
+		else if(button == btnWallpaperPrev)
 		{
 			GuiLaptop.prevWallpaper();
 		}
