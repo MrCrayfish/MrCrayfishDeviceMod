@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.app.components;
 
 import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.Component;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -22,7 +23,7 @@ public class ButtonArrow extends Button
 		if (this.visible)
 		{
 			FontRenderer fontrenderer = mc.fontRendererObj;
-			mc.getTextureManager().bindTexture(ApplicationBar.APP_BAR_GUI);
+			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 
@@ -31,7 +32,7 @@ public class ButtonArrow extends Button
 			GlStateManager.blendFunc(770, 771);
 
 			int state = this.getHoverState(this.hovered);
-			this.drawTexturedModalRect(this.xPosition, this.yPosition, state * this.width + type.i * 36, 18, this.width, this.height);
+			this.drawTexturedModalRect(this.xPosition, this.yPosition, state * this.width + type.i * 36, 0, this.width, this.height);
 		}
 	}
 	

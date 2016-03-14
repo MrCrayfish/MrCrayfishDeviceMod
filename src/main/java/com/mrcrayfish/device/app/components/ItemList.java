@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Layout;
+import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -20,6 +22,7 @@ public class ItemList<E> extends Component
 	
 	private List<E> items = new ArrayList<E>();
 	private ListItemRenderer<E> renderer = null;
+	private ClickListener clickListener = null;
 	
 	private Button btnUp;
 	private Button btnDown;
@@ -36,22 +39,28 @@ public class ItemList<E> extends Component
 	}
 	
 	@Override
-	public void init(Application app)
+	public void init(Layout layout)
 	{
-		btnUp = new ButtonArrow(xPosition, yPosition, width + 2, -1, ButtonArrow.Type.UP);
+		btnUp = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top, ButtonArrow.Type.UP);
 		btnUp.enabled = false;
-		app.addComponent(btnUp);
+		layout.addComponent(btnUp);
 		
-		btnDown = new ButtonArrow(xPosition, yPosition, width + 2, 12, ButtonArrow.Type.DOWN);
-		app.addComponent(btnDown);
+		btnDown = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+		layout.addComponent(btnDown);
 	}
 	
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY)
 	{
-		drawRect(xPosition - 1, yPosition - 1, xPosition + width, yPosition, borderColour);
-		drawRect(xPosition - 1, yPosition - 1, xPosition, yPosition + visibleItems * renderer.getHeight(), borderColour);
-		drawRect(xPosition + width, yPosition - 1, xPosition + width + 1, yPosition + visibleItems * renderer.getHeight(), borderColour);
+		int height = 13;
+		if(renderer != null)
+		{
+			height = renderer.getHeight();
+		}
+		drawHorizontalLine(xPosition, xPosition + width, yPosition, borderColour);
+		drawVerticalLine(xPosition, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
+		drawVerticalLine(xPosition + width, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
+		drawHorizontalLine(xPosition, xPosition + width, yPosition + (visibleItems * height) + visibleItems, borderColour);
 		for(int i = 0; i < visibleItems; i++)
 		{
 			E item = getItem(i);
@@ -59,13 +68,14 @@ public class ItemList<E> extends Component
 			{
 				if(renderer != null)
 				{
-					renderer.render(item, this, mc, xPosition, yPosition + (i * (renderer.getHeight())), width, (i + offset) == selected);
-					drawRect(xPosition - 1, yPosition + (i + 1) * renderer.getHeight() - 1, xPosition + width, yPosition + (i + 1) * renderer.getHeight(), borderColour);
+					renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1, width - 2, (i + offset) == selected);
+					drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i + 1) * renderer.getHeight() - 1, borderColour);
 				}
 				else
 				{
-					drawRect(xPosition, yPosition + (i * 14), xPosition + width, yPosition + 13 + (i * 14), backgroundColour);
+					drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
 					drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
+					drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i, borderColour);
 				}
 			}
 		}
@@ -74,15 +84,19 @@ public class ItemList<E> extends Component
 	@Override
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
 	{
-		int height = 10;
+		int height = 13;
 		if(renderer != null) height = renderer.getHeight();
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + visibleItems * height + visibleItems))
 		{
 			for(int i = 0; i < visibleItems && i < items.size(); i++)
 			{
-				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition + (i * (renderer.getHeight())), xPosition + width, yPosition + height + (i * (renderer.getHeight()))))
+				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition + (i * height) + i, xPosition + width, yPosition + (i * height) + i + height))
 				{
 					this.selected = i + offset;
+					if(clickListener != null)
+					{
+						clickListener.onClick(this);
+					}
 				}
 			}
 		}
@@ -120,10 +134,15 @@ public class ItemList<E> extends Component
 			}
 		}
 	}
-	
+
 	public void setListItemRenderer(ListItemRenderer<E> renderer)
 	{
 		this.renderer = renderer;
+	}
+	
+	public void setClickListener(ClickListener clickListener) 
+	{
+		this.clickListener = clickListener;
 	}
 	
 	public void addItem(E e)
@@ -165,6 +184,11 @@ public class ItemList<E> extends Component
 	public int getSelectedIndex()
 	{
 		return selected;
+	}
+	
+	public List<E> getItems()
+	{
+		return items;
 	}
 	
 	public void setTextColour(Color color) 

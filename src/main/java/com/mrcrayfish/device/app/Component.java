@@ -7,11 +7,16 @@ import com.mrcrayfish.device.app.components.Button;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 public abstract class Component extends Gui
 {
+	public static final ResourceLocation COMPONENTS_GUI = new ResourceLocation("cdm:textures/gui/components.png");
+	
 	public int xPosition, yPosition;
-	int left, top;
+	protected int left;
+	protected int top;
+	
 	public boolean enabled = true;
 	public boolean visible = true;
 	
@@ -23,19 +28,25 @@ public abstract class Component extends Gui
 		this.top = top;
 	}
 	
-	public void init(Application app) {};
+	public void init(Layout layout) {}
 	
+	public void handleTick() {}
+
 	public abstract void render(Minecraft mc, int mouseX, int mouseY);
 	
-	public void handleButtonClick(Button button) {};
+	public void handleButtonClick(Button button) {}
 	
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) {};
+	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) {}
 	
-	public void handleKeyTyped(char character, int code) {};
+	public void handleKeyTyped(char character, int code) {}
 	
-	public void handleDrag(int mouseDX, int mouseDY, int screenStartX, int screenStartY) {};
+	public void handleDrag(int mouseDX, int mouseDY, int screenStartX, int screenStartY) {}
 	
-	public void updateComponents(int x, int y) {};
+	public void updateComponents(int x, int y) 
+	{
+		this.xPosition = x + left;
+		this.yPosition = y + top;
+	}
 	
 	public boolean save(NBTTagCompound tagCompound) 
 	{

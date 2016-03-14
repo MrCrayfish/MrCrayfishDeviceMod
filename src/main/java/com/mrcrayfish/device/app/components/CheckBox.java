@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;

@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Layout;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,7 +27,7 @@ public class TextArea extends Component
 	private int updateCount = 0;
 	private boolean isFocused = false;
 	
-	//Personalisation
+	/* Personalisation */
 	private int textColour = Color.WHITE.getRGB();
 	private int backgroundColour = Color.DARK_GRAY.getRGB();
 	private int borderColour = Color.BLACK.getRGB();
@@ -40,7 +41,8 @@ public class TextArea extends Component
 		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
 	}
 	
-	public void onTick()
+	@Override
+	public void handleTick()
 	{
 		updateCount++;
 	}
@@ -49,21 +51,18 @@ public class TextArea extends Component
 	public void render(Minecraft mc, int mouseX, int mouseY)
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, backgroundColour);
-		this.drawHorizontalLine(xPosition - 1, xPosition + width, yPosition - 1, borderColour);
-		this.drawHorizontalLine(xPosition - 1, xPosition + width, yPosition + height, borderColour);
-		this.drawVerticalLine(xPosition - 1, yPosition - 1, yPosition + height, borderColour);
-		this.drawVerticalLine(xPosition + width, yPosition - 1, yPosition + height, borderColour);
+		this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
+		this.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
 		String text = this.text;
 		if (this.updateCount / 6 % 2 == 0)
         {
-			text = text + "_";
+			text = text + (this.isFocused ? "_" : "");
         }
         else
         {
-        	text = text + EnumChatFormatting.GRAY + "_";
+        	text = text + EnumChatFormatting.GRAY + (this.isFocused ? "_" : "");
         }
-		this.fontRendererObj.drawSplitString(text, xPosition + padding, yPosition + padding, width - padding * 2, textColour);
+		this.fontRendererObj.drawSplitString(text, xPosition + padding + 1, yPosition + padding + 2, width - padding * 2 - 2, textColour);
 	}
 	
 	@Override
@@ -119,9 +118,14 @@ public class TextArea extends Component
 		}
 	}
 	
+	public void clear()
+	{
+		this.text = "";
+	}
+	
 	public void setText(String text) 
 	{
-		this.writeText(text);
+		this.text = text;
 	}
 	
 	public String getText() 

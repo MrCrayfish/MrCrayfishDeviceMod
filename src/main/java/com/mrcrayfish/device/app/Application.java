@@ -1,10 +1,13 @@
 package com.mrcrayfish.device.app;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Lists;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.gui.GuiLaptop;
 
@@ -18,10 +21,12 @@ public abstract class Application
 	private final String APP_ID;
 	private final String DISPLAY_NAME;
 	private final int WIDTH, HEIGHT;
+	public int startX, startY;
+	
+	public final Layout defaultLayout;
+	public Layout currentLayout;
 	
 	private boolean needsUpdate = false;
-	
-	private List<Component> components;
 	
 	public Application(String appId, String displayName, int width, int height) 
 	{
@@ -29,27 +34,46 @@ public abstract class Application
 		this.DISPLAY_NAME = displayName;
 		this.WIDTH = width;
 		this.HEIGHT = height;
-		this.components = new ArrayList<Component>();
+		this.defaultLayout = new Layout();
 	}
 	
 	public void addComponent(Component c)
 	{
-		if(this.components != null)
+		if(c != null)
 		{
-			this.components.add(c);
+			defaultLayout.addComponent(c);
+			c.init(defaultLayout);
 		}
+	}
+	
+	public void setCurrentLayout(Layout layout)
+	{
+		this.currentLayout = layout;
+		this.updateComponents(startX, startY);
+	}
+	
+	public void restoreDefaultLayout()
+	{
+		this.setCurrentLayout(defaultLayout);
 	}
 	
 	public void init(int x, int y)
 	{
-		this.components.clear();
+		this.startX = x;
+		this.startY = y;
 	}
 	
-	public void onTick() {};
+	public void onTick() 
+	{
+		for(Component c : currentLayout.components)
+		{
+			c.handleTick();
+		}
+	}
 	
 	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
 	{
-		for(Component c : components)
+		for(Component c : currentLayout.components)
 		{
 			c.render(mc, mouseX, mouseY);
 		}
@@ -57,7 +81,7 @@ public abstract class Application
 	
 	public void handleClick(int mouseX, int mouseY, int mouseButton) 
 	{
-		for(Component c : components)
+		for(Component c : currentLayout.components)
 		{
 			c.handleClick(this, mouseX, mouseY, mouseButton);
 		}
@@ -65,7 +89,7 @@ public abstract class Application
 	
 	public void handleKeyTyped(char character, int code) 
 	{
-		for(Component c : components)
+		for(Component c : currentLayout.components)
 		{
 			c.handleKeyTyped(character, code);
 		}
@@ -73,7 +97,7 @@ public abstract class Application
 	
 	public void handleButtonClick(Button button) 
 	{
-		for(Component c : components)
+		for(Component c : currentLayout.components)
 		{
 			c.handleButtonClick(button);
 		}
@@ -81,17 +105,18 @@ public abstract class Application
 	
 	public void updateComponents(int x, int y)
 	{
-		for(Component c : components)
+		for(Component c : currentLayout.components)
 		{
-			
-			c.xPosition = x + c.left;
-			c.yPosition = y + c.top;
+			c.updateComponents(x, y);
 		}
+		
+		this.startX = x;
+		this.startY = y;
 	}
 	
 	public void onClose()
 	{
-		components.clear();
+		
 	}
 
 	public abstract void load(NBTTagCompound tagCompound);

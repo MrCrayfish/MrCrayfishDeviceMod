@@ -4,6 +4,7 @@ import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.ApplicationAppStore;
 import com.mrcrayfish.device.app.ApplicationBar;
 import com.mrcrayfish.device.app.ApplicationNoteStash;
+import com.mrcrayfish.device.app.ApplicationTest;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
@@ -66,6 +67,7 @@ public class MrCrayfishDeviceMod
 	{
 		ApplicationBar.registerApplication(new ApplicationNoteStash());
 		ApplicationBar.registerApplication(new ApplicationAppStore());
+		ApplicationBar.registerApplication(new ApplicationTest());
 		
 		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));

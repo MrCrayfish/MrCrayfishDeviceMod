@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationAppStore extends Application
 {
+	private Layout main;
 	private ItemList<AppInfo> list;
 	private CheckBox checkBox;
 	
@@ -29,7 +30,6 @@ public class ApplicationAppStore extends Application
 		this.addComponent(checkBox);
 		
 		list = new ItemList<AppInfo>(x, y, 5, 16, 100, 4);
-		list.init(this);
 		list.addItem(new AppInfo("Hello"));
 		list.addItem(new AppInfo("Cheese"));
 		list.addItem(new AppInfo("Crackers"));
