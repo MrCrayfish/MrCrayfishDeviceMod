@@ -50,24 +50,30 @@ public class TextArea extends Component
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
-		this.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
-		String text = this.text;
-		if (this.updateCount / 6 % 2 == 0)
+		if (this.visible)
         {
-			text = text + (this.isFocused ? "_" : "");
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
+			this.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
+			String text = this.text;
+			if (this.updateCount / 6 % 2 == 0)
+	        {
+				text = text + (this.isFocused ? "_" : "");
+	        }
+	        else
+	        {
+	        	text = text + EnumChatFormatting.GRAY + (this.isFocused ? "_" : "");
+	        }
+			this.fontRendererObj.drawSplitString(text, xPosition + padding + 1, yPosition + padding + 2, width - padding * 2 - 2, textColour);
         }
-        else
-        {
-        	text = text + EnumChatFormatting.GRAY + (this.isFocused ? "_" : "");
-        }
-		this.fontRendererObj.drawSplitString(text, xPosition + padding + 1, yPosition + padding + 2, width - padding * 2 - 2, textColour);
 	}
 	
 	@Override
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
 	{
+		if(!this.visible || !this.enabled)
+			return;
+		
 		boolean within = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
 		this.isFocused = within;
 	}

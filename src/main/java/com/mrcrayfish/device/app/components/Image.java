@@ -45,20 +45,23 @@ public class Image extends Component
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
-		GlStateManager.enableAlpha();
-		GlStateManager.enableBlend();
-		mc.getTextureManager().bindTexture(image);
-		
-		if(hasBorder)
-		{
-			drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColour);
-			GuiHelper.drawModalRectWithUV(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
-		}
-		else
-		{
-			GuiHelper.drawModalRectWithUV(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
-		}
+		if (this.visible)
+        {
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
+			GlStateManager.enableAlpha();
+			GlStateManager.enableBlend();
+			mc.getTextureManager().bindTexture(image);
+			
+			if(hasBorder)
+			{
+				drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColour);
+				GuiHelper.drawModalRectWithUV(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
+			}
+			else
+			{
+				GuiHelper.drawModalRectWithUV(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
+			}
+        }
 	}
 	
 	public void setAlpha(float alpha) 

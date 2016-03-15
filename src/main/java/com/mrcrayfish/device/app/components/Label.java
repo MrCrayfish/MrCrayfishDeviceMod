@@ -24,7 +24,10 @@ public class Label extends Component {
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		mc.fontRendererObj.drawString(text, xPosition, yPosition, textColour, true);
+		if (this.visible)
+        {
+			mc.fontRendererObj.drawString(text, xPosition, yPosition, textColour, true);
+        }
 	}
 	
 	public void setText(String text) 

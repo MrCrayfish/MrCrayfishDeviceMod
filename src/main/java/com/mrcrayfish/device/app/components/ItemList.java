@@ -52,38 +52,44 @@ public class ItemList<E> extends Component
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
-		int height = 13;
-		if(renderer != null)
-		{
-			height = renderer.getHeight();
-		}
-		drawHorizontalLine(xPosition, xPosition + width, yPosition, borderColour);
-		drawVerticalLine(xPosition, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
-		drawVerticalLine(xPosition + width, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
-		drawHorizontalLine(xPosition, xPosition + width, yPosition + (visibleItems * height) + visibleItems, borderColour);
-		for(int i = 0; i < visibleItems; i++)
-		{
-			E item = getItem(i);
-			if(item != null)
+		if (this.visible)
+        {
+			int height = 13;
+			if(renderer != null)
 			{
-				if(renderer != null)
+				height = renderer.getHeight();
+			}
+			drawHorizontalLine(xPosition, xPosition + width, yPosition, borderColour);
+			drawVerticalLine(xPosition, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
+			drawVerticalLine(xPosition + width, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
+			drawHorizontalLine(xPosition, xPosition + width, yPosition + (visibleItems * height) + visibleItems, borderColour);
+			for(int i = 0; i < visibleItems; i++)
+			{
+				E item = getItem(i);
+				if(item != null)
 				{
-					renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1, width - 2, (i + offset) == selected);
-					drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i + 1) * renderer.getHeight() - 1, borderColour);
-				}
-				else
-				{
-					drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
-					drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
-					drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i, borderColour);
+					if(renderer != null)
+					{
+						renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1, width - 2, (i + offset) == selected);
+						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i + 1) * renderer.getHeight() - 1, borderColour);
+					}
+					else
+					{
+						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
+						drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
+						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i, borderColour);
+					}
 				}
 			}
-		}
+        }
 	}
 
 	@Override
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
 	{
+		if(!this.visible || !this.enabled)
+			return;
+		
 		int height = 13;
 		if(renderer != null) height = renderer.getHeight();
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + visibleItems * height + visibleItems))

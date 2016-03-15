@@ -298,6 +298,7 @@ public class GuiLaptop extends GuiScreen
 			app.load(data.getCompoundTag(app.getID()));
 		}
 		addWindow(window);
+		
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 	}
 	

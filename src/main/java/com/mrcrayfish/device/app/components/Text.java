@@ -25,10 +25,13 @@ public class Text extends Component {
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		for(int i = 0; i < lines.size(); i++)
-		{
-			mc.fontRendererObj.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, true);
-		}
+		if (this.visible)
+        {
+			for(int i = 0; i < lines.size(); i++)
+			{
+				mc.fontRendererObj.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, true);
+			}
+        }
 	}
 	
 	public void setText(String text)

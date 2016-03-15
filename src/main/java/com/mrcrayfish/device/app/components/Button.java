@@ -38,7 +38,7 @@ public class Button extends Component
             FontRenderer fontrenderer = mc.fontRendererObj;
             mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height && windowActive;
+            this.hovered = this.isInside(mouseX, mouseY) && windowActive;
             int i = this.getHoverState(this.hovered);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -63,7 +63,7 @@ public class Button extends Component
 	@Override
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) 
 	{
-		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height))
+		if(this.hovered)
 		{
 			if(clickListener != null)
 			{

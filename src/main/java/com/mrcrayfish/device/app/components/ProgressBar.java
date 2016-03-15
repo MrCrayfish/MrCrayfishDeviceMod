@@ -27,9 +27,12 @@ public class ProgressBar extends Component
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
-		drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
-		drawRect(xPosition + 2, yPosition + 2, xPosition + 2 + (int) ((width - 4) * ((double) progress / (double) max)), yPosition + height - 2, progressColour);
+		if (this.visible)
+        {
+			drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
+			drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
+			drawRect(xPosition + 2, yPosition + 2, xPosition + 2 + (int) ((width - 4) * ((double) progress / (double) max)), yPosition + height - 2, progressColour);
+        }
 	}
 
 	public void setProgress(int progress) 

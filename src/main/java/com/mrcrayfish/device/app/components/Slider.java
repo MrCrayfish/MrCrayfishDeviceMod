@@ -37,15 +37,21 @@ public class Slider extends Component
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, borderColour);
-		drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, backgroundColour);
-		drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, backgroundColour);
-		drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, textColour);
+		if (this.visible)
+        {
+			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, borderColour);
+			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, backgroundColour);
+			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, backgroundColour);
+			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, textColour);
+        }
 	}
 	
 	@Override
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) 
 	{
+		if(!this.visible || !this.enabled)
+			return;
+		
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + prevSliderX, yPosition, xPosition + prevSliderX + 8, yPosition + 12))
 		{
 			this.dragging = true;

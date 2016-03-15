@@ -50,8 +50,13 @@ public abstract class Component extends Gui
 		this.yPosition = y + top;
 	}
 	
-	public boolean save(NBTTagCompound tagCompound) 
+	public void setEnabled(boolean enabled) 
 	{
-		return false;
+		this.enabled = enabled;
+	}
+	
+	public void setVisible(boolean visible)
+	{
+		this.visible = visible;
 	}
 }

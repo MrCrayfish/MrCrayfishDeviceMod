@@ -28,8 +28,11 @@ public class Spinner extends Component
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
-		drawTexturedModalRect(xPosition, yPosition, (progress % 8) * 12, 12 + 12 * (int) Math.floor((double) progress / 8), 12, 12);
+		if (this.visible)
+        {
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
+			drawTexturedModalRect(xPosition, yPosition, (progress % 8) * 12, 12 + 12 * (int) Math.floor((double) progress / 8), 12, 12);
+        }
 	}
 }
