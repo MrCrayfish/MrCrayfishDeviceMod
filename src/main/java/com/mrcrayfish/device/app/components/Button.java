@@ -3,6 +3,7 @@ package com.mrcrayfish.device.app.components;
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Layout;
+import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ public class Button extends Component
 	private String text;
 	public boolean hovered;
 	public int width, height;
+	private ClickListener clickListener = null;
 	
 	public Button(String text, int x, int y, int left, int top, int width, int height) 
 	{
@@ -29,14 +31,14 @@ public class Button extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY) 
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		if (this.visible)
         {
             FontRenderer fontrenderer = mc.fontRendererObj;
             mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height && windowActive;
             int i = this.getHoverState(this.hovered);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -63,9 +65,17 @@ public class Button extends Component
 	{
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height))
 		{
-			app.handleButtonClick(this);
+			if(clickListener != null)
+			{
+				clickListener.onClick(this, mouseButton);
+			}
 			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 		}
+	}
+	
+	public void setClickListener(ClickListener clickListener) 
+	{
+		this.clickListener = clickListener;
 	}
 	
 	protected int getHoverState(boolean mouseOver)
@@ -87,6 +97,11 @@ public class Button extends Component
 	public void playClickSound(SoundHandler handler) 
 	{
 		handler.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+	}
+	
+	public boolean isInside(int mouseX, int mouseY)
+	{
+		return mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 	}
 
 }

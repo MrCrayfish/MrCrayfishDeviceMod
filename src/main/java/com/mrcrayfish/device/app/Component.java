@@ -32,7 +32,7 @@ public abstract class Component extends Gui
 	
 	public void handleTick() {}
 
-	public abstract void render(Minecraft mc, int mouseX, int mouseY);
+	public abstract void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive);
 	
 	public void handleButtonClick(Button button) {}
 	
@@ -40,7 +40,9 @@ public abstract class Component extends Gui
 	
 	public void handleKeyTyped(char character, int code) {}
 	
-	public void handleDrag(int mouseDX, int mouseDY, int screenStartX, int screenStartY) {}
+	public void handleDrag(int mouseX, int mouseY) {}
+	
+	public void handleRelease(int mouseX, int mouseY) {}
 	
 	public void updateComponents(int x, int y) 
 	{

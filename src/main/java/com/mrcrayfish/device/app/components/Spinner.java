@@ -28,7 +28,7 @@ public class Spinner extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY) 
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);

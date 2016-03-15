@@ -23,7 +23,7 @@ public class Text extends Component {
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY) 
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		for(int i = 0; i < lines.size(); i++)
 		{

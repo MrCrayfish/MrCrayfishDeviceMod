@@ -23,7 +23,7 @@ public class CheckBox extends Component
 	}
 	
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY)
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
 		drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, Color.BLACK.getRGB());
 		drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, Color.GRAY.getRGB());

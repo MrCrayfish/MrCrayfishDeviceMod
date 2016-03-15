@@ -72,11 +72,11 @@ public abstract class Application
 		}
 	}
 	
-	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
+	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
 	{
 		for(Component c : currentLayout.components)
 		{
-			c.render(mc, mouseX, mouseY);
+			c.render(mc, mouseX, mouseY, active);
 		}
 	}
 	
@@ -88,6 +88,22 @@ public abstract class Application
 		}
 	}
 	
+	public void handleDrag(int mouseX, int mouseY)
+	{
+		for(Component c : currentLayout.components)
+		{
+			c.handleDrag(mouseX, mouseY);
+		}
+	}
+	
+	public void handleRelease(int mouseX, int mouseY) 
+	{
+		for(Component c : currentLayout.components)
+		{
+			c.handleRelease(mouseX, mouseY);
+		}
+	}
+	
 	public void handleKeyTyped(char character, int code) 
 	{
 		for(Component c : currentLayout.components)
@@ -95,15 +111,7 @@ public abstract class Application
 			c.handleKeyTyped(character, code);
 		}
 	}
-	
-	public void handleButtonClick(Button button) 
-	{
-		for(Component c : currentLayout.components)
-		{
-			c.handleButtonClick(button);
-		}
-	}
-	
+
 	public void updateComponents(int x, int y)
 	{
 		for(Component c : currentLayout.components)

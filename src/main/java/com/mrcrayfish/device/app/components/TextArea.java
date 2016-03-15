@@ -48,7 +48,7 @@ public class TextArea extends Component
 	}
 	
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY)
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);

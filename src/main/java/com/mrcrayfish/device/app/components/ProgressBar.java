@@ -25,7 +25,7 @@ public class ProgressBar extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY) 
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
 		drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);

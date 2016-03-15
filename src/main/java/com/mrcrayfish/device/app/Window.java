@@ -24,6 +24,8 @@ public class Window
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
+	public int layer = 0;
+	
 	public Application app;
 	public int width, height;
 	public int offsetX, offsetY;
@@ -58,7 +60,6 @@ public class Window
 	public void init(List<GuiButton> buttons, int x, int y)
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
-		buttons.add(btnClose);
 		
 		app.init(x + offsetX + 1, y + offsetY + 13);
 	}
@@ -68,7 +69,7 @@ public class Window
 		app.onTick();
 	}
 	
-	public void render(GuiLaptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
+	public void render(GuiLaptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
 		GlStateManager.enableBlend();
@@ -91,9 +92,11 @@ public class Window
 		
 		mc.fontRendererObj.drawString(app.getDisplayName(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
+		btnClose.drawButton(mc, mouseX, mouseY);
+		
 		GlStateManager.disableBlend();
 
-		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY);
+		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active);
 		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
@@ -108,7 +111,15 @@ public class Window
 	
 	public void handleClick(GuiLaptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		app.handleClick(mouseX, mouseY, mouseButton);
+		if(btnClose.isMouseOver())
+		{
+			gui.closeApplication(app.getID());
+			btnClose.playPressSound(gui.mc.getSoundHandler());
+		}
+		else
+		{
+			app.handleClick(mouseX, mouseY, mouseButton);
+		}
 	}
 	
 	public void handleKeyTyped(char character, int code)
@@ -116,7 +127,7 @@ public class Window
 		app.handleKeyTyped(character, code);
 	}
 	
-	public void handleDrag(GuiScreen gui, int x, int y, int mouseDX, int mouseDY, int screenStartX, int screenStartY)
+	public void handleWindowMove(int x, int y, int mouseDX, int mouseDY, int screenStartX, int screenStartY)
 	{
 		int newX = x + offsetX + mouseDX;
 		int newY = y + offsetY + mouseDY;
@@ -149,6 +160,16 @@ public class Window
 		
 		updateComponents(x, y);
 		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
+	}
+	
+	public void handleDrag(int mouseX, int mouseY)
+	{
+		app.handleDrag(mouseX, mouseY);
+	}
+	
+	public void handleRelease(int mouseX, int mouseY)
+	{
+		app.handleRelease(mouseX, mouseY);
 	}
 	
 	public void handleClose(List<GuiButton> buttons)

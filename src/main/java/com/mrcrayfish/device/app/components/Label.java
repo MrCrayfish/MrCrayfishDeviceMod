@@ -22,7 +22,7 @@ public class Label extends Component {
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY) 
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		mc.fontRendererObj.drawString(text, xPosition, yPosition, textColour, true);
 	}

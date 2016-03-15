@@ -2,6 +2,8 @@ package com.mrcrayfish.device.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +30,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import scala.actors.threadpool.Arrays;
 
 public class GuiLaptop extends GuiScreen 
 {
@@ -40,13 +43,14 @@ public class GuiLaptop extends GuiScreen
 	private int HEIGHT = 216;
 
 	private ApplicationBar bar;
-	private Map<String, Window> windows;
+	private Window[] windows;
 	private NBTTagCompound data;
 	
 	public static int currentWallpaper;
 	private int tileX, tileY, tileZ;
 	private int lastMouseX, lastMouseY;
 	
+	private int draggingWindow;
 	private boolean dragging = false;
 	private boolean dirty = false;
 	
@@ -60,7 +64,7 @@ public class GuiLaptop extends GuiScreen
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
 		}
-		this.windows = new ConcurrentHashMap<String, Window>();
+		this.windows = new Window[5];
 	}
 	
 	@Override
@@ -78,9 +82,12 @@ public class GuiLaptop extends GuiScreen
     {
         Keyboard.enableRepeatEvents(false);
         
-        for(Window window : windows.values())
+        for(Window window : windows)
 		{
-        	closeApplication(window.app.getID());
+        	if(window != null)
+			{
+        		closeApplication(window.app.getID());
+			}
 		}
         
         data.setInteger("CurrentWallpaper", this.currentWallpaper);
@@ -98,9 +105,12 @@ public class GuiLaptop extends GuiScreen
 	@Override
 	public void updateScreen() 
 	{
-		for(Window window : windows.values())
+		for(Window window : windows)
 		{
-			window.onTick();
+			if(window != null)
+			{
+				window.onTick();
+			}
 		}
 	}
 	
@@ -137,9 +147,13 @@ public class GuiLaptop extends GuiScreen
 		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, WIDTH - 20, HEIGHT - 20, 256, 144);
 
 		/* Window */
-		for(Window window : windows.values())
+		for(int i = windows.length - 1; i >= 0; i--)
 		{
-			window.render(this, mc, getWindowX(window), getWindowY(window), mouseX, mouseY);
+			Window window = windows[i];
+			if(window != null)
+			{
+				window.render(this, mc, getWindowX(window), getWindowY(window), mouseX, mouseY, i == 0);
+			}
 		}
 		
 		/* Application Bar */
@@ -159,19 +173,31 @@ public class GuiLaptop extends GuiScreen
 		
 		this.bar.handleClick(this, posX + 10, posY + HEIGHT - 28, mouseX, mouseY, mouseButton);
 		
-		for(Window window : windows.values())
+		for(int i = 0; i < windows.length; i++)
 		{
-			int windowX = getWindowX(window);
-			int windowY = getWindowY(window);
-			
-			window.handleClick(this, windowX, windowY, mouseX, mouseY, mouseButton);
-
-			if(mouseX >= windowX + window.offsetX + 1 && mouseX <= windowX + window.offsetX + window.width - 13)
+			Window window = windows[i];
+			if(window != null)
 			{
-				if(mouseY >= windowY + window.offsetY + 1 && mouseY <= windowY + window.offsetY + 11)
+				int windowX = getWindowX(window);
+				int windowY = getWindowY(window);
+				
+				if(GuiHelper.isMouseInside(mouseX, mouseY, windowX + window.offsetX, windowY + window.offsetY, windowX + window.offsetX + window.width, windowY + window.offsetY + window.height))
 				{
-					this.dragging = true;
-					return;
+					windows[i] = null;
+					updateWindowStack();
+					windows[0] = window;
+					
+					windows[0].handleClick(this, windowX, windowY, mouseX, mouseY, mouseButton);
+		
+					if(mouseX >= windowX + window.offsetX + 1 && mouseX <= windowX + window.offsetX + window.width - 13)
+					{
+						if(mouseY >= windowY + window.offsetY + 1 && mouseY <= windowY + window.offsetY + 11)
+						{
+							this.dragging = true;
+							return;
+						}
+					}
+					break;
 				}
 			}
 		}
@@ -184,14 +210,18 @@ public class GuiLaptop extends GuiScreen
 	{
 		super.mouseReleased(mouseX, mouseY, state);
 		this.dragging = false;
+		if(windows[0] != null)
+		{
+			windows[0].handleRelease(mouseX, mouseY);
+		}
 	}
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException 
 	{
-		for(Window window : windows.values())
+		if(windows[0] != null)
 		{
-			window.handleKeyTyped(typedChar, keyCode);
+			windows[0].handleKeyTyped(typedChar, keyCode);
 		}
 		super.keyTyped(typedChar, keyCode);
 	}
@@ -201,17 +231,28 @@ public class GuiLaptop extends GuiScreen
 	{
 		int posX = (width - WIDTH) / 2;
 		int posY = (height - HEIGHT) / 2;
-		for(Window window : windows.values())
+		if(windows[0] != null)
 		{
-			if(dragging && window != null)
+			if(dragging)
 			{
 				if(mouseX >= posX + 10 && mouseX <= posX + WIDTH - 20 && mouseY >= posY + 10 && mouseY <= posY + HEIGHT - 20)
 				{
-					window.handleDrag(this, getWindowX(window), getWindowY(window), -(lastMouseX - mouseX), -(lastMouseY - mouseY), posX + 10, posY + 10);
+					windows[0].handleWindowMove(getWindowX(windows[0]), getWindowY(windows[0]), -(lastMouseX - mouseX), -(lastMouseY - mouseY), posX + 10, posY + 10);
 				}
 				else
 				{
 					dragging = false;
+				}
+			}
+			else
+			{
+				Window window = windows[0];
+				int windowX = getWindowX(windows[0]);
+				int windowY = getWindowY(windows[0]);
+				
+				if(mouseX >= windowX + 1 && mouseX <= windowX + window.width + window.offsetX - 1 && mouseY >= windowY + 13 && mouseY <= windowY + window.offsetY + window.height - 1)
+				{
+					windows[0].handleDrag(mouseX, mouseY);
 				}
 			}
 		}
@@ -222,9 +263,12 @@ public class GuiLaptop extends GuiScreen
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException 
 	{
-		for(Window window : windows.values())
+		for(Window window : windows)
 		{
-			window.handleButtonClick(this, button);
+			if(window != null)
+			{
+				window.handleButtonClick(this, button);
+			}
 		}
 	}
 	
@@ -236,32 +280,90 @@ public class GuiLaptop extends GuiScreen
 	
 	public void openApplication(Application app)
 	{
-		if(!windows.containsKey(app.getID()))
+		for(Window window : windows)
 		{
-			Window window = new Window(app);
-			window.init(buttonList, getWindowX(window), getWindowY(window));
-			if(data.hasKey(app.getID()))
+			if(window != null)
 			{
-				app.load(data.getCompoundTag(app.getID()));
+				if(window.app.getID().equals(app.getID()))
+				{
+					return;
+				}
 			}
-			windows.put(app.getID(), window);
-		    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 		}
+		
+		Window window = new Window(app);
+		window.init(buttonList, getWindowX(window), getWindowY(window));
+		if(data.hasKey(app.getID()))
+		{
+			app.load(data.getCompoundTag(app.getID()));
+		}
+		addWindow(window);
+	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 	}
 	
 	public void closeApplication(String appId)
 	{
-		Window window = windows.get(appId);
-		if(window != null)
+		for(int i = 0; i < windows.length; i++)
 		{
-			if(window.save(data))
+			Window window = windows[i];
+			if(window != null)
 			{
-				dirty = true;
+				if(window.app.getID().equals(appId))
+				{
+					if(window.save(data))
+					{
+						dirty = true;
+					}
+					window.handleClose(buttonList);
+					windows[i] = null;
+					window = null;
+					return;
+				}
 			}
-			window.handleClose(buttonList);
-			window = null;
-			windows.remove(appId);
 		}
+	}
+	
+	public void addWindow(Window window)
+	{
+		if(hasReachedWindowLimit())
+			return;
+
+		updateWindowStack();
+		windows[0] = window;
+	}
+	
+	public void updateWindowStack()
+	{
+		for(int i = windows.length - 1; i >= 0; i--)
+		{
+			if(windows[i] == null)
+			{
+				continue;
+			}
+			else
+			{
+				if(i + 1 < windows.length)
+				{
+					if(i == 0 || windows[i - 1] != null)
+					{
+						if(windows[i + 1] == null)
+						{
+							windows[i + 1] = windows[i];
+							windows[i] = null;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public boolean hasReachedWindowLimit()
+	{
+		for(Window window : windows)
+		{
+			if(window == null) return false;
+		}
+		return true;
 	}
 	
 	public int getWindowX(Window window)

@@ -56,7 +56,7 @@ public class ApplicationNoteStash extends Application
 		notes = new ItemList<Note>(x, y, 5, 5, 100, 5);
 		notes.setClickListener(new ClickListener() {
 			@Override
-			public void onClick(Component c) {
+			public void onClick(Component c, int mouseButton) {
 				btnView.enabled = true;
 				btnDelete.enabled = true;
 			}
@@ -64,14 +64,44 @@ public class ApplicationNoteStash extends Application
 		layoutMain.addComponent(notes);
 		
 		btnNew = new Button("New", x, y, 124, 5, 50, 20);
+		btnNew.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				ApplicationNoteStash.this.setCurrentLayout(layoutAddNote);
+			}
+		});
 		layoutMain.addComponent(btnNew);
 		
 		btnView = new Button("View", x, y, 124, 30, 50, 20);
 		btnView.enabled = false;
+		btnView.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				if(notes.getSelectedIndex() != -1)
+				{
+					Note note = notes.getSelectedItem();
+					noteTitle.setText(note.title);
+					noteContent.setText(note.content);
+					ApplicationNoteStash.this.setCurrentLayout(layoutViewNote);
+				}
+			}
+		});
 		layoutMain.addComponent(btnView);
 		
 		btnDelete = new Button("Delete", x, y, 124, 55, 50, 20);
 		btnDelete.enabled = false;
+		btnDelete.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				if(notes.getSelectedIndex() != -1)
+				{
+					notes.removeItem(notes.getSelectedIndex());
+					btnView.enabled = false;
+					btnDelete.enabled = false;
+					ApplicationNoteStash.this.markDirty();
+				}
+			}
+		});
 		layoutMain.addComponent(btnDelete);
 		
 		
@@ -87,11 +117,31 @@ public class ApplicationNoteStash extends Application
 		layoutAddNote.addComponent(textArea);
 		
 		btnSave = new Button("Save", x, y, 124, 5, 50, 20);
+		btnSave.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				notes.addItem(new Note(title.getText(), textArea.getText()));
+				title.clear();
+				textArea.clear();
+				ApplicationNoteStash.this.markDirty();
+				ApplicationNoteStash.this.setCurrentLayout(layoutMain);
+			}
+		});
 		layoutAddNote.addComponent(btnSave);
 		
 		btnCancel = new Button("Cancel", x, y, 124, 30, 50, 20);
+		btnCancel.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				title.clear();
+				textArea.clear();
+				ApplicationNoteStash.this.setCurrentLayout(layoutMain);
+			}
+		});
 		layoutAddNote.addComponent(btnCancel);
 		
+		
+		/* View Note */
 		layoutViewNote = new Layout();
 		
 		noteTitle = new Label("", x, y, 5, 5);
@@ -101,52 +151,15 @@ public class ApplicationNoteStash extends Application
 		layoutViewNote.addComponent(noteContent);
 		
 		btnBack = new Button("Back", x, y, 124, 5, 50, 20);
+		btnBack.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				ApplicationNoteStash.this.setCurrentLayout(layoutMain);
+			}
+		});
 		layoutViewNote.addComponent(btnBack);
 		
 		this.setCurrentLayout(layoutMain);
-	}
-
-	@Override
-	public void handleButtonClick(Button button)
-	{
-		if(button == btnNew)
-		{
-			this.setCurrentLayout(layoutAddNote);
-		}
-		else if(button == btnDelete)
-		{
-			if(notes.getSelectedIndex() != -1)
-			{
-				notes.removeItem(notes.getSelectedIndex());
-				btnView.enabled = false;
-				btnDelete.enabled = false;
-				this.markDirty();
-			}
-		}
-		else if(button == btnSave)
-		{
-			notes.addItem(new Note(title.getText(), textArea.getText()));
-			this.markDirty();
-			this.setCurrentLayout(layoutMain);
-		}
-		else if(button == btnCancel)
-		{
-			this.setCurrentLayout(layoutMain);
-		}
-		else if(button == btnView)
-		{
-			if(notes.getSelectedIndex() != -1)
-			{
-				Note note = notes.getSelectedItem();
-				noteTitle.setText(note.title);
-				noteContent.setText(note.content);
-				this.setCurrentLayout(layoutViewNote);
-			}
-		}
-		else if(button == btnBack)
-		{
-			this.setCurrentLayout(layoutMain);
-		}
 	}
 
 	@Override

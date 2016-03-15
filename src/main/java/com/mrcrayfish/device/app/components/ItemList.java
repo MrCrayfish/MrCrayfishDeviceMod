@@ -50,7 +50,7 @@ public class ItemList<E> extends Component
 	}
 	
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY)
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
 		int height = 13;
 		if(renderer != null)
@@ -95,7 +95,7 @@ public class ItemList<E> extends Component
 					this.selected = i + offset;
 					if(clickListener != null)
 					{
-						clickListener.onClick(this);
+						clickListener.onClick(this, mouseButton);
 					}
 				}
 			}
@@ -105,7 +105,6 @@ public class ItemList<E> extends Component
 	@Override
 	public void handleButtonClick(Button button)
 	{
-		System.out.println("Test");
 		if(items.size() > 3)
 		{
 			if(button == btnUp)

@@ -18,14 +18,14 @@ public class ButtonArrow extends Button
 	}
 	
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY)
+	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
 		if (this.visible)
 		{
 			FontRenderer fontrenderer = mc.fontRendererObj;
 			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height && windowActive;
 
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);

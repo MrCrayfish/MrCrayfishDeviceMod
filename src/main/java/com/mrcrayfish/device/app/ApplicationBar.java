@@ -73,8 +73,8 @@ public class ApplicationBar
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.disableStandardItemLighting();
 		
-		btnLeft.render(mc, mouseX, mouseY);
-		btnRight.render(mc, mouseX, mouseY);
+		btnLeft.render(mc, mouseX, mouseY, true);
+		btnRight.render(mc, mouseX, mouseY, true);
 		
 		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 336, y + 5, Color.WHITE.getRGB(), true);
 	}
