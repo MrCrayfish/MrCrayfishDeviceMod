@@ -37,7 +37,7 @@ public class GuiLaptop extends GuiScreen
 	public static final int ID = 0;
 	
 	private static final ResourceLocation LAPTOP_GUI = new ResourceLocation("cdm:textures/gui/laptop.png");
-	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<ResourceLocation>();
+	public static final List<ResourceLocation> WALLPAPERS = new ArrayList<ResourceLocation>();
 	
 	private int WIDTH = 384;
 	private int HEIGHT = 216;

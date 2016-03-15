@@ -23,8 +23,6 @@ public class Spinner extends Component
 			progress = 0;
 		}
 		progress++;
-		
-		System.out.println("ticking");
 	}
 
 	@Override
@@ -33,6 +31,5 @@ public class Spinner extends Component
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 		drawTexturedModalRect(xPosition, yPosition, (progress % 8) * 12, 12 + 12 * (int) Math.floor((double) progress / 8), 12, 12);
-		System.out.println(progress);
 	}
 }

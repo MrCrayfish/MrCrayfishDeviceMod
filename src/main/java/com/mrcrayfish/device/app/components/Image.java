@@ -8,6 +8,7 @@ import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class Image extends Component 
@@ -45,6 +46,8 @@ public class Image extends Component
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
+		GlStateManager.enableAlpha();
+		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(image);
 		
 		if(hasBorder)

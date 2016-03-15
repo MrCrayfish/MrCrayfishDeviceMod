@@ -60,18 +60,21 @@ public class Slider extends Component
 	@Override
 	public void handleDrag(int mouseX, int mouseY) 
 	{
-		this.newSliderX = prevSliderX + (mouseX - clickX);
-		if(this.newSliderX < 0)
+		if(dragging)
 		{
-			this.newSliderX = 0;
-		}
-		if(this.newSliderX >= width - 8)
-		{
-			this.newSliderX = width - 8;
-		}
-		if(slideListener != null)
-		{
-			slideListener.onSlide(getPercentage());
+			this.newSliderX = prevSliderX + (mouseX - clickX);
+			if(this.newSliderX < 0)
+			{
+				this.newSliderX = 0;
+			}
+			if(this.newSliderX >= width - 8)
+			{
+				this.newSliderX = width - 8;
+			}
+			if(slideListener != null)
+			{
+				slideListener.onSlide(getPercentage());
+			}
 		}
 	}
 	

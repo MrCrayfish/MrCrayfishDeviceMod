@@ -42,18 +42,18 @@ public class Window
 	private void setWidth(int width) 
 	{
 		this.width = width + 2;
-		if(this.width > 236)
+		if(this.width > 364)
 		{
-			this.width = 236;
+			this.width = 364;
 		}
 	}
 	
 	private void setHeight(int height) 
 	{
 		this.height = height + 14;
-		if(this.height > 120)
+		if(this.height > 178)
 		{
-			this.height = 120;
+			this.height = 178;
 		}
 	}
 
