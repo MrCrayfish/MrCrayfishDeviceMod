@@ -43,9 +43,33 @@ public class ItemList<E> extends Component
 	{
 		btnUp = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top, ButtonArrow.Type.UP);
 		btnUp.enabled = false;
+		btnUp.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				if(offset > 0) {
+					offset--;
+					btnDown.enabled = true;
+				}
+				if(offset == 0) {
+					btnUp.enabled = false;
+				}
+			}
+		});
 		layout.addComponent(btnUp);
 		
 		btnDown = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+		btnDown.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				if(visibleItems + offset < items.size()) {
+					offset++;
+					btnUp.enabled = true;
+				}
+				if(visibleItems + offset == items.size()) {
+					btnDown.enabled = false;
+				}
+			}
+		});
 		layout.addComponent(btnDown);
 	}
 	
@@ -70,8 +94,8 @@ public class ItemList<E> extends Component
 				{
 					if(renderer != null)
 					{
-						renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1, width - 2, (i + offset) == selected);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i + 1) * renderer.getHeight() - 1, borderColour);
+						renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 1, (i + offset) == selected);
+						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColour);
 					}
 					else
 					{
@@ -107,38 +131,6 @@ public class ItemList<E> extends Component
 			}
 		}
 	}
-	
-	@Override
-	public void handleButtonClick(Button button)
-	{
-		if(items.size() > 3)
-		{
-			if(button == btnUp)
-			{
-				if(offset > 0)
-				{
-					offset--;
-					btnDown.enabled = true;
-				}
-				if(offset == 0)
-				{
-					btnUp.enabled = false;
-				}
-			}
-			if(button == btnDown)
-			{
-				if(visibleItems + offset < items.size())
-				{
-					offset++;
-					btnUp.enabled = true;
-				}
-				if(visibleItems + offset == items.size())
-				{
-					btnDown.enabled = false;
-				}
-			}
-		}
-	}
 
 	public void setListItemRenderer(ListItemRenderer<E> renderer)
 	{
@@ -168,7 +160,7 @@ public class ItemList<E> extends Component
 		}
 	}
 	
-	private E getItem(int pos)
+	public E getItem(int pos)
 	{
 		if(pos + offset < items.size())
 		{

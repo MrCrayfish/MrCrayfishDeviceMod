@@ -91,6 +91,7 @@ public class TextArea extends Component
         }
         else
         {
+        	System.out.println(code);
             switch (code)
             {
                 case 14:

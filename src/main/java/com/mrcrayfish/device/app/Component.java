@@ -13,6 +13,8 @@ public abstract class Component extends Gui
 {
 	public static final ResourceLocation COMPONENTS_GUI = new ResourceLocation("cdm:textures/gui/components.png");
 	
+	private Application parent;
+	
 	public int xPosition, yPosition;
 	protected int left;
 	protected int top;

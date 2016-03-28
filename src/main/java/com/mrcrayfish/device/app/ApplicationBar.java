@@ -46,9 +46,15 @@ public class ApplicationBar
 		gui.drawTexturedModalRect(x + 332, y, 2, 0, 33, 18);
 		GlStateManager.disableBlend();
 		
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		btnLeft.render(mc, mouseX, mouseY, true);
+		btnRight.render(mc, mouseX, mouseY, true);
+		
+		mc.getTextureManager().bindTexture(APP_BAR_GUI);
+		
 		for(int i = 0; i < APPS.size(); i++)
 		{
-			gui.drawTexturedModalRect(x + 18 + i * 18, y + 2, 0, 46, 14, 14);
+			gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 46, 14, 14);
 		}
 		
 		/* Settings App */
@@ -72,9 +78,6 @@ public class ApplicationBar
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.disableStandardItemLighting();
-		
-		btnLeft.render(mc, mouseX, mouseY, true);
-		btnRight.render(mc, mouseX, mouseY, true);
 		
 		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 336, y + 5, Color.WHITE.getRGB(), true);
 	}

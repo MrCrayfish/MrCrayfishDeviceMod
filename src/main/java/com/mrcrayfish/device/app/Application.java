@@ -21,11 +21,11 @@ public abstract class Application
 	private final String APP_ID;
 	private final String DISPLAY_NAME;
 	private final int WIDTH, HEIGHT;
-	public int startX, startY;
+	private int startX, startY;
+	private final Layout defaultLayout;
+	private Layout currentLayout;
 	
-	public final Layout defaultLayout;
-	public Layout currentLayout;
-	
+	/* If set to true, will update NBT data for Application */
 	private boolean needsUpdate = false;
 	
 	public Application(String appId, String displayName, int width, int height) 
@@ -37,7 +37,7 @@ public abstract class Application
 		this.defaultLayout = new Layout();
 	}
 	
-	public void addComponent(Component c)
+	protected void addComponent(Component c)
 	{
 		if(c != null)
 		{
@@ -50,6 +50,11 @@ public abstract class Application
 	{
 		this.currentLayout = layout;
 		this.updateComponents(startX, startY);
+	}
+	
+	public Layout getCurrentLayout() 
+	{
+		return currentLayout;
 	}
 	
 	public void restoreDefaultLayout()

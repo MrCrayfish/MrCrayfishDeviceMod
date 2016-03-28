@@ -75,7 +75,6 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
 		compound.setTag("AppData", data);
-		System.out.println("Writing");
 	}
 	
 	@Override

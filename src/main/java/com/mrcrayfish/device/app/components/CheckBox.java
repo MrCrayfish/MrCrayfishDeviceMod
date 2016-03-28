@@ -1,24 +1,41 @@
 package com.mrcrayfish.device.app.components;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Layout;
+import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-public class CheckBox extends Component
+public class CheckBox extends Component implements IRadioGroupItem
 {
 	public final String name;
 	private boolean checked = false;
+	private RadioGroup group = null;
+	
+	private ClickListener listener = null;
 	
 	public CheckBox(String name, int x, int y, int left, int top) 
 	{
 		super(x, y, left, top);
 		this.name = name;
+	}
+	
+	public void setRadioGroup(RadioGroup group)
+	{
+		this.group = group;
+		this.group.add(this);
+	}
+	
+	public void setClickListener(ClickListener listener) 
+	{
+		this.listener = listener;
 	}
 	
 	@Override
@@ -44,17 +61,27 @@ public class CheckBox extends Component
 		
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + 10, yPosition + 10))
 		{
+			if(group != null)
+			{
+				group.unselect();
+			}
 			this.checked = !checked;
+			if(listener != null)
+			{
+				listener.onClick(this, mouseButton);
+			}
 		}
 	}
 	
-	public boolean isChecked() 
+	@Override
+	public boolean isSelected() 
 	{
 		return checked;
 	}
 	
-	public void setChecked(boolean checked) 
+	@Override
+	public void setSelected(boolean enabled) 
 	{
-		this.checked = checked;
+		this.checked = enabled;
 	}
 }

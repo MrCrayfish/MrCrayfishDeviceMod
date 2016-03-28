@@ -20,7 +20,13 @@ public class Button extends Component
 	private String text;
 	public boolean hovered;
 	public int width, height;
-	private ClickListener clickListener = null;
+	
+	private boolean hasIcon = false;
+	private ResourceLocation icon = null;
+	private int iconU, iconV;
+	private int iconWidth, iconHeight;
+	
+	protected ClickListener clickListener = null;
 	
 	public Button(String text, int x, int y, int left, int top, int width, int height) 
 	{
@@ -29,6 +35,17 @@ public class Button extends Component
 		this.width = width;
 		this.height = height;
 	}
+	
+	public Button(int x, int y, int left, int top, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
+	{
+		this("", x, y, left, top, iconWidth + 6, iconHeight + 6);
+		this.hasIcon = true;
+		this.icon = icon;
+		this.iconU = iconU;
+		this.iconV = iconV;
+		this.iconWidth = iconWidth;
+		this.iconHeight = iconHeight;
+	}
 
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
@@ -36,15 +53,29 @@ public class Button extends Component
 		if (this.visible)
         {
             FontRenderer fontrenderer = mc.fontRendererObj;
-            mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+            mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = this.isInside(mouseX, mouseY) && windowActive;
+            this.hovered = isInside(mouseX, mouseY) && windowActive;
             int i = this.getHoverState(this.hovered);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + i * 20, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+            
+            /* Corners */
+            GuiHelper.drawModalRectWithUV(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
+            GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
+            GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
+            GuiHelper.drawModalRectWithUV(xPosition, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
+
+            /* Middles */
+            GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition, 98 + i * 5, 12, width - 4, 2, 1, 2);
+            GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
+            GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition + height - 2, 98 + i * 5, 15, width - 4, 2, 1, 2);
+            GuiHelper.drawModalRectWithUV(xPosition, yPosition + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
+            
+            /* Center */
+            GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
+            
             int j = 14737632;
 
             if (!this.enabled)
@@ -55,8 +86,16 @@ public class Button extends Component
             {
                 j = 16777120;
             }
-
-            this.drawCenteredString(fontrenderer, this.text, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+            
+            if(hasIcon)
+            {
+            	mc.getTextureManager().bindTexture(icon);
+            	this.drawTexturedModalRect(xPosition + 3, yPosition + 3, iconU, iconV, iconWidth, iconHeight);
+            }
+            else
+            {
+            	this.drawCenteredString(fontrenderer, this.text, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+            }  
         }
 	}
 

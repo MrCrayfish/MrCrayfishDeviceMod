@@ -114,4 +114,9 @@ public class Slider extends Component
 	{
 		return (float) this.newSliderX / (float) (this.width - 8);
 	}
+	
+	public void setPercentage(float percentage)
+	{
+		this.newSliderX = (int) ((this.width - 8) * percentage);
+	}
 }

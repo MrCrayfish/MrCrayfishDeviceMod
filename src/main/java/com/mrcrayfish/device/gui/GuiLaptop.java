@@ -277,7 +277,7 @@ public class GuiLaptop extends GuiScreen
 	{
 		super.drawHoveringText(textLines, x, y);
 	}
-	
+
 	public void openApplication(Application app)
 	{
 		for(Window window : windows)
