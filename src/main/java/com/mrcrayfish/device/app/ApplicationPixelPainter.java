@@ -34,6 +34,7 @@ public class ApplicationPixelPainter extends Application
 	/* Main Menu */
 	private Layout layoutMainMenu;
 	private Image logo;
+	private Label labelLogo;
 	private Button btnNewPicture;
 	private Button btnLoadPicture;
 	
@@ -73,7 +74,7 @@ public class ApplicationPixelPainter extends Application
 	
 	public ApplicationPixelPainter() 
 	{
-		super("pixel_painter", "Pixel Painter");
+		super("pixel_painter", "Pixel Painter", ApplicationBar.APP_BAR_GUI, 14, 46);
 	}
 	
 	@Override
@@ -83,6 +84,12 @@ public class ApplicationPixelPainter extends Application
 		
 		/* Main Menu */
 		this.layoutMainMenu = new Layout(100, 100);
+		
+		this.logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
+		this.layoutMainMenu.addComponent(logo);
+		
+		this.labelLogo = new Label("Pixel Painter", x, y, 19, 35);
+		this.layoutMainMenu.addComponent(labelLogo);
 		
 		this.btnNewPicture = new Button("New", x, y, 5, 50, 90, 20);
 		this.btnNewPicture.setClickListener(new ClickListener() {

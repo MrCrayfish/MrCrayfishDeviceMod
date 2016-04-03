@@ -17,10 +17,15 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class Application 
 {
+	public ResourceLocation icon;
+	public int u, v;
+	
 	private final String APP_ID;
 	private final String DISPLAY_NAME;
+	
 	private int width, height;
 	private int startX, startY;
+	
 	private final Layout defaultLayout;
 	private Layout currentLayout;
 	
@@ -32,11 +37,19 @@ public abstract class Application
 	
 	public Application(String appId, String displayName) 
 	{
+		this(appId, displayName, null, 0, 0);
+	}
+	
+	public Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV) 
+	{
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
 		this.defaultLayout = new Layout();
+		this.icon = icon;
+		this.u = iconU;
+		this.v = iconV;
 	}
-	
+
 	protected void addComponent(Component c)
 	{
 		if(c != null)

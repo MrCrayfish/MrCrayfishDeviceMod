@@ -196,11 +196,14 @@ public class Canvas extends Component
 	
 	public void clear()
 	{
-		for(int i = 0; i < pixels.length; i++)
+		if(pixels != null)
 		{
-			for(int j = 0; j < pixels[0].length; j++)
+			for(int i = 0; i < pixels.length; i++)
 			{
-				pixels[i][j] = 0; 
+				for(int j = 0; j < pixels[0].length; j++)
+				{
+					pixels[i][j] = 0; 
+				}
 			}
 		}
 	}

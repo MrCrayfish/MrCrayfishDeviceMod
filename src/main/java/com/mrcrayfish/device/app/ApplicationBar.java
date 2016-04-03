@@ -48,13 +48,23 @@ public class ApplicationBar
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		btnLeft.render(mc, mouseX, mouseY, true);
 		btnRight.render(mc, mouseX, mouseY, true);
-		
-		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		
+
 		for(int i = 0; i < APPS.size(); i++)
 		{
-			gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 46, 14, 14);
+			Application app = APPS.get(i);
+			if(app.icon != null)
+			{
+				mc.getTextureManager().bindTexture(app.icon);
+				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, app.u, app.v, 14, 14);
+			}
+			else
+			{
+				mc.getTextureManager().bindTexture(APP_BAR_GUI);
+				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 30, 30, 14, 14);
+			}
 		}
+		
+		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		
 		/* Settings App */
 		gui.drawTexturedModalRect(x + 182, y + 2, 16, 30, 14, 14);
