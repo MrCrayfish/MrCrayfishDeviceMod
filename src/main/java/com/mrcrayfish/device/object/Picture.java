@@ -54,6 +54,19 @@ public class Picture
 		return size.pixelHeight;
 	}
 	
+	public int[][] copyPixels()
+	{
+		int[][] copiedPixels = new int[pixels.length][pixels.length];
+		for(int i = 0; i < pixels.length; i++)
+		{
+			for(int j = 0; j < pixels.length; j++)
+			{
+				copiedPixels[j][i] = pixels[j][i];
+			}
+		}
+		return copiedPixels;
+	}
+	
 	@Override
 	public String toString() 
 	{

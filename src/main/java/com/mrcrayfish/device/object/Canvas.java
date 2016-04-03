@@ -23,11 +23,13 @@ public class Canvas extends Component
 	public static final Tool ERASER = new ToolEraser();
 	public static final Tool EYE_DROPPER = new ToolEyeDropper();
 	
+	public int[][] pixels;
 	private int red, green, blue;
 	private int currentColour = Color.BLACK.getRGB();
 	
 	private boolean drawing = false;
 	private boolean showGrid = false;
+	private boolean existingImage = false;
 	
 	public Picture picture;
 	
@@ -37,22 +39,19 @@ public class Canvas extends Component
 	{
 		super(x, y, left, top);
 		this.currentTool = PENCIL;
-		this.picture = new Picture("", "", Size.X16);
+	}
+	
+	public void createPicture(String name, String author, Size size)
+	{
+		this.picture = new Picture(name, author, size);
+		this.pixels = new int[picture.size.width][picture.size.height];
 	}
 	
 	public void setPicture(Picture picture)
 	{
+		this.existingImage = true;
 		this.picture = picture;
-	}
-	
-	public int getPixel(int x, int y)
-	{
-		return this.picture.pixels[x][y];
-	}
-	
-	public void setPixel(int x, int y, int colour)
-	{
-		this.picture.pixels[x][y] = colour;
+		this.pixels = picture.copyPixels();
 	}
 	
 	@Override
@@ -69,7 +68,7 @@ public class Canvas extends Component
 			{
 				int pixelX = xPosition + x * picture.getPixelWidth() + 1;
 				int pixelY = yPosition + y * picture.getPixelHeight() + 1;
-				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), picture.pixels[x][y]);
+				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), pixels[x][y]);
 				if(showGrid)
 				{
 					drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + 1, gridColour);
@@ -126,6 +125,26 @@ public class Canvas extends Component
 			this.currentTool.handleDrag(this, pixelX, pixelY);
 		}
 	}
+	
+	public int[][] getPixels()
+	{
+		return this.pixels;
+	}
+	
+	public int getPixel(int x, int y)
+	{
+		return this.pixels[x][y];
+	}
+	
+	public void setPixel(int x, int y, int colour)
+	{
+		this.pixels[x][y] = colour;
+	}
+
+	public boolean isExistingImage() 
+	{
+		return existingImage;
+	}
 
 	public void setColour(Color colour)
 	{
@@ -173,5 +192,16 @@ public class Canvas extends Component
 	public void setShowGrid(boolean showGrid) 
 	{
 		this.showGrid = showGrid;
+	}
+	
+	public void clear()
+	{
+		for(int i = 0; i < pixels.length; i++)
+		{
+			for(int j = 0; j < pixels[0].length; j++)
+			{
+				pixels[i][j] = 0; 
+			}
+		}
 	}
 }

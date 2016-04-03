@@ -136,7 +136,7 @@ public class ApplicationPixelPainter extends Application
 			@Override
 			public void onClick(Component c, int mouseButton) {
 				ApplicationPixelPainter.this.setCurrentLayout(layoutDraw);
-				canvas.setPicture(new Picture(fieldName.getText(), fieldAuthor.getText(), checkBox16x.isSelected() ? Size.X16 : Size.X32));
+				canvas.createPicture(fieldName.getText(), fieldAuthor.getText(), checkBox16x.isSelected() ? Size.X16 : Size.X32);
 			}
 		});
 		this.layoutNewPicture.addComponent(btnCreatePicture);
@@ -234,7 +234,9 @@ public class ApplicationPixelPainter extends Application
 		this.btnSave.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				listPictures.addItem(canvas.picture);
+				canvas.picture.pixels = canvas.pixels;
+				if(!canvas.isExistingImage())
+					listPictures.addItem(canvas.picture);
 				ApplicationPixelPainter.this.setCurrentLayout(layoutLoadPicture);
 				ApplicationPixelPainter.this.markDirty();
 			}
@@ -291,6 +293,13 @@ public class ApplicationPixelPainter extends Application
 		
 		this.setCurrentLayout(layoutMainMenu);
 	}
+	
+	@Override
+	public void onClose() 
+	{
+		super.onClose();
+		canvas.clear();
+	}
 
 	@Override
 	public void load(NBTTagCompound tagCompound) 
@@ -303,7 +312,6 @@ public class ApplicationPixelPainter extends Application
 			NBTTagCompound pictureTag = pictureList.getCompoundTagAt(i);
 			Picture picture = Picture.readFromNBT(pictureTag);
 			listPictures.addItem(picture);
-			System.out.println("Loading picture: " + picture.getName());
 		}
 	}
 
@@ -316,7 +324,6 @@ public class ApplicationPixelPainter extends Application
 			NBTTagCompound pictureTag = new NBTTagCompound();
 			picture.writeToNBT(pictureTag);
 			pictureList.appendTag(pictureTag);
-			System.out.println("Saving picture: " + picture.getName());
 		}
 		tagCompound.setTag("Pictures", pictureList);
 	}
