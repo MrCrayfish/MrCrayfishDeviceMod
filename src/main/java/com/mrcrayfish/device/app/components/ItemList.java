@@ -2,6 +2,7 @@ package com.mrcrayfish.device.app.components;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.mrcrayfish.device.app.Application;
@@ -13,7 +14,7 @@ import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 
-public class ItemList<E> extends Component
+public class ItemList<E> extends Component implements Iterable<E>
 {
 	private int width;
 	private int visibleItems;
@@ -188,6 +189,11 @@ public class ItemList<E> extends Component
 		return items;
 	}
 	
+	public void removeAll()
+	{
+		this.items.clear();
+	}
+	
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
@@ -201,5 +207,11 @@ public class ItemList<E> extends Component
 	public void setBorderColour(Color color) 
 	{
 		this.borderColour = color.getRGB();
+	}
+
+	@Override
+	public Iterator<E> iterator() 
+	{
+		return items.iterator();
 	}
 }

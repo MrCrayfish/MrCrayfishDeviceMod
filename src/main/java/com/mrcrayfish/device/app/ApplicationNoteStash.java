@@ -42,7 +42,7 @@ public class ApplicationNoteStash extends Application
 
 	public ApplicationNoteStash() 
 	{
-		super("note_stash", "Note Stash", 180, 80);
+		super("note_stash", "Note Stash");
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ApplicationNoteStash extends Application
 		super.init(x, y);
 
 		/* Main */
-		layoutMain = new Layout();
+		layoutMain = new Layout(180, 80);
 		
 		notes = new ItemList<Note>(x, y, 5, 5, 100, 5);
 		notes.setClickListener(new ClickListener() {
@@ -106,7 +106,7 @@ public class ApplicationNoteStash extends Application
 		
 		
 		/* Add Note */
-		layoutAddNote = new Layout();
+		layoutAddNote = new Layout(180, 80);
 
 		title = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 5, 114);
 		layoutAddNote.addComponent(title);
@@ -142,7 +142,7 @@ public class ApplicationNoteStash extends Application
 		
 		
 		/* View Note */
-		layoutViewNote = new Layout();
+		layoutViewNote = new Layout(180, 80);
 		
 		noteTitle = new Label("", x, y, 5, 5);
 		layoutViewNote.addComponent(noteTitle);

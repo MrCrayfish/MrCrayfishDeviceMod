@@ -5,8 +5,8 @@ import com.mrcrayfish.device.app.ApplicationBar;
 import com.mrcrayfish.device.app.ApplicationExample;
 import com.mrcrayfish.device.app.ApplicationNoteStash;
 import com.mrcrayfish.device.app.ApplicationPixelPainter;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceTileEntites;
@@ -70,9 +70,9 @@ public class MrCrayfishDeviceMod
 		ApplicationBar.registerApplication(new ApplicationExample());
 		ApplicationBar.registerApplication(new ApplicationPixelPainter());
 		
-		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
-		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
-		GuiLaptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
+		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
+		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
+		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
 		
 		proxy.postInit();
 	}

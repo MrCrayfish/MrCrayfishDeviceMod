@@ -5,6 +5,7 @@ import java.awt.Color;
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Layout;
+import com.mrcrayfish.device.object.Picture.Size;
 import com.mrcrayfish.device.object.tools.ToolBucket;
 import com.mrcrayfish.device.object.tools.ToolEraser;
 import com.mrcrayfish.device.object.tools.ToolEyeDropper;
@@ -28,51 +29,51 @@ public class Canvas extends Component
 	private boolean drawing = false;
 	private boolean showGrid = false;
 	
-	public int[][] pixels;
-	public final int COLUMNS, ROWS;
-	private final int PIXEL_WIDTH, PIXEL_HEIGHT;
+	public Picture picture;
 	
 	private int gridColour = new Color(200, 200, 200, 150).getRGB();
 	
-	public Canvas(int x, int y, int left, int top, int columns, int rows, int pixelWidth, int pixelHeight)
+	public Canvas(int x, int y, int left, int top)
 	{
 		super(x, y, left, top);
-		this.COLUMNS = columns;
-		this.ROWS = rows;
-		this.PIXEL_WIDTH = pixelWidth;
-		this.PIXEL_HEIGHT = pixelHeight;
-		this.pixels = new int[columns][rows];
 		this.currentTool = PENCIL;
+		this.picture = new Picture("", "", Size.X16);
+	}
+	
+	public void setPicture(Picture picture)
+	{
+		this.picture = picture;
+	}
+	
+	public int getPixel(int x, int y)
+	{
+		return this.picture.pixels[x][y];
+	}
+	
+	public void setPixel(int x, int y, int colour)
+	{
+		this.picture.pixels[x][y] = colour;
 	}
 	
 	@Override
-	public void init(Layout layout) 
-	{
-		for(int i = 0; i < COLUMNS; i++)
-		{
-			for(int j = 0; j < ROWS; j++)
-			{
-				pixels[i][j] = Integer.MAX_VALUE;
-			}
-		}
-	}
+	public void init(Layout layout) {}
 
 	@Override
 	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-		drawRect(xPosition, yPosition, xPosition + COLUMNS * PIXEL_WIDTH + 2, yPosition + ROWS * PIXEL_HEIGHT + 2, Color.DARK_GRAY.getRGB());
-		drawRect(xPosition + 1, yPosition + 1, xPosition + COLUMNS * PIXEL_WIDTH + 1, yPosition + ROWS * PIXEL_HEIGHT + 1, Color.WHITE.getRGB());
-		for(int y = 0; y < ROWS; y++)
+		drawRect(xPosition, yPosition, xPosition + picture.getWidth() * picture.getPixelWidth() + 2, yPosition + picture.getHeight() * picture.getPixelHeight() + 2, Color.DARK_GRAY.getRGB());
+		drawRect(xPosition + 1, yPosition + 1, xPosition + picture.getWidth() * picture.getPixelWidth() + 1, yPosition + picture.getHeight() * picture.getPixelHeight() + 1, Color.WHITE.getRGB());
+		for(int y = 0; y < picture.getHeight(); y++)
 		{
-			for(int x = 0; x < COLUMNS; x++)
+			for(int x = 0; x < picture.getWidth(); x++)
 			{
-				int pixelX = xPosition + x * PIXEL_WIDTH + 1;
-				int pixelY = yPosition + y * PIXEL_HEIGHT + 1;
-				drawRect(pixelX, pixelY, pixelX + PIXEL_WIDTH, pixelY + PIXEL_HEIGHT, pixels[x][y]);
+				int pixelX = xPosition + x * picture.getPixelWidth() + 1;
+				int pixelY = yPosition + y * picture.getPixelHeight() + 1;
+				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), picture.pixels[x][y]);
 				if(showGrid)
 				{
-					drawRect(pixelX, pixelY, pixelX + PIXEL_WIDTH, pixelY + 1, gridColour);
-					drawRect(pixelX, pixelY, pixelX + 1, pixelY + PIXEL_HEIGHT, gridColour);
+					drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + 1, gridColour);
+					drawRect(pixelX, pixelY, pixelX + 1, pixelY + picture.getPixelHeight(), gridColour);
 				}
 			}
 		}
@@ -83,13 +84,13 @@ public class Canvas extends Component
 	{
 		int startX = xPosition + 1;
 		int startY = yPosition + 1;
-		int endX = startX + COLUMNS * PIXEL_WIDTH - 1;
-		int endY = startY + ROWS * PIXEL_HEIGHT - 1;
+		int endX = startX + picture.getWidth() * picture.getPixelWidth() - 1;
+		int endY = startY + picture.getHeight() * picture.getPixelHeight() - 1;
 		if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 		{
 			this.drawing = true;
-			int pixelX = (mouseX - startX) / PIXEL_WIDTH;
-			int pixelY = (mouseY - startY) / PIXEL_HEIGHT;
+			int pixelX = (mouseX - startX) / picture.getPixelWidth();
+			int pixelY = (mouseY - startY) / picture.getPixelHeight();
 			this.currentTool.handleClick(this, pixelX, pixelY);
 		}
 	}
@@ -101,12 +102,12 @@ public class Canvas extends Component
 		
 		int startX = xPosition + 1;
 		int startY = yPosition + 1;
-		int endX = startX + COLUMNS * PIXEL_WIDTH - 1;
-		int endY = startY + ROWS * PIXEL_HEIGHT - 1;
+		int endX = startX + picture.getWidth() * picture.getPixelWidth() - 1;
+		int endY = startY + picture.getHeight() * picture.getPixelHeight() - 1;
 		if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 		{
-			int pixelX = (mouseX - startX) / PIXEL_WIDTH;
-			int pixelY = (mouseY - startY) / PIXEL_HEIGHT;
+			int pixelX = (mouseX - startX) / picture.getPixelWidth();
+			int pixelY = (mouseY - startY) / picture.getPixelHeight();
 			this.currentTool.handleRelease(this, pixelX, pixelY);
 		}
 	}
@@ -116,12 +117,12 @@ public class Canvas extends Component
 	{
 		int startX = xPosition + 1;
 		int startY = yPosition + 1;
-		int endX = startX + COLUMNS * PIXEL_WIDTH - 1;
-		int endY = startY + ROWS * PIXEL_HEIGHT - 1;
+		int endX = startX + picture.getWidth() * picture.getPixelWidth() - 1;
+		int endY = startY + picture.getHeight() * picture.getPixelHeight() - 1;
 		if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 		{
-			int pixelX = (mouseX - startX) / PIXEL_WIDTH;
-			int pixelY = (mouseY - startY) / PIXEL_HEIGHT;
+			int pixelX = (mouseX - startX) / picture.getPixelWidth();
+			int pixelY = (mouseY - startY) / picture.getPixelHeight();
 			this.currentTool.handleDrag(this, pixelX, pixelY);
 		}
 	}

@@ -6,7 +6,6 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.gui.GuiButtonClose;
-import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
@@ -23,20 +22,16 @@ import net.minecraft.util.ResourceLocation;
 public class Window
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
-	
-	public int layer = 0;
-	
-	public Application app;
-	public int width, height;
-	public int offsetX, offsetY;
+
+	Application app;
+	int width, height;
+	int offsetX, offsetY;
 	
 	private GuiButton btnClose;
 	
 	public Window(Application app) 
 	{
 		this.app = app;
-		this.setWidth(app.getWidth());
-		this.setHeight(app.getHeight());
 	}
 	
 	private void setWidth(int width) 
@@ -62,6 +57,9 @@ public class Window
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
 		
 		app.init(x + offsetX + 1, y + offsetY + 13);
+		
+		this.setWidth(app.getWidth());
+		this.setHeight(app.getHeight());
 	}
 	
 	public void onTick() 
@@ -69,8 +67,20 @@ public class Window
 		app.onTick();
 	}
 	
-	public void render(GuiLaptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
-	{
+	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
+	{	
+		if(app.pendingLayoutUpdate)
+		{
+			this.offsetX = 0;
+			this.offsetY = 0;
+			this.setWidth(app.getWidth());
+			this.setHeight(app.getHeight());
+			x = gui.getWindowX(this);
+			y = gui.getWindowY(this);
+			updateComponents(x, y);
+			app.pendingLayoutUpdate = false;
+		}
+		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(WINDOW_GUI);
@@ -101,7 +111,7 @@ public class Window
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	public void handleButtonClick(GuiLaptop laptop, GuiButton button) 
+	public void handleButtonClick(Laptop laptop, GuiButton button) 
 	{
 		if(button.equals(btnClose))
 		{
@@ -109,7 +119,7 @@ public class Window
 		}
 	}
 	
-	public void handleClick(GuiLaptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
+	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
 		if(btnClose.isMouseOver())
 		{
@@ -138,7 +148,7 @@ public class Window
 		}
 		else if(newX + width > screenStartX + 364)
 		{
-			this.offsetX = x - screenStartX;
+			this.offsetX = x - screenStartX + 1;
 		}
 		else
 		{
@@ -180,6 +190,7 @@ public class Window
 	
 	public void updateComponents(int x, int y)
 	{
+		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
 		btnClose.xPosition = x + offsetX + width - 12;
 		btnClose.yPosition = y + offsetY + 1;
 	}

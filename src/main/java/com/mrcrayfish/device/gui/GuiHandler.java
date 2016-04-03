@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.gui;
 
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,13 +23,13 @@ public class GuiHandler implements IGuiHandler
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
 		System.out.println("Calledc");
-		if(ID == GuiLaptop.ID)
+		if(ID == Laptop.ID)
 		{
 			TileEntity tileEntity = player.worldObj.getTileEntity(new BlockPos(x, y, z));
 			if(tileEntity instanceof TileEntityLaptop)
 			{
 				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-				return new GuiLaptop(laptop.getAppData(), x, y, z);
+				return new Laptop(laptop.getAppData(), x, y, z);
 			}
 		}
 		return null;

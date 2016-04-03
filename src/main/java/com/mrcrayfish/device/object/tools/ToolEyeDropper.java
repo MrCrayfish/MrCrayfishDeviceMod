@@ -8,7 +8,7 @@ public class ToolEyeDropper extends Tool {
 	@Override
 	public void handleClick(Canvas canvas, int x, int y) 
 	{
-		canvas.setColour(canvas.pixels[x][y]);
+		canvas.setColour(canvas.getPixel(x, y));
 	}
 
 	@Override

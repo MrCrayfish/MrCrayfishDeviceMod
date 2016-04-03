@@ -8,7 +8,7 @@ public class ToolEraser extends Tool {
 	@Override
 	public void handleClick(Canvas canvas, int x, int y) 
 	{
-		canvas.pixels[x][y] = 0;
+		canvas.setPixel(x, y, 0);
 	}
 
 	@Override
@@ -17,7 +17,7 @@ public class ToolEraser extends Tool {
 	@Override
 	public void handleDrag(Canvas canvas, int x, int y) 
 	{
-		canvas.pixels[x][y] = 0;
+		canvas.setPixel(x, y, 0);
 	}
 
 }

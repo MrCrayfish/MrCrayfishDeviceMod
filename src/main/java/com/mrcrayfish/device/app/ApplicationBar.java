@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.components.ButtonArrow.Type;
-import com.mrcrayfish.device.gui.GuiLaptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
@@ -36,7 +35,7 @@ public class ApplicationBar
 		btnRight = new ButtonArrow(posX, posY, 100, 3, Type.RIGHT);
 	}
 	
-	public void render(GuiLaptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
+	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
 		GlStateManager.enableBlend();
@@ -82,7 +81,7 @@ public class ApplicationBar
 		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 336, y + 5, Color.WHITE.getRGB(), true);
 	}
 	
-	public void handleClick(GuiLaptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 
+	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
 		if(isMouseInside(mouseX, mouseY, btnLeft.xPosition, btnLeft.yPosition, btnLeft.xPosition + btnLeft.width, btnLeft.yPosition + btnLeft.height))
 		{

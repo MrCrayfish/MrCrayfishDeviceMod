@@ -5,7 +5,6 @@ import java.awt.Color;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.listener.ClickListener;
-import com.mrcrayfish.device.gui.GuiLaptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -18,7 +17,9 @@ public class ApplicationSettings extends Application
 	
 	public ApplicationSettings() 
 	{
-		super("settings", "Settings", 80, 40);
+		super("settings", "Settings");
+		this.setDefaultWidth(80);
+		this.setDefaultHeight(40);
 	}
 
 	@Override
@@ -29,7 +30,7 @@ public class ApplicationSettings extends Application
 		btnWallpaperNext.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				GuiLaptop.nextWallpaper();
+				Laptop.nextWallpaper();
 			}
 		});
 		this.addComponent(btnWallpaperNext);
@@ -38,7 +39,7 @@ public class ApplicationSettings extends Application
 		btnWallpaperPrev.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				GuiLaptop.prevWallpaper();
+				Laptop.prevWallpaper();
 			}
 		});
 		this.addComponent(btnWallpaperPrev);
@@ -49,7 +50,7 @@ public class ApplicationSettings extends Application
 	{
 		super.render(gui, mc, x, y, mouseX, mouseY, active);
 		gui.drawString(mc.fontRendererObj, "Wallpaper", x + 5, y + 5, Color.WHITE.getRGB());
-		gui.drawCenteredString(mc.fontRendererObj, Integer.toString(GuiLaptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
+		gui.drawCenteredString(mc.fontRendererObj, Integer.toString(Laptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
 	}
 
 	@Override

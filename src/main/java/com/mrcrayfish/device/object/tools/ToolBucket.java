@@ -8,7 +8,7 @@ public class ToolBucket extends Tool {
 	@Override
 	public void handleClick(Canvas canvas, int x, int y) 
 	{
-		fill(canvas, x, y, canvas.pixels[x][y], canvas.getCurrentColour());
+		fill(canvas, x, y, canvas.getPixel(x, y), canvas.getCurrentColour());
 	}
 
 	@Override
@@ -19,16 +19,16 @@ public class ToolBucket extends Tool {
 	
 	public void fill(Canvas canvas, int x, int y, int target, int replacement)
 	{
-		if(x < 0 || y < 0 || x >= canvas.COLUMNS || y >= canvas.ROWS)
+		if(x < 0 || y < 0 || x >= canvas.picture.getWidth() || y >= canvas.picture.getHeight())
 			return;
 		
 		if(target == replacement)
 			return;
 		
-		if(canvas.pixels[x][y] != target)
+		if(canvas.getPixel(x, y) != target)
 			return;
 		
-		canvas.pixels[x][y] = replacement;
+		canvas.setPixel(x, y, replacement);
 		
 		fill(canvas, x + 1, y, target, replacement);
 		fill(canvas, x - 1, y, target, replacement);

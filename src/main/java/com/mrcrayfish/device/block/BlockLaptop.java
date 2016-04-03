@@ -3,7 +3,7 @@ package com.mrcrayfish.device.block;
 import java.util.List;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.gui.GuiLaptop;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.block.BlockDirectional;
@@ -85,7 +85,7 @@ public class BlockLaptop extends BlockDirectional implements ITileEntityProvider
 				if(laptop.open)
 				{
 					System.out.println("Opening");
-					playerIn.openGui(MrCrayfishDeviceMod.instance, GuiLaptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+					playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 				}
 			}
 		}

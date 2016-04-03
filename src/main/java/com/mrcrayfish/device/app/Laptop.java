@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.gui;
+package com.mrcrayfish.device.app;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,9 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.ApplicationBar;
-import com.mrcrayfish.device.app.Window;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageSaveData;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -32,7 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
 
-public class GuiLaptop extends GuiScreen 
+public class Laptop extends GuiScreen 
 {
 	public static final int ID = 0;
 	
@@ -54,7 +51,7 @@ public class GuiLaptop extends GuiScreen
 	private boolean dragging = false;
 	private boolean dirty = false;
 	
-	public GuiLaptop(NBTTagCompound data, int tileX, int tileY, int tileZ)
+	public Laptop(NBTTagCompound data, int tileX, int tileY, int tileZ)
 	{
 		this.data = data;
 		this.tileX = tileX;
@@ -250,7 +247,7 @@ public class GuiLaptop extends GuiScreen
 				int windowX = getWindowX(windows[0]);
 				int windowY = getWindowY(windows[0]);
 				
-				if(mouseX >= windowX + 1 && mouseX <= windowX + window.width + window.offsetX - 1 && mouseY >= windowY + 13 && mouseY <= windowY + window.offsetY + window.height - 1)
+				if(mouseX >= windowX + window.offsetX + 1 && mouseX <= windowX + window.width + window.offsetX - 1 && mouseY >= windowY + window.offsetY + 13 && mouseY <= windowY + window.offsetY + window.height - 1)
 				{
 					windows[0].handleDrag(mouseX, mouseY);
 				}

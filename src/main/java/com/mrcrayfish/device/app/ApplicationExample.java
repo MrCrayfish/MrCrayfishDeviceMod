@@ -12,7 +12,6 @@ import com.mrcrayfish.device.app.components.Spinner;
 import com.mrcrayfish.device.app.components.Text;
 import com.mrcrayfish.device.app.components.TextArea;
 import com.mrcrayfish.device.app.components.TextField;
-import com.mrcrayfish.device.gui.GuiLaptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,7 +37,9 @@ public class ApplicationExample extends Application
 	
 	public ApplicationExample() 
 	{
-		super("example", "UI Components", 270, 140);
+		super("example", "UI Components");
+		this.setDefaultWidth(270);
+		this.setDefaultHeight(140);
 	}
 	
 	@Override
@@ -98,7 +99,7 @@ public class ApplicationExample extends Application
 		text.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 		this.addComponent(text);
 		
-		image = new Image(x, y, 180, 100, 85, 50, 0, 0, 256, 211, GuiLaptop.WALLPAPERS.get(0));
+		image = new Image(x, y, 180, 100, 85, 50, 0, 0, 256, 211, Laptop.WALLPAPERS.get(0));
 		image.setAlpha(0.8F);
 		this.addComponent(image);
 	}

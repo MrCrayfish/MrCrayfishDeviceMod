@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.device.app.components.Button;
-import com.mrcrayfish.device.gui.GuiLaptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -20,20 +19,21 @@ public abstract class Application
 {
 	private final String APP_ID;
 	private final String DISPLAY_NAME;
-	private final int WIDTH, HEIGHT;
+	private int width, height;
 	private int startX, startY;
 	private final Layout defaultLayout;
 	private Layout currentLayout;
 	
 	/* If set to true, will update NBT data for Application */
-	private boolean needsUpdate = false;
+	private boolean needsDataUpdate = false;
 	
-	public Application(String appId, String displayName, int width, int height) 
+	/* If set to true, will update layout */
+	boolean pendingLayoutUpdate = false;
+	
+	public Application(String appId, String displayName) 
 	{
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
-		this.WIDTH = width;
-		this.HEIGHT = height;
 		this.defaultLayout = new Layout();
 	}
 	
@@ -49,7 +49,9 @@ public abstract class Application
 	public void setCurrentLayout(Layout layout)
 	{
 		this.currentLayout = layout;
-		this.updateComponents(startX, startY);
+		this.width = layout.width;
+		this.height = layout.height;
+		this.pendingLayoutUpdate = true;
 	}
 	
 	public Layout getCurrentLayout() 
@@ -140,17 +142,17 @@ public abstract class Application
 	
 	public void markDirty() 
 	{
-		needsUpdate = true;
+		needsDataUpdate = true;
 	}
 	
 	public boolean isDirty() 
 	{
-		return needsUpdate;
+		return needsDataUpdate;
 	}
 	
 	public void clean() 
 	{
-		needsUpdate = false;
+		needsDataUpdate = false;
 	}
 	
 	public String getID()
@@ -163,14 +165,23 @@ public abstract class Application
 		return DISPLAY_NAME;
 	}
 	
+	public void setDefaultWidth(int width)
+	{
+		this.defaultLayout.width = width;
+	}
+	
+	public void setDefaultHeight(int height)
+	{
+		this.defaultLayout.height = height;
+	}
+	
 	public int getWidth() 
 	{
-		return WIDTH;
+		return width;
 	}
 	
 	public int getHeight() 
 	{
-		return HEIGHT;
+		return height;
 	}
-
 }

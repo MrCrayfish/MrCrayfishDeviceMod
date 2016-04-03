@@ -29,7 +29,9 @@ public class ApplicationAppStore extends Application
 	
 	public ApplicationAppStore() 
 	{
-		super("app_store", "App Store", 250, 150);
+		super("app_store", "App Store");
+		this.setDefaultWidth(250);
+		this.setDefaultHeight(150);
 	}
 
 	@Override

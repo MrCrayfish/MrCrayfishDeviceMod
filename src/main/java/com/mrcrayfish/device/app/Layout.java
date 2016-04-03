@@ -10,10 +10,19 @@ import com.mrcrayfish.device.app.components.TextField;
 public class Layout
 {
 	public List<Component> components;
+	public int width;
+	public int height;
 	
 	public Layout() 
 	{
+		this(200, 100);
+	}
+	
+	public Layout(int width, int height)
+	{
 		this.components = new ArrayList<Component>();
+		this.width = width;
+		this.height = height;
 	}
 	
 	public void addComponent(Component c)
