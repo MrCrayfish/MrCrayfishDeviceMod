@@ -12,6 +12,7 @@ import com.mrcrayfish.device.app.components.Image;
 import com.mrcrayfish.device.app.components.ItemList;
 import com.mrcrayfish.device.app.components.Label;
 import com.mrcrayfish.device.app.components.Spinner;
+import com.mrcrayfish.device.app.components.TextArea;
 import com.mrcrayfish.device.app.components.TextField;
 import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.app.renderer.ListItemRenderer;
@@ -33,22 +34,26 @@ public class ApplicationEmail extends Application
 {
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
 	
+	/* Loading Layout */
 	private Layout layoutInit;
 	private Spinner spinnerInit;
 	private Label labelLoading;
 	
+	/* Main Menu Layout */
 	private Layout layoutMainMenu;
 	private Image logo;
 	private Label labelLogo;
 	private Button btnRegisterAccount;
 	private Button btnInbox;
 	
+	/* Register Account Layout */
 	private Layout layoutRegisterAccount;
 	private Label labelEmail;
 	private TextField fieldEmail;
 	private Label labelDomain;
 	private Button btnRegister;
 	
+	/* Inbox Layout */
 	private Layout layoutInbox;
 	private ItemList<Email> listEmails;
 	private Button btnViewEmail;
@@ -56,6 +61,16 @@ public class ApplicationEmail extends Application
 	private Button btnDeleteEmail;
 	private Button btnRefresh;
 	
+	/* New Email Layout */
+	private Layout layoutNewEmail;
+	private Label labelTo;
+	private TextField fieldRecipient;
+	private Label labelSubject;
+	private TextField fieldSubject;
+	private Label labelMessage;
+	private TextArea textAreaMessage;
+	private Button btnSendEmail;
+	private Button btnCancelEmail;
 	
 	public ApplicationEmail() 
 	{
@@ -98,7 +113,7 @@ public class ApplicationEmail extends Application
 			
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				TaskManager.sendRequest(new TaskSendEmail(new Email("hi", "hi", "hi"), "fishman"));
+				
 			}
 		});
 		this.btnInbox.setVisible(false);
@@ -179,8 +194,21 @@ public class ApplicationEmail extends Application
 			@Override
 			public void onClick(Component c, int mouseButton) 
 			{
-				TaskManager.sendRequest(new TaskSendEmail(new Email("hi", "hi", "hi"), "b"));
-				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox("b");
+				ApplicationEmail.this.setCurrentLayout(layoutNewEmail);
+			}
+		});
+		layoutInbox.addComponent(this.btnNewEmail);
+		
+		this.btnDeleteEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
+		layoutInbox.addComponent(this.btnDeleteEmail);
+		
+		this.btnRefresh = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
+		this.btnRefresh.setClickListener(new ClickListener() 
+		{
+			@Override
+			public void onClick(Component c, int mouseButton) 
+			{
+				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
 				taskUpdateInbox.setCallback(new Callback() 
 				{
 					@Override
@@ -196,13 +224,69 @@ public class ApplicationEmail extends Application
 				TaskManager.sendRequest(taskUpdateInbox);
 			}
 		});
-		layoutInbox.addComponent(this.btnNewEmail);
-		
-		this.btnDeleteEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
-		layoutInbox.addComponent(this.btnDeleteEmail);
-		
-		this.btnRefresh = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
 		layoutInbox.addComponent(this.btnRefresh);
+		
+		this.layoutNewEmail = new Layout(255, 148);
+		
+		this.labelTo = new Label("To", x, y, 5, 8);
+		layoutNewEmail.addComponent(this.labelTo);
+		
+		this.fieldRecipient = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 5, 200);
+		layoutNewEmail.addComponent(this.fieldRecipient);
+		
+		this.labelSubject = new Label("Subject", x, y, 5, 26);
+		layoutNewEmail.addComponent(this.labelSubject);
+		
+		this.fieldSubject = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 23, 200);
+		layoutNewEmail.addComponent(this.fieldSubject);
+		
+		this.labelMessage = new Label("Message", x, y, 5, 44);
+		layoutNewEmail.addComponent(this.labelMessage);
+		
+		this.textAreaMessage = new TextArea(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 41, 200, 100);
+		layoutNewEmail.addComponent(this.textAreaMessage);
+		
+		this.btnSendEmail = new Button(x, y, 6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
+		this.btnSendEmail.setClickListener(new ClickListener() 
+		{
+			@Override
+			public void onClick(Component c, int mouseButton) 
+			{
+				System.out.println("Fek");
+				Email email = new Email(fieldSubject.getText(), textAreaMessage.getText());
+				TaskSendEmail taskSendEmail = new TaskSendEmail(email, fieldRecipient.getText());
+				taskSendEmail.setCallback(new Callback() 
+				{
+					@Override
+					public void execute(boolean success) 
+					{
+						System.out.println("Got response");
+						if(success)
+						{
+							setCurrentLayout(layoutInbox);
+						}
+						else
+						{
+							
+						}
+					}
+				});
+				TaskManager.sendRequest(taskSendEmail);
+			}
+		});
+		layoutNewEmail.addComponent(this.btnSendEmail);
+		
+		this.btnCancelEmail = new Button(x, y, 28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		this.btnCancelEmail.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				setCurrentLayout(layoutInbox);
+				textAreaMessage.clear();
+				fieldSubject.clear();
+				fieldRecipient.clear();
+			}
+		});
+		layoutNewEmail.addComponent(this.btnCancelEmail);
 		
 		this.setCurrentLayout(layoutInit);
 		
@@ -259,25 +343,21 @@ public class ApplicationEmail extends Application
 			return false;
 		}
 		
-		public static List<Email> getEmailsForAccount(String name)
+		public static List<Email> getEmailsForAccount(EntityPlayer player)
 		{
-			for(String key : uuidToInbox.keySet())
+			if(uuidToName.containsKey(player.getUniqueID()))
 			{
-				System.out.println(key);
+				return uuidToInbox.get(uuidToName.get(player.getUniqueID()));
 			}
-			return uuidToInbox.get(name);
+			return new ArrayList<Email>();
 		}
 		
 		public static boolean addAccount(EntityPlayer player, String name)
 		{
-			System.out.println("Registering?");
-			System.out.println(uuidToName.get(player.getUniqueID()));
 			if(!uuidToName.containsKey(player.getUniqueID()))
 			{
-				System.out.println("Blah");
 				if(!uuidToName.containsValue(name))
 				{
-					System.out.println("Registering account '" + name + "'");
 					uuidToName.put(player.getUniqueID(), name);
 					uuidToInbox.put(name, new ArrayList<Email>());
 					return true;
@@ -288,12 +368,12 @@ public class ApplicationEmail extends Application
 		
 		public static boolean hasAccount(UUID uuid)
 		{
-			System.out.println(uuid);
-			for(UUID id : uuidToName.keySet())
-			{
-				System.out.println(id);
-			}
 			return uuidToName.containsKey(uuid);
+		}
+		
+		public static String getName(EntityPlayer player)
+		{
+			return uuidToName.get(player.getUniqueID());
 		}
 
 		public static void readFromNBT(NBTTagCompound nbt) 
@@ -373,11 +453,16 @@ public class ApplicationEmail extends Application
 	{
 		private String subject, author, message;
 
-		public Email(String subject, String author, String message) 
+		public Email(String subject, String message) 
 		{
 			this.subject = subject;
-			this.author = author;
 			this.message = message;
+		}
+		
+		public Email(String subject, String author, String message) 
+		{
+			this(subject, message);
+			this.author = author;
 		}
 
 		public String getSubject() 
@@ -389,6 +474,11 @@ public class ApplicationEmail extends Application
 		{
 			return author;
 		}
+		
+		public void setAuthor(String author) 
+		{
+			this.author = author;
+		}
 
 		public String getMessage() 
 		{
@@ -398,7 +488,7 @@ public class ApplicationEmail extends Application
 		public void writeToNBT(NBTTagCompound nbt)
 		{
 			nbt.setString("subject", this.subject);
-			nbt.setString("author", this.author);
+			if(author != null) nbt.setString("author", this.author);
 			nbt.setString("message", this.message);
 		}
 		
