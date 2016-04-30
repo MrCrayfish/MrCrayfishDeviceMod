@@ -16,29 +16,17 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TaskUpdateInbox extends Task
 {
-	private String email;
 	private List<ApplicationEmail.Email> emails;
 	
 	public TaskUpdateInbox() {}
-	
-	public TaskUpdateInbox(String email) 
-	{
-		this.email = email;
-	}
 
 	@Override
-	public void prepareRequest(NBTTagCompound nbt) 
-	{
-		nbt.setString("email", email);
-	}
+	public void prepareRequest(NBTTagCompound nbt) {}
 
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		String email = nbt.getString("email");
-		System.out.println(email);
-		this.emails = EmailManager.getEmailsForAccount(email);
-		System.out.println(emails);
+		this.emails = EmailManager.getEmailsForAccount(player);
 	}
 
 	@Override
@@ -67,7 +55,6 @@ public class TaskUpdateInbox extends Task
 			NBTTagCompound emailTag = emails.getCompoundTagAt(i);
 			Email email = Email.readFromNBT(emailTag);
 			EmailManager.inbox.add(email);
-			System.out.println("Adding to inbox");
 		}
 	}
 
