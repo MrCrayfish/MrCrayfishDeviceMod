@@ -66,7 +66,7 @@ public class Button extends Component
             GlStateManager.disableDepth();
             
             /* Corners */
-            GuiHelper.drawModalRectWithUV(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2, 10);
+            GuiHelper.drawModalRectWithUV(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
             GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
             GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
             GuiHelper.drawModalRectWithUV(xPosition, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
