@@ -37,11 +37,15 @@ public class TaskManager
 		return registeredRequests.get(name);
 	}
 	
-	public static void sendRequest(Task request)
+	public static void sendRequest(Task task) throws RuntimeException
 	{
+		if(!registeredRequests.containsKey(task.getName())) {
+			throw new RuntimeException("Unregistered Task: " + task.getClass().getName());
+		}
+		
 		int requestId = currentId++;
-		requests.put(requestId, request);
-		PacketHandler.INSTANCE.sendToServer(new MessageRequest(requestId, request));
+		requests.put(requestId, task);
+		PacketHandler.INSTANCE.sendToServer(new MessageRequest(requestId, task));
 	}
 	
 	public static Task getTask(int id)
