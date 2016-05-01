@@ -38,20 +38,4 @@ public class Layout
 	{
 		return components;
 	}
-	
-	public void hide()
-	{
-		for(Component c : components)
-		{
-			c.visible = false;
-		}
-	}
-	
-	public void show()
-	{
-		for(Component c : components)
-		{
-			c.visible = true;
-		}
-	}
 }
