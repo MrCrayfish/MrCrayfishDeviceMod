@@ -359,6 +359,7 @@ public class ApplicationEmail extends Application
 				TaskManager.sendRequest(taskSendEmail);
 			}
 		});
+		this.btnSendEmail.setToolTip("Send", "Send email to recipient");
 		layoutNewEmail.addComponent(this.btnSendEmail);
 		
 		this.btnCancelEmail = new Button(x, y, 28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
@@ -373,6 +374,7 @@ public class ApplicationEmail extends Application
 				fieldRecipient.clear();
 			}
 		});
+		this.btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
 		layoutNewEmail.addComponent(this.btnCancelEmail);
 
 		this.layoutViewEmail = new Layout(240, 156);
