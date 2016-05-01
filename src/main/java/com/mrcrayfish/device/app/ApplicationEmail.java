@@ -10,17 +10,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.lwjgl.opengl.GL11;
+
 import com.mrcrayfish.device.app.Layout.Background;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.Image;
 import com.mrcrayfish.device.app.components.ItemList;
 import com.mrcrayfish.device.app.components.Label;
 import com.mrcrayfish.device.app.components.Spinner;
+import com.mrcrayfish.device.app.components.Text;
 import com.mrcrayfish.device.app.components.TextArea;
 import com.mrcrayfish.device.app.components.TextField;
 import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.app.requests.TaskCheckEmailAccount;
+import com.mrcrayfish.device.app.requests.TaskDeleteEmail;
 import com.mrcrayfish.device.app.requests.TaskRegisterEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskSendEmail;
 import com.mrcrayfish.device.app.requests.TaskUpdateInbox;
@@ -195,11 +198,8 @@ public class ApplicationEmail extends Application
 			public void render(Email e, Gui gui, Minecraft mc, int x, int y, int width, boolean selected) 
 			{
 				if(selected)
-				{
 					gui.drawRect(x, y, x + width, y + getHeight(), Color.DARK_GRAY.getRGB());
-				}
 				else
-				{
 					gui.drawRect(x, y, x + width, y + getHeight(), Color.GRAY.getRGB());
 					
 				if(!e.isRead()) {
@@ -340,7 +340,7 @@ public class ApplicationEmail extends Application
 					return;
 					
 				Email email = new Email(fieldSubject.getText(), textAreaMessage.getText());
-				TaskSendEmail taskSendEmail = new TaskSendEmail(email, matcher.group(0));
+				TaskSendEmail taskSendEmail = new TaskSendEmail(email, matcher.group(1));
 				taskSendEmail.setCallback(new Callback() 
 				{
 					@Override
@@ -349,6 +349,9 @@ public class ApplicationEmail extends Application
 						if(success)
 						{
 							setCurrentLayout(layoutInbox);
+							textAreaMessage.clear();
+							fieldSubject.clear();
+							fieldRecipient.clear();
 						}
 						else
 						{
