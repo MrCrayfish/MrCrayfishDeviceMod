@@ -243,7 +243,7 @@ public class ApplicationEmail extends Application
 			@Override
 			public void onClick(Component c, int mouseButton) 
 			{
-				ApplicationEmail.this.setCurrentLayout(layoutNewEmail);
+				setCurrentLayout(layoutNewEmail);
 			}
 		});
 		this.btnNewEmail.setToolTip("New Email", "Send an email to a player");
@@ -258,7 +258,7 @@ public class ApplicationEmail extends Application
 				Email email = listEmails.getSelectedItem();
 				if(email != null)
 				{
-					ApplicationEmail.this.setCurrentLayout(layoutNewEmail);
+					setCurrentLayout(layoutNewEmail);
 					fieldEmail.setText(email.author);
 					fieldSubject.setText("RE: " + email.subject);
 				}
