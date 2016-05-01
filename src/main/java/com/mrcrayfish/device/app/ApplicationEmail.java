@@ -9,6 +9,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.lwjgl.opengl.GL11;
+import com.mrcrayfish.device.app.Layout.Background;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.Image;
 import com.mrcrayfish.device.app.components.ItemList;
@@ -22,6 +24,7 @@ import com.mrcrayfish.device.app.requests.TaskCheckEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskRegisterEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskSendEmail;
 import com.mrcrayfish.device.app.requests.TaskUpdateInbox;
+import com.mrcrayfish.device.app.requests.TaskViewEmail;
 import com.mrcrayfish.device.task.Callback;
 import com.mrcrayfish.device.task.TaskManager;
 
@@ -39,6 +42,7 @@ public class ApplicationEmail extends Application
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
 	
 	private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z0-9]{1,10})@endermail\\.com$");
+	private final Color COLOR_EMAIL_CONTENT_BACKGROUND = new Color(160, 160, 160);
 	
 	/* Loading Layout */
 	private Layout layoutInit;
@@ -78,6 +82,16 @@ public class ApplicationEmail extends Application
 	private TextArea textAreaMessage;
 	private Button btnSendEmail;
 	private Button btnCancelEmail;
+	
+	/* New Email Layout */
+	private Layout layoutViewEmail;
+	private Label labelViewSubject;
+	private Label labelSender;
+	private Label labelFrom;
+	private Label labelViewSubjectContent;
+	private Label labelViewMessage;
+	private Text textMessage;
+	private Button btnCancelViewEmail;
 	
 	private String currentName;
 	
@@ -216,6 +230,7 @@ public class ApplicationEmail extends Application
 					textMessage.setText(email.message);
 					labelViewSubject.setText(email.subject);
 					labelFrom.setText(email.author + "@endermail.com");
+					setCurrentLayout(layoutViewEmail);
 				}
 			}
 		});
@@ -359,6 +374,40 @@ public class ApplicationEmail extends Application
 			}
 		});
 		layoutNewEmail.addComponent(this.btnCancelEmail);
+
+		this.layoutViewEmail = new Layout(240, 156);
+		this.layoutViewEmail.setBackground(new Background() 
+		{
+			@Override
+			public void render(Gui gui, Minecraft mc, int x, int y) 
+			{
+				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 50, Color.GRAY.getRGB());
+				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 23, Color.DARK_GRAY.getRGB());
+				gui.drawRect(x, y + 49, x + layoutViewEmail.width, y + 50, Color.DARK_GRAY.getRGB());
+				gui.drawRect(x, y + 50, x + layoutViewEmail.width, y + 156, COLOR_EMAIL_CONTENT_BACKGROUND.getRGB());
+			}
+		});
+		
+		this.labelViewSubject = new Label("Subject", x, y, 5, 26);
+		this.labelViewSubject.setTextColour(new Color(255, 170, 0));
+		layoutViewEmail.addComponent(this.labelViewSubject);
+		
+		this.labelFrom = new Label("From", x, y, 5, 38);
+		layoutViewEmail.addComponent(labelFrom);
+		
+		this.btnCancelViewEmail = new Button(x, y, 5, 3, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		this.btnCancelViewEmail.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				setCurrentLayout(layoutInbox);
+			}
+		});
+		this.btnCancelViewEmail.setToolTip("Cancel", "Go back to Inbox");
+		layoutViewEmail.addComponent(this.btnCancelViewEmail);
+		
+		this.textMessage = new Text("Hallo", Minecraft.getMinecraft().fontRendererObj, x, y, 5, 54, 230);
+		this.textMessage.setShadow(false);
+		layoutViewEmail.addComponent(this.textMessage);
 		
 		this.setCurrentLayout(layoutInit);
 		

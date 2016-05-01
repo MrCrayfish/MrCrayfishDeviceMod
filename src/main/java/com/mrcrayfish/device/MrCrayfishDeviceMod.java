@@ -12,6 +12,7 @@ import com.mrcrayfish.device.app.requests.TaskDeleteEmail;
 import com.mrcrayfish.device.app.requests.TaskRegisterEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskSendEmail;
 import com.mrcrayfish.device.app.requests.TaskUpdateInbox;
+import com.mrcrayfish.device.app.requests.TaskViewEmail;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceBlocks;
@@ -96,6 +97,7 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerRequest(TaskCheckEmailAccount.class);
 		TaskManager.registerRequest(TaskRegisterEmailAccount.class);
 		TaskManager.registerRequest(TaskDeleteEmail.class);
+		TaskManager.registerRequest(TaskViewEmail.class);
 		
 		proxy.postInit();
 	}
