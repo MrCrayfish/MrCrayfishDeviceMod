@@ -207,6 +207,7 @@ public class ApplicationEmail extends Application
 				ApplicationEmail.this.setCurrentLayout(layoutNewEmail);
 			}
 		});
+		this.btnNewEmail.setToolTip("New Email", "Send an email to a player");
 		layoutInbox.addComponent(this.btnNewEmail);
 		
 		this.btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
@@ -224,9 +225,11 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
+		this.btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
 		layoutInbox.addComponent(this.btnReplyEmail);
 		
 		this.btnDeleteEmail = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
+		this.btnReplyEmail.setToolTip("Trash Email", "Deletes the currently select email");
 		layoutInbox.addComponent(this.btnDeleteEmail);
 		
 		this.btnRefresh = new Button(x, y, 85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
@@ -251,6 +254,7 @@ public class ApplicationEmail extends Application
 				TaskManager.sendRequest(taskUpdateInbox);
 			}
 		});
+		this.btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
 		layoutInbox.addComponent(this.btnRefresh);
 		
 		this.layoutNewEmail = new Layout(255, 148);
