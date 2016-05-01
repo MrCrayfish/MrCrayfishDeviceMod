@@ -259,7 +259,7 @@ public class ApplicationEmail extends Application
 				if(email != null)
 				{
 					setCurrentLayout(layoutNewEmail);
-					fieldEmail.setText(email.author);
+					fieldRecipient.setText(email.author + "@endermail.com");
 					fieldSubject.setText("RE: " + email.subject);
 				}
 			}
