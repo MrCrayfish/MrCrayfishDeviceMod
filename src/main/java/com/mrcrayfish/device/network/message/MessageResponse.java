@@ -29,7 +29,7 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 	public IMessage onMessage(MessageResponse message, MessageContext ctx) 
 	{
 		message.request.processResponse(message.nbt);
-		message.request.callback();
+		message.request.callback(message.nbt);
 		return null;
 	}
 

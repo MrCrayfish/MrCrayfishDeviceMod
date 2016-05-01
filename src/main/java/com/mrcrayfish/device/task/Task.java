@@ -14,11 +14,11 @@ public abstract class Task
 		this.callback = callback;
 	}
 	
-	public void callback()
+	public void callback(NBTTagCompound nbt)
 	{
 		if(callback != null)
 		{
-			callback.execute(success);
+			callback.execute(nbt, success);
 		}
 	}
 	
