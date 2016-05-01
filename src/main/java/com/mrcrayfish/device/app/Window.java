@@ -100,7 +100,7 @@ public class Window
 		/* Center */
 		GuiHelper.drawModalRectWithUV(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
 		
-		mc.fontRendererObj.drawString(app.getDisplayName(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
+		mc.fontRendererObj.drawString(app.getTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
 		btnClose.drawButton(mc, mouseX, mouseY);
 		
@@ -115,6 +115,7 @@ public class Window
 	{
 		if(button.equals(btnClose))
 		{
+			app.restoreDefaultLayout();
 			laptop.closeApplication(app.getID());
 		}
 	}

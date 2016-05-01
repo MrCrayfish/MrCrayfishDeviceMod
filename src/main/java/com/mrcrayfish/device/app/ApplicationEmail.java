@@ -60,6 +60,7 @@ public class ApplicationEmail extends Application
 	private ItemList<Email> listEmails;
 	private Button btnViewEmail;
 	private Button btnNewEmail;
+	private Button btnReplyEmail;
 	private Button btnDeleteEmail;
 	private Button btnRefresh;
 	
@@ -73,6 +74,8 @@ public class ApplicationEmail extends Application
 	private TextArea textAreaMessage;
 	private Button btnSendEmail;
 	private Button btnCancelEmail;
+	
+	private String currentName;
 	
 	public ApplicationEmail() 
 	{
@@ -146,10 +149,11 @@ public class ApplicationEmail extends Application
 					taskRegisterAccount.setCallback(new Callback() 
 					{
 						@Override
-						public void execute(boolean success) 
+						public void execute(NBTTagCompound nbt, boolean success) 
 						{
 							if(success)
 							{
+								currentName = fieldEmail.getText();
 								ApplicationEmail.this.setCurrentLayout(layoutInbox);
 							}
 							else
@@ -201,10 +205,27 @@ public class ApplicationEmail extends Application
 		});
 		layoutInbox.addComponent(this.btnNewEmail);
 		
-		this.btnDeleteEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
+		this.btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 50, 0, 10, 10);
+		this.btnReplyEmail.setClickListener(new ClickListener() 
+		{
+			@Override
+			public void onClick(Component c, int mouseButton) 
+			{
+				Email email = listEmails.getSelectedItem();
+				if(email != null)
+				{
+					ApplicationEmail.this.setCurrentLayout(layoutNewEmail);
+					fieldEmail.setText(email.author);
+					fieldSubject.setText("RE: " + email.subject);
+				}
+			}
+		});
+		layoutInbox.addComponent(this.btnReplyEmail);
+		
+		this.btnDeleteEmail = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
 		layoutInbox.addComponent(this.btnDeleteEmail);
 		
-		this.btnRefresh = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
+		this.btnRefresh = new Button(x, y, 85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
 		this.btnRefresh.setClickListener(new ClickListener() 
 		{
 			@Override
@@ -214,7 +235,7 @@ public class ApplicationEmail extends Application
 				taskUpdateInbox.setCallback(new Callback() 
 				{
 					@Override
-					public void execute(boolean success) 
+					public void execute(NBTTagCompound nbt, boolean success) 
 					{
 						listEmails.removeAll();
 						for(Email email : EmailManager.INSTANCE.inbox) 
@@ -254,15 +275,13 @@ public class ApplicationEmail extends Application
 			@Override
 			public void onClick(Component c, int mouseButton) 
 			{
-				System.out.println("Fek");
 				Email email = new Email(fieldSubject.getText(), textAreaMessage.getText());
 				TaskSendEmail taskSendEmail = new TaskSendEmail(email, fieldRecipient.getText());
 				taskSendEmail.setCallback(new Callback() 
 				{
 					@Override
-					public void execute(boolean success) 
+					public void execute(NBTTagCompound nbt, boolean success) 
 					{
-						System.out.println("Got response");
 						if(success)
 						{
 							setCurrentLayout(layoutInbox);
@@ -279,9 +298,11 @@ public class ApplicationEmail extends Application
 		layoutNewEmail.addComponent(this.btnSendEmail);
 		
 		this.btnCancelEmail = new Button(x, y, 28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
-		this.btnCancelEmail.setClickListener(new ClickListener() {
+		this.btnCancelEmail.setClickListener(new ClickListener() 
+		{
 			@Override
-			public void onClick(Component c, int mouseButton) {
+			public void onClick(Component c, int mouseButton) 
+			{
 				setCurrentLayout(layoutInbox);
 				textAreaMessage.clear();
 				fieldSubject.clear();
@@ -296,22 +317,22 @@ public class ApplicationEmail extends Application
 		taskCheckAccount.setCallback(new Callback() 
 		{
 			@Override
-			public void execute(boolean success) 
+			public void execute(NBTTagCompound nbt, boolean success) 
 			{
-				System.out.println(success);
 				if(success)
 				{
-					ApplicationEmail.this.setCurrentLayout(layoutInbox);
+					currentName = nbt.getString("Name");
 					listEmails.removeAll();
-					for(Email email : EmailManager.INSTANCE.inbox) {
+					for(Email email : EmailManager.INSTANCE.inbox) 
+					{
 						listEmails.addItem(email);
-						System.out.println("Added mail");
 					}
+					ApplicationEmail.this.setCurrentLayout(layoutInbox);
 				}
 				else
 				{
-					ApplicationEmail.this.setCurrentLayout(layoutMainMenu);
 					btnRegisterAccount.setVisible(true);
+					ApplicationEmail.this.setCurrentLayout(layoutMainMenu);
 				}
 			}
 		});
@@ -328,6 +349,16 @@ public class ApplicationEmail extends Application
 	public void save(NBTTagCompound tagCompound) 
 	{
 		
+	}
+	
+	@Override
+	public String getTitle() 
+	{
+		if(getCurrentLayout() == this.layoutInbox)
+		{
+			return "Inbox: " + currentName + "@endermail.com";
+		}
+		return super.getDisplayName();
 	}
 	
 	public static class EmailManager

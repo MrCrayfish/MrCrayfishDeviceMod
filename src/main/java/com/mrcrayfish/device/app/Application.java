@@ -197,4 +197,9 @@ public abstract class Application
 	{
 		return height;
 	}
+	
+	public String getTitle()
+	{
+		return DISPLAY_NAME;
+	}
 }
