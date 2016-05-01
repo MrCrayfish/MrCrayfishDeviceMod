@@ -46,8 +46,8 @@ public class ApplicationBar
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		btnLeft.render(mc, mouseX, mouseY, true);
-		btnRight.render(mc, mouseX, mouseY, true);
+		btnLeft.render(gui, mc, mouseX, mouseY, true);
+		btnRight.render(gui, mc, mouseX, mouseY, true);
 
 		for(int i = 0; i < APPS.size(); i++)
 		{

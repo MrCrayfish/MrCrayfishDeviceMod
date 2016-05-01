@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.app.renderer.ListItemRenderer;
@@ -75,7 +76,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	}
 	
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
 		if (this.visible)
         {

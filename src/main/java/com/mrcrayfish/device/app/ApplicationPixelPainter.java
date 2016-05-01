@@ -277,9 +277,11 @@ public class ApplicationPixelPainter extends Application
 		});
 		this.layoutDraw.addComponent(blueSlider);
 		
-		this.colourDisplay = new Component(x, y, 158, 5) {
+		this.colourDisplay = new Component(x, y, 158, 5) 
+		{
 			@Override
-			public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) {
+			public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+			{
 				drawRect(xPosition, yPosition, xPosition + 50, yPosition + 20, Color.DARK_GRAY.getRGB());
 				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColour());
 			}

@@ -205,7 +205,7 @@ public class ApplicationEmail extends Application
 		});
 		layoutInbox.addComponent(this.btnNewEmail);
 		
-		this.btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 50, 0, 10, 10);
+		this.btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
 		this.btnReplyEmail.setClickListener(new ClickListener() 
 		{
 			@Override

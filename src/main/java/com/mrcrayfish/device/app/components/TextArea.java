@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.Layout;
 
 import net.minecraft.client.Minecraft;
@@ -48,7 +49,7 @@ public class TextArea extends Component
 	}
 	
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive)
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
 		if (this.visible)
         {

@@ -2,6 +2,7 @@ package com.mrcrayfish.device.app.components;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -11,13 +12,15 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import scala.actors.threadpool.Arrays;
 
 public class Button extends Component
 {
 	private static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
 	
-	private String text;
+	private String text, toolTip, toolTipTitle;
 	public boolean hovered;
 	public int width, height;
 	
@@ -48,7 +51,7 @@ public class Button extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		if (this.visible)
         {
@@ -95,7 +98,12 @@ public class Button extends Component
             else
             {
             	this.drawCenteredString(fontrenderer, this.text, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
-            }  
+            }
+            
+            if(this.hovered && this.toolTip != null)
+            {
+            	laptop.drawHoveringText(Arrays.asList(new String[] { EnumChatFormatting.GOLD + this.toolTipTitle, this.toolTip }), mouseX, mouseY);
+            }
         }
 	}
 
@@ -142,5 +150,10 @@ public class Button extends Component
 	{
 		return mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 	}
-
+	
+	public void setToolTip(String toolTipTitle, String toolTip)
+	{
+		this.toolTipTitle = toolTipTitle;
+		this.toolTip = toolTip;
+	}
 }

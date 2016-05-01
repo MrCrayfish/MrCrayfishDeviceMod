@@ -3,6 +3,7 @@ package com.mrcrayfish.device.app.components;
 import java.awt.Color;
 
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 
 import net.minecraft.client.Minecraft;
 
@@ -25,7 +26,7 @@ public class ProgressBar extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		if (this.visible)
         {

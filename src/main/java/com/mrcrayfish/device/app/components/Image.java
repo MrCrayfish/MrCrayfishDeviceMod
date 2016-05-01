@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
@@ -43,7 +44,7 @@ public class Image extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		if (this.visible)
         {

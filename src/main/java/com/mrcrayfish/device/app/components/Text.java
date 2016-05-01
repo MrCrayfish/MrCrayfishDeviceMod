@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.List;
 
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,7 +24,7 @@ public class Text extends Component {
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		if (this.visible)
         {

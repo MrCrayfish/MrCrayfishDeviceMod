@@ -92,11 +92,11 @@ public abstract class Application
 		}
 	}
 	
-	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
 	{
 		for(Component c : currentLayout.components)
 		{
-			c.render(mc, mouseX, mouseY, active);
+			c.render(laptop, mc, mouseX, mouseY, active);
 		}
 	}
 	

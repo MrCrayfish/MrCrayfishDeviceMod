@@ -94,10 +94,10 @@ public class ApplicationAppStore extends Application
 	}
 
 	@Override
-	public void render(Gui gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active) 
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active) 
 	{
-		super.render(gui, mc, x, y, mouseX, mouseY, active);
-		gui.drawRect(x + 125, y + 30, x + 225, y + 31, Color.DARK_GRAY.getRGB());
+		super.render(laptop, mc, x, y, mouseX, mouseY, active);
+		laptop.drawRect(x + 125, y + 30, x + 225, y + 31, Color.DARK_GRAY.getRGB());
 	}
 
 	@Override
