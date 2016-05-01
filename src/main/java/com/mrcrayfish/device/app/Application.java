@@ -95,6 +95,8 @@ public abstract class Application
 	
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
 	{
+		currentLayout.render(laptop, mc, x, y);
+		
 		for(Component c : currentLayout.components)
 		{
 			c.render(laptop, mc, mouseX, mouseY, active);
