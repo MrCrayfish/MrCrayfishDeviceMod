@@ -38,7 +38,7 @@ public class ApplicationEmail extends Application
 {
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
 	
-	private static final Pattern EMAIL = Pattern.compile("([a-zA-Z0-9]{1,10})@endermail\\.com");
+	private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z0-9]{1,10})@endermail\\.com$");
 	
 	/* Loading Layout */
 	private Layout layoutInit;
