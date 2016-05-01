@@ -187,7 +187,13 @@ public class ApplicationEmail extends Application
 				else
 				{
 					gui.drawRect(x, y, x + width, y + getHeight(), Color.GRAY.getRGB());
+					
+				if(!e.isRead()) {
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+					mc.getTextureManager().bindTexture(ENDER_MAIL_ICONS);
+					gui.drawTexturedModalRect(x + 247, y + 8, 0, 10, 20, 12);
 				}
+				
 				mc.fontRendererObj.drawString(e.subject, x + 5, y + 5, Color.WHITE.getRGB());
 				mc.fontRendererObj.drawString(e.author + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
 			}
@@ -196,6 +202,24 @@ public class ApplicationEmail extends Application
 		
 		
 		this.btnViewEmail = new Button(x, y, 5, 5, ENDER_MAIL_ICONS, 30, 0, 10, 10);
+		this.btnViewEmail.setClickListener(new ClickListener() 
+		{
+			@Override
+			public void onClick(Component c, int mouseButton) 
+			{
+				int index = listEmails.getSelectedIndex();
+				if(index != -1)
+				{
+					TaskManager.sendRequest(new TaskViewEmail(index));
+					Email email = listEmails.getSelectedItem();
+					email.setRead(true);
+					textMessage.setText(email.message);
+					labelViewSubject.setText(email.subject);
+					labelFrom.setText(email.author + "@endermail.com");
+				}
+			}
+		});
+		this.btnViewEmail.setToolTip("View", "Opens the currently selected email");
 		layoutInbox.addComponent(this.btnViewEmail);
 		
 		this.btnNewEmail = new Button(x, y, 25, 5, ENDER_MAIL_ICONS, 0, 0, 10, 10);
@@ -521,11 +545,13 @@ public class ApplicationEmail extends Application
 	public static class Email
 	{
 		private String subject, author, message;
+		private boolean read;
 
 		public Email(String subject, String message) 
 		{
 			this.subject = subject;
 			this.message = message;
+			this.read = false;
 		}
 		
 		public Email(String subject, String author, String message) 
@@ -554,16 +580,29 @@ public class ApplicationEmail extends Application
 			return message;
 		}
 		
+		public boolean isRead() 
+		{
+			return read;
+		}
+		
+		public void setRead(boolean read) 
+		{
+			this.read = read;
+		}
+		
 		public void writeToNBT(NBTTagCompound nbt)
 		{
 			nbt.setString("subject", this.subject);
 			if(author != null) nbt.setString("author", this.author);
 			nbt.setString("message", this.message);
+			nbt.setBoolean("read", this.read);
 		}
 		
 		public static Email readFromNBT(NBTTagCompound nbt)
 		{
-			return new Email(nbt.getString("subject"), nbt.getString("author"), nbt.getString("message"));
+			Email email = new Email(nbt.getString("subject"), nbt.getString("author"), nbt.getString("message"));
+			email.setRead(nbt.getBoolean("read"));
+			return email;
 		}
 	}
 }
