@@ -34,7 +34,7 @@ public class TaskRegisterEmailAccount extends Task
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
 		System.out.println("Got register packet on server");
-		if(EmailManager.addAccount(player, nbt.getString("AccountName")))
+		if(EmailManager.INSTANCE.addAccount(player, nbt.getString("AccountName")))
 			this.setSuccessful();
 		System.out.println("End");
 	}

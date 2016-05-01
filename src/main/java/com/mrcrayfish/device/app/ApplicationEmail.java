@@ -29,6 +29,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ApplicationEmail extends Application
 {
@@ -215,7 +217,7 @@ public class ApplicationEmail extends Application
 					public void execute(boolean success) 
 					{
 						listEmails.removeAll();
-						for(Email email : EmailManager.inbox) 
+						for(Email email : EmailManager.INSTANCE.inbox) 
 						{
 							listEmails.addItem(email);
 						}
@@ -301,7 +303,7 @@ public class ApplicationEmail extends Application
 				{
 					ApplicationEmail.this.setCurrentLayout(layoutInbox);
 					listEmails.removeAll();
-					for(Email email : EmailManager.inbox) {
+					for(Email email : EmailManager.INSTANCE.inbox) {
 						listEmails.addItem(email);
 						System.out.println("Added mail");
 					}
@@ -330,20 +332,31 @@ public class ApplicationEmail extends Application
 	
 	public static class EmailManager
 	{
-		public static List<Email> inbox = new ArrayList<Email>();
-		private static Map<UUID, String> uuidToName = new HashMap<UUID, String>();
-		private static Map<String, List<Email>> uuidToInbox = new HashMap<String, List<Email>>();
+		public static final EmailManager INSTANCE = new EmailManager();
+		
+		@SideOnly(Side.CLIENT)
+		private List<Email> inbox = new ArrayList<Email>();
+		
+		private Map<UUID, String> uuidToName = new HashMap<UUID, String>();
+		private Map<String, List<Email>> uuidToInbox = new HashMap<String, List<Email>>();
 
-		public static boolean addEmailToInbox(Email email, String to)
+		public boolean addEmailToInbox(Email email, String to)
 		{
 			if(uuidToInbox.containsKey(to))
 			{
-				return uuidToInbox.get(to).add(email);
+				uuidToInbox.get(to).add(0, email);
+				return true;
 			}
 			return false;
 		}
 		
-		public static List<Email> getEmailsForAccount(EntityPlayer player)
+		@SideOnly(Side.CLIENT)
+		public List<Email> getInbox()
+		{
+			return inbox;
+		}
+		
+		public List<Email> getEmailsForAccount(EntityPlayer player)
 		{
 			if(uuidToName.containsKey(player.getUniqueID()))
 			{
@@ -352,7 +365,7 @@ public class ApplicationEmail extends Application
 			return new ArrayList<Email>();
 		}
 		
-		public static boolean addAccount(EntityPlayer player, String name)
+		public boolean addAccount(EntityPlayer player, String name)
 		{
 			if(!uuidToName.containsKey(player.getUniqueID()))
 			{
@@ -366,17 +379,17 @@ public class ApplicationEmail extends Application
 			return false;
 		}
 		
-		public static boolean hasAccount(UUID uuid)
+		public boolean hasAccount(UUID uuid)
 		{
 			return uuidToName.containsKey(uuid);
 		}
 		
-		public static String getName(EntityPlayer player)
+		public String getName(EntityPlayer player)
 		{
 			return uuidToName.get(player.getUniqueID());
 		}
 
-		public static void readFromNBT(NBTTagCompound nbt) 
+		public void readFromNBT(NBTTagCompound nbt) 
 		{
 			uuidToInbox.clear();
 			
@@ -409,7 +422,7 @@ public class ApplicationEmail extends Application
 			}
 		}
 
-		public static void writeToNBT(NBTTagCompound nbt) 
+		public void writeToNBT(NBTTagCompound nbt) 
 		{
 			NBTTagList inboxes = new NBTTagList();
 			for(String key : uuidToInbox.keySet())
@@ -441,7 +454,7 @@ public class ApplicationEmail extends Application
 			nbt.setTag("Accounts", accounts);
 		}
 		
-		public static void clear()
+		public void clear()
 		{
 			uuidToInbox.clear();
 			uuidToName.clear();

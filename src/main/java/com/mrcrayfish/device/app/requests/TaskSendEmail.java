@@ -37,12 +37,12 @@ public class TaskSendEmail extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		String name = EmailManager.getName(player);
+		String name = EmailManager.INSTANCE.getName(player);
 		if(name != null)
 		{
 			Email email = Email.readFromNBT(nbt);
 			email.setAuthor(name);
-			if(EmailManager.addEmailToInbox(email, nbt.getString("to"))) 
+			if(EmailManager.INSTANCE.addEmailToInbox(email, nbt.getString("to"))) 
 			{
 				this.setSuccessful();
 			}

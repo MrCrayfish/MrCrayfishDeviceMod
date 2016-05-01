@@ -23,7 +23,7 @@ public class TaskCheckEmailAccount extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		this.hasAccount = EmailManager.hasAccount(player.getUniqueID());
+		this.hasAccount = EmailManager.INSTANCE.hasAccount(player.getUniqueID());
 	}
 
 	@Override

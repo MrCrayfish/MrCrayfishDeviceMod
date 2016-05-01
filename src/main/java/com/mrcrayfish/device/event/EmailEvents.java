@@ -30,7 +30,7 @@ public class EmailEvents
 				NBTTagCompound nbt = CompressedStreamTools.read(data);
 				if(nbt != null)
 				{
-					EmailManager.readFromNBT(nbt);
+					EmailManager.INSTANCE.readFromNBT(nbt);
 				}
 			} 
 			catch (IOException e) 
@@ -54,7 +54,7 @@ public class EmailEvents
 				}
 				
 				NBTTagCompound nbt = new NBTTagCompound();
-				EmailManager.writeToNBT(nbt);
+				EmailManager.INSTANCE.writeToNBT(nbt);
 				System.out.println(nbt);
 				CompressedStreamTools.write(nbt, data);
 				

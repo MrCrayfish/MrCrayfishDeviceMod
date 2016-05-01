@@ -26,7 +26,7 @@ public class TaskUpdateInbox extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		this.emails = EmailManager.getEmailsForAccount(player);
+		this.emails = EmailManager.INSTANCE.getEmailsForAccount(player);
 	}
 
 	@Override
@@ -48,13 +48,13 @@ public class TaskUpdateInbox extends Task
 	@Override
 	public void processResponse(NBTTagCompound nbt) 
 	{
-		EmailManager.inbox.clear();
+		EmailManager.INSTANCE.getInbox().clear();
 		NBTTagList emails = (NBTTagList) nbt.getTag("emails");
 		for(int i = 0; i < emails.tagCount(); i++)
 		{
 			NBTTagCompound emailTag = emails.getCompoundTagAt(i);
 			Email email = Email.readFromNBT(emailTag);
-			EmailManager.inbox.add(email);
+			EmailManager.INSTANCE.getInbox().add(email);
 		}
 	}
 
