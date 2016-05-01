@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.Image;
@@ -35,6 +37,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ApplicationEmail extends Application
 {
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
+	
+	private static final Pattern EMAIL = Pattern.compile("([a-zA-Z0-9]{1,10})@endermail\\.com");
 	
 	/* Loading Layout */
 	private Layout layoutInit;
@@ -275,8 +279,12 @@ public class ApplicationEmail extends Application
 			@Override
 			public void onClick(Component c, int mouseButton) 
 			{
+				Matcher matcher = EMAIL.matcher(fieldRecipient.getText());
+				if(!matcher.matches())
+					return;
+					
 				Email email = new Email(fieldSubject.getText(), textAreaMessage.getText());
-				TaskSendEmail taskSendEmail = new TaskSendEmail(email, fieldRecipient.getText());
+				TaskSendEmail taskSendEmail = new TaskSendEmail(email, matcher.group(0));
 				taskSendEmail.setCallback(new Callback() 
 				{
 					@Override
