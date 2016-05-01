@@ -36,6 +36,8 @@ public abstract class Component extends Gui
 
 	public abstract void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive);
 	
+	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) {}
+	
 	public void handleButtonClick(Button button) {}
 	
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) {}

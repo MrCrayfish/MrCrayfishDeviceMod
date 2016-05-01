@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.object.Picture.Size;
 import com.mrcrayfish.device.object.tools.ToolBucket;
@@ -58,7 +59,7 @@ public class Canvas extends Component
 	public void init(Layout layout) {}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		drawRect(xPosition, yPosition, xPosition + picture.getWidth() * picture.getPixelWidth() + 2, yPosition + picture.getHeight() * picture.getPixelHeight() + 2, Color.DARK_GRAY.getRGB());
 		drawRect(xPosition + 1, yPosition + 1, xPosition + picture.getWidth() * picture.getPixelWidth() + 1, yPosition + picture.getHeight() * picture.getPixelHeight() + 1, Color.WHITE.getRGB());

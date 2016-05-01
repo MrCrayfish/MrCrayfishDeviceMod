@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.components.Slider;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -34,7 +35,7 @@ public class ColourGrid extends Component
 	}
 
 	@Override
-	public void render(Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
 		int endX = xPosition + width + 2;
 		int endY = yPosition + (colours.length / 5) * 10 + 2;

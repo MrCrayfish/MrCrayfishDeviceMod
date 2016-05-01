@@ -12,6 +12,7 @@ import com.mrcrayfish.device.app.components.Button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -98,6 +99,14 @@ public abstract class Application
 		{
 			c.render(laptop, mc, mouseX, mouseY, active);
 		}
+		
+		for(Component c : currentLayout.components)
+		{
+			c.renderOverlay(laptop, mc, mouseX, mouseY, active);
+		}
+		
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderHelper.disableStandardItemLighting();
 	}
 	
 	public void handleClick(int mouseX, int mouseY, int mouseButton) 
