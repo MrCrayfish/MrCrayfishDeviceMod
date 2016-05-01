@@ -13,6 +13,7 @@ public class Text extends Component {
 
 	private List<String> lines;
 	private int width;
+	private boolean shadow = false;
 	
 	private int textColour = Color.WHITE.getRGB();
 	
@@ -30,7 +31,7 @@ public class Text extends Component {
         {
 			for(int i = 0; i < lines.size(); i++)
 			{
-				mc.fontRendererObj.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, true);
+				mc.fontRendererObj.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, shadow);
 			}
         }
 	}
@@ -43,5 +44,10 @@ public class Text extends Component {
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
+	}
+	
+	public void setShadow(boolean shadow)
+	{
+		this.shadow = shadow;
 	}
 }
