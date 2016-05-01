@@ -58,7 +58,6 @@ public class ApplicationEmail extends Application
 	private Image logo;
 	private Label labelLogo;
 	private Button btnRegisterAccount;
-	private Button btnInbox;
 
 	/* Register Account Layout */
 	private Layout layoutRegisterAccount;
@@ -136,18 +135,6 @@ public class ApplicationEmail extends Application
 		});
 		this.btnRegisterAccount.setVisible(false);
 		layoutMainMenu.addComponent(this.btnRegisterAccount);
-
-		this.btnInbox = new Button("Go to Inbox", x, y, 5, 50, 90, 20);
-		this.btnInbox.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-
-			}
-		});
-		this.btnInbox.setVisible(false);
-		layoutMainMenu.addComponent(this.btnInbox);
 
 		this.layoutRegisterAccount = new Layout(167, 60);
 
