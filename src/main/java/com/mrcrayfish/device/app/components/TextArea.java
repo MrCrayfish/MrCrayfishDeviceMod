@@ -92,11 +92,9 @@ public class TextArea extends Component
         }
         else
         {
-        	System.out.println(code);
             switch (code)
             {
                 case 14:
-                	System.out.println("Test");
                     if (text.length() > 0)
                     {
                         text = text.substring(0, text.length() - 1);

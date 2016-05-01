@@ -43,9 +43,7 @@ public class MessageRequest implements IMessage, IMessageHandler<MessageRequest,
 	{
 		this.id = buf.readInt();
 		String name = ByteBufUtils.readUTF8String(buf);
-		System.out.println(name);
 		this.request = TaskManager.getRequest(name);
-		System.out.println(this.request);
 		this.nbt = ByteBufUtils.readTag(buf);
 	}
 

@@ -84,7 +84,6 @@ public class BlockLaptop extends BlockDirectional implements ITileEntityProvider
 			{
 				if(laptop.open)
 				{
-					System.out.println("Opening");
 					playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 				}
 			}

@@ -55,10 +55,7 @@ public class EmailEvents
 				
 				NBTTagCompound nbt = new NBTTagCompound();
 				EmailManager.INSTANCE.writeToNBT(nbt);
-				System.out.println(nbt);
 				CompressedStreamTools.write(nbt, data);
-				
-				System.out.println("Saved data");
 			} 
 			catch (IOException e) 
 			{
