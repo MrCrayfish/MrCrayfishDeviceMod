@@ -44,6 +44,7 @@ public class Canvas extends Component
 	
 	public void createPicture(String name, String author, Size size)
 	{
+		this.existingImage = false;
 		this.picture = new Picture(name, author, size);
 		this.pixels = new int[picture.size.width][picture.size.height];
 	}
@@ -193,6 +194,19 @@ public class Canvas extends Component
 	public void setShowGrid(boolean showGrid) 
 	{
 		this.showGrid = showGrid;
+	}
+	
+	public int[][] copyPixels()
+	{
+		int[][] copiedPixels = new int[pixels.length][pixels.length];
+		for(int i = 0; i < pixels.length; i++)
+		{
+			for(int j = 0; j < pixels.length; j++)
+			{
+				copiedPixels[j][i] = pixels[j][i];
+			}
+		}
+		return copiedPixels;
 	}
 	
 	public void clear()

@@ -241,11 +241,12 @@ public class ApplicationPixelPainter extends Application
 		this.btnSave.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				canvas.picture.pixels = canvas.pixels;
+				canvas.picture.pixels = canvas.copyPixels();
 				if(!canvas.isExistingImage())
 					listPictures.addItem(canvas.picture);
-				ApplicationPixelPainter.this.setCurrentLayout(layoutLoadPicture);
-				ApplicationPixelPainter.this.markDirty();
+				canvas.clear();
+				setCurrentLayout(layoutLoadPicture);
+				markDirty();
 			}
 		});
 		this.layoutDraw.addComponent(btnSave);
