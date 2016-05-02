@@ -1,11 +1,6 @@
 package com.mrcrayfish.device;
 
-import com.mrcrayfish.device.app.ApplicationAppStore;
 import com.mrcrayfish.device.app.ApplicationBar;
-import com.mrcrayfish.device.app.ApplicationEmail;
-import com.mrcrayfish.device.app.ApplicationExample;
-import com.mrcrayfish.device.app.ApplicationNoteStash;
-import com.mrcrayfish.device.app.ApplicationPixelPainter;
 import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.requests.TaskCheckEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskDeleteEmail;
@@ -19,6 +14,11 @@ import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
+import com.mrcrayfish.device.programs.ApplicationEmail;
+import com.mrcrayfish.device.programs.ApplicationExample;
+import com.mrcrayfish.device.programs.ApplicationNoteStash;
+import com.mrcrayfish.device.programs.ApplicationPixelPainter;
+import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 import com.mrcrayfish.device.task.TaskManager;
 

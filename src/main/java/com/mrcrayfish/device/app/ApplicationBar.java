@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.components.ButtonArrow.Type;
+import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;

@@ -1,7 +1,10 @@
-package com.mrcrayfish.device.app;
+package com.mrcrayfish.device.programs.system;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.listener.ClickListener;
@@ -45,13 +48,13 @@ public class ApplicationSettings extends Application
 		this.addComponent(btnWallpaperPrev);
 	}
 
-	@Override
+	/*@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active) 
 	{
 		super.render(laptop, mc, x, y, mouseX, mouseY, active);
 		laptop.drawString(mc.fontRendererObj, "Wallpaper", x + 5, y + 5, Color.WHITE.getRGB());
 		laptop.drawCenteredString(mc.fontRendererObj, Integer.toString(Laptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
-	}
+	}*/
 
 	@Override
 	public void load(NBTTagCompound tagCompound) 

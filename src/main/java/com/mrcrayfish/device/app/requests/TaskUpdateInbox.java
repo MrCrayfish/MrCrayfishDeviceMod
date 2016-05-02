@@ -2,9 +2,9 @@ package com.mrcrayfish.device.app.requests;
 
 import java.util.List;
 
-import com.mrcrayfish.device.app.ApplicationEmail;
-import com.mrcrayfish.device.app.ApplicationEmail.Email;
-import com.mrcrayfish.device.app.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.ApplicationEmail;
+import com.mrcrayfish.device.programs.ApplicationEmail.Email;
+import com.mrcrayfish.device.programs.ApplicationEmail.EmailManager;
 import com.mrcrayfish.device.task.Task;
 
 import io.netty.buffer.ByteBuf;

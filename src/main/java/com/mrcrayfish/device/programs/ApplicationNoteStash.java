@@ -1,7 +1,11 @@
-package com.mrcrayfish.device.app;
+package com.mrcrayfish.device.programs;
 
 import java.util.List;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ItemList;
 import com.mrcrayfish.device.app.components.Label;

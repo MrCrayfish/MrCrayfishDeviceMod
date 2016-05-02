@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.app;
+package com.mrcrayfish.device.programs;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.Layout.Background;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.Image;

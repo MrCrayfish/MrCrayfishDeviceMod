@@ -1,7 +1,10 @@
-package com.mrcrayfish.device.app;
+package com.mrcrayfish.device.programs.system;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.CheckBox;
 import com.mrcrayfish.device.app.components.ItemList;
@@ -91,13 +94,6 @@ public class ApplicationAppStore extends Application
 		
 		btnInstall = new Button("Install", x, y, 125, 100, 100, 20);
 		super.addComponent(btnInstall);
-	}
-
-	@Override
-	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active) 
-	{
-		super.render(laptop, mc, x, y, mouseX, mouseY, active);
-		laptop.drawRect(x + 125, y + 30, x + 225, y + 31, Color.DARK_GRAY.getRGB());
 	}
 
 	@Override

@@ -1,5 +1,7 @@
-package com.mrcrayfish.device.app;
+package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.components.CheckBox;

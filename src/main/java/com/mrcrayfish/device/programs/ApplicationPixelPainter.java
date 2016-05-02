@@ -1,7 +1,12 @@
-package com.mrcrayfish.device.app;
+package com.mrcrayfish.device.programs;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.Component;
+import com.mrcrayfish.device.app.Laptop;
+import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonToggle;
 import com.mrcrayfish.device.app.components.CheckBox;
@@ -348,13 +353,6 @@ public class ApplicationPixelPainter extends Application
 		this.layoutDraw.addComponent(displayGrid);
 
 		this.setCurrentLayout(layoutMainMenu);
-	}
-
-	@Override
-	public void onClose()
-	{
-		super.onClose();
-		canvas.clear();
 	}
 
 	@Override

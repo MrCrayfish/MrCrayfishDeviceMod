@@ -30,7 +30,7 @@ public abstract class Application
 	private final Layout defaultLayout;
 	private Layout currentLayout;
 	
-	/* If set to true, will update NBT data for Application */
+	/** If set to true, will update NBT data for Application */
 	private boolean needsDataUpdate = false;
 	
 	/* If set to true, will update layout */
@@ -157,7 +157,7 @@ public abstract class Application
 	void onClose()
 	{
 		defaultLayout.components.clear();
-		currentLayout.components.clear();
+		currentLayout = null;
 	}
 
 	protected abstract void load(NBTTagCompound tagCompound);
