@@ -18,8 +18,8 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class Application 
 {
-	public ResourceLocation icon;
-	public int u, v;
+	protected ResourceLocation icon;
+	protected int u, v;
 	
 	private final String APP_ID;
 	private final String DISPLAY_NAME;
@@ -36,12 +36,12 @@ public abstract class Application
 	/* If set to true, will update layout */
 	boolean pendingLayoutUpdate = false;
 	
-	public Application(String appId, String displayName) 
+	protected Application(String appId, String displayName) 
 	{
 		this(appId, displayName, null, 0, 0);
 	}
 	
-	public Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV) 
+	protected Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV) 
 	{
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
@@ -60,7 +60,7 @@ public abstract class Application
 		}
 	}
 	
-	public void setCurrentLayout(Layout layout)
+	protected void setCurrentLayout(Layout layout)
 	{
 		this.currentLayout = layout;
 		this.width = layout.width;
@@ -68,24 +68,24 @@ public abstract class Application
 		this.pendingLayoutUpdate = true;
 	}
 	
-	public Layout getCurrentLayout() 
+	protected Layout getCurrentLayout() 
 	{
 		return currentLayout;
 	}
 	
-	public void restoreDefaultLayout()
+	protected void restoreDefaultLayout()
 	{
 		this.setCurrentLayout(defaultLayout);
 	}
 	
-	public void init(int x, int y)
+	protected void init(int x, int y)
 	{
 		this.setCurrentLayout(defaultLayout);
 		this.startX = x;
 		this.startY = y;
 	}
 	
-	public void onTick() 
+	void onTick() 
 	{
 		for(Component c : currentLayout.components)
 		{
@@ -93,7 +93,7 @@ public abstract class Application
 		}
 	}
 	
-	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
+	void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
 	{
 		currentLayout.render(laptop, mc, x, y);
 		
@@ -111,7 +111,7 @@ public abstract class Application
 		RenderHelper.disableStandardItemLighting();
 	}
 	
-	public void handleClick(int mouseX, int mouseY, int mouseButton) 
+	void handleClick(int mouseX, int mouseY, int mouseButton) 
 	{
 		for(Component c : currentLayout.components)
 		{
@@ -119,7 +119,7 @@ public abstract class Application
 		}
 	}
 	
-	public void handleDrag(int mouseX, int mouseY)
+	void handleDrag(int mouseX, int mouseY)
 	{
 		for(Component c : currentLayout.components)
 		{
@@ -127,7 +127,7 @@ public abstract class Application
 		}
 	}
 	
-	public void handleRelease(int mouseX, int mouseY) 
+	void handleRelease(int mouseX, int mouseY) 
 	{
 		for(Component c : currentLayout.components)
 		{
@@ -135,7 +135,7 @@ public abstract class Application
 		}
 	}
 	
-	public void handleKeyTyped(char character, int code) 
+	void handleKeyTyped(char character, int code) 
 	{
 		for(Component c : currentLayout.components)
 		{
@@ -143,7 +143,7 @@ public abstract class Application
 		}
 	}
 
-	public void updateComponents(int x, int y)
+	void updateComponents(int x, int y)
 	{
 		for(Component c : currentLayout.components)
 		{
@@ -154,17 +154,27 @@ public abstract class Application
 		this.startY = y;
 	}
 	
-	public void onClose()
+	void onClose()
 	{
 		defaultLayout.components.clear();
 		currentLayout.components.clear();
 	}
 
-	public abstract void load(NBTTagCompound tagCompound);
+	protected abstract void load(NBTTagCompound tagCompound);
 	
-	public abstract void save(NBTTagCompound tagCompound);
+	protected abstract void save(NBTTagCompound tagCompound);
 	
-	public void markDirty() 
+	protected void setDefaultWidth(int width)
+	{
+		this.defaultLayout.width = width;
+	}
+	
+	protected void setDefaultHeight(int height)
+	{
+		this.defaultLayout.height = height;
+	}
+	
+	protected void markDirty() 
 	{
 		needsDataUpdate = true;
 	}
@@ -184,19 +194,9 @@ public abstract class Application
 		return APP_ID;
 	}
 	
-	public String getDisplayName()
+	protected String getDisplayName()
 	{
 		return DISPLAY_NAME;
-	}
-	
-	public void setDefaultWidth(int width)
-	{
-		this.defaultLayout.width = width;
-	}
-	
-	public void setDefaultHeight(int height)
-	{
-		this.defaultLayout.height = height;
 	}
 	
 	public int getWidth() 
