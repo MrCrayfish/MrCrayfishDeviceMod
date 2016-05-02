@@ -275,11 +275,20 @@ public class ApplicationEmail extends Application
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				int index = listEmails.getSelectedIndex();
+				final int index = listEmails.getSelectedIndex();
 				if (index != -1)
 				{
-					TaskManager.sendRequest(new TaskDeleteEmail(index));
-					listEmails.removeItem(index);
+					TaskDeleteEmail taskDeleteEmail = new TaskDeleteEmail(index);
+					taskDeleteEmail.setCallback(new Callback()
+					{
+						@Override
+						public void execute(NBTTagCompound nbt, boolean success)
+						{
+							listEmails.removeItem(index);
+							EmailManager.INSTANCE.getInbox().remove(index);
+						}
+					});
+					TaskManager.sendRequest(taskDeleteEmail);
 				}
 			}
 		});
