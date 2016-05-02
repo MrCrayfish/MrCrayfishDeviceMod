@@ -89,7 +89,7 @@ public class ApplicationEmail extends Application
 	private Button btnSendEmail;
 	private Button btnCancelEmail;
 
-	/* New Email Layout */
+	/* View Email Layout */
 	private Layout layoutViewEmail;
 	private Label labelViewSubject;
 	private Label labelSender;
@@ -111,6 +111,8 @@ public class ApplicationEmail extends Application
 	{
 		super.init(x, y);
 
+		/* Loading Layout */
+		
 		layoutInit = new Layout(40, 40);
 
 		spinnerInit = new Spinner(x, y, 14, 10);
@@ -119,6 +121,9 @@ public class ApplicationEmail extends Application
 		labelLoading = new Label("Loading...", x, y, 2, 26);
 		layoutInit.addComponent(labelLoading);
 
+		
+		/* Main Menu Layout */
+		
 		layoutMainMenu = new Layout(100, 75);
 
 		logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
@@ -139,6 +144,9 @@ public class ApplicationEmail extends Application
 		btnRegisterAccount.setVisible(false);
 		layoutMainMenu.addComponent(btnRegisterAccount);
 
+		
+		/* Register Account Layout */
+		
 		layoutRegisterAccount = new Layout(167, 60);
 
 		labelEmail = new Label("Email", x, y, 5, 5);
@@ -182,6 +190,9 @@ public class ApplicationEmail extends Application
 		});
 		layoutRegisterAccount.addComponent(btnRegister);
 
+		
+		/* Inbox Layout */
+		
 		layoutInbox = new Layout(300, 148);
 
 		listEmails = new ItemList<Email>(x, y, 5, 25, 275, 4);
@@ -300,6 +311,9 @@ public class ApplicationEmail extends Application
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
 		layoutInbox.addComponent(btnRefresh);
 
+		
+		/* New Email Layout */
+		
 		layoutNewEmail = new Layout(255, 148);
 
 		labelTo = new Label("To", x, y, 5, 8);
@@ -369,7 +383,10 @@ public class ApplicationEmail extends Application
 		});
 		btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
 		layoutNewEmail.addComponent(btnCancelEmail);
-
+		
+		
+		/* View Email Layout */
+		
 		layoutViewEmail = new Layout(240, 156);
 		layoutViewEmail.setBackground(new Background()
 		{

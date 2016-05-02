@@ -55,6 +55,7 @@ public class ApplicationNoteStash extends Application
 		super.init(x, y);
 
 		/* Main */
+		
 		layoutMain = new Layout(180, 80);
 		
 		notes = new ItemList<Note>(x, y, 5, 5, 100, 5);
@@ -110,6 +111,7 @@ public class ApplicationNoteStash extends Application
 		
 		
 		/* Add Note */
+		
 		layoutAddNote = new Layout(180, 80);
 
 		title = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 5, 114);
@@ -146,6 +148,7 @@ public class ApplicationNoteStash extends Application
 		
 		
 		/* View Note */
+		
 		layoutViewNote = new Layout(180, 80);
 		
 		noteTitle = new Label("", x, y, 5, 5);

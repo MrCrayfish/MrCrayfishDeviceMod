@@ -89,6 +89,7 @@ public class ApplicationPixelPainter extends Application
 		super.init(x, y);
 
 		/* Main Menu */
+		
 		layoutMainMenu = new Layout(100, 100);
 
 		logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
@@ -119,7 +120,9 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutMainMenu.addComponent(btnLoadPicture);
 
+		
 		/* New Picture */
+		
 		layoutNewPicture = new Layout(180, 65);
 
 		labelName = new Label("Name", x, y, 5, 5);
@@ -160,7 +163,9 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutNewPicture.addComponent(btnCreatePicture);
 
+		
 		/* Load Picture */
+		
 		layoutLoadPicture = new Layout(180, 80);
 
 		listPictures = new ItemList<Picture>(x, y, 5, 5, 100, 5);
@@ -203,7 +208,9 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutLoadPicture.addComponent(btnBackSavedPicture);
 
+		
 		/* Drawing */
+		
 		layoutDraw = new Layout(213, 140);
 
 		canvas = new Canvas(x, y, 5, 5);
