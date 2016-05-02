@@ -71,7 +71,7 @@ public class ApplicationNoteStash extends Application
 		btnNew.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				ApplicationNoteStash.this.setCurrentLayout(layoutAddNote);
+				setCurrentLayout(layoutAddNote);
 			}
 		});
 		layoutMain.addComponent(btnNew);
@@ -86,7 +86,7 @@ public class ApplicationNoteStash extends Application
 					Note note = notes.getSelectedItem();
 					noteTitle.setText(note.title);
 					noteContent.setText(note.content);
-					ApplicationNoteStash.this.setCurrentLayout(layoutViewNote);
+					setCurrentLayout(layoutViewNote);
 				}
 			}
 		});
@@ -102,7 +102,7 @@ public class ApplicationNoteStash extends Application
 					notes.removeItem(notes.getSelectedIndex());
 					btnView.enabled = false;
 					btnDelete.enabled = false;
-					ApplicationNoteStash.this.markDirty();
+					markDirty();
 				}
 			}
 		});
@@ -127,8 +127,8 @@ public class ApplicationNoteStash extends Application
 				notes.addItem(new Note(title.getText(), textArea.getText()));
 				title.clear();
 				textArea.clear();
-				ApplicationNoteStash.this.markDirty();
-				ApplicationNoteStash.this.setCurrentLayout(layoutMain);
+				markDirty();
+				setCurrentLayout(layoutMain);
 			}
 		});
 		layoutAddNote.addComponent(btnSave);
@@ -139,7 +139,7 @@ public class ApplicationNoteStash extends Application
 			public void onClick(Component c, int mouseButton) {
 				title.clear();
 				textArea.clear();
-				ApplicationNoteStash.this.setCurrentLayout(layoutMain);
+				setCurrentLayout(layoutMain);
 			}
 		});
 		layoutAddNote.addComponent(btnCancel);
@@ -158,12 +158,12 @@ public class ApplicationNoteStash extends Application
 		btnBack.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				ApplicationNoteStash.this.setCurrentLayout(layoutMain);
+				setCurrentLayout(layoutMain);
 			}
 		});
 		layoutViewNote.addComponent(btnBack);
 		
-		this.setCurrentLayout(layoutMain);
+		setCurrentLayout(layoutMain);
 	}
 
 	@Override

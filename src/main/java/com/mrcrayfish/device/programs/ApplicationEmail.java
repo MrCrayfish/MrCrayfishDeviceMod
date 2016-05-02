@@ -46,7 +46,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ApplicationEmail extends Application
 {
-
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
 
 	private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z0-9]{1,10})@endermail\\.com$");
@@ -112,47 +111,47 @@ public class ApplicationEmail extends Application
 	{
 		super.init(x, y);
 
-		this.layoutInit = new Layout(40, 40);
+		layoutInit = new Layout(40, 40);
 
-		this.spinnerInit = new Spinner(x, y, 14, 10);
-		layoutInit.addComponent(this.spinnerInit);
+		spinnerInit = new Spinner(x, y, 14, 10);
+		layoutInit.addComponent(spinnerInit);
 
-		this.labelLoading = new Label("Loading...", x, y, 2, 26);
-		layoutInit.addComponent(this.labelLoading);
+		labelLoading = new Label("Loading...", x, y, 2, 26);
+		layoutInit.addComponent(labelLoading);
 
-		this.layoutMainMenu = new Layout(100, 75);
+		layoutMainMenu = new Layout(100, 75);
 
-		this.logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
-		layoutMainMenu.addComponent(this.logo);
+		logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
+		layoutMainMenu.addComponent(logo);
 
-		this.labelLogo = new Label("Ender Mail", x, y, 19, 35);
+		labelLogo = new Label("Ender Mail", x, y, 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
 
-		this.btnRegisterAccount = new Button("Register", x, y, 5, 50, 90, 20);
-		this.btnRegisterAccount.setClickListener(new ClickListener()
+		btnRegisterAccount = new Button("Register", x, y, 5, 50, 90, 20);
+		btnRegisterAccount.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				ApplicationEmail.this.setCurrentLayout(layoutRegisterAccount);
+				setCurrentLayout(layoutRegisterAccount);
 			}
 		});
-		this.btnRegisterAccount.setVisible(false);
-		layoutMainMenu.addComponent(this.btnRegisterAccount);
+		btnRegisterAccount.setVisible(false);
+		layoutMainMenu.addComponent(btnRegisterAccount);
 
-		this.layoutRegisterAccount = new Layout(167, 60);
+		layoutRegisterAccount = new Layout(167, 60);
 
-		this.labelEmail = new Label("Email", x, y, 5, 5);
-		layoutRegisterAccount.addComponent(this.labelEmail);
+		labelEmail = new Label("Email", x, y, 5, 5);
+		layoutRegisterAccount.addComponent(labelEmail);
 
-		this.fieldEmail = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 15, 80);
-		layoutRegisterAccount.addComponent(this.fieldEmail);
+		fieldEmail = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 15, 80);
+		layoutRegisterAccount.addComponent(fieldEmail);
 
-		this.labelDomain = new Label("@endermail.com", x, y, 88, 18);
-		layoutRegisterAccount.addComponent(this.labelDomain);
+		labelDomain = new Label("@endermail.com", x, y, 88, 18);
+		layoutRegisterAccount.addComponent(labelDomain);
 
-		this.btnRegister = new Button("Register", x, y, 5, 35, 157, 20);
-		this.btnRegister.setClickListener(new ClickListener()
+		btnRegister = new Button("Register", x, y, 5, 35, 157, 20);
+		btnRegister.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -169,7 +168,7 @@ public class ApplicationEmail extends Application
 							if (success)
 							{
 								currentName = fieldEmail.getText();
-								ApplicationEmail.this.setCurrentLayout(layoutInbox);
+								setCurrentLayout(layoutInbox);
 							}
 							else
 							{
@@ -181,12 +180,12 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		layoutRegisterAccount.addComponent(this.btnRegister);
+		layoutRegisterAccount.addComponent(btnRegister);
 
-		this.layoutInbox = new Layout(300, 148);
+		layoutInbox = new Layout(300, 148);
 
-		this.listEmails = new ItemList<Email>(x, y, 5, 25, 275, 4);
-		this.listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
+		listEmails = new ItemList<Email>(x, y, 5, 25, 275, 4);
+		listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
 		{
 			@Override
 			public void render(Email e, Gui gui, Minecraft mc, int x, int y, int width, boolean selected)
@@ -207,8 +206,8 @@ public class ApplicationEmail extends Application
 		});
 		layoutInbox.addComponent(listEmails);
 
-		this.btnViewEmail = new Button(x, y, 5, 5, ENDER_MAIL_ICONS, 30, 0, 10, 10);
-		this.btnViewEmail.setClickListener(new ClickListener()
+		btnViewEmail = new Button(x, y, 5, 5, ENDER_MAIL_ICONS, 30, 0, 10, 10);
+		btnViewEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -226,11 +225,11 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		this.btnViewEmail.setToolTip("View", "Opens the currently selected email");
-		layoutInbox.addComponent(this.btnViewEmail);
+		btnViewEmail.setToolTip("View", "Opens the currently selected email");
+		layoutInbox.addComponent(btnViewEmail);
 
-		this.btnNewEmail = new Button(x, y, 25, 5, ENDER_MAIL_ICONS, 0, 0, 10, 10);
-		this.btnNewEmail.setClickListener(new ClickListener()
+		btnNewEmail = new Button(x, y, 25, 5, ENDER_MAIL_ICONS, 0, 0, 10, 10);
+		btnNewEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -238,11 +237,11 @@ public class ApplicationEmail extends Application
 				setCurrentLayout(layoutNewEmail);
 			}
 		});
-		this.btnNewEmail.setToolTip("New Email", "Send an email to a player");
-		layoutInbox.addComponent(this.btnNewEmail);
+		btnNewEmail.setToolTip("New Email", "Send an email to a player");
+		layoutInbox.addComponent(btnNewEmail);
 
-		this.btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
-		this.btnReplyEmail.setClickListener(new ClickListener()
+		btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
+		btnReplyEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -256,11 +255,11 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		this.btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
-		layoutInbox.addComponent(this.btnReplyEmail);
+		btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
+		layoutInbox.addComponent(btnReplyEmail);
 
-		this.btnDeleteEmail = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
-		this.btnDeleteEmail.setClickListener(new ClickListener()
+		btnDeleteEmail = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
+		btnDeleteEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -273,11 +272,11 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		this.btnDeleteEmail.setToolTip("Trash Email", "Deletes the currently select email");
-		layoutInbox.addComponent(this.btnDeleteEmail);
+		btnDeleteEmail.setToolTip("Trash Email", "Deletes the currently select email");
+		layoutInbox.addComponent(btnDeleteEmail);
 
-		this.btnRefresh = new Button(x, y, 85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
-		this.btnRefresh.setClickListener(new ClickListener()
+		btnRefresh = new Button(x, y, 85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
+		btnRefresh.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -298,31 +297,31 @@ public class ApplicationEmail extends Application
 				TaskManager.sendRequest(taskUpdateInbox);
 			}
 		});
-		this.btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
-		layoutInbox.addComponent(this.btnRefresh);
+		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
+		layoutInbox.addComponent(btnRefresh);
 
-		this.layoutNewEmail = new Layout(255, 148);
+		layoutNewEmail = new Layout(255, 148);
 
-		this.labelTo = new Label("To", x, y, 5, 8);
-		layoutNewEmail.addComponent(this.labelTo);
+		labelTo = new Label("To", x, y, 5, 8);
+		layoutNewEmail.addComponent(labelTo);
 
-		this.fieldRecipient = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 5, 200);
-		layoutNewEmail.addComponent(this.fieldRecipient);
+		fieldRecipient = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 5, 200);
+		layoutNewEmail.addComponent(fieldRecipient);
 
-		this.labelSubject = new Label("Subject", x, y, 5, 26);
-		layoutNewEmail.addComponent(this.labelSubject);
+		labelSubject = new Label("Subject", x, y, 5, 26);
+		layoutNewEmail.addComponent(labelSubject);
 
-		this.fieldSubject = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 23, 200);
-		layoutNewEmail.addComponent(this.fieldSubject);
+		fieldSubject = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 23, 200);
+		layoutNewEmail.addComponent(fieldSubject);
 
-		this.labelMessage = new Label("Message", x, y, 5, 44);
-		layoutNewEmail.addComponent(this.labelMessage);
+		labelMessage = new Label("Message", x, y, 5, 44);
+		layoutNewEmail.addComponent(labelMessage);
 
-		this.textAreaMessage = new TextArea(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 41, 200, 100);
-		layoutNewEmail.addComponent(this.textAreaMessage);
+		textAreaMessage = new TextArea(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 41, 200, 100);
+		layoutNewEmail.addComponent(textAreaMessage);
 
-		this.btnSendEmail = new Button(x, y, 6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
-		this.btnSendEmail.setClickListener(new ClickListener()
+		btnSendEmail = new Button(x, y, 6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
+		btnSendEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -353,11 +352,11 @@ public class ApplicationEmail extends Application
 				TaskManager.sendRequest(taskSendEmail);
 			}
 		});
-		this.btnSendEmail.setToolTip("Send", "Send email to recipient");
-		layoutNewEmail.addComponent(this.btnSendEmail);
+		btnSendEmail.setToolTip("Send", "Send email to recipient");
+		layoutNewEmail.addComponent(btnSendEmail);
 
-		this.btnCancelEmail = new Button(x, y, 28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
-		this.btnCancelEmail.setClickListener(new ClickListener()
+		btnCancelEmail = new Button(x, y, 28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		btnCancelEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -368,11 +367,11 @@ public class ApplicationEmail extends Application
 				fieldRecipient.clear();
 			}
 		});
-		this.btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
-		layoutNewEmail.addComponent(this.btnCancelEmail);
+		btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
+		layoutNewEmail.addComponent(btnCancelEmail);
 
-		this.layoutViewEmail = new Layout(240, 156);
-		this.layoutViewEmail.setBackground(new Background()
+		layoutViewEmail = new Layout(240, 156);
+		layoutViewEmail.setBackground(new Background()
 		{
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y)
@@ -384,15 +383,15 @@ public class ApplicationEmail extends Application
 			}
 		});
 
-		this.labelViewSubject = new Label("Subject", x, y, 5, 26);
-		this.labelViewSubject.setTextColour(new Color(255, 170, 0));
-		layoutViewEmail.addComponent(this.labelViewSubject);
+		labelViewSubject = new Label("Subject", x, y, 5, 26);
+		labelViewSubject.setTextColour(new Color(255, 170, 0));
+		layoutViewEmail.addComponent(labelViewSubject);
 
-		this.labelFrom = new Label("From", x, y, 5, 38);
+		labelFrom = new Label("From", x, y, 5, 38);
 		layoutViewEmail.addComponent(labelFrom);
 
-		this.btnCancelViewEmail = new Button(x, y, 5, 3, ENDER_MAIL_ICONS, 40, 0, 10, 10);
-		this.btnCancelViewEmail.setClickListener(new ClickListener()
+		btnCancelViewEmail = new Button(x, y, 5, 3, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		btnCancelViewEmail.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -400,14 +399,14 @@ public class ApplicationEmail extends Application
 				setCurrentLayout(layoutInbox);
 			}
 		});
-		this.btnCancelViewEmail.setToolTip("Cancel", "Go back to Inbox");
-		layoutViewEmail.addComponent(this.btnCancelViewEmail);
+		btnCancelViewEmail.setToolTip("Cancel", "Go back to Inbox");
+		layoutViewEmail.addComponent(btnCancelViewEmail);
 
-		this.textMessage = new Text("Hallo", Minecraft.getMinecraft().fontRendererObj, x, y, 5, 54, 230);
-		this.textMessage.setShadow(false);
-		layoutViewEmail.addComponent(this.textMessage);
+		textMessage = new Text("Hallo", Minecraft.getMinecraft().fontRendererObj, x, y, 5, 54, 230);
+		textMessage.setShadow(false);
+		layoutViewEmail.addComponent(textMessage);
 
-		this.setCurrentLayout(layoutInit);
+		setCurrentLayout(layoutInit);
 
 		TaskCheckEmailAccount taskCheckAccount = new TaskCheckEmailAccount();
 		taskCheckAccount.setCallback(new Callback()
@@ -423,12 +422,12 @@ public class ApplicationEmail extends Application
 					{
 						listEmails.addItem(email);
 					}
-					ApplicationEmail.this.setCurrentLayout(layoutInbox);
+					setCurrentLayout(layoutInbox);
 				}
 				else
 				{
 					btnRegisterAccount.setVisible(true);
-					ApplicationEmail.this.setCurrentLayout(layoutMainMenu);
+					setCurrentLayout(layoutMainMenu);
 				}
 			}
 		});
@@ -448,7 +447,7 @@ public class ApplicationEmail extends Application
 	@Override
 	public String getTitle()
 	{
-		if (getCurrentLayout() == this.layoutInbox)
+		if (getCurrentLayout() == layoutInbox)
 		{
 			return "Inbox: " + currentName + "@endermail.com";
 		}

@@ -36,7 +36,7 @@ public class ApplicationSettings extends Application
 				Laptop.nextWallpaper();
 			}
 		});
-		this.addComponent(btnWallpaperNext);
+		super.addComponent(btnWallpaperNext);
 		
 		btnWallpaperPrev = new ButtonArrow(x, y, 5, 16, ButtonArrow.Type.LEFT);
 		btnWallpaperPrev.setClickListener(new ClickListener() {
@@ -45,7 +45,7 @@ public class ApplicationSettings extends Application
 				Laptop.prevWallpaper();
 			}
 		});
-		this.addComponent(btnWallpaperPrev);
+		super.addComponent(btnWallpaperPrev);
 	}
 
 	/*@Override

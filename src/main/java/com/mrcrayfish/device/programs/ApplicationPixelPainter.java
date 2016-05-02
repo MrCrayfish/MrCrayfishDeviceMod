@@ -89,85 +89,85 @@ public class ApplicationPixelPainter extends Application
 		super.init(x, y);
 
 		/* Main Menu */
-		this.layoutMainMenu = new Layout(100, 100);
+		layoutMainMenu = new Layout(100, 100);
 
-		this.logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
-		this.layoutMainMenu.addComponent(logo);
+		logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
+		layoutMainMenu.addComponent(logo);
 
-		this.labelLogo = new Label("Pixel Painter", x, y, 19, 35);
-		this.layoutMainMenu.addComponent(labelLogo);
+		labelLogo = new Label("Pixel Painter", x, y, 19, 35);
+		layoutMainMenu.addComponent(labelLogo);
 
-		this.btnNewPicture = new Button("New", x, y, 5, 50, 90, 20);
-		this.btnNewPicture.setClickListener(new ClickListener()
+		btnNewPicture = new Button("New", x, y, 5, 50, 90, 20);
+		btnNewPicture.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				ApplicationPixelPainter.this.setCurrentLayout(layoutNewPicture);
+				setCurrentLayout(layoutNewPicture);
 			}
 		});
-		this.layoutMainMenu.addComponent(btnNewPicture);
+		layoutMainMenu.addComponent(btnNewPicture);
 
-		this.btnLoadPicture = new Button("Load", x, y, 5, 75, 90, 20);
-		this.btnLoadPicture.setClickListener(new ClickListener()
+		btnLoadPicture = new Button("Load", x, y, 5, 75, 90, 20);
+		btnLoadPicture.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				ApplicationPixelPainter.this.setCurrentLayout(layoutLoadPicture);
+				setCurrentLayout(layoutLoadPicture);
 			}
 		});
-		this.layoutMainMenu.addComponent(btnLoadPicture);
+		layoutMainMenu.addComponent(btnLoadPicture);
 
 		/* New Picture */
-		this.layoutNewPicture = new Layout(180, 65);
+		layoutNewPicture = new Layout(180, 65);
 
-		this.labelName = new Label("Name", x, y, 5, 5);
-		this.layoutNewPicture.addComponent(labelName);
+		labelName = new Label("Name", x, y, 5, 5);
+		layoutNewPicture.addComponent(labelName);
 
-		this.fieldName = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 15, 100);
-		this.layoutNewPicture.addComponent(fieldName);
+		fieldName = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 15, 100);
+		layoutNewPicture.addComponent(fieldName);
 
-		this.labelAuthor = new Label("Author", x, y, 5, 35);
-		this.layoutNewPicture.addComponent(labelAuthor);
+		labelAuthor = new Label("Author", x, y, 5, 35);
+		layoutNewPicture.addComponent(labelAuthor);
 
-		this.fieldAuthor = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 45, 100);
-		this.layoutNewPicture.addComponent(fieldAuthor);
+		fieldAuthor = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 45, 100);
+		layoutNewPicture.addComponent(fieldAuthor);
 
-		this.labelSize = new Label("Size", x, y, 110, 5);
-		this.layoutNewPicture.addComponent(labelSize);
+		labelSize = new Label("Size", x, y, 110, 5);
+		layoutNewPicture.addComponent(labelSize);
 
 		RadioGroup sizeGroup = new RadioGroup();
 
-		this.checkBox16x = new CheckBox("16x", x, y, 110, 17);
-		this.checkBox16x.setSelected(true);
-		this.checkBox16x.setRadioGroup(sizeGroup);
-		this.layoutNewPicture.addComponent(checkBox16x);
+		checkBox16x = new CheckBox("16x", x, y, 110, 17);
+		checkBox16x.setSelected(true);
+		checkBox16x.setRadioGroup(sizeGroup);
+		layoutNewPicture.addComponent(checkBox16x);
 
-		this.checkBox32x = new CheckBox("32x", x, y, 145, 17);
-		this.checkBox32x.setRadioGroup(sizeGroup);
-		this.layoutNewPicture.addComponent(checkBox32x);
+		checkBox32x = new CheckBox("32x", x, y, 145, 17);
+		checkBox32x.setRadioGroup(sizeGroup);
+		layoutNewPicture.addComponent(checkBox32x);
 
-		this.btnCreatePicture = new Button("Create", x, y, 110, 40, 65, 20);
-		this.btnCreatePicture.setClickListener(new ClickListener()
+		btnCreatePicture = new Button("Create", x, y, 110, 40, 65, 20);
+		btnCreatePicture.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				ApplicationPixelPainter.this.setCurrentLayout(layoutDraw);
+				setCurrentLayout(layoutDraw);
 				canvas.createPicture(fieldName.getText(), fieldAuthor.getText(), checkBox16x.isSelected() ? Size.X16 : Size.X32);
 			}
 		});
-		this.layoutNewPicture.addComponent(btnCreatePicture);
+		layoutNewPicture.addComponent(btnCreatePicture);
 
 		/* Load Picture */
-		this.layoutLoadPicture = new Layout(180, 80);
+		layoutLoadPicture = new Layout(180, 80);
 
-		this.listPictures = new ItemList<Picture>(x, y, 5, 5, 100, 5);
-		this.layoutLoadPicture.addComponent(listPictures);
+		listPictures = new ItemList<Picture>(x, y, 5, 5, 100, 5);
+		layoutLoadPicture.addComponent(listPictures);
 
-		this.btnLoadSavedPicture = new Button("Load", x, y, 124, 5, 50, 20);
-		this.btnLoadSavedPicture.setClickListener(new ClickListener()
+		btnLoadSavedPicture = new Button("Load", x, y, 124, 5, 50, 20);
+		btnLoadSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -175,14 +175,14 @@ public class ApplicationPixelPainter extends Application
 				if (listPictures.getSelectedIndex() != -1)
 				{
 					canvas.setPicture(listPictures.getSelectedItem());
-					ApplicationPixelPainter.this.setCurrentLayout(layoutDraw);
+					setCurrentLayout(layoutDraw);
 				}
 			}
 		});
-		this.layoutLoadPicture.addComponent(btnLoadSavedPicture);
+		layoutLoadPicture.addComponent(btnLoadSavedPicture);
 
-		this.btnDeleteSavedPicture = new Button("Delete", x, y, 124, 30, 50, 20);
-		this.btnDeleteSavedPicture.setClickListener(new ClickListener()
+		btnDeleteSavedPicture = new Button("Delete", x, y, 124, 30, 50, 20);
+		btnDeleteSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -190,29 +190,29 @@ public class ApplicationPixelPainter extends Application
 				listPictures.removeItem(listPictures.getSelectedIndex());
 			}
 		});
-		this.layoutLoadPicture.addComponent(btnDeleteSavedPicture);
+		layoutLoadPicture.addComponent(btnDeleteSavedPicture);
 
-		this.btnBackSavedPicture = new Button("Back", x, y, 124, 55, 50, 20);
-		this.btnBackSavedPicture.setClickListener(new ClickListener()
+		btnBackSavedPicture = new Button("Back", x, y, 124, 55, 50, 20);
+		btnBackSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				ApplicationPixelPainter.this.setCurrentLayout(layoutMainMenu);
+				setCurrentLayout(layoutMainMenu);
 			}
 		});
-		this.layoutLoadPicture.addComponent(btnBackSavedPicture);
+		layoutLoadPicture.addComponent(btnBackSavedPicture);
 
 		/* Drawing */
-		this.layoutDraw = new Layout(213, 140);
+		layoutDraw = new Layout(213, 140);
 
-		this.canvas = new Canvas(x, y, 5, 5);
-		this.layoutDraw.addComponent(canvas);
+		canvas = new Canvas(x, y, 5, 5);
+		layoutDraw.addComponent(canvas);
 
 		RadioGroup toolGroup = new RadioGroup();
 
-		this.btnPencil = new ButtonToggle(x, y, 138, 5, PIXEL_PAINTER_ICONS, 0, 0, 10, 10);
-		this.btnPencil.setClickListener(new ClickListener()
+		btnPencil = new ButtonToggle(x, y, 138, 5, PIXEL_PAINTER_ICONS, 0, 0, 10, 10);
+		btnPencil.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -220,11 +220,11 @@ public class ApplicationPixelPainter extends Application
 				canvas.setCurrentTool(Canvas.PENCIL);
 			}
 		});
-		this.btnPencil.setRadioGroup(toolGroup);
-		this.layoutDraw.addComponent(btnPencil);
+		btnPencil.setRadioGroup(toolGroup);
+		layoutDraw.addComponent(btnPencil);
 
-		this.btnBucket = new ButtonToggle(x, y, 138, 24, PIXEL_PAINTER_ICONS, 10, 0, 10, 10);
-		this.btnBucket.setClickListener(new ClickListener()
+		btnBucket = new ButtonToggle(x, y, 138, 24, PIXEL_PAINTER_ICONS, 10, 0, 10, 10);
+		btnBucket.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -232,11 +232,11 @@ public class ApplicationPixelPainter extends Application
 				canvas.setCurrentTool(Canvas.BUCKET);
 			}
 		});
-		this.btnBucket.setRadioGroup(toolGroup);
-		this.layoutDraw.addComponent(btnBucket);
+		btnBucket.setRadioGroup(toolGroup);
+		layoutDraw.addComponent(btnBucket);
 
-		this.btnEraser = new ButtonToggle(x, y, 138, 43, PIXEL_PAINTER_ICONS, 20, 0, 10, 10);
-		this.btnEraser.setClickListener(new ClickListener()
+		btnEraser = new ButtonToggle(x, y, 138, 43, PIXEL_PAINTER_ICONS, 20, 0, 10, 10);
+		btnEraser.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -244,11 +244,11 @@ public class ApplicationPixelPainter extends Application
 				canvas.setCurrentTool(Canvas.ERASER);
 			}
 		});
-		this.btnEraser.setRadioGroup(toolGroup);
-		this.layoutDraw.addComponent(btnEraser);
+		btnEraser.setRadioGroup(toolGroup);
+		layoutDraw.addComponent(btnEraser);
 
-		this.btnEyeDropper = new ButtonToggle(x, y, 138, 62, PIXEL_PAINTER_ICONS, 30, 0, 10, 10);
-		this.btnEyeDropper.setClickListener(new ClickListener()
+		btnEyeDropper = new ButtonToggle(x, y, 138, 62, PIXEL_PAINTER_ICONS, 30, 0, 10, 10);
+		btnEyeDropper.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -260,11 +260,11 @@ public class ApplicationPixelPainter extends Application
 				blueSlider.setPercentage(color.getBlue() / 255F);
 			}
 		});
-		this.btnEyeDropper.setRadioGroup(toolGroup);
-		this.layoutDraw.addComponent(btnEyeDropper);
+		btnEyeDropper.setRadioGroup(toolGroup);
+		layoutDraw.addComponent(btnEyeDropper);
 
-		this.btnCancel = new Button(x, y, 138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
-		this.btnCancel.setClickListener(new ClickListener()
+		btnCancel = new Button(x, y, 138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
+		btnCancel.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -276,10 +276,10 @@ public class ApplicationPixelPainter extends Application
 				canvas.clear();
 			}
 		});
-		this.layoutDraw.addComponent(this.btnCancel);
+		layoutDraw.addComponent(btnCancel);
 
-		this.btnSave = new Button(x, y, 138, 119, PIXEL_PAINTER_ICONS, 40, 0, 10, 10);
-		this.btnSave.setClickListener(new ClickListener()
+		btnSave = new Button(x, y, 138, 119, PIXEL_PAINTER_ICONS, 40, 0, 10, 10);
+		btnSave.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -292,10 +292,10 @@ public class ApplicationPixelPainter extends Application
 				markDirty();
 			}
 		});
-		this.layoutDraw.addComponent(btnSave);
+		layoutDraw.addComponent(btnSave);
 
-		this.redSlider = new Slider(x, y, 158, 30, 50);
-		this.redSlider.setSlideListener(new SlideListener()
+		redSlider = new Slider(x, y, 158, 30, 50);
+		redSlider.setSlideListener(new SlideListener()
 		{
 			@Override
 			public void onSlide(float percentage)
@@ -303,10 +303,10 @@ public class ApplicationPixelPainter extends Application
 				canvas.setRed(percentage);
 			}
 		});
-		this.layoutDraw.addComponent(redSlider);
+		layoutDraw.addComponent(redSlider);
 
-		this.greenSlider = new Slider(x, y, 158, 46, 50);
-		this.greenSlider.setSlideListener(new SlideListener()
+		greenSlider = new Slider(x, y, 158, 46, 50);
+		greenSlider.setSlideListener(new SlideListener()
 		{
 			@Override
 			public void onSlide(float percentage)
@@ -314,10 +314,10 @@ public class ApplicationPixelPainter extends Application
 				canvas.setGreen(percentage);
 			}
 		});
-		this.layoutDraw.addComponent(greenSlider);
+		layoutDraw.addComponent(greenSlider);
 
-		this.blueSlider = new Slider(x, y, 158, 62, 50);
-		this.blueSlider.setSlideListener(new SlideListener()
+		blueSlider = new Slider(x, y, 158, 62, 50);
+		blueSlider.setSlideListener(new SlideListener()
 		{
 			@Override
 			public void onSlide(float percentage)
@@ -325,9 +325,9 @@ public class ApplicationPixelPainter extends Application
 				canvas.setBlue(percentage);
 			}
 		});
-		this.layoutDraw.addComponent(blueSlider);
+		layoutDraw.addComponent(blueSlider);
 
-		this.colourDisplay = new Component(x, y, 158, 5)
+		colourDisplay = new Component(x, y, 158, 5)
 		{
 			@Override
 			public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
@@ -336,13 +336,13 @@ public class ApplicationPixelPainter extends Application
 				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColour());
 			}
 		};
-		this.layoutDraw.addComponent(colourDisplay);
+		layoutDraw.addComponent(colourDisplay);
 
-		this.colourGrid = new ColourGrid(x, y, 157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
-		this.layoutDraw.addComponent(colourGrid);
+		colourGrid = new ColourGrid(x, y, 157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
+		layoutDraw.addComponent(colourGrid);
 
-		this.displayGrid = new CheckBox("Grid", x, y, 166, 120);
-		this.displayGrid.setClickListener(new ClickListener()
+		displayGrid = new CheckBox("Grid", x, y, 166, 120);
+		displayGrid.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
@@ -350,9 +350,9 @@ public class ApplicationPixelPainter extends Application
 				canvas.setShowGrid(displayGrid.isSelected());
 			}
 		});
-		this.layoutDraw.addComponent(displayGrid);
+		layoutDraw.addComponent(displayGrid);
 
-		this.setCurrentLayout(layoutMainMenu);
+		setCurrentLayout(layoutMainMenu);
 	}
 
 	@Override
