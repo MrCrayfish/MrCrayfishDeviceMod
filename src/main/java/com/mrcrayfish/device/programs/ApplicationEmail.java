@@ -25,6 +25,7 @@ import com.mrcrayfish.device.app.components.Text;
 import com.mrcrayfish.device.app.components.TextArea;
 import com.mrcrayfish.device.app.components.TextField;
 import com.mrcrayfish.device.app.listener.ClickListener;
+import com.mrcrayfish.device.app.listener.InitListener;
 import com.mrcrayfish.device.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.app.requests.TaskCheckEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskDeleteEmail;
@@ -194,6 +195,27 @@ public class ApplicationEmail extends Application
 		/* Inbox Layout */
 		
 		layoutInbox = new Layout(300, 148);
+		layoutInbox.setInitListener(new InitListener()
+		{
+			@Override
+			public void onInit()
+			{
+				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
+				taskUpdateInbox.setCallback(new Callback()
+				{
+					@Override
+					public void execute(NBTTagCompound nbt, boolean success)
+					{
+						listEmails.removeAll();
+						for (Email email : EmailManager.INSTANCE.inbox)
+						{
+							listEmails.addItem(email);
+						}
+					}
+				});
+				TaskManager.sendRequest(taskUpdateInbox);
+			}
+		});
 
 		listEmails = new ItemList<Email>(x, y, 5, 25, 275, 4);
 		listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
