@@ -66,6 +66,7 @@ public abstract class Application
 		this.width = layout.width;
 		this.height = layout.height;
 		this.pendingLayoutUpdate = true;
+		this.currentLayout.init();
 	}
 	
 	protected Layout getCurrentLayout() 

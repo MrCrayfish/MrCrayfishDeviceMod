@@ -6,6 +6,7 @@ import java.util.List;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.TextArea;
 import com.mrcrayfish.device.app.components.TextField;
+import com.mrcrayfish.device.app.listener.InitListener;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -16,6 +17,7 @@ public class Layout
 	public int width;
 	public int height;
 	
+	private InitListener initListener;
 	private Background background;
 	
 	public Layout() 
@@ -28,6 +30,14 @@ public class Layout
 		this.components = new ArrayList<Component>();
 		this.width = width;
 		this.height = height;
+	}
+	
+	protected void init()
+	{
+		if(initListener != null)
+		{
+			initListener.onInit();
+		}
 	}
 	
 	public void addComponent(Component c)
@@ -52,6 +62,11 @@ public class Layout
 		}
 	}
 	
+	public void setInitListener(InitListener initListener)
+	{
+		this.initListener = initListener;
+	}
+	
 	public void setBackground(Background background) 
 	{
 		this.background = background;
@@ -61,5 +76,4 @@ public class Layout
 	{
 		public void render(Gui gui, Minecraft mc, int x, int y);
 	}
-	
 }
