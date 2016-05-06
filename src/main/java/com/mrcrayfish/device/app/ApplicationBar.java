@@ -36,7 +36,7 @@ public class ApplicationBar
 		btnRight = new ButtonArrow(posX, posY, 100, 3, Type.RIGHT);
 	}
 	
-	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY)
+	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
 		GlStateManager.enableBlend();
@@ -47,8 +47,8 @@ public class ApplicationBar
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		btnLeft.render(gui, mc, mouseX, mouseY, true);
-		btnRight.render(gui, mc, mouseX, mouseY, true);
+		btnLeft.render(gui, mc, mouseX, mouseY, true, partialTicks);
+		btnRight.render(gui, mc, mouseX, mouseY, true, partialTicks);
 
 		for(int i = 0; i < APPS.size(); i++)
 		{

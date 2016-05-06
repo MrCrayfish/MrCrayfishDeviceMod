@@ -36,7 +36,7 @@ public class Slider extends Component
 	}
 
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		if (this.visible)
         {

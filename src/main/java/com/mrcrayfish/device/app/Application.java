@@ -36,12 +36,12 @@ public abstract class Application
 	/* If set to true, will update layout */
 	boolean pendingLayoutUpdate = false;
 	
-	protected Application(String appId, String displayName) 
+	public Application(String appId, String displayName) 
 	{
 		this(appId, displayName, null, 0, 0);
 	}
 	
-	protected Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV) 
+	public Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV) 
 	{
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
@@ -94,13 +94,13 @@ public abstract class Application
 		}
 	}
 	
-	void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
+	void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
 		currentLayout.render(laptop, mc, x, y);
 		
 		for(Component c : currentLayout.components)
 		{
-			c.render(laptop, mc, mouseX, mouseY, active);
+			c.render(laptop, mc, mouseX, mouseY, active, partialTicks);
 		}
 		
 		for(Component c : currentLayout.components)

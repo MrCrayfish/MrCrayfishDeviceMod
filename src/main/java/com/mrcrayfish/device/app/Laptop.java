@@ -149,12 +149,12 @@ public class Laptop extends GuiScreen
 			Window window = windows[i];
 			if(window != null)
 			{
-				window.render(this, mc, getWindowX(window), getWindowY(window), mouseX, mouseY, i == 0);
+				window.render(this, mc, getWindowX(window), getWindowY(window), mouseX, mouseY, i == 0, partialTicks);
 			}
 		}
 		
 		/* Application Bar */
-		bar.render(this, mc, posX + 10, posY + HEIGHT - 28, mouseX, mouseY);
+		bar.render(this, mc, posX + 10, posY + HEIGHT - 28, mouseX, mouseY, partialTicks);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

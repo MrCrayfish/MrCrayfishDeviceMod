@@ -67,7 +67,7 @@ public class Window
 		app.onTick();
 	}
 	
-	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active)
+	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{	
 		if(app.pendingLayoutUpdate)
 		{
@@ -106,7 +106,7 @@ public class Window
 		
 		GlStateManager.disableBlend();
 
-		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active);
+		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active, partialTicks);
 		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}

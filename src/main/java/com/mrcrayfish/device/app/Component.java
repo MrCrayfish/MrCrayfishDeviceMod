@@ -34,7 +34,7 @@ public abstract class Component extends Gui
 	
 	public void handleTick() {}
 
-	public abstract void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive);
+	public abstract void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks);
 	
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) {}
 	

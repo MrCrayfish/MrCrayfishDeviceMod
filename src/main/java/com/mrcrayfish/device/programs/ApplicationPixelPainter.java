@@ -337,7 +337,7 @@ public class ApplicationPixelPainter extends Application
 		colourDisplay = new Component(x, y, 158, 5)
 		{
 			@Override
-			public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
+			public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 			{
 				drawRect(xPosition, yPosition, xPosition + 50, yPosition + 20, Color.DARK_GRAY.getRGB());
 				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColour());
