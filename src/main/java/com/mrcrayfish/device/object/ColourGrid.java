@@ -35,7 +35,7 @@ public class ColourGrid extends Component
 	}
 
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		int endX = xPosition + width + 2;
 		int endY = yPosition + (colours.length / 5) * 10 + 2;
