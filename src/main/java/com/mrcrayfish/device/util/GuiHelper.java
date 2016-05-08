@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class GuiHelper 
 {
-	public static void drawModalRectWithUV(int x, int y, float u, float v, int width, int height, float textureWidth, float textureHeight)
+	public static void drawModalRectWithUV(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight)
     {
 		float scale = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
