@@ -11,8 +11,6 @@ public class Tile
 	public static final int SIZE = 8;
 	
 	private final int x, y;
-	private boolean solid;
-	private boolean slow;
 	
 	public Tile(int x, int y)
 	{
@@ -25,23 +23,15 @@ public class Tile
 		GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE , game.yPosition + y * Tile.SIZE, this.x * 16, this.y * 16, SIZE, SIZE, 16, 16);
 	}
 	
-	public void setSolid(boolean solid)
-	{
-		this.solid = solid;
-	}
-	
-	public void setSlow(boolean slow)
-	{
-		this.slow = slow;
-	}
+	public void renderForeground(Game game, int x, int y) {}
 	
 	public boolean isSolid()
 	{
-		return solid;
+		return false;
 	}
 	
 	public boolean isSlow()
 	{
-		return slow;
+		return false;
 	}
 }

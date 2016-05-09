@@ -37,9 +37,9 @@ public class TileGrass extends Tile
 	}
 	
 	@Override
-	public void render(Game game, int x, int y)
+	public boolean isSlow()
 	{
-		super.render(game, x, y);
+		return true;
 	}
 	
 }
