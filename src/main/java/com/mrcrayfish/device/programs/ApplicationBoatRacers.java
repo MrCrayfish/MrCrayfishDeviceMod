@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.input.Keyboard;
 
 import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.ApplicationBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.object.Game;
@@ -28,7 +29,7 @@ public class ApplicationBoatRacers extends Application
 
 	public ApplicationBoatRacers() 
 	{
-		super("boat_racer", "Boat Racers");
+		super("boat_racer", "Boat Racers", ApplicationBar.APP_BAR_GUI, 42, 46);
 		this.setDefaultWidth(320);
 		this.setDefaultHeight(160);
 	}
