@@ -19,7 +19,9 @@ public class Game extends Component
 	
 	public int mapWidth;
 	public int mapHeight;
-	private Tile[] map;
+	
+	private Tile[] backgroundTiles;
+	private Tile[] foregroundTiles;
 	
 	private Player player = new Player(this);
 	
@@ -32,7 +34,8 @@ public class Game extends Component
 		
 		this.mapWidth = mapWidth / Tile.SIZE;
 		this.mapHeight = mapHeight / Tile.SIZE;
-		this.map = new Tile[this.mapWidth * this.mapHeight];
+		this.backgroundTiles = new Tile[this.mapWidth * this.mapHeight];
+		this.foregroundTiles = new Tile[this.mapWidth * this.mapHeight];
 		
 		loadMap();
 	}
@@ -53,13 +56,13 @@ public class Game extends Component
 					switch(col)
 					{
 						case -12566464:
-							map[x + y * mapWidth] = Tile.log;
+							backgroundTiles[x + y * mapWidth] = Tile.log;
 							break;
 						case -16744690:
-							map[x + y * mapWidth] = Tile.grass;
+							backgroundTiles[x + y * mapWidth] = Tile.grass;
 							break;
 						default:
-							map[x + y * mapWidth] = Tile.water;
+							backgroundTiles[x + y * mapWidth] = Tile.water;
 							break;
 					}
 				}
@@ -85,7 +88,7 @@ public class Game extends Component
 		{
 			for(int x = 0; x < mapWidth; x++)
 			{
-				Tile tile = map[x + y * mapWidth];
+				Tile tile = backgroundTiles[x + y * mapWidth];
 				if(tile != null)
 				{
 					tile.render(this, x, y);
@@ -97,7 +100,7 @@ public class Game extends Component
 		{
 			for(int x = 0; x < mapWidth; x++)
 			{
-				Tile tile = map[x + y * mapWidth];
+				Tile tile = backgroundTiles[x + y * mapWidth];
 				if(tile != null)
 				{
 					tile.renderForeground(this, x, y);
@@ -106,14 +109,49 @@ public class Game extends Component
 		}
 		
 		player.render(xPosition, yPosition, partialTicks);
+		
+		for(int y = 0; y < mapHeight; y++)
+		{
+			for(int x = 0; x < mapWidth; x++)
+			{
+				Tile tile = foregroundTiles[x + y * mapWidth];
+				if(tile != null)
+				{
+					tile.render(this, x, y);
+				}
+			}
+		}
+		
+		for(int y = 0; y < mapHeight; y++)
+		{
+			for(int x = 0; x < mapWidth; x++)
+			{
+				Tile tile = foregroundTiles[x + y * mapWidth];
+				if(tile != null)
+				{
+					tile.renderForeground(this, x, y);
+				}
+			}
+		}
+	}
+	
+	public boolean placeTile(int x, int y, Tile tile)
+	{
+		int index = x + y * mapWidth;
+		if(index >= 0 && index < foregroundTiles.length)
+		{
+			foregroundTiles[index] = tile;
+			return true;
+		}
+		return false;
 	}
 	
 	public Tile getTile(int x, int y)
 	{
 		int index = x + y * mapWidth;
-		if(index >= 0 && index < map.length)
+		if(index >= 0 && index < backgroundTiles.length)
 		{
-			return map[index];
+			return backgroundTiles[index];
 		}
 		return null;
 	}
