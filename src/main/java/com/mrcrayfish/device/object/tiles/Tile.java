@@ -14,11 +14,12 @@ public class Tile
 	// Details
 	public static final Tile red_flower = new Tile(0, 2);
 	public static final Tile lily_pad = new Tile(1, 2);
-	public static final Tile wheat = new Tile(2, 2);
+	public static final Tile wheat = new TileWheat(2, 2);
 
 	public static final int SIZE = 8;
 	
-	private final int x, y;
+	protected final int x;
+	protected final int y;
 	
 	public Tile(int x, int y)
 	{
