@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.components.ButtonArrow.Type;
+import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -27,13 +28,39 @@ public class ApplicationBar
 	private static final List<Application> APPS = new ArrayList<Application>();
 	private static Application settings = new ApplicationSettings();
 	
+	private static final int APPS_DISPLAYED = 5;
+	
 	private Button btnLeft;
 	private Button btnRight;
+	
+	private int offset = 0;
 
 	public void init(int posX, int posY)
 	{
 		btnLeft = new ButtonArrow(posX, posY, 3, 3, Type.LEFT);
-		btnRight = new ButtonArrow(posX, posY, 100, 3, Type.RIGHT);
+		btnLeft.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				if(offset > 0)
+				{
+					offset--;
+				}
+			}
+		});
+		btnRight = new ButtonArrow(posX, posY, 15 + 14 * APPS_DISPLAYED + 14, 3, Type.RIGHT);
+		btnRight.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				if(offset + APPS_DISPLAYED < APPS.size())
+				{
+					offset++;
+				}
+			}
+		});
 	}
 	
 	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)
@@ -50,9 +77,9 @@ public class ApplicationBar
 		btnLeft.render(gui, mc, mouseX, mouseY, true, partialTicks);
 		btnRight.render(gui, mc, mouseX, mouseY, true, partialTicks);
 
-		for(int i = 0; i < APPS.size(); i++)
+		for(int i = 0; i < APPS_DISPLAYED; i++)
 		{
-			Application app = APPS.get(i);
+			Application app = APPS.get(i + offset);
 			if(app.icon != null)
 			{
 				mc.getTextureManager().bindTexture(app.icon);
@@ -78,10 +105,10 @@ public class ApplicationBar
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
-			int appIndex = (mouseX - x - 1) / 16 - 1;
-			if(appIndex <= 8 && appIndex < APPS.size())
+			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
+			if(appIndex < offset + APPS_DISPLAYED && appIndex < APPS.size())
 			{
-				gui.drawTexturedModalRect(x + appIndex * 16 + 17, y + 1, 0, 30, 16, 16);
+				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 0, 30, 16, 16);
 				gui.drawHoveringText(Arrays.asList(APPS.get(appIndex).getDisplayName()), mouseX, mouseY);
 			}
 		}
@@ -94,17 +121,8 @@ public class ApplicationBar
 	
 	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
-		if(isMouseInside(mouseX, mouseY, btnLeft.xPosition, btnLeft.yPosition, btnLeft.xPosition + btnLeft.width, btnLeft.yPosition + btnLeft.height))
-		{
-			btnLeft.playClickSound(gui.mc.getSoundHandler());
-			return;
-		}
-		
-		if(isMouseInside(mouseX, mouseY, btnRight.xPosition, btnRight.yPosition, btnRight.xPosition + btnRight.width, btnRight.yPosition + btnRight.height))
-		{
-			btnRight.playClickSound(gui.mc.getSoundHandler());
-			return;
-		}
+		btnLeft.handleClick(null, mouseX, mouseY, mouseButton);
+		btnRight.handleClick(null, mouseX, mouseY, mouseButton);
 		
 		if(isMouseInside(mouseX, mouseY, x + 181, y + 1, x + 197, y + 16))
 		{
@@ -114,8 +132,8 @@ public class ApplicationBar
 		
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
-			int appIndex = (mouseX - x - 1) / 16 - 1;
-			if(appIndex < APPS.size())
+			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
+			if(appIndex <= offset + APPS_DISPLAYED && appIndex < APPS.size())
 			{
 				gui.openApplication(APPS.get(appIndex));
 				return;
