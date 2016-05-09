@@ -23,15 +23,6 @@ public class Game extends Component
 	
 	private Player player = new Player(this);
 	
-	private static Tile bedrock = new Tile(3, 0);
-	private static Tile grass = new Tile(1, 0);
-	private static Tile water = new Tile(2, 0);
-	
-	static
-	{
-		grass.setSlow(true);
-	}
-	
 	public Game(int x, int y, int left, int top, int mapWidth, int mapHeight) throws Exception
 	{
 		super(x, y, left, top);
@@ -59,17 +50,16 @@ public class Game extends Component
 				for(int x = 0; x < width; x++)
 				{
 					int col = image.getRGB(x, y);
-					System.out.println(col);
 					switch(col)
 					{
 						case -12566464:
-							map[x + y * mapWidth] = bedrock;
+							map[x + y * mapWidth] = Tile.log;
 							break;
 						case -16744690:
-							map[x + y * mapWidth] = grass;
+							map[x + y * mapWidth] = Tile.grass;
 							break;
 						default:
-							map[x + y * mapWidth] = water;
+							map[x + y * mapWidth] = Tile.water;
 							break;
 					}
 				}
@@ -99,6 +89,18 @@ public class Game extends Component
 				if(tile != null)
 				{
 					tile.render(this, x, y);
+				}
+			}
+		}
+		
+		for(int y = 0; y < mapHeight; y++)
+		{
+			for(int x = 0; x < mapWidth; x++)
+			{
+				Tile tile = map[x + y * mapWidth];
+				if(tile != null)
+				{
+					tile.renderForeground(this, x, y);
 				}
 			}
 		}

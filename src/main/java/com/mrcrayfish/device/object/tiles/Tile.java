@@ -7,6 +7,7 @@ public class Tile
 {
 	public static final Tile grass = new TileGrass(1, 0);
 	public static final Tile water = new Tile(2, 0);
+	public static final Tile log = new Tile(3, 0);
 
 	public static final int SIZE = 8;
 	

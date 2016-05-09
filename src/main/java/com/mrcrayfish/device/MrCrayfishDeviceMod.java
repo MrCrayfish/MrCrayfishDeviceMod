@@ -16,6 +16,7 @@ import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.ApplicationEmail;
 import com.mrcrayfish.device.programs.ApplicationExample;
+import com.mrcrayfish.device.programs.ApplicationBoatRacers;
 import com.mrcrayfish.device.programs.ApplicationNoteStash;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
@@ -84,6 +85,7 @@ public class MrCrayfishDeviceMod
 		ApplicationBar.registerApplication(new ApplicationExample());
 		ApplicationBar.registerApplication(new ApplicationPixelPainter());
 		ApplicationBar.registerApplication(new ApplicationEmail());
+		ApplicationBar.registerApplication(new ApplicationBoatRacers());
 		
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
