@@ -99,12 +99,36 @@ public class ApplicationEmail extends Application
 	private Label labelViewMessage;
 	private Text textMessage;
 	private Button btnCancelViewEmail;
+	
+	/* Contacts Layout */
+	private Layout layoutContacts;
+	private ItemList listContacts;
+	private Button btnAddContact;
+	private Button btnDeleteContact;
+	private Button btnCancelContact;
+	
+	/* Add Contact Layout */
+	private Layout layoutAddContact;
+	private Label labelContactNickname;
+	private TextField fieldContactNickname;
+	private Label labelContactEmail;
+	private TextField fieldContactEmail;
+	private Button btnSaveContact;
+	private Button btnCancelAddContact;
+	
+	/* Insert Contact Layout */
+	private Layout layoutInsertContact;
+	private ItemList listContacts2;
+	private Button btnInsertContact;
+	private Button btnCancelInsertContact;
 
 	private String currentName;
+	
+	private List<Contact> contacts;
 
 	public ApplicationEmail()
 	{
-		super("email", "Ender Mail", ApplicationBar.APP_BAR_GUI, 28, 46);
+		super("email", "Ender Mail", ApplicationBar.APP_BAR_GUI, 70, 30);
 	}
 
 	@Override
@@ -485,11 +509,13 @@ public class ApplicationEmail extends Application
 	@Override
 	public void load(NBTTagCompound tagCompound)
 	{
+		
 	}
 
 	@Override
 	public void save(NBTTagCompound tagCompound)
 	{
+		
 	}
 
 	@Override
@@ -498,6 +524,10 @@ public class ApplicationEmail extends Application
 		if (getCurrentLayout() == layoutInbox)
 		{
 			return "Inbox: " + currentName + "@endermail.com";
+		}
+		if(getCurrentLayout() == layoutContacts)
+		{
+			return "Contacts";
 		}
 		return super.getDisplayName();
 	}
@@ -696,6 +726,34 @@ public class ApplicationEmail extends Application
 			Email email = new Email(nbt.getString("subject"), nbt.getString("author"), nbt.getString("message"));
 			email.setRead(nbt.getBoolean("read"));
 			return email;
+		}
+	}
+	
+	private static class Contact
+	{
+		private String nickname;
+		private String email;
+		
+		public Contact(String nickname, String email)
+		{
+			this.nickname = nickname;
+			this.email = email;
+		}
+		
+		public String getNickname()
+		{
+			return nickname;
+		}
+		
+		public String getEmail()
+		{
+			return email;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return nickname;
 		}
 	}
 }

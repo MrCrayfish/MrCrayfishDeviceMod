@@ -80,7 +80,7 @@ public class ApplicationPixelPainter extends Application
 
 	public ApplicationPixelPainter()
 	{
-		super("pixel_painter", "Pixel Painter", ApplicationBar.APP_BAR_GUI, 14, 46);
+		super("pixel_painter", "Pixel Painter", ApplicationBar.APP_BAR_GUI, 56, 30);
 	}
 
 	@Override

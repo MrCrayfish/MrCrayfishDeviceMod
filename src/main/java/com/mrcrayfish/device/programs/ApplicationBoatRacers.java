@@ -29,7 +29,7 @@ public class ApplicationBoatRacers extends Application
 
 	public ApplicationBoatRacers() 
 	{
-		super("boat_racer", "Boat Racers", ApplicationBar.APP_BAR_GUI, 42, 46);
+		super("boat_racer", "Boat Racers", ApplicationBar.APP_BAR_GUI, 84, 30);
 		this.setDefaultWidth(320);
 		this.setDefaultHeight(160);
 	}

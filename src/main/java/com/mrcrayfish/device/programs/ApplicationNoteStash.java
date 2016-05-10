@@ -46,7 +46,7 @@ public class ApplicationNoteStash extends Application
 
 	public ApplicationNoteStash() 
 	{
-		super("note_stash", "Note Stash", ApplicationBar.APP_BAR_GUI, 0, 46);
+		super("note_stash", "Note Stash", ApplicationBar.APP_BAR_GUI, 42, 30);
 	}
 
 	@Override
