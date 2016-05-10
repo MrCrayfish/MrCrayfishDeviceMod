@@ -22,17 +22,17 @@ public class TileGrass extends Tile
 		
 		if(game.getTile(x, y + 1) == Tile.water)
 		{
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE, game.yPosition + y * Tile.SIZE + 8, 16, 18, 8, 1, 16, 2);
+			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE, game.yPosition + y * Tile.SIZE + 6, 16, 18, 8, 3, 16, 6);
 		}
 		
 		if(game.getTile(x - 1, y) == Tile.water)
 		{
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE - 1, game.yPosition + y * Tile.SIZE, 0, 16, 1, 8, 2, 16);
+			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE - 1, game.yPosition + y * Tile.SIZE - 1, 0, 16, 1, 8, 2, 16);
 		}
 		
 		if(game.getTile(x + 1, y) == Tile.water)
 		{
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE + 8, game.yPosition + y * Tile.SIZE, 2, 16, 1, 8, 2, 16);
+			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE + 8, game.yPosition + y * Tile.SIZE - 1, 2, 16, 1, 8, 2, 16);
 		}
 	}
 	
