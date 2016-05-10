@@ -81,7 +81,6 @@ public class MrCrayfishDeviceMod
 	public void postInit(FMLPostInitializationEvent event) 
 	{
 		ApplicationBar.registerApplication(new ApplicationNoteStash());
-		ApplicationBar.registerApplication(new ApplicationAppStore());
 		ApplicationBar.registerApplication(new ApplicationExample());
 		ApplicationBar.registerApplication(new ApplicationPixelPainter());
 		ApplicationBar.registerApplication(new ApplicationEmail());

@@ -11,6 +11,7 @@ import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonArrow;
 import com.mrcrayfish.device.app.components.ButtonArrow.Type;
 import com.mrcrayfish.device.app.listener.ClickListener;
+import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -26,9 +27,11 @@ public class ApplicationBar
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 	
 	private static final List<Application> APPS = new ArrayList<Application>();
-	private static Application settings = new ApplicationSettings();
 	
-	private static final int APPS_DISPLAYED = 5;
+	private static Application settings = new ApplicationSettings(); 
+	private static Application app_store = new ApplicationAppStore(); 
+	
+	private static final int APPS_DISPLAYED = 10;
 	
 	private Button btnLeft;
 	private Button btnRight;
@@ -77,7 +80,7 @@ public class ApplicationBar
 		btnLeft.render(gui, mc, mouseX, mouseY, true, partialTicks);
 		btnRight.render(gui, mc, mouseX, mouseY, true, partialTicks);
 
-		for(int i = 0; i < APPS_DISPLAYED; i++)
+		for(int i = 0; i < APPS_DISPLAYED && i < APPS.size(); i++)
 		{
 			Application app = APPS.get(i + offset);
 			if(app.icon != null)
@@ -88,18 +91,26 @@ public class ApplicationBar
 			else
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 30, 30, 14, 14);
+				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
 			}
 		}
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		
 		/* Settings App */
-		gui.drawTexturedModalRect(x + 182, y + 2, 16, 30, 14, 14);
-		if(isMouseInside(mouseX, mouseY, x + 181, y + 1, x + 197, y + 16))
+		gui.drawTexturedModalRect(x + 316, y + 2, 14, 30, 14, 14);
+		gui.drawTexturedModalRect(x + 300, y + 2, 28, 30, 14, 14);
+		
+		if(isMouseInside(mouseX, mouseY, x + 316, y + 1, x + 330, y + 16))
 		{
-			gui.drawTexturedModalRect(x + 181, y + 1, 0, 30, 16, 16);
+			gui.drawTexturedModalRect(x + 315, y + 1, 35, 0, 16, 16);
 			gui.drawHoveringText(Arrays.asList(settings.getDisplayName()), mouseX, mouseY);
+		}
+		
+		if(isMouseInside(mouseX, mouseY, x + 300, y + 1, x + 314, y + 16))
+		{
+			gui.drawTexturedModalRect(x + 299, y + 1, 35, 0, 16, 16);
+			gui.drawHoveringText(Arrays.asList(app_store.getDisplayName()), mouseX, mouseY);
 		}
 		
 		/* Other Apps */
@@ -108,7 +119,7 @@ public class ApplicationBar
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
 			if(appIndex < offset + APPS_DISPLAYED && appIndex < APPS.size())
 			{
-				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 0, 30, 16, 16);
+				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
 				gui.drawHoveringText(Arrays.asList(APPS.get(appIndex).getDisplayName()), mouseX, mouseY);
 			}
 		}
@@ -124,9 +135,15 @@ public class ApplicationBar
 		btnLeft.handleClick(null, mouseX, mouseY, mouseButton);
 		btnRight.handleClick(null, mouseX, mouseY, mouseButton);
 		
-		if(isMouseInside(mouseX, mouseY, x + 181, y + 1, x + 197, y + 16))
+		if(isMouseInside(mouseX, mouseY, x + 315, y + 1, x + 331, y + 16))
 		{
 			gui.openApplication(settings);
+			return;
+		}
+		
+		if(isMouseInside(mouseX, mouseY, x + 299, y + 1, x + 315, y + 16))
+		{
+			gui.openApplication(app_store);
 			return;
 		}
 		

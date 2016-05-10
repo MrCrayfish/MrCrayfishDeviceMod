@@ -3,6 +3,7 @@ package com.mrcrayfish.device.programs.system;
 import java.awt.Color;
 
 import com.mrcrayfish.device.app.Application;
+import com.mrcrayfish.device.app.ApplicationBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.components.Button;
@@ -32,7 +33,7 @@ public class ApplicationAppStore extends Application
 	
 	public ApplicationAppStore() 
 	{
-		super("app_store", "App Store");
+		super("app_store", "App Store", ApplicationBar.APP_BAR_GUI, 28, 30);
 		this.setDefaultWidth(250);
 		this.setDefaultHeight(150);
 	}
