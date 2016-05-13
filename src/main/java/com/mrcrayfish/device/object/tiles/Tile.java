@@ -19,8 +19,8 @@ public class Tile
 	public static final int SIZE = 8;
 	
 	public final int id;
-	protected final int x;
-	protected final int y;
+	public final int x;
+	public final int y;
 	
 	private Category category;
 	
@@ -63,6 +63,13 @@ public class Tile
 	
 	public static enum Category 
 	{
-		BLOCKS, DECORATION, GAME;
+		BLOCKS("Blocks"), DECORATION("Decorations"), GAME("Game");
+		
+		public String name;
+		
+		private Category(String name)
+		{
+			this.name = name;
+		}
 	}
 }

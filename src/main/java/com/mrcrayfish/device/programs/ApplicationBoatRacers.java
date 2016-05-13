@@ -1,31 +1,25 @@
 package com.mrcrayfish.device.programs;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
-import org.lwjgl.input.Keyboard;
-
 import com.mrcrayfish.device.app.Application;
 import com.mrcrayfish.device.app.ApplicationBar;
 import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Laptop;
+import com.mrcrayfish.device.app.Layout;
+import com.mrcrayfish.device.app.components.Button;
+import com.mrcrayfish.device.app.components.ButtonToggle;
+import com.mrcrayfish.device.app.components.RadioGroup;
+import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.object.Game;
-import com.mrcrayfish.device.object.Player;
-import com.mrcrayfish.device.object.tiles.Tile;
-import com.mrcrayfish.device.util.GuiHelper;
-import com.mrcrayfish.device.util.Vec2d;
+import com.mrcrayfish.device.object.TileGrid;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 public class ApplicationBoatRacers extends Application 
 {
+	private Layout layoutLevelEditor;
 	private Game game;
+	private TileGrid tileGrid;
+	private ButtonToggle btnForeground;
+	private ButtonToggle btnBackground;
 
 	public ApplicationBoatRacers() 
 	{
@@ -38,16 +32,53 @@ public class ApplicationBoatRacers extends Application
 	protected void init(int x, int y) 
 	{
 		super.init(x, y);
+
+		layoutLevelEditor = new Layout(364, 178);
 		
 		try 
 		{
-			this.game = new Game(x, y, 0, 0, 320, 160);
-			super.addComponent(this.game);
+			game = new Game(x, y, 4, 4, 256, 136);
+			game.setEditorMode(true);
+			layoutLevelEditor.addComponent(game);
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
+		
+		tileGrid = new TileGrid(x, y, 266, 3, game);
+		layoutLevelEditor.addComponent(tileGrid);
+		
+		RadioGroup group = new RadioGroup();
+		
+		btnBackground = new ButtonToggle("BG", x, y, 266, 106, 44, 16);
+		btnBackground.setToolTip("Background", "Tiles drawn will be on the background layer");
+		btnBackground.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				game.setCurrentLayer(Game.Layer.BACKGROUND);
+			}
+		});
+		btnBackground.setRadioGroup(group);
+		btnBackground.setSelected(true);
+		layoutLevelEditor.addComponent(btnBackground);
+		
+		btnForeground = new ButtonToggle("FG", x, y, 314, 106, 44, 16);
+		btnForeground.setToolTip("Foreground", "Tiles drawn will be on the foreground layer");
+		btnForeground.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				game.setCurrentLayer(Game.Layer.FOREGROUND);
+			}
+		});
+		btnForeground.setRadioGroup(group);
+		layoutLevelEditor.addComponent(btnForeground);
+		
+		setCurrentLayout(layoutLevelEditor);
 	}
 
 	@Override
