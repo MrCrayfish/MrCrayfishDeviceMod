@@ -5,9 +5,9 @@ import com.mrcrayfish.device.util.GuiHelper;
 
 public class TileGrass extends Tile
 {
-	public TileGrass(int x, int y)
+	public TileGrass(int id, int x, int y)
 	{
-		super(x, y);
+		super(id, x, y);
 	}
 
 	@Override

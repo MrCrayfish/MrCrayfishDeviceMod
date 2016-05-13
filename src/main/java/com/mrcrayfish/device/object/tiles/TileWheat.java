@@ -5,9 +5,9 @@ import com.mrcrayfish.device.util.GuiHelper;
 
 public class TileWheat extends Tile
 {
-	public TileWheat(int x, int y)
+	public TileWheat(int id, int x, int y)
 	{
-		super(x, y);
+		super(id, x, y);
 	}
 
 	@Override

@@ -6,27 +6,31 @@ import com.mrcrayfish.device.util.GuiHelper;
 public class Tile
 {
 	// Blocks
-	public static final Tile grass = new TileGrass(1, 0).setCategory(Category.BLOCKS);
-	public static final Tile water = new Tile(2, 0).setCategory(Category.BLOCKS);
-	public static final Tile log = new Tile(3, 0).setCategory(Category.BLOCKS);
-	public static final Tile farm_land = new Tile(5, 0).setCategory(Category.BLOCKS);
+	public static final Tile grass = new TileGrass(0, 1, 0).setCategory(Category.BLOCKS);
+	public static final Tile water = new Tile(1, 2, 0).setCategory(Category.BLOCKS);
+	public static final Tile log = new Tile(2, 3, 0).setCategory(Category.BLOCKS);
+	public static final Tile farm_land = new Tile(3, 5, 0).setCategory(Category.BLOCKS);
 	
 	// Details
-	public static final Tile red_flower = new Tile(0, 2).setCategory(Category.DECORATION);
-	public static final Tile lily_pad = new Tile(1, 2).setCategory(Category.DECORATION);
-	public static final Tile wheat = new TileWheat(2, 2).setCategory(Category.DECORATION);
+	public static final Tile red_flower = new Tile(4, 0, 2).setCategory(Category.DECORATION);
+	public static final Tile lily_pad = new Tile(5, 1, 2).setCategory(Category.DECORATION);
+	public static final Tile wheat = new TileWheat(6, 2, 2).setCategory(Category.DECORATION);
 
 	public static final int SIZE = 8;
 	
+	public final int id;
 	protected final int x;
 	protected final int y;
 	
 	private Category category;
 	
-	public Tile(int x, int y)
+	public Tile(int id, int x, int y)
 	{
+		this.id = id;
 		this.x = x;
 		this.y = y;
+		
+		Game.registerTile(id, this);
 	}
 	
 	public Tile setCategory(Category category)

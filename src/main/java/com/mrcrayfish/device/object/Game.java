@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Laptop;
@@ -16,6 +18,8 @@ import net.minecraft.util.ResourceLocation;
 public class Game extends Component
 {
 	public static final ResourceLocation ICONS = new ResourceLocation("cdm:textures/gui/mine_racer.png");
+
+	private static final Map<Integer, Tile> registeredTiles = new HashMap<Integer, Tile>();
 	
 	public int mapWidth;
 	public int mapHeight;
@@ -124,6 +128,10 @@ public class Game extends Component
 				}
 			}
 		}
+	
+	public static void registerTile(int id, Tile tile)
+	{
+		registeredTiles.put(id, tile);
 	}
 	
 	public boolean placeTile(int x, int y, Tile tile)
