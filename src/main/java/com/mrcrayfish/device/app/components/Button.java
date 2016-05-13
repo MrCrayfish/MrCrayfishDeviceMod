@@ -108,7 +108,7 @@ public class Button extends Component
 	@Override
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-        if(this.hovered && this.toolTip != null)
+        if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width -1, yPosition + height) && this.toolTip != null)
         {
         	laptop.drawHoveringText(Arrays.asList(new String[] { EnumChatFormatting.GOLD + this.toolTipTitle, this.toolTip }), mouseX, mouseY);
         }
