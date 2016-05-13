@@ -107,12 +107,14 @@ public class Player
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(Game.ICONS);
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x + posXPrev + (posX - posXPrev) * partialTicks, y + posYPrev + (posY - posYPrev) * partialTicks, 0);
+		double px = x + posXPrev + (posX - posXPrev) * partialTicks;
+		double py = y + posYPrev + (posY - posYPrev) * partialTicks;
+		GlStateManager.translate(px, py, 0);
         GlStateManager.enableBlend();
         float rot = rotationPrev + (rotation - rotationPrev) * partialTicks;
         GlStateManager.rotate(rot, 0, 0, 1);
-        GlStateManager.translate(-8, -6.5F, 0);
-		GuiHelper.drawModalRectWithUV(0, 0, 0, 0, 16, 13, 16, 13);
+        GlStateManager.translate(-6.5F, -5, 0);
+		GuiHelper.drawModalRectWithUV(0, 0, 0, 0, 13, 10, 16, 13);
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
 	}
