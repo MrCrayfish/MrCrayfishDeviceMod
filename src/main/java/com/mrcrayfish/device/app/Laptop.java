@@ -209,7 +209,7 @@ public class Laptop extends GuiScreen
 		this.dragging = false;
 		if(windows[0] != null)
 		{
-			windows[0].handleRelease(mouseX, mouseY);
+			windows[0].handleRelease(mouseX, mouseY, state);
 		}
 	}
 	
@@ -249,7 +249,7 @@ public class Laptop extends GuiScreen
 				
 				if(mouseX >= windowX + window.offsetX + 1 && mouseX <= windowX + window.width + window.offsetX - 1 && mouseY >= windowY + window.offsetY + 13 && mouseY <= windowY + window.offsetY + window.height - 1)
 				{
-					windows[0].handleDrag(mouseX, mouseY);
+					windows[0].handleDrag(mouseX, mouseY, clickedMouseButton);
 				}
 			}
 		}

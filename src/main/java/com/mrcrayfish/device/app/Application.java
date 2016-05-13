@@ -120,19 +120,19 @@ public abstract class Application
 		}
 	}
 	
-	void handleDrag(int mouseX, int mouseY)
+	void handleDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		for(Component c : currentLayout.components)
 		{
-			c.handleDrag(mouseX, mouseY);
+			c.handleDrag(mouseX, mouseY, mouseButton);
 		}
 	}
 	
-	void handleRelease(int mouseX, int mouseY) 
+	void handleRelease(int mouseX, int mouseY, int mouseButton) 
 	{
 		for(Component c : currentLayout.components)
 		{
-			c.handleRelease(mouseX, mouseY);
+			c.handleRelease(mouseX, mouseY, mouseButton);
 		}
 	}
 	

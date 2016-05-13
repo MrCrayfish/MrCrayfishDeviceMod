@@ -65,7 +65,7 @@ public class Slider extends Component
 	}
 	
 	@Override
-	public void handleDrag(int mouseX, int mouseY) 
+	public void handleDrag(int mouseX, int mouseY, int mouseButton) 
 	{
 		if(dragging)
 		{
@@ -86,7 +86,7 @@ public class Slider extends Component
 	}
 	
 	@Override
-	public void handleRelease(int mouseX, int mouseY) 
+	public void handleRelease(int mouseX, int mouseY, int mouseButton) 
 	{
 		this.dragging = false;
 		this.prevSliderX = this.newSliderX;

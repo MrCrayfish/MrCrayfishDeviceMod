@@ -173,14 +173,14 @@ public class Window
 		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
 	}
 	
-	public void handleDrag(int mouseX, int mouseY)
+	public void handleDrag(int mouseX, int mouseY, int mouseButton)
 	{
-		app.handleDrag(mouseX, mouseY);
+		app.handleDrag(mouseX, mouseY, mouseButton);
 	}
 	
-	public void handleRelease(int mouseX, int mouseY)
+	public void handleRelease(int mouseX, int mouseY, int mouseButton)
 	{
-		app.handleRelease(mouseX, mouseY);
+		app.handleRelease(mouseX, mouseY, mouseButton);
 	}
 	
 	public void handleClose(List<GuiButton> buttons)

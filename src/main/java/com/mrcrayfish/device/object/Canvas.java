@@ -97,7 +97,7 @@ public class Canvas extends Component
 	}
 	
 	@Override
-	public void handleRelease(int mouseX, int mouseY) 
+	public void handleRelease(int mouseX, int mouseY, int mouseButton) 
 	{
 		this.drawing = false;
 		
@@ -114,7 +114,7 @@ public class Canvas extends Component
 	}
 	
 	@Override
-	public void handleDrag(int mouseX, int mouseY) 
+	public void handleDrag(int mouseX, int mouseY, int mouseButton) 
 	{
 		int startX = xPosition + 1;
 		int startY = yPosition + 1;

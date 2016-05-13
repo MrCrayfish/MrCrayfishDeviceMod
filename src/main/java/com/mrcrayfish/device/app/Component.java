@@ -44,9 +44,9 @@ public abstract class Component extends Gui
 	
 	public void handleKeyTyped(char character, int code) {}
 	
-	public void handleDrag(int mouseX, int mouseY) {}
+	public void handleDrag(int mouseX, int mouseY, int mouseButton) {}
 	
-	public void handleRelease(int mouseX, int mouseY) {}
+	public void handleRelease(int mouseX, int mouseY, int mouseButton) {}
 	
 	public void updateComponents(int x, int y) 
 	{
