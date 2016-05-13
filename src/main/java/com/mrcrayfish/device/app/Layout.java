@@ -13,7 +13,7 @@ import net.minecraft.client.gui.Gui;
 
 public class Layout
 {
-	public List<Component> components;
+	protected List<Component> components;
 	public int width;
 	public int height;
 	
