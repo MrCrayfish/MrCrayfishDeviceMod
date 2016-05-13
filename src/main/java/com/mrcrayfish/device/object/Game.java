@@ -33,6 +33,9 @@ public class Game extends Component
 	private boolean editorMode = false;
 	private Tile currentTile = Tile.grass;
 	private Layer currentLayer = Layer.BACKGROUND;
+	private boolean renderForeground = true;
+	private boolean renderBackground = true;
+	private boolean renderPlayer = true;
 	
 	public Game(int x, int y, int left, int top, int mapWidth, int mapHeight) throws Exception
 	{
@@ -46,7 +49,6 @@ public class Game extends Component
 		this.backgroundTiles = new Tile[this.mapWidth * this.mapHeight];
 		this.foregroundTiles = new Tile[this.mapWidth * this.mapHeight];
 	}
-	
 	
 	public void setEditorMode(boolean editorMode)
 	{
@@ -72,7 +74,7 @@ public class Game extends Component
 	@Override
 	public void handleTick()
 	{
-		if(!editorMode)
+		if(renderPlayer)
 		{
 			player.tick();
 		}
@@ -134,55 +136,62 @@ public class Game extends Component
 		GlStateManager.pushAttrib();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(ICONS);
-		for(int y = 0; y < mapHeight; y++)
+		
+		if(renderBackground)
 		{
-			for(int x = 0; x < mapWidth; x++)
+			for(int y = 0; y < mapHeight; y++)
 			{
-				Tile tile = backgroundTiles[x + y * mapWidth];
-				if(tile != null)
+				for(int x = 0; x < mapWidth; x++)
 				{
-					tile.render(this, x, y);
+					Tile tile = backgroundTiles[x + y * mapWidth];
+					if(tile != null)
+					{
+						tile.render(this, x, y);
+					}
+				}
+			}
+			
+			for(int y = 0; y < mapHeight; y++)
+			{
+				for(int x = 0; x < mapWidth; x++)
+				{
+					Tile tile = backgroundTiles[x + y * mapWidth];
+					if(tile != null)
+					{
+						tile.renderForeground(this, x, y);
+					}
 				}
 			}
 		}
 		
-		for(int y = 0; y < mapHeight; y++)
-		{
-			for(int x = 0; x < mapWidth; x++)
-			{
-				Tile tile = backgroundTiles[x + y * mapWidth];
-				if(tile != null)
-				{
-					tile.renderForeground(this, x, y);
-				}
-			}
-		}
-		
-		if(!editorMode)
+		if(renderPlayer)
 		{
 			player.render(xPosition, yPosition, partialTicks);
 		}
 		
-		for(int y = 0; y < mapHeight; y++)
+		if(renderForeground)
 		{
-			for(int x = 0; x < mapWidth; x++)
+			for(int y = 0; y < mapHeight; y++)
 			{
-				Tile tile = foregroundTiles[x + y * mapWidth];
-				if(tile != null)
+				for(int x = 0; x < mapWidth; x++)
 				{
-					tile.render(this, x, y);
+					Tile tile = foregroundTiles[x + y * mapWidth];
+					if(tile != null)
+					{
+						tile.render(this, x, y);
+					}
 				}
 			}
-		}
-		
-		for(int y = 0; y < mapHeight; y++)
-		{
-			for(int x = 0; x < mapWidth; x++)
+			
+			for(int y = 0; y < mapHeight; y++)
 			{
-				Tile tile = foregroundTiles[x + y * mapWidth];
-				if(tile != null)
+				for(int x = 0; x < mapWidth; x++)
 				{
-					tile.renderForeground(this, x, y);
+					Tile tile = foregroundTiles[x + y * mapWidth];
+					if(tile != null)
+					{
+						tile.renderForeground(this, x, y);
+					}
 				}
 			}
 		}
@@ -245,9 +254,30 @@ public class Game extends Component
 	{
 		this.currentLayer = currentLayer;
 	}
+	
+	public void setRenderBackground(boolean renderBackground)
+	{
+		this.renderBackground = renderBackground;
+	}
+	
+	public void setRenderForeground(boolean renderForeground)
+	{
+		this.renderForeground = renderForeground;
+	}
+	
+	public void setRenderPlayer(boolean renderPlayer)
+	{
+		this.renderPlayer = renderPlayer;
+	}
 
 	public static enum Layer
 	{
 		BACKGROUND, FOREGROUND;
+	}
+	
+	// Temp method
+	public void fill(Tile tile)
+	{
+		for(int i = 0; i < backgroundTiles.length; i++) backgroundTiles[i] = tile;
 	}
 }

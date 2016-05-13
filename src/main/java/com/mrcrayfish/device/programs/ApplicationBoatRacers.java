@@ -6,10 +6,12 @@ import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.components.Button;
 import com.mrcrayfish.device.app.components.ButtonToggle;
+import com.mrcrayfish.device.app.components.CheckBox;
 import com.mrcrayfish.device.app.components.RadioGroup;
 import com.mrcrayfish.device.app.listener.ClickListener;
 import com.mrcrayfish.device.object.Game;
 import com.mrcrayfish.device.object.TileGrid;
+import com.mrcrayfish.device.object.tiles.Tile;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -20,6 +22,9 @@ public class ApplicationBoatRacers extends Application
 	private TileGrid tileGrid;
 	private ButtonToggle btnForeground;
 	private ButtonToggle btnBackground;
+	private CheckBox checkBoxForeground;
+	private CheckBox checkBoxBackground;
+	private CheckBox checkBoxPlayer;
 
 	public ApplicationBoatRacers() 
 	{
@@ -37,8 +42,10 @@ public class ApplicationBoatRacers extends Application
 		
 		try 
 		{
-			game = new Game(x, y, 4, 4, 256, 136);
+			game = new Game(x, y, 4, 4, 256, 144);
 			game.setEditorMode(true);
+			game.setRenderPlayer(false);
+			game.fill(Tile.grass);
 			layoutLevelEditor.addComponent(game);
 		} 
 		catch (Exception e) 
@@ -77,6 +84,41 @@ public class ApplicationBoatRacers extends Application
 		});
 		btnForeground.setRadioGroup(group);
 		layoutLevelEditor.addComponent(btnForeground);
+		
+		checkBoxBackground = new CheckBox("Background", x, y, 3, 151);
+		checkBoxBackground.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				game.setRenderBackground(checkBoxBackground.isSelected());
+			}
+		});
+		checkBoxBackground.setSelected(true);
+		layoutLevelEditor.addComponent(checkBoxBackground);
+		
+		checkBoxForeground = new CheckBox("Foreground", x, y, 80, 151);
+		checkBoxForeground.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				game.setRenderForeground(checkBoxForeground.isSelected());
+			}
+		});
+		checkBoxForeground.setSelected(true);
+		layoutLevelEditor.addComponent(checkBoxForeground);
+		
+		checkBoxPlayer = new CheckBox("Player", x, y, 160, 151);
+		checkBoxPlayer.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				game.setRenderPlayer(checkBoxPlayer.isSelected());
+			}
+		});
+		layoutLevelEditor.addComponent(checkBoxPlayer);
 		
 		setCurrentLayout(layoutLevelEditor);
 	}
