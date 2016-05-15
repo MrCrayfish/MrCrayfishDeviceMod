@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.object.tiles;
 
 import com.mrcrayfish.device.object.Game;
+import com.mrcrayfish.device.object.Game.Layer;
 import com.mrcrayfish.device.util.GuiHelper;
 
 public class TileGrass extends Tile
@@ -11,9 +12,9 @@ public class TileGrass extends Tile
 	}
 
 	@Override
-	public void renderForeground(Game game, int x, int y)
+	public void renderForeground(Game game, int x, int y, Layer layer)
 	{
-		super.renderForeground(game, x, y);
+		super.renderForeground(game, x, y, layer);
 		
 		if(game.getTile(x, y - 1) == Tile.water)
 		{

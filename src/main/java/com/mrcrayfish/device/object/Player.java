@@ -60,7 +60,7 @@ public class Player
 			rotation += 8;
 		}
 		
-		Tile tile = game.getTile(getPosX(), getPosY());
+		Tile tile = game.getTile(Layer.BACKGROUND, getPosX(), getPosY());
 		if(tile != null && tile.isSlow())
 		{
 			speed *= 0.1;

@@ -171,27 +171,21 @@ public class Game extends Component
 		
 		if(renderForeground)
 		{
-			for(int y = 0; y < mapHeight; y++)
+			for(int i = 0; i < tiles[3].length; i++)
 			{
-				for(int x = 0; x < mapWidth; x++)
+				Tile tile = tiles[3][i];
+				if(tile != null)
 				{
-					Tile tile = foregroundTiles[x + y * mapWidth];
-					if(tile != null)
-					{
-						tile.render(this, x, y);
-					}
+					tile.render(this, i % mapWidth, i / mapWidth, Layer.FOREGROUND);
 				}
 			}
 			
-			for(int y = 0; y < mapHeight; y++)
+			for(int i = 0; i < tiles[3].length; i++)
 			{
-				for(int x = 0; x < mapWidth; x++)
+				Tile tile = tiles[3][i];
+				if(tile != null)
 				{
-					Tile tile = foregroundTiles[x + y * mapWidth];
-					if(tile != null)
-					{
-						tile.renderForeground(this, x, y);
-					}
+					tile.renderForeground(this, i % mapWidth, i / mapWidth, Layer.FOREGROUND);
 				}
 			}
 		}
@@ -230,12 +224,12 @@ public class Game extends Component
 		return false;
 	}
 	
-	public Tile getTile(int x, int y)
+	public Tile getTile(Layer layer, int x, int y)
 	{
 		int index = x + y * mapWidth;
-		if(index >= 0 && index < backgroundTiles.length)
+		if(index >= 0 && index < mapWidth * mapHeight)
 		{
-			return backgroundTiles[index];
+			return tiles[layer.layer][index];
 		}
 		return null;
 	}
@@ -272,7 +266,32 @@ public class Game extends Component
 
 	public static enum Layer
 	{
-		BACKGROUND, FOREGROUND;
+		BACKGROUND(0), MIDGROUND_LOW(1), MIDGROUND_HIGH(2), FOREGROUND(3);
+		
+		public int layer;
+		
+		Layer(int layer)
+		{
+			this.layer = layer;
+		}
+		
+		public Layer up()
+		{
+			if(layer + 1 <= values().length - 1)
+			{
+				return values()[layer + 1];
+			}
+			return this;
+		}
+		
+		public Layer down()
+		{
+			if(layer - 1 >= 0)
+			{
+				return values()[layer - 1];
+			}
+			return this;
+		}
 	}
 	
 	// Temp method
