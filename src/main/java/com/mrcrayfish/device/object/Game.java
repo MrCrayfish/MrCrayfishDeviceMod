@@ -292,6 +292,26 @@ public class Game extends Component
 	{
 		this.renderPlayer = renderPlayer;
 	}
+	
+	public void nextLayer()
+	{
+		int next = currentLayer.layer + 1;
+		if(next <= Layer.values().length - 1)
+		{
+			this.currentLayer = Layer.values()[next];
+		}
+		System.out.println(this.currentLayer.name());
+	}
+	
+	public void prevLayer()
+	{
+		int prev = currentLayer.layer - 1;
+		if(prev >= 0)
+		{
+			this.currentLayer = Layer.values()[prev];
+		}
+		System.out.println(this.currentLayer.name());
+	}
 
 	public static enum Layer
 	{
