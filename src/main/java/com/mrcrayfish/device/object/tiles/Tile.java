@@ -17,11 +17,11 @@ public class Tile
 	public static final Tile lily_pad = new Tile(5, 1, 2).setCategory(Category.DECORATION);
 	public static final Tile wheat = new TileWheat(6, 2, 2).setCategory(Category.DECORATION);
 
-	public static final int SIZE = 8;
+	public static final int WIDTH = 8;
+	public static final int HEIGHT = 6;
 	
 	public final int id;
-	public final int x;
-	public final int y;
+	public final int x, y;
 	
 	private Category category;
 	
@@ -42,7 +42,7 @@ public class Tile
 	
 	public void render(Game game, int x, int y, Layer layer)
 	{
-		GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE , game.yPosition + y * Tile.SIZE, this.x * 16, this.y * 16, SIZE, SIZE, 16, 16);
+		GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH , game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16, WIDTH, HEIGHT, 16, 16);	
 	}
 	
 	public void renderForeground(Game game, int x, int y, Layer layer) {}

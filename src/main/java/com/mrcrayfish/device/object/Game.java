@@ -25,29 +25,29 @@ public class Game extends Component
 	public int mapWidth;
 	public int mapHeight;
 	
-	private Tile[] backgroundTiles;
-	private Tile[] foregroundTiles;
+	private Tile[][] tiles;
 	
 	private Player player = new Player(this);
 	
 	private boolean editorMode = false;
 	private Tile currentTile = Tile.grass;
 	private Layer currentLayer = Layer.BACKGROUND;
-	private boolean renderForeground = true;
 	private boolean renderBackground = true;
+	private boolean renderMidgroundLow = true;
+	private boolean renderMidgroundHigh = true;
+	private boolean renderForeground = true;
 	private boolean renderPlayer = true;
 	
 	public Game(int x, int y, int left, int top, int mapWidth, int mapHeight) throws Exception
 	{
 		super(x, y, left, top);
 		
-		if(mapWidth % Tile.SIZE != 0 || mapHeight % Tile.SIZE != 0)
-			throw new Exception("Width and height need to be a multiple of " + Tile.SIZE);
+		if(mapWidth % Tile.WIDTH != 0 || mapHeight % Tile.HEIGHT != 0)
+			throw new Exception("Width and height need to be a multiple of " + Tile.WIDTH);
 		
-		this.mapWidth = mapWidth / Tile.SIZE;
-		this.mapHeight = mapHeight / Tile.SIZE;
-		this.backgroundTiles = new Tile[this.mapWidth * this.mapHeight];
-		this.foregroundTiles = new Tile[this.mapWidth * this.mapHeight];
+		this.mapWidth = mapWidth / Tile.WIDTH;
+		this.mapHeight = mapHeight / Tile.HEIGHT;
+		this.tiles = new Tile[4][this.mapWidth * this.mapHeight];
 	}
 	
 	public void setEditorMode(boolean editorMode)
@@ -87,8 +87,8 @@ public class Game extends Component
 		{
 			int startX = xPosition;
 			int startY = yPosition;
-			int endX = startX + mapWidth * Tile.SIZE;
-			int endY = startY + mapHeight * Tile.SIZE;
+			int endX = startX + mapWidth * Tile.WIDTH;
+			int endY = startY + mapHeight * Tile.HEIGHT;
 			if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 			{
 				int pixelX = (mouseX - startX) / Tile.SIZE;
@@ -108,12 +108,12 @@ public class Game extends Component
 		{
 			int startX = xPosition;
 			int startY = yPosition;
-			int endX = startX + mapWidth * Tile.SIZE;
-			int endY = startY + mapHeight * Tile.SIZE;
+			int endX = startX + mapWidth * Tile.WIDTH;
+			int endY = startY + mapHeight * Tile.HEIGHT;
 			if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 			{
-				int pixelX = (mouseX - startX) / Tile.SIZE;
-				int pixelY = (mouseY - startY) / Tile.SIZE;
+				int pixelX = (mouseX - startX) / Tile.WIDTH;
+				int pixelY = (mouseY - startY) / Tile.HEIGHT;
 				if(mouseButton == 0)
 					placeTile(pixelX, pixelY, currentTile);
 				else if(mouseButton == 1)
@@ -129,7 +129,7 @@ public class Game extends Component
 		
 		if(editorMode)
 		{
-			drawRect(xPosition - 1, yPosition - 1, xPosition + mapWidth * Tile.SIZE + 1, yPosition + mapHeight * Tile.SIZE + 1, Color.DARK_GRAY.getRGB());
+			drawRect(xPosition - 1, yPosition - 1, xPosition + mapWidth * Tile.WIDTH + 1, yPosition + mapHeight * Tile.HEIGHT + 1, Color.DARK_GRAY.getRGB());
 		}
 		
 		GlStateManager.pushMatrix();
@@ -139,27 +139,42 @@ public class Game extends Component
 		
 		if(renderBackground)
 		{
-			for(int y = 0; y < mapHeight; y++)
+			for(int i = 0; i < tiles[0].length; i++)
 			{
-				for(int x = 0; x < mapWidth; x++)
+				Tile tile = tiles[0][i];
+				if(tile != null)
 				{
-					Tile tile = backgroundTiles[x + y * mapWidth];
-					if(tile != null)
-					{
-						tile.render(this, x, y);
-					}
+					tile.render(this, i % mapWidth, i / mapWidth, Layer.BACKGROUND);
 				}
 			}
 			
-			for(int y = 0; y < mapHeight; y++)
+			for(int i = 0; i < tiles[0].length; i++)
 			{
-				for(int x = 0; x < mapWidth; x++)
+				Tile tile = tiles[0][i];
+				if(tile != null)
 				{
-					Tile tile = backgroundTiles[x + y * mapWidth];
-					if(tile != null)
-					{
-						tile.renderForeground(this, x, y);
-					}
+					tile.renderForeground(this, i % mapWidth, i / mapWidth, Layer.BACKGROUND);
+				}
+			}
+		}
+		
+		if(renderMidgroundLow)
+		{
+			for(int i = 0; i < tiles[1].length; i++)
+			{
+				Tile tile = tiles[1][i];
+				if(tile != null)
+				{
+					tile.render(this, i % mapWidth, i / mapWidth, Layer.MIDGROUND_LOW);
+				}
+			}
+			
+			for(int i = 0; i < tiles[1].length; i++)
+			{
+				Tile tile = tiles[1][i];
+				if(tile != null)
+				{
+					tile.renderForeground(this, i % mapWidth, i / mapWidth, Layer.MIDGROUND_LOW);
 				}
 			}
 		}
@@ -167,6 +182,27 @@ public class Game extends Component
 		if(renderPlayer)
 		{
 			player.render(xPosition, yPosition, partialTicks);
+		}
+		
+		if(renderMidgroundHigh)
+		{
+			for(int i = 0; i < tiles[2].length; i++)
+			{
+				Tile tile = tiles[2][i];
+				if(tile != null)
+				{
+					tile.render(this, i % mapWidth, i / mapWidth, Layer.MIDGROUND_HIGH);
+				}
+			}
+			
+			for(int i = 0; i < tiles[2].length; i++)
+			{
+				Tile tile = tiles[2][i];
+				if(tile != null)
+				{
+					tile.renderForeground(this, i % mapWidth, i / mapWidth, Layer.MIDGROUND_HIGH);
+				}
+			}
 		}
 		
 		if(renderForeground)
@@ -192,6 +228,7 @@ public class Game extends Component
 		
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
+		
 		//System.out.println("Rendered game in " + (System.currentTimeMillis() - start));
 	}
 	
@@ -210,15 +247,7 @@ public class Game extends Component
 		int index = x + y * mapWidth;
 		if(index >= 0 && index < mapWidth * mapHeight)
 		{
-			switch(currentLayer)
-			{
-			case BACKGROUND:
-				backgroundTiles[index] = tile;
-				break;
-			case FOREGROUND:
-				foregroundTiles[index] = tile;
-				break;
-			}
+			tiles[currentLayer.layer][index] = tile;
 			return true;
 		}
 		return false;
@@ -297,6 +326,6 @@ public class Game extends Component
 	// Temp method
 	public void fill(Tile tile)
 	{
-		for(int i = 0; i < backgroundTiles.length; i++) backgroundTiles[i] = tile;
+		for(int i = 0; i < tiles[0].length; i++) tiles[0][i] = tile;
 	}
 }
