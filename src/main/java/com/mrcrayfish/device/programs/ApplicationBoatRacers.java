@@ -56,34 +56,32 @@ public class ApplicationBoatRacers extends Application
 		tileGrid = new TileGrid(x, y, 266, 3, game);
 		layoutLevelEditor.addComponent(tileGrid);
 		
-		RadioGroup group = new RadioGroup();
+		labelLayer = new Label("1", x, y, 280, 108);
+		layoutLevelEditor.addComponent(labelLayer);
 		
-		btnBackground = new ButtonToggle("BG", x, y, 266, 106, 44, 16);
-		btnBackground.setToolTip("Background", "Tiles drawn will be on the background layer");
-		btnBackground.setClickListener(new ClickListener()
+		btnNextLayer = new ButtonArrow(x, y, 266, 106, ButtonArrow.Type.RIGHT);
+		btnNextLayer.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				game.setCurrentLayer(Game.Layer.BACKGROUND);
+				game.nextLayer();
+				labelLayer.setText(Integer.toString(game.getCurrentLayer().layer + 1));
 			}
 		});
-		btnBackground.setRadioGroup(group);
-		btnBackground.setSelected(true);
-		layoutLevelEditor.addComponent(btnBackground);
+		layoutLevelEditor.addComponent(btnNextLayer);
 		
-		btnForeground = new ButtonToggle("FG", x, y, 314, 106, 44, 16);
-		btnForeground.setToolTip("Foreground", "Tiles drawn will be on the foreground layer");
-		btnForeground.setClickListener(new ClickListener()
+		btnPrevLayer = new ButtonArrow(x, y, 314, 106, ButtonArrow.Type.LEFT);
+		btnPrevLayer.setClickListener(new ClickListener()
 		{
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				game.setCurrentLayer(Game.Layer.FOREGROUND);
+				game.prevLayer();
+				labelLayer.setText(Integer.toString(game.getCurrentLayer().layer + 1));
 			}
 		});
-		btnForeground.setRadioGroup(group);
-		layoutLevelEditor.addComponent(btnForeground);
+		layoutLevelEditor.addComponent(btnPrevLayer);
 		
 		checkBoxBackground = new CheckBox("Background", x, y, 3, 151);
 		checkBoxBackground.setClickListener(new ClickListener()
