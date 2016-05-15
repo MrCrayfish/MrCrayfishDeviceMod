@@ -2,6 +2,7 @@ package com.mrcrayfish.device.object;
 
 import org.lwjgl.input.Keyboard;
 
+import com.mrcrayfish.device.object.Game.Layer;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.util.GuiHelper;
 import com.mrcrayfish.device.util.Vec2d;
@@ -88,19 +89,19 @@ public class Player
 	{
 		if(posX + velocity.x <= 0) return false;
 		if(posY + velocity.y <= 0) return false;
-		if(posX + velocity.x >= game.mapWidth * Tile.SIZE) return false;
-		if(posY + velocity.y >= game.mapHeight * Tile.SIZE) return false;
+		if(posX + velocity.x >= game.mapWidth * Tile.WIDTH) return false;
+		if(posY + velocity.y >= game.mapHeight * Tile.HEIGHT) return false;
 		return true;
 	}
 	
 	public int getPosX()
 	{
-		return (int) (posX / Tile.SIZE);
+		return (int) (posX / Tile.WIDTH);
 	}
 	
 	public int getPosY()
 	{
-		return (int) (posY / Tile.SIZE);
+		return (int) (posY / Tile.HEIGHT);
 	}
 	
 	public void render(int x, int y, float partialTicks)
