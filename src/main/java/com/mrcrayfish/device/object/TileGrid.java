@@ -45,7 +45,7 @@ public class TileGrid extends Component
 		labelCurrentCategory = new Label("", xPosition, yPosition, left + 14, top + 2);
 		layout.addComponent(labelCurrentCategory);
 		
-		btnNextCategory = new ButtonArrow(xPosition, yPosition, left + 80, top, ButtonArrow.Type.RIGHT);
+		btnNextCategory = new ButtonArrow(xPosition, yPosition, left + 81, top, ButtonArrow.Type.RIGHT);
 		btnNextCategory.setClickListener(new ClickListener()
 		{
 			@Override
@@ -81,8 +81,8 @@ public class TileGrid extends Component
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 	{
-		drawRect(xPosition, yPosition + 15, xPosition + 92, yPosition + 100, Color.DARK_GRAY.getRGB());
-		drawRect(xPosition + 1, yPosition + 16, xPosition + 91, yPosition + 99, Color.GRAY.getRGB());
+		drawRect(xPosition, yPosition + 15, xPosition + 93, yPosition + 100, Color.DARK_GRAY.getRGB());
+		drawRect(xPosition + 1, yPosition + 16, xPosition + 92, yPosition + 99, Color.GRAY.getRGB());
 		
 
 		mc.getTextureManager().bindTexture(Game.ICONS);
