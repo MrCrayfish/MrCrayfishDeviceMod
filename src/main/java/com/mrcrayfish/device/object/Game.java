@@ -91,8 +91,8 @@ public class Game extends Component
 			int endY = startY + mapHeight * Tile.HEIGHT;
 			if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 			{
-				int pixelX = (mouseX - startX) / Tile.SIZE;
-				int pixelY = (mouseY - startY) / Tile.SIZE;
+				int pixelX = (mouseX - startX) / Tile.WIDTH;
+				int pixelY = (mouseY - startY) / Tile.HEIGHT;
 				if(mouseButton == 0)
 					placeTile(pixelX, pixelY, currentTile);
 				else if(mouseButton == 1)
