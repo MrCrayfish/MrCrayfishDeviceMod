@@ -184,6 +184,7 @@ public class Game extends Component
 			player.render(xPosition, yPosition, partialTicks);
 		}
 		
+		mc.getTextureManager().bindTexture(ICONS);
 		if(renderMidgroundHigh)
 		{
 			for(int i = 0; i < tiles[2].length; i++)
@@ -315,13 +316,14 @@ public class Game extends Component
 
 	public static enum Layer
 	{
-		BACKGROUND(0), MIDGROUND_LOW(1), MIDGROUND_HIGH(2), FOREGROUND(3);
 		
 		public int layer;
+		public double zLevel;
 		
-		Layer(int layer)
+		Layer(int layer, double zLevel)
 		{
 			this.layer = layer;
+			this.zLevel = zLevel;
 		}
 		
 		public Layer up()

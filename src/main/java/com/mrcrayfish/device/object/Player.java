@@ -126,6 +126,7 @@ public class Player
 		double px = x + posXPrev + (posX - posXPrev) * partialTicks;
 		double py = y + posYPrev + (posY - posYPrev) * partialTicks;
         float rot = rotationPrev + (rotation - rotationPrev) * partialTicks;
+        
         GlStateManager.pushMatrix();
 		GlStateManager.translate((float) px, (float) py, 3.0F);
 		GlStateManager.scale((float) (-scale), (float) scale, (float) scale);
