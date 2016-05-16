@@ -15,25 +15,42 @@ public class TileBlock extends Tile
 		super(id, x, y);
 	}
 	
+	public TileBlock(int id, int x, int y, int topX, int topY)
+	{
+		super(id, x, y, topX, topY);
+	}
+	
 	@Override
 	public void render(Game game, int x, int y, Layer layer)
 	{	
-		if(game.getTile(layer.up(), x, y - 1) != this || layer == Layer.FOREGROUND)
+		if(layer != Layer.BACKGROUND)
 		{
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT - 6, this.x * 16, this.y * 16, WIDTH, HEIGHT, 16, 16);
+			if(game.getTile(layer.up(), x, y - 1) != this || layer == Layer.FOREGROUND)
+			{
+				GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT - 6, this.topX * 16, this.topY * 16, WIDTH, HEIGHT, 16, 16);
+			}
+			
+			GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
+			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16, WIDTH, 6, 16, 16);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
-		
-		GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
-		GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16 + 4, WIDTH, 6, 16, 12);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		else
+		{
+			super.render(game, x, y, layer);
+		}
 	}
 	
 	@Override
 	public void renderForeground(Game game, int x, int y, Layer layer)
 	{
-		/*if(layer.layer > 0)
+		if(layer == Layer.BACKGROUND && this != Tile.water)
 		{
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.SIZE , game.yPosition + y * Tile.SIZE - 2, this.x * 16, this.y * 16, SIZE, 8, 16, 16);
-		}*/
+			if(game.getTile(layer, x, y + 1) == Tile.water)
+			{
+				GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
+				GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT + 6, this.x * 16, this.y * 16, WIDTH, 2, 16, 4);
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			}
+		}
 	}
 }

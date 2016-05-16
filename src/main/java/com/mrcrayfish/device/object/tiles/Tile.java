@@ -22,16 +22,16 @@ public class Tile
 	public static final Tile soul_sand = new TileBlock(12, 8, 0).setCategory(Category.BLOCKS);
 	
 	// Details
-	public static final Tile red_flower = new Tile(13, 0, 2).setCategory(Category.DECORATION);
-	public static final Tile flower_blue_orchid = new Tile(14, 0, 3).setCategory(Category.DECORATION);
-	public static final Tile flower_oxeye_daisy = new Tile(15, 0, 4).setCategory(Category.DECORATION);
-	public static final Tile flower_allium = new Tile(16, 0, 5).setCategory(Category.DECORATION);
+	public static final Tile red_flower = new TileFlower(13, 0, 2).setCategory(Category.DECORATION);
+	public static final Tile flower_blue_orchid = new TileFlower(14, 0, 3).setCategory(Category.DECORATION);
+	public static final Tile flower_oxeye_daisy = new TileFlower(15, 0, 4).setCategory(Category.DECORATION);
+	public static final Tile flower_allium = new TileFlower(16, 0, 5).setCategory(Category.DECORATION);
 	public static final Tile lily_pad = new Tile(17, 1, 2).setCategory(Category.DECORATION);
 	public static final Tile wheat = new TileWheat(18, 2, 2).setCategory(Category.DECORATION);
 	public static final Tile cactus = new Tile(19, 3, 2).setCategory(Category.DECORATION); //Need tile
 	public static final Tile enchantment_table = new Tile(20, 5, 2).setCategory(Category.DECORATION); //Need tile
-	public static final Tile pumpkin = new Tile(21, 7, 2, 8, 2).setCategory(Category.DECORATION);
-	public static final Tile wheat_block = new Tile(22, 8, 1, 9, 1).setCategory(Category.DECORATION);
+	public static final Tile pumpkin = new TileBlock(21, 7, 2, 8, 2).setCategory(Category.DECORATION);
+	public static final Tile wheat_block = new TileBlock(22, 8, 1, 9, 1).setCategory(Category.DECORATION);
 	public static final Tile carrot = new TileWheat(23, 2, 3).setCategory(Category.DECORATION);
 	public static final Tile netherwart = new TileWheat(24, 3, 3).setCategory(Category.DECORATION);
 	
@@ -42,6 +42,9 @@ public class Tile
 	public final int id;
 	public final int x, y;
 	
+	private boolean hasTop = false;
+	public int topX = -1, topY = -1;
+	
 	private Category category;
 	
 	public Tile(int id, int x, int y)
@@ -49,8 +52,18 @@ public class Tile
 		this.id = id;
 		this.x = x;
 		this.y = y;
+		this.topX = x;
+		this.topY = y;
 		
 		Game.registerTile(id, this);
+	}
+	
+	public Tile(int id, int x, int y, int topX, int topY)
+	{
+		this(id, x, y);
+		this.hasTop = true;
+		this.topX = topX;
+		this.topY = topY;
 	}
 	
 	public Tile setCategory(Category category)
