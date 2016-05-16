@@ -55,18 +55,24 @@ public class Game extends Component
 		this.editorMode = editorMode;
 	}
 	
-	public boolean loadMap(int width, int height, int[] data)
+	public boolean loadMap(int width, int height, int[][] data)
 	{
-		if(width * height != data.length)
+		if(data.length != 4)
+			return false;
+			
+		if(data[0].length != width * height)
 			return false;
 		
-		for(int i = 0; i < data.length; i++)
+		this.mapWidth = width;
+		this.mapHeight = height;
+		this.tiles = new Tile[4][this.mapWidth * this.mapHeight];
+		
+		for(int layer = 0; layer < data.length; layer++)
 		{
-			int id = data[i];
-			if(id == 0xFF404040) backgroundTiles[i] = Tile.log;
-			if(id == 0xFF007F0E) backgroundTiles[i] = Tile.grass;
-			if(id == 0xFF0094FF) backgroundTiles[i] = Tile.water;
-			if(id == 0xFF2D2000) backgroundTiles[i] = Tile.farm_land;
+			for(int tile = 0; tile < data[0].length; tile++)
+			{
+				this.tiles[layer][tile] = registeredTiles.get(data[layer][tile]);
+			}
 		}
 		return true;
 	}
@@ -279,6 +285,11 @@ public class Game extends Component
 		this.currentLayer = currentLayer;
 	}
 	
+	public Layer getCurrentLayer()
+	{
+		return currentLayer;
+	}
+	
 	public void setRenderBackground(boolean renderBackground)
 	{
 		this.renderBackground = renderBackground;
@@ -316,6 +327,7 @@ public class Game extends Component
 
 	public static enum Layer
 	{
+		BACKGROUND(0, 0), MIDGROUND_LOW(1, 0), MIDGROUND_HIGH(2, 20), FOREGROUND(3, 30);
 		
 		public int layer;
 		public double zLevel;
