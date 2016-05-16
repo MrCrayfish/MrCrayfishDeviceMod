@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.object;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.object.Game.Layer;
 import com.mrcrayfish.device.object.tiles.Tile;
@@ -8,7 +9,17 @@ import com.mrcrayfish.device.util.GuiHelper;
 import com.mrcrayfish.device.util.Vec2d;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBoat;
+import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class Player
 {
@@ -21,6 +32,9 @@ public class Player
 	private Vec2d direction;
 	private Vec2d velocity;
 	
+	private EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+	private Entity boat = new EntityBoat(Minecraft.getMinecraft().theWorld);
+	
 	boolean canMove = false;
 	
 	public Player(Game game)
@@ -28,6 +42,8 @@ public class Player
 		this.game = game;
 		direction = new Vec2d(0, 0);
 		velocity = new Vec2d(0, 0);
+		boat.riddenByEntity = player;
+		player.ridingEntity = boat;
 	}
 	
 	public void tick()
@@ -106,17 +122,39 @@ public class Player
 	
 	public void render(int x, int y, float partialTicks)
 	{
-		Minecraft.getMinecraft().getTextureManager().bindTexture(Game.ICONS);
-		GlStateManager.pushMatrix();
+		float scale = 8F;
 		double px = x + posXPrev + (posX - posXPrev) * partialTicks;
 		double py = y + posYPrev + (posY - posYPrev) * partialTicks;
-		GlStateManager.translate(px, py, 0);
-        GlStateManager.enableBlend();
         float rot = rotationPrev + (rotation - rotationPrev) * partialTicks;
-        GlStateManager.rotate(rot, 0, 0, 1);
-        GlStateManager.translate(-6.5F, -5, 0);
-		GuiHelper.drawModalRectWithUV(0, 0, 0, 0, 13, 10, 16, 13);
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+		GlStateManager.translate((float) px, (float) py, 3.0F);
+		GlStateManager.scale((float) (-scale), (float) scale, (float) scale);
+		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); //Flips boat up
+		GlStateManager.rotate(90F, 1, 0, 0);
+		GlStateManager.translate(0.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(-35F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(-rot, 0.0F, 1.0F, 0.0F);
+		RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+		rendermanager.renderEntityWithPosYaw(boat, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+		GlStateManager.popMatrix();
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float) px, (float) py, 3.0F);
+		GlStateManager.scale((float) (-scale), (float) scale, (float) scale);
+		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); //Flips boat up
+		GlStateManager.rotate(90F, 1, 0, 0);
+		GlStateManager.translate(0.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(-35F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(-rot, 0.0F, 1.0F, 0.0F);
+		GlStateManager.translate(-0.25, -0.25, 0);
+		GlStateManager.rotate(-55F, 0.0F, 1.0F, 0.0F);
+		float prevYaw = player.rotationYawHead;
+		float prev = player.rotationPitch;
+		player.rotationYawHead = -145F;
+		player.rotationPitch = 0F;
+		rendermanager.renderEntityWithPosYaw(player, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+		player.rotationPitch = prev;
+		player.rotationYawHead = prevYaw;
+		GlStateManager.popMatrix();
 	}
 }
