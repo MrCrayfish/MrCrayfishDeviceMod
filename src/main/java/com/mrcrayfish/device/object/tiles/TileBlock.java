@@ -23,33 +23,34 @@ public class TileBlock extends Tile
 	@Override
 	public void render(Game game, int x, int y, Layer layer)
 	{	
-		if(layer == Layer.BACKGROUND)
+		if(layer != Layer.BACKGROUND)
+		{
+			if(game.getTile(layer.up(), x, y - 1) != this || layer == Layer.FOREGROUND)
+			{
+				GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT - 6, layer.zLevel, this.topX * 16, this.topY * 16, WIDTH, HEIGHT, 16, 16);
+			}
+			
+			GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
+			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT, layer.zLevel, this.x * 16, this.y * 16, WIDTH, 6, 16, 16);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		}
+		else
 		{
 			super.render(game, x, y, layer);
-			return;
 		}
-		
-		if(game.getTile(layer.up(), x, y - 1) != this || layer == Layer.FOREGROUND)
-		{
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT - 6, layer.zLevel, this.topX * 16, this.topY * 16, WIDTH, HEIGHT, 16, 16);
-		}
-		
-		GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
-		GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT, layer.zLevel, this.x * 16, this.y * 16, WIDTH, 6, 16, 16);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	@Override
 	public void renderForeground(Game game, int x, int y, Layer layer)
 	{
-		if(layer != Layer.BACKGROUND || this == Tile.water)
-			return;
-		
-		if(game.getTile(layer, x, y + 1) == Tile.water)
+		if(layer == Layer.BACKGROUND && this != Tile.water)
 		{
-			GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
-			GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT + 6, layer.zLevel, this.x * 16, this.y * 16, WIDTH, 2, 16, 4);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			if(game.getTile(layer, x, y + 1) == Tile.water)
+			{
+				GL11.glColor4f(0.6F, 0.6F, 0.6F, 1F);
+				GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH, game.yPosition + y * Tile.HEIGHT + 6, layer.zLevel, this.x * 16, this.y * 16, WIDTH, 2, 16, 4);
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			}
 		}
 	}
 }

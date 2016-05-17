@@ -44,7 +44,7 @@ public class Laptop extends GuiScreen
 	private NBTTagCompound data;
 	
 	public static int currentWallpaper;
-	private final int tileX, tileY, tileZ;
+	private int tileX, tileY, tileZ;
 	private int lastMouseX, lastMouseY;
 	
 	private int draggingWindow;
@@ -118,11 +118,10 @@ public class Laptop extends GuiScreen
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(LAPTOP_GUI);
-
+		
+		/* Physical Screen */
 		int posX = (width - WIDTH) / 2;
 		int posY = (height - HEIGHT) / 2;
-
-		/* Physical Screen */
 		this.drawTexturedModalRect(posX, posY, 0, 0, 256, 158);
 		
 		/* Corners */
@@ -298,11 +297,6 @@ public class Laptop extends GuiScreen
 		addWindow(window);
 		
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-	}
-	
-	void openSystemApplication(Application app)
-	{
-		
 	}
 	
 	public void closeApplication(String appId)
