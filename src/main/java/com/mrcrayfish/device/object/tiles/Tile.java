@@ -17,7 +17,7 @@ public class Tile
 	public static final Tile planks_oak = new TileBlock(7, 3, 1).setCategory(Category.BLOCKS);
 	public static final Tile leaves_oak = new TileBlock(8, 4, 1).setCategory(Category.BLOCKS);
 	public static final Tile brick = new TileBlock(9, 5, 1).setCategory(Category.BLOCKS);
-	public static final Tile netherrak = new TileBlock(10, 7, 1).setCategory(Category.BLOCKS);
+	public static final Tile netherrack = new TileBlock(10, 7, 1).setCategory(Category.BLOCKS);
 	public static final Tile soul_sand = new TileBlock(11, 8, 0).setCategory(Category.BLOCKS);
 	public static final Tile farm_land = new Tile(12, 5, 0).setCategory(Category.BLOCKS);
 	
@@ -29,7 +29,7 @@ public class Tile
 	public static final Tile lily_pad = new Tile(17, 1, 2).setCategory(Category.DECORATION);
 	public static final Tile wheat = new TileWheat(18, 2, 2).setCategory(Category.DECORATION);
 	public static final Tile cactus = new Tile(19, 3, 2).setCategory(Category.DECORATION); //Need tile
-	public static final Tile enchantment_table = new Tile(20, 5, 2).setCategory(Category.DECORATION); //Need tile
+	public static final Tile enchantment_table = new TileEnchantmentTable(20, 5, 2).setCategory(Category.DECORATION);
 	public static final Tile pumpkin = new TileBlock(21, 7, 2, 8, 2).setCategory(Category.DECORATION);
 	public static final Tile wheat_block = new TileBlock(22, 8, 1, 9, 1).setCategory(Category.DECORATION);
 	public static final Tile carrot = new TileWheat(23, 2, 3).setCategory(Category.DECORATION);
