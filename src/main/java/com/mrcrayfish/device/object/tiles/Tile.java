@@ -7,19 +7,19 @@ import com.mrcrayfish.device.util.GuiHelper;
 public class Tile
 {
 	// Blocks
-	public static final Tile grass = new TileGrass(0, 1, 0).setCategory(Category.BLOCKS);
-	public static final Tile water = new TileBlock(1, 2, 0).setCategory(Category.BLOCKS);
-	public static final Tile log = new TileBlock(2, 3, 0).setCategory(Category.BLOCKS);
-	public static final Tile farm_land = new Tile(3, 5, 0).setCategory(Category.BLOCKS);
-	public static final Tile stone = new Tile(4, 2, 1).setCategory(Category.BLOCKS);
-	public static final Tile planks_oak = new TileBlock(5, 3, 1).setCategory(Category.BLOCKS);
-	public static final Tile leaves_oak = new TileBlock(6, 4, 1).setCategory(Category.BLOCKS);
-	public static final Tile brick = new TileBlock(7, 5, 1).setCategory(Category.BLOCKS);
-	public static final Tile dirt = new Tile(8, 6, 1).setCategory(Category.BLOCKS);
-	public static final Tile sand = new TileBlock(9, 6, 0).setCategory(Category.BLOCKS);
-	public static final Tile gravel = new TileBlock(10, 7, 0).setCategory(Category.BLOCKS);
-	public static final Tile netherrak = new TileBlock(11, 7, 1).setCategory(Category.BLOCKS);
-	public static final Tile soul_sand = new TileBlock(12, 8, 0).setCategory(Category.BLOCKS);
+	public static final Tile water = new TileBlock(0, 2, 0).setCategory(Category.BLOCKS);
+	public static final Tile stone = new Tile(1, 2, 1).setCategory(Category.BLOCKS);
+	public static final Tile grass = new TileGrass(2, 1, 0).setCategory(Category.BLOCKS);
+	public static final Tile dirt = new Tile(3, 6, 1).setCategory(Category.BLOCKS);
+	public static final Tile gravel = new TileBlock(4, 7, 0).setCategory(Category.BLOCKS);
+	public static final Tile sand = new TileBlock(5, 6, 0).setCategory(Category.BLOCKS);
+	public static final Tile log = new TileBlock(6, 3, 0).setCategory(Category.BLOCKS);
+	public static final Tile planks_oak = new TileBlock(7, 3, 1).setCategory(Category.BLOCKS);
+	public static final Tile leaves_oak = new TileBlock(8, 4, 1).setCategory(Category.BLOCKS);
+	public static final Tile brick = new TileBlock(9, 5, 1).setCategory(Category.BLOCKS);
+	public static final Tile netherrak = new TileBlock(10, 7, 1).setCategory(Category.BLOCKS);
+	public static final Tile soul_sand = new TileBlock(11, 8, 0).setCategory(Category.BLOCKS);
+	public static final Tile farm_land = new Tile(12, 5, 0).setCategory(Category.BLOCKS);
 	
 	// Details
 	public static final Tile red_flower = new TileFlower(13, 0, 2).setCategory(Category.DECORATION);

@@ -262,6 +262,9 @@ public class Game extends Component
 	
 	public Tile getTile(Layer layer, int x, int y)
 	{
+		if(x < 0) return null;
+		if(x >= mapWidth) return null;
+		
 		int index = x + y * mapWidth;
 		if(index >= 0 && index < mapWidth * mapHeight)
 		{
