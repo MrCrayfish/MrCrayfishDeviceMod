@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 public class Window
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
-
+	
 	Application app;
 	int width, height;
 	int offsetX, offsetY;
@@ -37,9 +37,9 @@ public class Window
 	private void setWidth(int width) 
 	{
 		this.width = width + 2;
-		if(this.width > 364)
+		if(this.width > Laptop.SCREEN_WIDTH)
 		{
-			this.width = 364;
+			this.width = Laptop.SCREEN_WIDTH;
 		}
 	}
 	
@@ -57,9 +57,6 @@ public class Window
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
 		
 		app.init(x + offsetX + 1, y + offsetY + 13);
-		
-		this.setWidth(app.getWidth());
-		this.setHeight(app.getHeight());
 	}
 	
 	public void onTick() 
@@ -71,12 +68,10 @@ public class Window
 	{	
 		if(app.pendingLayoutUpdate)
 		{
-			this.offsetX = 0;
-			this.offsetY = 0;
 			this.setWidth(app.getWidth());
 			this.setHeight(app.getHeight());
-			x = gui.getWindowX(this);
-			y = gui.getWindowY(this);
+			this.offsetX = (Laptop.SCREEN_WIDTH - width) / 2;
+			this.offsetY = (Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height) / 2;
 			updateComponents(x, y);
 			app.pendingLayoutUpdate = false;
 		}
@@ -138,39 +133,38 @@ public class Window
 		app.handleKeyTyped(character, code);
 	}
 	
-	public void handleWindowMove(int x, int y, int mouseDX, int mouseDY, int screenStartX, int screenStartY)
+	public void handleWindowMove(int screenStartX, int screenStartY, int mouseDX, int mouseDY)
 	{
-		int newX = x + offsetX + mouseDX;
-		int newY = y + offsetY + mouseDY;
+		int newX = offsetX + mouseDX;
+		int newY = offsetY + mouseDY;
 		
-		if(newX <= screenStartX)
+		if(newX >= 0 && newX <= Laptop.SCREEN_WIDTH - width) 
 		{
-			this.offsetX = screenStartX - x;
+			this.offsetX = newX;
+		} 
+		else if(newX < 0) 
+		{
+			this.offsetX = 0;
 		}
-		else if(newX + width >= screenStartX + Laptop.SCREEN_WIDTH)
+		else 
 		{
-			this.offsetX = x - screenStartX;
-		}
-		else
-		{
-			this.offsetX += mouseDX;
-		}
-		
-		if(newY <= screenStartY)
-		{
-			this.offsetY = screenStartY - y;
-		}
-		else if(newY + height >= screenStartY + Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT)
-		{
-			this.offsetY = y - screenStartY;
-		}
-		else
-		{
-			this.offsetY += mouseDY;
+			this.offsetX = Laptop.SCREEN_WIDTH - width;
 		}
 		
-		updateComponents(x, y);
-		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
+		if(newY >= 0 && newY <= Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height) 
+		{
+			this.offsetY = newY;
+		} 
+		else if(newY < 0) 
+		{
+			this.offsetY = 0;
+		}
+		else 
+		{
+			this.offsetY = Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height;
+		}
+		
+		updateComponents(screenStartX, screenStartY);
 	}
 	
 	public void handleDrag(int mouseX, int mouseY, int mouseButton)
@@ -194,6 +188,10 @@ public class Window
 		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
 		btnClose.xPosition = x + offsetX + width - 12;
 		btnClose.yPosition = y + offsetY + 1;
+	}
+	
+	public boolean isMouseWithinWindow(int mouseX, int mouseY) {
+		return true;
 	}
 	
 	public boolean save(NBTTagCompound tagCompound) 

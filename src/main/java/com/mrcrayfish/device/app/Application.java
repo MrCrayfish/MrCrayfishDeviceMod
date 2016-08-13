@@ -25,7 +25,6 @@ public abstract class Application
 	private final String DISPLAY_NAME;
 	
 	private int width, height;
-	private int startX, startY;
 	
 	private final Layout defaultLayout;
 	private Layout currentLayout;
@@ -82,8 +81,6 @@ public abstract class Application
 	protected void init(int x, int y)
 	{
 		this.setCurrentLayout(defaultLayout);
-		this.startX = x;
-		this.startY = y;
 	}
 	
 	void onTick() 
@@ -150,9 +147,6 @@ public abstract class Application
 		{
 			c.updateComponents(x, y);
 		}
-		
-		this.startX = x;
-		this.startY = y;
 	}
 	
 	void onClose()
