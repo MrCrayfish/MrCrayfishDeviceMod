@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.Layout.Background;
@@ -128,7 +128,7 @@ public class ApplicationEmail extends Application
 
 	public ApplicationEmail()
 	{
-		super("email", "Ender Mail", ApplicationBar.APP_BAR_GUI, 70, 30);
+		super("email", "Ender Mail", TaskBar.APP_BAR_GUI, 70, 30);
 	}
 
 	@Override

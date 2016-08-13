@@ -36,10 +36,15 @@ public class Laptop extends GuiScreen
 	private static final ResourceLocation LAPTOP_GUI = new ResourceLocation("cdm:textures/gui/laptop.png");
 	public static final List<ResourceLocation> WALLPAPERS = new ArrayList<ResourceLocation>();
 	
-	private int WIDTH = 384;
-	private int HEIGHT = 216;
+	public final int PADDING = 10;
+	
+	public final int DEVICE_WIDTH = 384;
+	public final int DEVICE_HEIGHT = 216;
 
-	private ApplicationBar bar;
+	public final int SCREEN_WIDTH = DEVICE_WIDTH - PADDING * 2;
+	public final int SCREEN_HEIGHT = DEVICE_HEIGHT - PADDING * 2;
+
+	private TaskBar bar;
 	private Window[] windows;
 	private NBTTagCompound data;
 	
@@ -68,10 +73,10 @@ public class Laptop extends GuiScreen
 	public void initGui() 
 	{
 		Keyboard.enableRepeatEvents(true);
-		int posX = (width - WIDTH) / 2;
-		int posY = (height - HEIGHT) / 2;
-		bar = new ApplicationBar();
-		bar.init(posX + 10, posY + HEIGHT - 28);
+		int posX = (width - DEVICE_WIDTH) / 2;
+		int posY = (height - DEVICE_HEIGHT) / 2;
+		bar = new TaskBar();
+		bar.init(posX + 10, posY + DEVICE_HEIGHT - 28);
 	}
 	
 	@Override
@@ -120,28 +125,28 @@ public class Laptop extends GuiScreen
 		this.mc.getTextureManager().bindTexture(LAPTOP_GUI);
 		
 		/* Physical Screen */
-		int posX = (width - WIDTH) / 2;
-		int posY = (height - HEIGHT) / 2;
+		int posX = (width - DEVICE_WIDTH) / 2;
+		int posY = (height - DEVICE_HEIGHT) / 2;
 		this.drawTexturedModalRect(posX, posY, 0, 0, 256, 158);
 		
 		/* Corners */
 		this.drawTexturedModalRect(posX, posY, 0, 0, 10, 10);
-		this.drawTexturedModalRect(posX + WIDTH - 10, posY, 11, 0, 10, 10);
-		this.drawTexturedModalRect(posX + WIDTH - 10, posY + HEIGHT - 10, 11, 11, 10, 10);
-		this.drawTexturedModalRect(posX, posY + HEIGHT - 10, 0, 11, 10, 10);
+		this.drawTexturedModalRect(posX + DEVICE_WIDTH - 10, posY, 11, 0, 10, 10);
+		this.drawTexturedModalRect(posX + DEVICE_WIDTH - 10, posY + DEVICE_HEIGHT - 10, 11, 11, 10, 10);
+		this.drawTexturedModalRect(posX, posY + DEVICE_HEIGHT - 10, 0, 11, 10, 10);
 		
 		/* Edges */
-		GuiHelper.drawModalRectWithUV(posX + 10, posY, 10, 0, WIDTH - 20, 10, 1, 10);
-		GuiHelper.drawModalRectWithUV(posX + WIDTH - 10, posY + 10, 11, 10, 10, HEIGHT - 20, 10, 1);
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + HEIGHT - 10, 10, 11, WIDTH - 20, 10, 1, 10);
-		GuiHelper.drawModalRectWithUV(posX, posY + 10, 0, 11, 10, HEIGHT - 20, 10, 1);
+		GuiHelper.drawModalRectWithUV(posX + 10, posY, 10, 0, DEVICE_WIDTH - 20, 10, 1, 10);
+		GuiHelper.drawModalRectWithUV(posX + DEVICE_WIDTH - 10, posY + 10, 11, 10, 10, DEVICE_HEIGHT - 20, 10, 1);
+		GuiHelper.drawModalRectWithUV(posX + 10, posY + DEVICE_HEIGHT - 10, 10, 11, DEVICE_WIDTH - 20, 10, 1, 10);
+		GuiHelper.drawModalRectWithUV(posX, posY + 10, 0, 11, 10, DEVICE_HEIGHT - 20, 10, 1);
 		
 		/* Center */
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 10, 10, WIDTH - 20, HEIGHT - 20, 1, 1);
+		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 10, 10, DEVICE_WIDTH - 20, DEVICE_HEIGHT - 20, 1, 1);
 		
 		/* Wallpaper */
 		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, WIDTH - 20, HEIGHT - 20, 256, 144);
+		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, DEVICE_WIDTH - 20, DEVICE_HEIGHT - 20, 256, 144);
 
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
@@ -154,7 +159,7 @@ public class Laptop extends GuiScreen
 		}
 		
 		/* Application Bar */
-		bar.render(this, mc, posX + 10, posY + HEIGHT - 28, mouseX, mouseY, partialTicks);
+		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -165,10 +170,10 @@ public class Laptop extends GuiScreen
 		this.lastMouseX = mouseX;
 		this.lastMouseY = mouseY;
 		
-		int posX = (width - WIDTH) / 2;
-		int posY = (height - HEIGHT) / 2;
+		int posX = (width - DEVICE_WIDTH) / 2;
+		int posY = (height - DEVICE_HEIGHT) / 2;
 		
-		this.bar.handleClick(this, posX + 10, posY + HEIGHT - 28, mouseX, mouseY, mouseButton);
+		this.bar.handleClick(this, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, mouseButton);
 		
 		for(int i = 0; i < windows.length; i++)
 		{
@@ -226,13 +231,14 @@ public class Laptop extends GuiScreen
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) 
 	{
-		int posX = (width - WIDTH) / 2;
-		int posY = (height - HEIGHT) / 2;
+		int posX = (width - DEVICE_WIDTH) / 2;
+		int posY = (height - DEVICE_HEIGHT) / 2;
 		if(windows[0] != null)
 		{
 			if(dragging)
 			{
-				if(mouseX >= posX + 10 && mouseX <= posX + WIDTH - 20 && mouseY >= posY + 10 && mouseY <= posY + HEIGHT - 20)
+				// Checks if mouse position in within the laptop's screen
+				if(mouseX >= posX + 10 && mouseX <= posX + DEVICE_WIDTH - 20 && mouseY >= posY + 10 && mouseY <= posY + DEVICE_HEIGHT - 20)
 				{
 					windows[0].handleWindowMove(getWindowX(windows[0]), getWindowY(windows[0]), -(lastMouseX - mouseX), -(lastMouseY - mouseY), posX + 10, posY + 10);
 				}
@@ -368,8 +374,8 @@ public class Laptop extends GuiScreen
 	{
 		if(window != null)
 		{
-			int posX = (width - WIDTH) / 2;
-			return posX + (WIDTH - window.width) / 2;
+			int posX = (width - DEVICE_WIDTH) / 2;
+			return posX + (DEVICE_WIDTH - window.width) / 2;
 		}
 		return -1;
 	}
@@ -378,8 +384,8 @@ public class Laptop extends GuiScreen
 	{
 		if(window != null)
 		{
-			int posY = (height - HEIGHT) / 2;
-			return posY + 10 + (HEIGHT - 38 - window.height) / 2;
+			int posY = (height - DEVICE_HEIGHT) / 2;
+			return posY + 10 + (DEVICE_HEIGHT - 38 - window.height) / 2;
 		}
 		return -1;
 	}

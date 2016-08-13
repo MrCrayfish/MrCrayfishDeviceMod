@@ -3,7 +3,7 @@ package com.mrcrayfish.device.programs.system;
 import java.awt.Color;
 
 import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.components.Button;
@@ -21,7 +21,7 @@ public class ApplicationSettings extends Application
 	
 	public ApplicationSettings() 
 	{
-		super("settings", "Settings", ApplicationBar.APP_BAR_GUI, 14, 30);
+		super("settings", "Settings", TaskBar.APP_BAR_GUI, 14, 30);
 		this.setDefaultWidth(80);
 		this.setDefaultHeight(40);
 	}

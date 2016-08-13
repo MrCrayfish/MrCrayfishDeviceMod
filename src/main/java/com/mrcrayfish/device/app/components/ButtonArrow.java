@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.app.components;
 
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Laptop;
 

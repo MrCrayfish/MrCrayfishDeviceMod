@@ -3,7 +3,7 @@ package com.mrcrayfish.device.programs;
 import java.awt.Color;
 
 import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.Layout;
@@ -80,7 +80,7 @@ public class ApplicationPixelPainter extends Application
 
 	public ApplicationPixelPainter()
 	{
-		super("pixel_painter", "Pixel Painter", ApplicationBar.APP_BAR_GUI, 56, 30);
+		super("pixel_painter", "Pixel Painter", TaskBar.APP_BAR_GUI, 56, 30);
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
-public class ApplicationBar
+public class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 	
@@ -72,8 +72,8 @@ public class ApplicationBar
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		gui.drawTexturedModalRect(x, y, 0, 0, 1, 18);
-		GuiHelper.drawModalRectWithUV(x + 1, y, 1, 0, 331, 18, 1, 18);
-		gui.drawTexturedModalRect(x + 332, y, 2, 0, 33, 18);
+		GuiHelper.drawModalRectWithUV(x + 1, y, 1, 0, gui.DEVICE_WIDTH - 34, 18, 1, 18);
+		gui.drawTexturedModalRect(x + gui.DEVICE_WIDTH, y, 2, 0, 33, 18);
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -1,6 +1,6 @@
 package com.mrcrayfish.device;
 
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.app.Laptop;
 import com.mrcrayfish.device.app.requests.TaskCheckEmailAccount;
 import com.mrcrayfish.device.app.requests.TaskDeleteEmail;
@@ -80,11 +80,11 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
 	{
-		ApplicationBar.registerApplication(new ApplicationNoteStash());
-		ApplicationBar.registerApplication(new ApplicationExample());
-		ApplicationBar.registerApplication(new ApplicationPixelPainter());
-		ApplicationBar.registerApplication(new ApplicationEmail());
-		ApplicationBar.registerApplication(new ApplicationBoatRacers());
+		TaskBar.registerApplication(new ApplicationNoteStash());
+		TaskBar.registerApplication(new ApplicationExample());
+		TaskBar.registerApplication(new ApplicationPixelPainter());
+		TaskBar.registerApplication(new ApplicationEmail());
+		TaskBar.registerApplication(new ApplicationBoatRacers());
 		
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));

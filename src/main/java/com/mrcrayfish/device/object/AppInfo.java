@@ -3,7 +3,7 @@ package com.mrcrayfish.device.object;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ public class AppInfo
 	private String author = "MrCrayfish";
 	private String description = "Hallo";
 	
-	private ResourceLocation iconResource = ApplicationBar.APP_BAR_GUI;
+	private ResourceLocation iconResource = TaskBar.APP_BAR_GUI;
 	private int iconU = 0, iconV = 46;
 	
 	public AppInfo(String name) 

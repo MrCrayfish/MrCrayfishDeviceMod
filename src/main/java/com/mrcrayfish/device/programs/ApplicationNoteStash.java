@@ -3,7 +3,7 @@ package com.mrcrayfish.device.programs;
 import java.util.List;
 
 import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.ApplicationBar;
+import com.mrcrayfish.device.app.TaskBar;
 import com.mrcrayfish.device.app.Component;
 import com.mrcrayfish.device.app.Layout;
 import com.mrcrayfish.device.app.components.Button;
@@ -46,7 +46,7 @@ public class ApplicationNoteStash extends Application
 
 	public ApplicationNoteStash() 
 	{
-		super("note_stash", "Note Stash", ApplicationBar.APP_BAR_GUI, 42, 30);
+		super("note_stash", "Note Stash", TaskBar.APP_BAR_GUI, 42, 30);
 	}
 
 	@Override
