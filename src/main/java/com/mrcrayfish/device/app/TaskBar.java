@@ -33,6 +33,8 @@ public class TaskBar
 	
 	private static final int APPS_DISPLAYED = 10;
 	
+	public static final int BAR_HEIGHT = 18;
+	
 	private Button btnLeft;
 	private Button btnRight;
 	
@@ -72,8 +74,8 @@ public class TaskBar
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		gui.drawTexturedModalRect(x, y, 0, 0, 1, 18);
-		GuiHelper.drawModalRectWithUV(x + 1, y, 1, 0, gui.DEVICE_WIDTH - 34, 18, 1, 18);
-		gui.drawTexturedModalRect(x + gui.DEVICE_WIDTH, y, 2, 0, 33, 18);
+		GuiHelper.drawModalRectWithUV(x + 1, y, 1, 0, gui.SCREEN_WIDTH - 34, 18, 1, 18);
+		gui.drawTexturedModalRect(x + gui.SCREEN_WIDTH - 33, y, 2, 0, 33, 18);
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -94,6 +96,9 @@ public class TaskBar
 				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
 			}
 		}
+		
+		
+		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		
@@ -126,8 +131,6 @@ public class TaskBar
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.disableStandardItemLighting();
-		
-		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 336, y + 5, Color.WHITE.getRGB(), true);
 	}
 	
 	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 

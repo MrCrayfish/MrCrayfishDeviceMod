@@ -36,13 +36,13 @@ public class Laptop extends GuiScreen
 	private static final ResourceLocation LAPTOP_GUI = new ResourceLocation("cdm:textures/gui/laptop.png");
 	public static final List<ResourceLocation> WALLPAPERS = new ArrayList<ResourceLocation>();
 	
-	public final int PADDING = 10;
+	public static final int BORDER = 10;
 	
-	public final int DEVICE_WIDTH = 384;
-	public final int DEVICE_HEIGHT = 216;
+	public static final int DEVICE_WIDTH = 384;
+	public static final int DEVICE_HEIGHT = 216;
 
-	public final int SCREEN_WIDTH = DEVICE_WIDTH - PADDING * 2;
-	public final int SCREEN_HEIGHT = DEVICE_HEIGHT - PADDING * 2;
+	public static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
+	public static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
 
 	private TaskBar bar;
 	private Window[] windows;
@@ -76,7 +76,7 @@ public class Laptop extends GuiScreen
 		int posX = (width - DEVICE_WIDTH) / 2;
 		int posY = (height - DEVICE_HEIGHT) / 2;
 		bar = new TaskBar();
-		bar.init(posX + 10, posY + DEVICE_HEIGHT - 28);
+		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 	}
 	
 	@Override
@@ -127,26 +127,25 @@ public class Laptop extends GuiScreen
 		/* Physical Screen */
 		int posX = (width - DEVICE_WIDTH) / 2;
 		int posY = (height - DEVICE_HEIGHT) / 2;
-		this.drawTexturedModalRect(posX, posY, 0, 0, 256, 158);
 		
 		/* Corners */
-		this.drawTexturedModalRect(posX, posY, 0, 0, 10, 10);
-		this.drawTexturedModalRect(posX + DEVICE_WIDTH - 10, posY, 11, 0, 10, 10);
-		this.drawTexturedModalRect(posX + DEVICE_WIDTH - 10, posY + DEVICE_HEIGHT - 10, 11, 11, 10, 10);
-		this.drawTexturedModalRect(posX, posY + DEVICE_HEIGHT - 10, 0, 11, 10, 10);
+		this.drawTexturedModalRect(posX, posY, 0, 0, BORDER, BORDER); // TOP-LEFT
+		this.drawTexturedModalRect(posX + DEVICE_WIDTH - BORDER, posY, 11, 0, BORDER, BORDER); // TOP-RIGHT
+		this.drawTexturedModalRect(posX + DEVICE_WIDTH - BORDER, posY + DEVICE_HEIGHT - BORDER, 11, 11, BORDER, BORDER); // BOTTOM-RIGHT
+		this.drawTexturedModalRect(posX, posY + DEVICE_HEIGHT - BORDER, 0, 11, BORDER, BORDER); // BOTTOM-LEFT
 		
 		/* Edges */
-		GuiHelper.drawModalRectWithUV(posX + 10, posY, 10, 0, DEVICE_WIDTH - 20, 10, 1, 10);
-		GuiHelper.drawModalRectWithUV(posX + DEVICE_WIDTH - 10, posY + 10, 11, 10, 10, DEVICE_HEIGHT - 20, 10, 1);
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + DEVICE_HEIGHT - 10, 10, 11, DEVICE_WIDTH - 20, 10, 1, 10);
-		GuiHelper.drawModalRectWithUV(posX, posY + 10, 0, 11, 10, DEVICE_HEIGHT - 20, 10, 1);
+		GuiHelper.drawModalRectWithUV(posX + BORDER, posY, 10, 0, SCREEN_WIDTH, BORDER, 1, BORDER); // TOP
+		GuiHelper.drawModalRectWithUV(posX + DEVICE_WIDTH - BORDER, posY + BORDER, 11, 10, BORDER, SCREEN_HEIGHT, BORDER, 1); // RIGHT
+		GuiHelper.drawModalRectWithUV(posX + BORDER, posY + DEVICE_HEIGHT - BORDER, 10, 11, SCREEN_WIDTH, BORDER, 1, BORDER); // BOTTOM
+		GuiHelper.drawModalRectWithUV(posX, posY + BORDER, 0, 11, BORDER, SCREEN_HEIGHT, BORDER, 1); // LEFT
 		
 		/* Center */
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 10, 10, DEVICE_WIDTH - 20, DEVICE_HEIGHT - 20, 1, 1);
+		GuiHelper.drawModalRectWithUV(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
 		
 		/* Wallpaper */
 		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, DEVICE_WIDTH - 20, DEVICE_HEIGHT - 20, 256, 144);
+		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 256, 144);
 
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)

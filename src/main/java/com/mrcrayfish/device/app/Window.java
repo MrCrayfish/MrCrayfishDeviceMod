@@ -147,20 +147,20 @@ public class Window
 		{
 			this.offsetX = screenStartX - x;
 		}
-		else if(newX + width > screenStartX + 364)
+		else if(newX + width >= screenStartX + Laptop.SCREEN_WIDTH)
 		{
-			this.offsetX = x - screenStartX + 1;
+			this.offsetX = x - screenStartX;
 		}
 		else
 		{
 			this.offsetX += mouseDX;
 		}
 		
-		if(newY < screenStartY)
+		if(newY <= screenStartY)
 		{
 			this.offsetY = screenStartY - y;
 		}
-		else if(newY + height > screenStartY + 178)
+		else if(newY + height >= screenStartY + Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT)
 		{
 			this.offsetY = y - screenStartY;
 		}
