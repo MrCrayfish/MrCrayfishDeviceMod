@@ -14,6 +14,7 @@ import com.mrcrayfish.device.app.components.Spinner;
 import com.mrcrayfish.device.app.components.Text;
 import com.mrcrayfish.device.app.components.TextArea;
 import com.mrcrayfish.device.app.components.TextField;
+import com.mrcrayfish.device.app.listener.SlideListener;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -77,6 +78,7 @@ public class ApplicationExample extends Application
 		super.addComponent(checkBoxOff);
 		
 		checkBoxOn = new CheckBox("On", x, y, 42, 122);
+		checkBoxOn.setSelected(true);
 		super.addComponent(checkBoxOn);
 		
 		textField = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 88, 5, 80);
@@ -92,6 +94,14 @@ public class ApplicationExample extends Application
 		super.addComponent(progressBar);
 		
 		slider = new Slider(x, y, 88, 111, 80);
+		slider.setSlideListener(new SlideListener()
+		{
+			@Override
+			public void onSlide(float percentage)
+			{
+				progressBar.setProgress((int) (100 * percentage));
+			}
+		});
 		super.addComponent(slider);
 		
 		spinner = new Spinner(x, y, 57, 3);
