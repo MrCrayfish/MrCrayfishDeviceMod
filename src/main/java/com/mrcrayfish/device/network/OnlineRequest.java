@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.mrcrayfish.device.util.StreamUtils;
 
-public class OnlineRequest implements Runnable
+public class OnlineRequest
 {
 	private static OnlineRequest instance = null;
 	
@@ -26,6 +26,11 @@ public class OnlineRequest implements Runnable
 		start();
 	}
 	
+	/**
+	 * Gets a singleton instance of OnlineRequest
+	 * 
+	 * @return the singleton OnlineRequest object
+	 */
 	public static OnlineRequest getInstance() 
 	{
 		if(instance == null) 
@@ -35,46 +40,58 @@ public class OnlineRequest implements Runnable
 		return instance;
 	}
 	
-	public void start() 
+	private void start() 
 	{
-		thread = new Thread(this);
+		thread = new Thread(new RequestRunnable());
 		thread.start();
 	}
-
-	@Override
-	public synchronized void run()
-	{
-		while(running) 
-		{
-			while(requests.size() > 0)
-			{
-				RequestWrapper wrapper = requests.poll();
-				try 
-				{
-					HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
-		            connection.connect();
-		            InputStream input = connection.getInputStream();
-		            String response = StreamUtils.convertToString(input);
-		            wrapper.handler.handle(response);
-				} 
-				catch(Exception e) {}
-			}
-			
-			try
-			{
-				wait();
-			} 
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
 	
+	/**
+	 * Adds a request to the queue
+	 * 
+	 * @param url the URL you want to make a request to
+	 * @param handler the response handler for the request
+	 */
 	public synchronized void make(String url, ResponseHandler handler) 
 	{
 		requests.offer(new RequestWrapper(url, handler));
 		notify();
+	}
+	
+	private class RequestRunnable implements Runnable 
+	{
+		@Override
+		public void run()
+		{
+			while(running) 
+			{
+				while(requests.size() > 0)
+				{
+					RequestWrapper wrapper = requests.poll();
+					try 
+					{
+						HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
+			            connection.connect();
+			            InputStream input = connection.getInputStream();
+			            String response = StreamUtils.convertToString(input);
+			            wrapper.handler.handle(true, response);
+					} 
+					catch(Exception e) 
+					{
+						wrapper.handler.handle(false, null);
+					}
+				}
+				
+				try
+				{
+					wait();
+				} 
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	private static class RequestWrapper 
@@ -91,6 +108,12 @@ public class OnlineRequest implements Runnable
 	
 	public interface ResponseHandler 
 	{
-		public void handle(String response);
+		/**
+		 * Handles the response from an OnlineRequest
+		 * 
+		 * @param success if the request was successful or not
+		 * @param response the response from the request. null if success is false
+		 */
+		public void handle(boolean success, String response);
 	}
 }
