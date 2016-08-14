@@ -42,7 +42,7 @@ public class OnlineRequest implements Runnable
 	}
 
 	@Override
-	public void run()
+	public synchronized void run()
 	{
 		while(running) 
 		{
@@ -59,10 +59,11 @@ public class OnlineRequest implements Runnable
 				} 
 				catch(Exception e) {}
 			}
+			
 			try
 			{
 				wait();
-			}
+			} 
 			catch (InterruptedException e)
 			{
 				e.printStackTrace();
@@ -70,13 +71,10 @@ public class OnlineRequest implements Runnable
 		}
 	}
 	
-	public void make(String url, ResponseHandler handler) 
+	public synchronized void make(String url, ResponseHandler handler) 
 	{
-		this.requests.offer(new RequestWrapper(url, handler));
-		if(this.requests.size() > 0) 
-		{
-			thread.notify();
-		}
+		requests.offer(new RequestWrapper(url, handler));
+		notify();
 	}
 	
 	private static class RequestWrapper 
