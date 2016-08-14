@@ -32,7 +32,6 @@ public class TaskBar
 	private static Application app_store = new ApplicationAppStore(); 
 	
 	private static final int APPS_DISPLAYED = 10;
-	
 	public static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;
@@ -94,6 +93,11 @@ public class TaskBar
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
 				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
+			}
+			
+			if(gui.isAppActive(app.getID())) 
+			{
+				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
 		

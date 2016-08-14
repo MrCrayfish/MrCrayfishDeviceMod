@@ -190,8 +190,9 @@ public class Window
 		btnClose.yPosition = y + offsetY + 1;
 	}
 	
-	public boolean isMouseWithinWindow(int mouseX, int mouseY) {
-		return true;
+	public String getAppId()
+	{
+		return this.app.getID();
 	}
 	
 	public boolean save(NBTTagCompound tagCompound) 

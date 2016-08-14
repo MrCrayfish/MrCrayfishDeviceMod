@@ -364,28 +364,44 @@ public class Laptop extends GuiScreen
 		return true;
 	}
 
-	public boolean isMouseOnScreen(int mouseX, int mouseY) {
+	public boolean isMouseOnScreen(int mouseX, int mouseY) 
+	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
 	}
 	
-	public boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window) {
+	public boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window) 
+	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
 	}
 	
-	public boolean isMouseWithinWindow(int mouseX, int mouseY, Window window) {
+	public boolean isMouseWithinWindow(int mouseX, int mouseY, Window window) 
+	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
 	}
 	
-	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window) {
+	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window)
+	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
+	}
+	
+	public boolean isAppActive(String id) 
+	{
+		for(Window window : windows) 
+		{
+			if(window != null && window.getAppId().equals(id))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static void nextWallpaper()
