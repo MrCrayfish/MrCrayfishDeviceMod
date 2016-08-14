@@ -117,14 +117,14 @@ public class Button extends Component
 	@Override
 	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) 
 	{
-		if(this.hovered)
+		if(!this.visible || !this.enabled)
+			return;
+		
+		if(clickListener != null)
 		{
-			if(clickListener != null)
-			{
-				clickListener.onClick(this, mouseButton);
-			}
-			playClickSound(Minecraft.getMinecraft().getSoundHandler());
+			clickListener.onClick(this, mouseButton);
 		}
+		playClickSound(Minecraft.getMinecraft().getSoundHandler());
 	}
 	
 	public void setClickListener(ClickListener clickListener) 
