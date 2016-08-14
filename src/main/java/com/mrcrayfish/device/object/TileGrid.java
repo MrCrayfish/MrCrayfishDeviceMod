@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Laptop;
-import com.mrcrayfish.device.app.Layout;
-import com.mrcrayfish.device.app.components.Button;
-import com.mrcrayfish.device.app.components.ButtonArrow;
-import com.mrcrayfish.device.app.components.Label;
-import com.mrcrayfish.device.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.components.Button;
+import com.mrcrayfish.device.api.app.components.ButtonArrow;
+import com.mrcrayfish.device.api.app.components.Label;
+import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.object.tiles.Tile.Category;
 import com.mrcrayfish.device.util.GuiHelper;

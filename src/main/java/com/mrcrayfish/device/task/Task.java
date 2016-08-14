@@ -6,15 +6,21 @@ import net.minecraft.world.World;
 
 public abstract class Task 
 {
+	private String name;
 	private Callback callback = null;
 	private boolean success = false;
 	
-	public void setCallback(Callback callback)
+	public Task(String name)
+	{
+		this.name = name;
+	}
+	
+	public final void setCallback(Callback callback)
 	{
 		this.callback = callback;
 	}
 	
-	public void callback(NBTTagCompound nbt)
+	public final void callback(NBTTagCompound nbt)
 	{
 		if(callback != null)
 		{
@@ -22,18 +28,20 @@ public abstract class Task
 		}
 	}
 	
-	protected void setSuccessful()
+	protected final void setSuccessful()
 	{
 		this.success = true;
 	}
 	
-	protected boolean isSucessful()
+	protected final boolean isSucessful()
 	{
 		return this.success;
 	}
 	
-	public abstract String getName();
-	
+	public final String getName() 
+	{
+		return this.name;
+	}
 	
 	/**
 	 * Called before the request is sent off to the server. 

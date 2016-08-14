@@ -2,19 +2,19 @@ package com.mrcrayfish.device.programs;
 
 import java.util.List;
 
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.TaskBar;
-import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Layout;
-import com.mrcrayfish.device.app.components.Button;
-import com.mrcrayfish.device.app.components.ItemList;
-import com.mrcrayfish.device.app.components.Label;
-import com.mrcrayfish.device.app.components.ProgressBar;
-import com.mrcrayfish.device.app.components.Spinner;
-import com.mrcrayfish.device.app.components.Text;
-import com.mrcrayfish.device.app.components.TextArea;
-import com.mrcrayfish.device.app.components.TextField;
-import com.mrcrayfish.device.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.components.Button;
+import com.mrcrayfish.device.api.app.components.ItemList;
+import com.mrcrayfish.device.api.app.components.Label;
+import com.mrcrayfish.device.api.app.components.ProgressBar;
+import com.mrcrayfish.device.api.app.components.Spinner;
+import com.mrcrayfish.device.api.app.components.Text;
+import com.mrcrayfish.device.api.app.components.TextArea;
+import com.mrcrayfish.device.api.app.components.TextField;
+import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.Note;
 
 import net.minecraft.client.Minecraft;

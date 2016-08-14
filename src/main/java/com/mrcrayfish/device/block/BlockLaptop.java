@@ -3,7 +3,7 @@ package com.mrcrayfish.device.block;
 import java.util.List;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.app.Laptop;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.block.BlockDirectional;

@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.gui;
 
-import com.mrcrayfish.device.app.Laptop;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.entity.player.EntityPlayer;

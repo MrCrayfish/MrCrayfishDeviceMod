@@ -2,10 +2,10 @@ package com.mrcrayfish.device.object;
 
 import java.awt.Color;
 
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Laptop;
-import com.mrcrayfish.device.app.Layout;
+import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.Picture.Size;
 import com.mrcrayfish.device.object.tools.ToolBucket;
 import com.mrcrayfish.device.object.tools.ToolEraser;

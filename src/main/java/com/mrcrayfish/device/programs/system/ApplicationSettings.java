@@ -2,13 +2,13 @@ package com.mrcrayfish.device.programs.system;
 
 import java.awt.Color;
 
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.TaskBar;
-import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Laptop;
-import com.mrcrayfish.device.app.components.Button;
-import com.mrcrayfish.device.app.components.ButtonArrow;
-import com.mrcrayfish.device.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.components.Button;
+import com.mrcrayfish.device.api.app.components.ButtonArrow;
+import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.TaskBar;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

@@ -2,19 +2,19 @@ package com.mrcrayfish.device.programs.system;
 
 import java.awt.Color;
 
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.TaskBar;
-import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Laptop;
-import com.mrcrayfish.device.app.components.Button;
-import com.mrcrayfish.device.app.components.CheckBox;
-import com.mrcrayfish.device.app.components.ItemList;
-import com.mrcrayfish.device.app.components.Label;
-import com.mrcrayfish.device.app.components.Slider;
-import com.mrcrayfish.device.app.components.Text;
-import com.mrcrayfish.device.app.listener.ClickListener;
-import com.mrcrayfish.device.app.listener.SlideListener;
-import com.mrcrayfish.device.app.renderer.ListItemRenderer;
+import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.components.Button;
+import com.mrcrayfish.device.api.app.components.CheckBox;
+import com.mrcrayfish.device.api.app.components.ItemList;
+import com.mrcrayfish.device.api.app.components.Label;
+import com.mrcrayfish.device.api.app.components.Slider;
+import com.mrcrayfish.device.api.app.components.Text;
+import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.api.app.listeners.SlideListener;
+import com.mrcrayfish.device.api.app.renderers.ListItemRenderer;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.AppInfo;
 
 import net.minecraft.client.Minecraft;

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.mrcrayfish.device.programs.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
