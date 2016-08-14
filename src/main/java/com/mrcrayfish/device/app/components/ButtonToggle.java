@@ -33,7 +33,7 @@ public class ButtonToggle extends Button implements IRadioGroupItem
 		if(!this.visible || !this.enabled)
 			return;
 		
-		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height))
+		if(this.hovered)
 		{
 			if(clickListener != null)
 			{

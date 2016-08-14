@@ -120,11 +120,14 @@ public class Button extends Component
 		if(!this.visible || !this.enabled)
 			return;
 		
-		if(clickListener != null)
+		if(this.hovered) 
 		{
-			clickListener.onClick(this, mouseButton);
+			if(clickListener != null)
+			{
+				clickListener.onClick(this, mouseButton);
+			}
+			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 		}
-		playClickSound(Minecraft.getMinecraft().getSoundHandler());
 	}
 	
 	public void setClickListener(ClickListener clickListener) 
