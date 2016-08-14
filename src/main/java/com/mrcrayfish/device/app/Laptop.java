@@ -272,14 +272,15 @@ public class Laptop extends GuiScreen
 
 	public void openApplication(Application app)
 	{
-		for(Window window : windows)
+		for(int i = 0; i < windows.length; i++)
 		{
-			if(window != null)
+			Window window = windows[i];
+			if(window != null && window.app.getID().equals(app.getID()))
 			{
-				if(window.app.getID().equals(app.getID()))
-				{
-					return;
-				}
+				windows[i] = null;
+				updateWindowStack();
+				windows[0] = window;
+				return;
 			}
 		}
 		
