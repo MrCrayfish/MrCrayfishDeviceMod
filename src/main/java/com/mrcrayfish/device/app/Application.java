@@ -44,10 +44,10 @@ public abstract class Application
 	{
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
-		this.defaultLayout = new Layout();
 		this.icon = icon;
 		this.u = iconU;
 		this.v = iconV;
+		this.defaultLayout = new Layout();
 	}
 
 	protected void addComponent(Component c)
@@ -80,6 +80,7 @@ public abstract class Application
 	
 	protected void init(int x, int y)
 	{
+		this.defaultLayout.clear();
 		this.setCurrentLayout(defaultLayout);
 	}
 	

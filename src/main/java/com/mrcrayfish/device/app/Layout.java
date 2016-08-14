@@ -72,6 +72,11 @@ public class Layout
 		this.background = background;
 	}
 	
+	public void clear() 
+	{	
+		this.components.clear();
+	}
+	
 	public interface Background
 	{
 		public void render(Gui gui, Minecraft mc, int x, int y);
