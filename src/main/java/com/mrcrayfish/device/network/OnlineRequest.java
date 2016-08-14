@@ -52,10 +52,9 @@ public class OnlineRequest
 	 * @param url the URL you want to make a request to
 	 * @param handler the response handler for the request
 	 */
-	public synchronized void make(String url, ResponseHandler handler) 
+	public void make(String url, ResponseHandler handler) 
 	{
 		requests.offer(new RequestWrapper(url, handler));
-		notify();
 	}
 	
 	private class RequestRunnable implements Runnable 
@@ -70,6 +69,7 @@ public class OnlineRequest
 					RequestWrapper wrapper = requests.poll();
 					try 
 					{
+						System.out.println("Making request to: " + wrapper.url);
 						HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
 			            connection.connect();
 			            InputStream input = connection.getInputStream();
@@ -80,15 +80,6 @@ public class OnlineRequest
 					{
 						wrapper.handler.handle(false, null);
 					}
-				}
-				
-				try
-				{
-					wait();
-				} 
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
 				}
 			}
 		}
