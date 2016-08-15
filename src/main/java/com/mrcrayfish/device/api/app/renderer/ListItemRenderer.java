@@ -17,5 +17,5 @@ public abstract class ListItemRenderer<E>
 		return height;
 	}
 	
-	public abstract void render(E e, Gui gui, Minecraft mc, int x, int y, int width, boolean selected);
+	public abstract void render(E e, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected);
 }

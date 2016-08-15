@@ -1,26 +1,22 @@
 package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 
-public class CheckBox extends Component implements IRadioGroupItem
+public class CheckBox extends Component implements RadioGroup.Item
 {
-	public final String name;
-	private boolean checked = false;
-	private RadioGroup group = null;
+	protected String name;
+	protected boolean checked = false;
+	protected RadioGroup group = null;
 	
-	private ClickListener listener = null;
+	protected ClickListener listener = null;
 	
 	public CheckBox(String name, int x, int y, int left, int top) 
 	{

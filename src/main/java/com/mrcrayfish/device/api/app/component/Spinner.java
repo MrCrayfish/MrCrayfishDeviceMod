@@ -9,7 +9,8 @@ import net.minecraft.client.Minecraft;
 
 public class Spinner extends Component 
 {
-	public int progress = 0;
+	protected final int MAX_PROGRESS = 31;
+	protected int currentProgress = 0;
 	
 	public Spinner(int x, int y, int left, int top)
 	{
@@ -19,11 +20,11 @@ public class Spinner extends Component
 	@Override
 	public void handleTick() 
 	{
-		if(progress >= 31)
+		if(currentProgress >= MAX_PROGRESS)
 		{
-			progress = 0;
+			currentProgress = 0;
 		}
-		progress++;
+		currentProgress++;
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class Spinner extends Component
         {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
-			drawTexturedModalRect(xPosition, yPosition, (progress % 8) * 12, 12 + 12 * (int) Math.floor((double) progress / 8), 12, 12);
+			drawTexturedModalRect(xPosition, yPosition, (currentProgress % 8) * 12, 12 + 12 * (int) Math.floor((double) currentProgress / 8), 12, 12);
         }
 	}
 }

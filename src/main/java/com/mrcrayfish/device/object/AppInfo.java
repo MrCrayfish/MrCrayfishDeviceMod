@@ -2,7 +2,6 @@ package com.mrcrayfish.device.object;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.util.GuiHelper;
 

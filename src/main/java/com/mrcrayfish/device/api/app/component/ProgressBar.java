@@ -9,14 +9,13 @@ import net.minecraft.client.Minecraft;
 
 public class ProgressBar extends Component 
 {
-	public int width, height;
+	protected int width, height;
+	protected int progress = 0;
+	protected int max = 100;
 	
-	private int progress = 0;
-	private int max = 100;
-	
-	private int progressColour = new Color(189, 198, 255).getRGB();
-	private int backgroundColour = Color.DARK_GRAY.getRGB();
-	private int borderColour = Color.BLACK.getRGB();
+	protected int progressColour = new Color(189, 198, 255).getRGB();
+	protected int backgroundColour = Color.DARK_GRAY.getRGB();
+	protected int borderColour = Color.BLACK.getRGB();
 	
 	public ProgressBar(int x, int y, int left, int top, int width, int height)
 	{

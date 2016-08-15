@@ -9,19 +9,18 @@ import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
-public class Text extends Component {
-
-	private List<String> lines;
-	private int width;
-	private boolean shadow = false;
+public class Text extends Component 
+{
+	protected List<String> lines;
+	protected int width;
+	protected boolean shadow = false;
 	
-	private int textColour = Color.WHITE.getRGB();
+	protected int textColour = Color.WHITE.getRGB();
 	
 	public Text(String text, FontRenderer renderer, int x, int y, int left, int top, int width) 
 	{
 		super(x, y, left, top);
 		this.lines = renderer.listFormattedStringToWidth(text, width);
-		this.width = width;
 	}
 
 	@Override

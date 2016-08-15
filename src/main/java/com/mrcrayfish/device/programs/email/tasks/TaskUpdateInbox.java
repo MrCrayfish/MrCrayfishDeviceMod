@@ -7,12 +7,10 @@ import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TaskUpdateInbox extends Task
 {

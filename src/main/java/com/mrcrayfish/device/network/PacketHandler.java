@@ -1,8 +1,8 @@
 package com.mrcrayfish.device.network;
 
 import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.network.message.MessageResponse;
 import com.mrcrayfish.device.network.message.MessageRequest;
+import com.mrcrayfish.device.network.message.MessageResponse;
 import com.mrcrayfish.device.network.message.MessageSaveData;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;

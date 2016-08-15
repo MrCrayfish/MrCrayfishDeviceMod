@@ -4,7 +4,6 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;

@@ -14,20 +14,20 @@ import net.minecraft.client.Minecraft;
 
 public class Slider extends Component
 {
-	private boolean dragging = false;
-	private int clickX;
+	protected boolean dragging = false;
+	protected int clickX;
 	
-	private int width;
-	private int prevSliderX;
-	private int newSliderX;
+	protected int width;
+	protected int prevSliderX;
+	protected int newSliderX;
 	
-	private int textColour = Color.WHITE.getRGB();
-	private int backgroundColour = Color.DARK_GRAY.getRGB();
-	private int borderColour = Color.BLACK.getRGB();
+	protected int textColour = Color.WHITE.getRGB();
+	protected int backgroundColour = Color.DARK_GRAY.getRGB();
+	protected int borderColour = Color.BLACK.getRGB();
 	
-	private ClickListener clickListener = null;
-	private ReleaseListener releaseListener = null;
-	private SlideListener slideListener = null;
+	protected ClickListener clickListener = null;
+	protected ReleaseListener releaseListener = null;
+	protected SlideListener slideListener = null;
 	
 	public Slider(int x, int y, int left, int top, int width) 
 	{

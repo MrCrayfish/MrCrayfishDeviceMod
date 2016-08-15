@@ -245,10 +245,10 @@ public class ApplicationEmail extends Application
 		listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
 		{
 			@Override
-			public void render(Email e, Gui gui, Minecraft mc, int x, int y, int width, boolean selected)
+			public void render(Email e, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
 			{
-				if (selected) gui.drawRect(x, y, x + width, y + getHeight(), Color.DARK_GRAY.getRGB());
-				else gui.drawRect(x, y, x + width, y + getHeight(), Color.GRAY.getRGB());
+				if (selected) gui.drawRect(x, y, x + width, y + height, Color.DARK_GRAY.getRGB());
+				else gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
 
 				if (!e.isRead())
 				{

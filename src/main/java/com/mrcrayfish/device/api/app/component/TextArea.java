@@ -2,36 +2,32 @@ package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.EnumChatFormatting;
 
 public class TextArea extends Component
 {
-	private FontRenderer fontRendererObj;
-	private String text = "";
-	private int width, height;
-	private int maxLines;
-	private int padding = 2;
-	private int updateCount = 0;
-	private boolean isFocused = false;
+	protected FontRenderer fontRendererObj;
+	
+	protected String text = "";
+	protected int width, height;
+	protected int maxLines;
+	protected int padding = 2;
+	protected int updateCount = 0;
+	protected boolean isFocused = false;
 	
 	/* Personalisation */
-	private int textColour = Color.WHITE.getRGB();
-	private int backgroundColour = Color.DARK_GRAY.getRGB();
-	private int borderColour = Color.BLACK.getRGB();
+	protected int textColour = Color.WHITE.getRGB();
+	protected int backgroundColour = Color.DARK_GRAY.getRGB();
+	protected int borderColour = Color.BLACK.getRGB();
 
 	public TextArea(FontRenderer fontRendererObj, int x, int y, int left, int top, int width, int height) 
 	{

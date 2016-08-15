@@ -1,20 +1,18 @@
 package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
-import java.util.List;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 
 public class Label extends Component {
 
-	private String text;
-	private int width;
-	
-	private int textColour = Color.WHITE.getRGB();
+	protected String text;
+	protected int width;
+
+	protected int textColour = Color.WHITE.getRGB();
 	
 	public Label(String text, int x, int y, int left, int top) 
 	{

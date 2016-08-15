@@ -17,21 +17,21 @@ import net.minecraft.client.Minecraft;
 
 public class ItemList<E> extends Component implements Iterable<E>
 {
-	private int width;
-	private int visibleItems;
-	private int offset;
-	private int selected = -1;
+	protected int width;
+	protected int visibleItems;
+	protected int offset;
+	protected int selected = -1;
 	
-	private List<E> items = new ArrayList<E>();
-	private ListItemRenderer<E> renderer = null;
-	private ClickListener clickListener = null;
+	protected List<E> items = new ArrayList<E>();
+	protected ListItemRenderer<E> renderer = null;
+	protected ClickListener clickListener = null;
 	
-	private Button btnUp;
-	private Button btnDown;
+	protected Button btnUp;
+	protected Button btnDown;
 	
-	private int textColour = Color.WHITE.getRGB();
-	private int backgroundColour = Color.GRAY.getRGB();
-	private int borderColour = Color.BLACK.getRGB();
+	protected int textColour = Color.WHITE.getRGB();
+	protected int backgroundColour = Color.GRAY.getRGB();
+	protected int borderColour = Color.BLACK.getRGB();
 	
 	public ItemList(int x, int y, int left, int top, int width, int visibleItems) 
 	{
@@ -96,7 +96,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 				{
 					if(renderer != null)
 					{
-						renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 1, (i + offset) == selected);
+						renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 1, renderer.getHeight(), (i + offset) == selected);
 						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColour);
 					}
 					else

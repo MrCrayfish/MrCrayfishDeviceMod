@@ -5,15 +5,11 @@ import java.awt.Color;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.AppInfo;
 
@@ -52,11 +48,11 @@ public class ApplicationAppStore extends Application
 		apps.addItem(new AppInfo("Blah"));
 		apps.setListItemRenderer(new ListItemRenderer<AppInfo>(20) {
 			@Override
-			public void render(AppInfo e, Gui gui, Minecraft mc, int x, int y, int width, boolean selected) {
+			public void render(AppInfo e, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected) {
 				if(selected)
-					gui.drawRect(x, y, x + width, y + getHeight(), Color.DARK_GRAY.getRGB());
+					gui.drawRect(x, y, x + width, y + height, Color.DARK_GRAY.getRGB());
 				else
-					gui.drawRect(x, y, x + width, y + getHeight(), Color.GRAY.getRGB());
+					gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
 				e.renderIcon(mc, x + 3, y + 3);
 				gui.drawString(mc.fontRendererObj, e.toString(), x + 20, y + 6, Color.WHITE.getRGB());
 				

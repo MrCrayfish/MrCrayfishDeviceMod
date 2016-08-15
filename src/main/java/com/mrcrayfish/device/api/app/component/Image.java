@@ -80,7 +80,7 @@ public class Image extends Component
 		this.alpha = alpha;
 	}
 	
-	public void showBorder(boolean show)
+	public void setBorderVisible(boolean show)
 	{
 		this.hasBorder = show;
 	}

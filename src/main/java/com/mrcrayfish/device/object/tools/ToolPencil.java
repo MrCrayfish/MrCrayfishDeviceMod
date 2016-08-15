@@ -2,7 +2,6 @@ package com.mrcrayfish.device.object.tools;
 
 import com.mrcrayfish.device.object.Canvas;
 import com.mrcrayfish.device.object.Tool;
-import com.mrcrayfish.device.util.GuiHelper;
 
 public class ToolPencil extends Tool {
 

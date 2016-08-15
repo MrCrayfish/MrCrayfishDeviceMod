@@ -1,7 +1,5 @@
 package com.mrcrayfish.device.programs.system;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.component.Button;
@@ -10,8 +8,6 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.TaskBar;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationSettings extends Application

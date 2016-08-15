@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.event;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;

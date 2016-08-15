@@ -1,15 +1,11 @@
 package com.mrcrayfish.device.programs;
 
-import java.util.List;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.ProgressBar;
-import com.mrcrayfish.device.api.app.component.Spinner;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
@@ -18,7 +14,6 @@ import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.Note;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 

@@ -1,9 +1,8 @@
-package com.mrcrayfish.device.api.app.components;
+package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -18,16 +17,16 @@ import scala.actors.threadpool.Arrays;
 
 public class Button extends Component
 {
-	private static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
+	protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
 	
-	private String text, toolTip, toolTipTitle;
-	public boolean hovered;
-	public int width, height;
+	protected String text, toolTip, toolTipTitle;
+	protected boolean hovered;
+	protected int width, height;
 	
-	private boolean hasIcon = false;
-	private ResourceLocation icon = null;
-	private int iconU, iconV;
-	private int iconWidth, iconHeight;
+	protected boolean hasIcon = false;
+	protected ResourceLocation icon = null;
+	protected int iconU, iconV;
+	protected int iconWidth, iconHeight;
 	
 	protected ClickListener clickListener = null;
 	

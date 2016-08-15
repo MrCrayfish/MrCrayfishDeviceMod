@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.gui;
 
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.core.Window;
 
 import net.minecraft.client.Minecraft;

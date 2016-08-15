@@ -2,7 +2,6 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.TaskBar;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -10,7 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class ButtonArrow extends Button
 {
-	private Type type;
+	protected Type type;
 	
 	public ButtonArrow(int x, int y, int left, int top, Type type) 
 	{

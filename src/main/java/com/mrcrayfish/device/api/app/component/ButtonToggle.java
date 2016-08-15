@@ -1,15 +1,14 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
-public class ButtonToggle extends Button implements IRadioGroupItem
+public class ButtonToggle extends Button implements RadioGroup.Item
 {
-	private boolean toggle = false;
-	private RadioGroup group = null;
+	protected boolean toggle = false;
+	protected RadioGroup group = null;
 	
 	public ButtonToggle(String text, int x, int y, int left, int top, int width, int height) 
 	{

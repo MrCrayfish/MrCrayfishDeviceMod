@@ -14,7 +14,6 @@ import com.mrcrayfish.device.object.tools.ToolPencil;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class Canvas extends Component 
 {

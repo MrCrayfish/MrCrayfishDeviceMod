@@ -5,18 +5,25 @@ import java.util.Set;
 
 public class RadioGroup
 {
-	private Set<IRadioGroupItem> group = new HashSet<IRadioGroupItem>();
+	protected Set<Item> group = new HashSet<Item>();
 	
-	public void add(IRadioGroupItem item)
+	public void add(Item item)
 	{
 		this.group.add(item);
 	}
 
 	public void unselect()
 	{
-		for(IRadioGroupItem item : group)
+		for(Item item : group)
 		{
 			item.setSelected(false);
 		}
+	}
+	
+	public static interface Item {
+		
+		public boolean isSelected();
+		
+		public void setSelected(boolean enabled);
 	}
 }
