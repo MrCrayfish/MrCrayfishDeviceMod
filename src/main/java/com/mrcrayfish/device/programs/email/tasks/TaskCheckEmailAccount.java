@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.programs.email.tasks;
 
-import com.mrcrayfish.device.api.app.task.Task;
+import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,23 +24,20 @@ public class TaskCheckEmailAccount extends Task
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
 		this.hasAccount = EmailManager.INSTANCE.hasAccount(player.getUniqueID());
-		if(this.hasAccount) this.name = EmailManager.INSTANCE.getName(player);
+		if(this.hasAccount)
+		{
+			this.name = EmailManager.INSTANCE.getName(player);
+			this.setSuccessful();
+		}
 	}
 
 	@Override
 	public void prepareResponse(NBTTagCompound nbt) 
 	{
-		nbt.setBoolean("hasAccount", this.hasAccount);
-		if(this.hasAccount) nbt.setString("Name", this.name);
+		if(this.isSucessful()) nbt.setString("Name", this.name);
 	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) 
-	{
-		if(nbt.getBoolean("hasAccount"))
-		{
-			this.setSuccessful();
-		}
-	}
+	public void processResponse(NBTTagCompound nbt) {}
 
 }

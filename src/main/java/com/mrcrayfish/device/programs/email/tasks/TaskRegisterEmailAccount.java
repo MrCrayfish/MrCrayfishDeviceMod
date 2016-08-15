@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.programs.email.tasks;
 
-import com.mrcrayfish.device.api.app.task.Task;
+import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,20 +32,15 @@ public class TaskRegisterEmailAccount extends Task
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
 		if(EmailManager.INSTANCE.addAccount(player, nbt.getString("AccountName")))
+		{
 			this.setSuccessful();
+		}	
 	}
 
 	@Override
-	public void prepareResponse(NBTTagCompound nbt) 
-	{
-		nbt.setBoolean("Created", this.isSucessful());
-	}
+	public void prepareResponse(NBTTagCompound nbt) {}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) 
-	{
-		if(nbt.getBoolean("Created"))
-			this.setSuccessful();
-	}
+	public void processResponse(NBTTagCompound nbt) {}
 
 }

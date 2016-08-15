@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.network.message;
 
-import com.mrcrayfish.device.api.TaskManager;
-import com.mrcrayfish.device.api.app.task.Task;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.network.PacketHandler;
 
 import io.netty.buffer.ByteBuf;

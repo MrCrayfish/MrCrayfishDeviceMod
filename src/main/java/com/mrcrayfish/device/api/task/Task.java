@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.task;
+package com.mrcrayfish.device.api.task;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,9 +15,10 @@ public abstract class Task
 		this.name = name;
 	}
 	
-	public final void setCallback(Callback callback)
+	public final Task setCallback(Callback callback)
 	{
 		this.callback = callback;
+		return this;
 	}
 	
 	public final void callback(NBTTagCompound nbt)
@@ -28,12 +29,12 @@ public abstract class Task
 		}
 	}
 	
-	protected final void setSuccessful()
+	public final void setSuccessful()
 	{
 		this.success = true;
 	}
 	
-	protected final boolean isSucessful()
+	public final boolean isSucessful()
 	{
 		return this.success;
 	}

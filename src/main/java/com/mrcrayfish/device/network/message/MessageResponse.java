@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.network.message;
 
-import com.mrcrayfish.device.api.TaskManager;
-import com.mrcrayfish.device.api.app.task.Task;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,8 +36,10 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 	public void fromBytes(ByteBuf buf) 
 	{
 		this.id = buf.readInt();
-		String name = ByteBufUtils.readUTF8String(buf);
+		boolean successful = buf.readBoolean();
 		this.request = TaskManager.getTaskAndRemove(this.id);
+		if(successful) this.request.setSuccessful();
+		String name = ByteBufUtils.readUTF8String(buf);
 		this.nbt = ByteBufUtils.readTag(buf);
 	}
 
@@ -45,6 +47,7 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 	public void toBytes(ByteBuf buf) 
 	{
 		buf.writeInt(this.id);
+		buf.writeBoolean(this.request.isSucessful());
 		ByteBufUtils.writeUTF8String(buf, this.request.getName());
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.request.prepareResponse(nbt);

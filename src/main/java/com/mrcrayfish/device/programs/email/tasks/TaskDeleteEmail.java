@@ -2,7 +2,7 @@ package com.mrcrayfish.device.programs.email.tasks;
 
 import java.util.List;
 
-import com.mrcrayfish.device.api.app.task.Task;
+import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
@@ -47,15 +47,8 @@ public class TaskDeleteEmail extends Task {
 	}
 
 	@Override
-	public void prepareResponse(NBTTagCompound nbt) 
-	{
-		nbt.setBoolean("Deleted", this.isSucessful());
-	}
+	public void prepareResponse(NBTTagCompound nbt) {}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt)
-	{
-		if(nbt.getBoolean("Deleted"))
-			this.setSuccessful();
-	}
+	public void processResponse(NBTTagCompound nbt) {}
 }

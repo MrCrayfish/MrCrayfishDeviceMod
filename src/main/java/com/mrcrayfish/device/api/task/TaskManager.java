@@ -1,9 +1,8 @@
-package com.mrcrayfish.device.api;
+package com.mrcrayfish.device.api.task;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mrcrayfish.device.api.app.task.Task;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageRequest;
 
