@@ -1,32 +1,30 @@
 package com.mrcrayfish.device;
 
-import com.mrcrayfish.device.app.TaskBar;
-import com.mrcrayfish.device.app.Laptop;
-import com.mrcrayfish.device.app.requests.TaskCheckEmailAccount;
-import com.mrcrayfish.device.app.requests.TaskDeleteEmail;
-import com.mrcrayfish.device.app.requests.TaskRegisterEmailAccount;
-import com.mrcrayfish.device.app.requests.TaskSendEmail;
-import com.mrcrayfish.device.app.requests.TaskUpdateInbox;
-import com.mrcrayfish.device.app.requests.TaskViewEmail;
+import com.mrcrayfish.device.api.TaskManager;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
-import com.mrcrayfish.device.programs.ApplicationEmail;
-import com.mrcrayfish.device.programs.ApplicationExample;
 import com.mrcrayfish.device.programs.ApplicationBoatRacers;
+import com.mrcrayfish.device.programs.ApplicationExample;
 import com.mrcrayfish.device.programs.ApplicationNoteStash;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
-import com.mrcrayfish.device.programs.system.ApplicationAppStore;
+import com.mrcrayfish.device.programs.email.ApplicationEmail;
+import com.mrcrayfish.device.programs.email.tasks.TaskCheckEmailAccount;
+import com.mrcrayfish.device.programs.email.tasks.TaskDeleteEmail;
+import com.mrcrayfish.device.programs.email.tasks.TaskRegisterEmailAccount;
+import com.mrcrayfish.device.programs.email.tasks.TaskSendEmail;
+import com.mrcrayfish.device.programs.email.tasks.TaskUpdateInbox;
+import com.mrcrayfish.device.programs.email.tasks.TaskViewEmail;
 import com.mrcrayfish.device.proxy.IProxyInterface;
-import com.mrcrayfish.device.task.TaskManager;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -35,7 +33,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
 public class MrCrayfishDeviceMod 

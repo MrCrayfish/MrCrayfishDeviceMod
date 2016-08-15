@@ -2,10 +2,10 @@ package com.mrcrayfish.device.programs.email.tasks;
 
 import java.util.List;
 
+import com.mrcrayfish.device.api.app.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
-import com.mrcrayfish.device.task.Task;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

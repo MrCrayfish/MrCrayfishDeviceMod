@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.components.Slider;
+import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 

@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.components;
+package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
 import java.util.List;

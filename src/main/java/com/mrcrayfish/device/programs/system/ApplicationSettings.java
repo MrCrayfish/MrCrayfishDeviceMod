@@ -4,9 +4,9 @@ import java.awt.Color;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.components.Button;
-import com.mrcrayfish.device.api.app.components.ButtonArrow;
-import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.ButtonArrow;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.TaskBar;
 

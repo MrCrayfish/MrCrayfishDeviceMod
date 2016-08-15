@@ -1,8 +1,8 @@
 package com.mrcrayfish.device.network.message;
 
+import com.mrcrayfish.device.api.TaskManager;
+import com.mrcrayfish.device.api.app.task.Task;
 import com.mrcrayfish.device.network.PacketHandler;
-import com.mrcrayfish.device.task.TaskManager;
-import com.mrcrayfish.device.task.Task;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;

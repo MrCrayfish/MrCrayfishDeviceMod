@@ -42,7 +42,7 @@ public class OnlineRequest
 	
 	private void start() 
 	{
-		thread = new Thread(new RequestRunnable());
+		thread = new Thread(new RequestRunnable(), "OnlineRequest");
 		thread.start();
 	}
 	

@@ -3,10 +3,10 @@ package com.mrcrayfish.device.api.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mrcrayfish.device.api.app.components.Button;
-import com.mrcrayfish.device.api.app.components.TextArea;
-import com.mrcrayfish.device.api.app.components.TextField;
-import com.mrcrayfish.device.api.app.listeners.InitListener;
+import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.TextArea;
+import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.listener.InitListener;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

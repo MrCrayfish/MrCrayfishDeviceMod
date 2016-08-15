@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.task;
+package com.mrcrayfish.device.api.app.task;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

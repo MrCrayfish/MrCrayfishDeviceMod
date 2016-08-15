@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.api.app.components.Button;
+import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;

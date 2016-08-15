@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.listeners;
+package com.mrcrayfish.device.api.app.listener;
 
 import com.mrcrayfish.device.api.app.Component;
 

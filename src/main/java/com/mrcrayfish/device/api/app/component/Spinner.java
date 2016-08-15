@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.components;
+package com.mrcrayfish.device.api.app.component;
 
 import org.lwjgl.opengl.GL11;
 
