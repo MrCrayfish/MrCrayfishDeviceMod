@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.component.Button;
@@ -25,8 +26,6 @@ import net.minecraft.util.ResourceLocation;
 public class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
-	
-	private static final List<Application> APPS = new ArrayList<Application>();
 	
 	private static Application settings = new ApplicationSettings(); 
 	private static Application app_store = new ApplicationAppStore(); 
@@ -59,7 +58,7 @@ public class TaskBar
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				if(offset + APPS_DISPLAYED < APPS.size())
+				if(offset + APPS_DISPLAYED < ApplicationManager.APPS.size())
 				{
 					offset++;
 				}
@@ -81,9 +80,9 @@ public class TaskBar
 		btnLeft.render(gui, mc, mouseX, mouseY, true, partialTicks);
 		btnRight.render(gui, mc, mouseX, mouseY, true, partialTicks);
 
-		for(int i = 0; i < APPS_DISPLAYED && i < APPS.size(); i++)
+		for(int i = 0; i < APPS_DISPLAYED && i < ApplicationManager.APPS.size(); i++)
 		{
-			Application app = APPS.get(i + offset);
+			Application app = ApplicationManager.APPS.get(i + offset);
 			if(app.getIcon() != null)
 			{
 				mc.getTextureManager().bindTexture(app.getIcon());
@@ -126,10 +125,10 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex < offset + APPS_DISPLAYED && appIndex < APPS.size())
+			if(appIndex < offset + APPS_DISPLAYED && appIndex < ApplicationManager.APPS.size())
 			{
 				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
-				gui.drawHoveringText(Arrays.asList(APPS.get(appIndex).getDisplayName()), mouseX, mouseY);
+				gui.drawHoveringText(Arrays.asList(ApplicationManager.APPS.get(appIndex).getDisplayName()), mouseX, mouseY);
 			}
 		}
 		
@@ -157,9 +156,9 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex <= offset + APPS_DISPLAYED && appIndex < APPS.size())
+			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.APPS.size())
 			{
-				gui.openApplication(APPS.get(appIndex));
+				gui.openApplication(ApplicationManager.APPS.get(appIndex));
 				return;
 			}
 		}
@@ -169,15 +168,7 @@ public class TaskBar
 	{
 		return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 	}
-	
-	public static void registerApplication(Application app)
-	{
-		if(app != null)
-		{
-			APPS.add(app);
-		}
-	}
-	
+
 	public String timeToString(long time) 
 	{
 	    int hours = (int) ((Math.floor(time / 1000.0) + 7) % 24);
