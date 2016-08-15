@@ -12,7 +12,7 @@ public abstract class ListItemRenderer<E>
 		this.height = height;
 	}
 	
-	public int getHeight() 
+	public final int getHeight() 
 	{
 		return height;
 	}

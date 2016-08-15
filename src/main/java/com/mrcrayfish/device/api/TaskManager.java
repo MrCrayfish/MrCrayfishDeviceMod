@@ -14,7 +14,7 @@ public class TaskManager
 	private static Map<String, Task> registeredRequests = new HashMap<String, Task>();
 	private static Map<Integer, Task> requests = new HashMap<Integer, Task>();
 	
-	public static void registerRequest(Class clazz)
+	public final static void registerRequest(Class clazz)
 	{
 		try 
 		{
@@ -32,12 +32,12 @@ public class TaskManager
 		}
 	}
 	
-	public static Task getRequest(String name)
+	public final static Task getRequest(String name)
 	{
 		return registeredRequests.get(name);
 	}
 	
-	public static void sendRequest(Task task) throws RuntimeException
+	public final static void sendRequest(Task task) throws RuntimeException
 	{
 		if(!registeredRequests.containsKey(task.getName())) {
 			throw new RuntimeException("Unregistered Task: " + task.getClass().getName());
@@ -48,7 +48,7 @@ public class TaskManager
 		PacketHandler.INSTANCE.sendToServer(new MessageRequest(requestId, task));
 	}
 	
-	public static Task getTask(int id)
+	public final static Task getTaskAndRemove(int id)
 	{
 		return requests.remove(id);
 	}

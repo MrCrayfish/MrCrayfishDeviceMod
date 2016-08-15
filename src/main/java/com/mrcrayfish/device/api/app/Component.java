@@ -46,18 +46,18 @@ public abstract class Component extends Gui
 	
 	public void handleRelease(int mouseX, int mouseY, int mouseButton) {}
 	
-	public void updateComponents(int x, int y) 
+	public final void updateComponents(int x, int y) 
 	{
 		this.xPosition = x + left;
 		this.yPosition = y + top;
 	}
 	
-	public void setEnabled(boolean enabled) 
+	public final void setEnabled(boolean enabled) 
 	{
 		this.enabled = enabled;
 	}
 	
-	public void setVisible(boolean visible)
+	public final void setVisible(boolean visible)
 	{
 		this.visible = visible;
 	}

@@ -29,7 +29,7 @@ public class Layout
 		this.height = height;
 	}
 	
-	protected void init()
+	protected final void init()
 	{
 		if(initListener != null)
 		{
@@ -37,7 +37,7 @@ public class Layout
 		}
 	}
 	
-	public void addComponent(Component c)
+	public final void addComponent(Component c)
 	{
 		if(c != null)
 		{
@@ -46,12 +46,12 @@ public class Layout
 		}
 	}
 	
-	public List<Component> getComponents()
+	public final List<Component> getComponents()
 	{
 		return components;
 	}
 	
-	public void render(Gui gui, Minecraft mc, int x, int y)
+	public final void render(Gui gui, Minecraft mc, int x, int y)
 	{
 		if(background != null)
 		{
@@ -59,17 +59,17 @@ public class Layout
 		}
 	}
 	
-	public void setInitListener(InitListener initListener)
+	public final void setInitListener(InitListener initListener)
 	{
 		this.initListener = initListener;
 	}
 	
-	public void setBackground(Background background) 
+	public final void setBackground(Background background) 
 	{
 		this.background = background;
 	}
 	
-	public void clear() 
+	public final void clear() 
 	{	
 		this.components.clear();
 	}

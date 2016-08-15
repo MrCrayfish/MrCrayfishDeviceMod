@@ -43,7 +43,7 @@ public abstract class Application
 		this.defaultLayout = new Layout();
 	}
 
-	protected void addComponent(Component c)
+	protected final void addComponent(Component c)
 	{
 		if(c != null)
 		{
@@ -52,7 +52,7 @@ public abstract class Application
 		}
 	}
 	
-	protected void setCurrentLayout(Layout layout)
+	protected final void setCurrentLayout(Layout layout)
 	{
 		this.currentLayout = layout;
 		this.width = layout.width;
@@ -61,13 +61,13 @@ public abstract class Application
 		this.currentLayout.init();
 	}
 	
-	protected Layout getCurrentLayout() 
+	protected final Layout getCurrentLayout() 
 	{
 		return currentLayout;
 	}
 	
 	//TODO for public api, make protected
-	public void restoreDefaultLayout()
+	protected final void restoreDefaultLayout()
 	{
 		this.setCurrentLayout(defaultLayout);
 	}
@@ -149,6 +149,7 @@ public abstract class Application
 	
 	public void onClose()
 	{
+		restoreDefaultLayout();
 		defaultLayout.components.clear();
 		currentLayout = null;
 	}
@@ -157,57 +158,57 @@ public abstract class Application
 	
 	public abstract void save(NBTTagCompound tagCompound);
 	
-	protected void setDefaultWidth(int width)
+	protected final void setDefaultWidth(int width)
 	{
 		this.defaultLayout.width = width;
 	}
 	
-	protected void setDefaultHeight(int height)
+	protected final void setDefaultHeight(int height)
 	{
 		this.defaultLayout.height = height;
 	}
 	
-	protected void markDirty() 
+	protected final void markDirty() 
 	{
 		needsDataUpdate = true;
 	}
 	
-	public boolean isDirty() 
+	public final boolean isDirty() 
 	{
 		return needsDataUpdate;
 	}
 	
-	public void clean() 
+	public final void clean() 
 	{
 		needsDataUpdate = false;
 	}
 	
-	public boolean isPendingLayoutUpdate()
+	public final boolean isPendingLayoutUpdate()
 	{
 		return pendingLayoutUpdate;
 	}
 	
-	public void clearPendingLayout() 
+	public final void clearPendingLayout() 
 	{
 		this.pendingLayoutUpdate = false;
 	}
 	
-	public String getID()
+	public final String getID()
 	{
 		return APP_ID;
 	}
 	
-	public String getDisplayName()
+	public final String getDisplayName()
 	{
 		return DISPLAY_NAME;
 	}
 	
-	public int getWidth() 
+	public final int getWidth() 
 	{
 		return width;
 	}
 	
-	public int getHeight() 
+	public final int getHeight() 
 	{
 		return height;
 	}

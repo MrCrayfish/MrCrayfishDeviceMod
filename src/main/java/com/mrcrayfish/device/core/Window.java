@@ -106,7 +106,6 @@ public class Window
 	{
 		if(button.equals(btnClose))
 		{
-			app.restoreDefaultLayout();
 			laptop.closeApplication(app.getID());
 		}
 	}

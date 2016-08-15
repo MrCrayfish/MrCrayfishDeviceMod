@@ -37,7 +37,7 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 	{
 		this.id = buf.readInt();
 		String name = ByteBufUtils.readUTF8String(buf);
-		this.request = TaskManager.getTask(this.id);
+		this.request = TaskManager.getTaskAndRemove(this.id);
 		this.nbt = ByteBufUtils.readTag(buf);
 	}
 
