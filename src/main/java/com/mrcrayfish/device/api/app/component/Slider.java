@@ -21,7 +21,7 @@ public class Slider extends Component
 	protected int prevSliderX;
 	protected int newSliderX;
 	
-	protected int textColour = Color.WHITE.getRGB();
+	protected int sliderColour = Color.WHITE.getRGB();
 	protected int backgroundColour = Color.DARK_GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
 	
@@ -42,8 +42,8 @@ public class Slider extends Component
         {
 			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, borderColour);
 			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, backgroundColour);
-			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, backgroundColour);
-			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, textColour);
+			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, borderColour);
+			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, sliderColour);
         }
 	}
 	
@@ -119,5 +119,20 @@ public class Slider extends Component
 	public void setPercentage(float percentage)
 	{
 		this.newSliderX = (int) ((this.width - 8) * percentage);
+	}
+	
+	public void setSliderColour(Color color) 
+	{
+		this.sliderColour = color.getRGB();
+	}
+	
+	public void setBackgroundColour(Color color) 
+	{
+		this.backgroundColour = color.getRGB();
+	}
+	
+	public void setBorderColour(Color color) 
+	{
+		this.borderColour = color.getRGB();
 	}
 }

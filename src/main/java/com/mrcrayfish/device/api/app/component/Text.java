@@ -21,6 +21,7 @@ public class Text extends Component
 	{
 		super(x, y, left, top);
 		this.lines = renderer.listFormattedStringToWidth(text, width);
+		this.width = width;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.network;
+package com.mrcrayfish.device.api.app.network;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

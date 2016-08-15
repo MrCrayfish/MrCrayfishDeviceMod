@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
+import java.awt.Color;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Component;
@@ -11,6 +13,8 @@ public class Spinner extends Component
 {
 	protected final int MAX_PROGRESS = 31;
 	protected int currentProgress = 0;
+	
+	protected Color spinnerColour = Color.WHITE;
 	
 	public Spinner(int x, int y, int left, int top)
 	{
@@ -32,9 +36,10 @@ public class Spinner extends Component
 	{
 		if (this.visible)
         {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glColor4f(spinnerColour.getRed() / 255F, spinnerColour.getGreen() / 255F, spinnerColour.getBlue() / 255F, spinnerColour.getAlpha() / 255F);
 			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			drawTexturedModalRect(xPosition, yPosition, (currentProgress % 8) * 12, 12 + 12 * (int) Math.floor((double) currentProgress / 8), 12, 12);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
 	}
 }

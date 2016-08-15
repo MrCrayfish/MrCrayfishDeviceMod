@@ -11,6 +11,7 @@ public class Label extends Component {
 
 	protected String text;
 	protected int width;
+	protected boolean shadow = true;
 
 	protected int textColour = Color.WHITE.getRGB();
 	
@@ -25,7 +26,7 @@ public class Label extends Component {
 	{
 		if (this.visible)
         {
-			mc.fontRendererObj.drawString(text, xPosition, yPosition, textColour, true);
+			mc.fontRendererObj.drawString(text, xPosition, yPosition, textColour, shadow);
         }
 	}
 	
@@ -37,5 +38,10 @@ public class Label extends Component {
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
+	}
+	
+	public void setShadow(boolean shadow)
+	{
+		this.shadow = shadow;
 	}
 }

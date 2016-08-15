@@ -129,7 +129,7 @@ public class Button extends Component
 		}
 	}
 	
-	public void setClickListener(ClickListener clickListener) 
+	public final void setClickListener(ClickListener clickListener) 
 	{
 		this.clickListener = clickListener;
 	}

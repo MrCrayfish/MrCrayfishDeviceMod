@@ -25,7 +25,6 @@ public class Image extends Component
 	private int borderColour = Color.BLACK.getRGB();
 	private int borderThickness = 1;
 	
-	
 	public Image(int x, int y, int left, int top, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
 	{
 		this(x, y, left, top, imageWidth, imageHeight, imageU, imageV, imageWidth, imageHeight, resource);

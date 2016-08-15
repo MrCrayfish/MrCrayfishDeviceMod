@@ -18,6 +18,11 @@ public class CheckBox extends Component implements RadioGroup.Item
 	
 	protected ClickListener listener = null;
 	
+	protected int textColour = Color.WHITE.getRGB();
+	protected int backgroundColour = Color.GRAY.getRGB();
+	protected int borderColour = Color.BLACK.getRGB();
+	protected int checkedColour = Color.DARK_GRAY.getRGB();
+	
 	public CheckBox(String name, int x, int y, int left, int top) 
 	{
 		super(x, y, left, top);
@@ -40,13 +45,13 @@ public class CheckBox extends Component implements RadioGroup.Item
 	{
 		if (this.visible)
         {
-			drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, Color.BLACK.getRGB());
-			drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, Color.GRAY.getRGB());
+			drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, borderColour);
+			drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, backgroundColour);
 			if(checked)
 			{
-				drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, Color.DARK_GRAY.getRGB());
+				drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, checkedColour);
 			}
-			drawString(mc.fontRendererObj, name, xPosition + 12, yPosition + 1, Color.WHITE.getRGB());
+			drawString(mc.fontRendererObj, name, xPosition + 12, yPosition + 1, textColour);
         }
 	}
 	
@@ -80,5 +85,25 @@ public class CheckBox extends Component implements RadioGroup.Item
 	public void setSelected(boolean enabled) 
 	{
 		this.checked = enabled;
+	}
+	
+	public void setTextColour(Color color) 
+	{
+		this.textColour = color.getRGB();
+	}
+	
+	public void setBackgroundColour(Color color) 
+	{
+		this.backgroundColour = color.getRGB();
+	}
+	
+	public void setBorderColour(Color color) 
+	{
+		this.borderColour = color.getRGB();
+	}
+	
+	public void setCheckedColour(Color color)
+	{
+		this.checkedColour = color.getRGB();
 	}
 }
