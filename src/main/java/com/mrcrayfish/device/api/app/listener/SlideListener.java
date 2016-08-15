@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.api.app.listener;
 
-public abstract class SlideListener 
+public interface SlideListener 
 {
-	public abstract void onSlide(float percentage);
+	public void onSlide(float percentage);
 }
