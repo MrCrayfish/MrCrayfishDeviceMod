@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mrcrayfish.device.api.TaskManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
@@ -27,7 +26,8 @@ import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.app.task.Callback;
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.programs.email.tasks.TaskCheckEmailAccount;
 import com.mrcrayfish.device.programs.email.tasks.TaskDeleteEmail;
@@ -446,7 +446,7 @@ public class ApplicationEmail extends Application
 		layoutViewEmail.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
 			{
 				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 50, Color.GRAY.getRGB());
 				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 23, Color.DARK_GRAY.getRGB());

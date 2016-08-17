@@ -67,14 +67,14 @@ public class ApplicationAppStore extends Application
 					appTitle.setText(info.getName());
 					appAuthor.setText(info.getAuthor());
 					appDescription.setText(info.getDescription());
-					btnInstall.enabled = true;
+					btnInstall.setEnabled(true);
 				}
 				else
 				{
 					appTitle.setText("-");
 					appAuthor.setText("-");
 					appDescription.setText("-");
-					btnInstall.enabled = false;
+					btnInstall.setEnabled(false);
 				}
 			}
 		});

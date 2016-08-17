@@ -58,7 +58,7 @@ public class TaskBar
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				if(offset + APPS_DISPLAYED < ApplicationManager.APPS.size())
+				if(offset + APPS_DISPLAYED < ApplicationManager.getApps().size())
 				{
 					offset++;
 				}
@@ -80,9 +80,9 @@ public class TaskBar
 		btnLeft.render(gui, mc, mouseX, mouseY, true, partialTicks);
 		btnRight.render(gui, mc, mouseX, mouseY, true, partialTicks);
 
-		for(int i = 0; i < APPS_DISPLAYED && i < ApplicationManager.APPS.size(); i++)
+		for(int i = 0; i < APPS_DISPLAYED && i < ApplicationManager.getApps().size(); i++)
 		{
-			Application app = ApplicationManager.APPS.get(i + offset);
+			Application app = ApplicationManager.getApps().get(i + offset);
 			if(app.getIcon() != null)
 			{
 				mc.getTextureManager().bindTexture(app.getIcon());
@@ -125,10 +125,10 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex < offset + APPS_DISPLAYED && appIndex < ApplicationManager.APPS.size())
+			if(appIndex < offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
 			{
 				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
-				gui.drawHoveringText(Arrays.asList(ApplicationManager.APPS.get(appIndex).getDisplayName()), mouseX, mouseY);
+				gui.drawHoveringText(Arrays.asList(ApplicationManager.getApps().get(appIndex).getDisplayName()), mouseX, mouseY);
 			}
 		}
 		
@@ -138,8 +138,8 @@ public class TaskBar
 	
 	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
-		btnLeft.handleClick(null, mouseX, mouseY, mouseButton);
-		btnRight.handleClick(null, mouseX, mouseY, mouseButton);
+		btnLeft.handleClick(mouseX, mouseY, mouseButton);
+		btnRight.handleClick(mouseX, mouseY, mouseButton);
 		
 		if(isMouseInside(mouseX, mouseY, x + 315, y + 1, x + 331, y + 16))
 		{
@@ -156,9 +156,9 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.APPS.size())
+			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
 			{
-				gui.openApplication(ApplicationManager.APPS.get(appIndex));
+				gui.openApplication(ApplicationManager.getApps().get(appIndex));
 				return;
 			}
 		}

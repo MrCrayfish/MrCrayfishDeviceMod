@@ -57,8 +57,8 @@ public class ApplicationNoteStash extends Application
 		notes.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				btnView.enabled = true;
-				btnDelete.enabled = true;
+				btnView.setEnabled(true);
+				btnDelete.setEnabled(true);
 			}
 		});
 		layoutMain.addComponent(notes);
@@ -73,7 +73,7 @@ public class ApplicationNoteStash extends Application
 		layoutMain.addComponent(btnNew);
 		
 		btnView = new Button("View", x, y, 124, 30, 50, 20);
-		btnView.enabled = false;
+		btnView.setEnabled(false);
 		btnView.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -89,15 +89,15 @@ public class ApplicationNoteStash extends Application
 		layoutMain.addComponent(btnView);
 		
 		btnDelete = new Button("Delete", x, y, 124, 55, 50, 20);
-		btnDelete.enabled = false;
+		btnDelete.setEnabled(false);
 		btnDelete.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
 				if(notes.getSelectedIndex() != -1)
 				{
 					notes.removeItem(notes.getSelectedIndex());
-					btnView.enabled = false;
-					btnDelete.enabled = false;
+					btnView.setEnabled(false);
+					btnDelete.setEnabled(false);
 					markDirty();
 				}
 			}
