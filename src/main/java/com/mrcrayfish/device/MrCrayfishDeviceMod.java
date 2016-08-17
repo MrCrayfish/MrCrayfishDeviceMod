@@ -96,6 +96,9 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerRequest(TaskRegisterEmailAccount.class);
 		TaskManager.registerRequest(TaskDeleteEmail.class);
 		TaskManager.registerRequest(TaskViewEmail.class);
+		TaskManager.registerRequest(TaskGetBalance.class);
+		TaskManager.registerRequest(TaskDeposit.class);
+		TaskManager.registerRequest(TaskWithdraw.class);
 		
 		proxy.postInit();
 	}
