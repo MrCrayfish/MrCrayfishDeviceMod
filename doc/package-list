@@ -1,0 +1,7 @@
+com.mrcrayfish.device.api
+com.mrcrayfish.device.api.app
+com.mrcrayfish.device.api.app.component
+com.mrcrayfish.device.api.app.listener
+com.mrcrayfish.device.api.app.renderer
+com.mrcrayfish.device.api.task
+com.mrcrayfish.device.api.utils
