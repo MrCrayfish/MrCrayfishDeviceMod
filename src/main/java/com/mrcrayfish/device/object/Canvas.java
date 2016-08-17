@@ -80,7 +80,7 @@ public class Canvas extends Component
 	}
 	
 	@Override
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) 
+	public void handleClick(int mouseX, int mouseY, int mouseButton) 
 	{
 		int startX = xPosition + 1;
 		int startY = yPosition + 1;

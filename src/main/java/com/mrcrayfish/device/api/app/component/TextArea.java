@@ -66,7 +66,7 @@ public class TextArea extends Component
 	}
 	
 	@Override
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
+	public void handleClick(int mouseX, int mouseY, int mouseButton)
 	{
 		if(!this.visible || !this.enabled)
 			return;

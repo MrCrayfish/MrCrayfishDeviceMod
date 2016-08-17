@@ -38,7 +38,7 @@ public abstract class Component extends Gui
 	
 	public void handleButtonClick(Button button) {}
 	
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) {}
+	public void handleClick(int mouseX, int mouseY, int mouseButton) {}
 	
 	public void handleKeyTyped(char character, int code) {}
 	

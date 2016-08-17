@@ -56,7 +56,7 @@ public class ColourGrid extends Component
 	}
 	
 	@Override
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton) 
+	public void handleClick(int mouseX, int mouseY, int mouseButton) 
 	{
 		int endX = xPosition + width + 2;
 		int endY = yPosition + (colours.length / 5) * 10 + 2;
