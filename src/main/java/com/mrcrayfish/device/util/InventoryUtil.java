@@ -28,8 +28,6 @@ public class InventoryUtil
 				ItemStack stack = player.inventory.mainInventory[i];
 				if(stack != null && stack.getItem() == item)
 				{
-					if(amount == 0) return true;
-
 					if(amount - stack.stackSize < 0)
 					{
 						stack.stackSize -= amount;
@@ -39,6 +37,7 @@ public class InventoryUtil
 					{
 						amount -= stack.stackSize;
 						player.inventory.mainInventory[i] = null;
+						if(amount == 0) return true;
 					}
 				}
 			}
