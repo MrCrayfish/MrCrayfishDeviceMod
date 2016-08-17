@@ -44,16 +44,16 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public void init(Layout layout)
 	{
 		btnUp = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top, ButtonArrow.Type.UP);
-		btnUp.enabled = false;
+		btnUp.setEnabled(false);
 		btnUp.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
 				if(offset > 0) {
 					offset--;
-					btnDown.enabled = true;
+					btnDown.setEnabled(true);
 				}
 				if(offset == 0) {
-					btnUp.enabled = false;
+					btnUp.setEnabled(false);
 				}
 			}
 		});
@@ -65,10 +65,10 @@ public class ItemList<E> extends Component implements Iterable<E>
 			public void onClick(Component c, int mouseButton) {
 				if(visibleItems + offset < items.size()) {
 					offset++;
-					btnUp.enabled = true;
+					btnUp.setEnabled(true);
 				}
 				if(visibleItems + offset == items.size()) {
-					btnDown.enabled = false;
+					btnDown.setEnabled(false);
 				}
 			}
 		});

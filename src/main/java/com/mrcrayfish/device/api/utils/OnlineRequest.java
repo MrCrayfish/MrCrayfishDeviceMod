@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.network;
+package com.mrcrayfish.device.api.utils;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -8,6 +8,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.mrcrayfish.device.util.StreamUtils;
 
+/**
+ * OnlineRequest is a simple built in request system for handling URL connections.
+ * It runs in the background so it doesn't freeze the user interface of your application.
+ * All requests are returned with a string, use how you please!
+ * 
+ * @author MrCrayfish
+ */
 public class OnlineRequest
 {
 	private static OnlineRequest instance = null;
@@ -25,7 +32,8 @@ public class OnlineRequest
 	}
 	
 	/**
-	 * Gets a singleton instance of OnlineRequest
+	 * Gets a singleton instance of OnlineRequest. Use this instance to
+	 * start making requests.
 	 * 
 	 * @return the singleton OnlineRequest object
 	 */
@@ -45,7 +53,8 @@ public class OnlineRequest
 	}
 	
 	/**
-	 * Adds a request to the queue
+	 * Adds a request to the queue. Use the handler to process the
+	 * response you get from the URL connection.
 	 * 
 	 * @param url the URL you want to make a request to
 	 * @param handler the response handler for the request
@@ -95,7 +104,7 @@ public class OnlineRequest
 		}
 	}
 	
-	public interface ResponseHandler 
+	public static interface ResponseHandler 
 	{
 		/**
 		 * Handles the response from an OnlineRequest
