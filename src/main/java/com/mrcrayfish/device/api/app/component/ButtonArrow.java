@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app.component;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
@@ -11,6 +12,15 @@ public class ButtonArrow extends Button
 {
 	protected Type type;
 	
+	/**
+	 * Creates an arrow button
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}.
+	 * @param y the application y position (from {@link Application#init(int x, int y)}.
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param type the arrow type
+	 */
 	public ButtonArrow(int x, int y, int left, int top, Type type) 
 	{
 		super("", x, y, left, top, 12, 12);

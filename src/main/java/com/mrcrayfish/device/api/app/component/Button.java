@@ -30,14 +30,43 @@ public class Button extends Component
 	
 	protected ClickListener clickListener = null;
 	
+	/**
+	 * Default button constructor
+	 * 
+	 * @param text text to be displayed in the button
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width width of the button
+	 * @param height height of the button
+	 */
 	public Button(String text, int x, int y, int left, int top, int width, int height) 
 	{
 		super(x, y, left, top);
+		
+		if(width < 5 || height < 5)
+			throw new IllegalArgumentException("Width and height must be more than or equal to 5");
+		
 		this.text = text;
 		this.width = width;
 		this.height = height;
 	}
 	
+	/**
+	 * Creates a button with an image inside. The size of the button is based
+	 * on the size of the image with 3 pixels of padding.
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param icon the icon resource location
+	 * @param iconU the u position on the resource
+	 * @param iconV the v position on the resource
+	 * @param iconWidth width of the icon
+	 * @param iconHeight height of the icon
+	 */
 	public Button(int x, int y, int left, int top, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
 	{
 		this("", x, y, left, top, iconWidth + 6, iconHeight + 6);
@@ -79,6 +108,8 @@ public class Button extends Component
             /* Center */
             GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
             
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            
             int j = 14737632;
 
             if (!this.enabled)
@@ -107,7 +138,7 @@ public class Button extends Component
 	@Override
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-        if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width -1, yPosition + height) && this.toolTip != null)
+        if(this.hovered && this.toolTip != null)
         {
         	laptop.drawHoveringText(Arrays.asList(new String[] { EnumChatFormatting.GOLD + this.toolTipTitle, this.toolTip }), mouseX, mouseY);
         }
@@ -129,6 +160,12 @@ public class Button extends Component
 		}
 	}
 	
+	/**
+	 * Sets the click listener. Use this to handle custom actions
+	 * when you press the button.
+	 * 
+	 * @param clickListener
+	 */
 	public final void setClickListener(ClickListener clickListener) 
 	{
 		this.clickListener = clickListener;
@@ -155,14 +192,42 @@ public class Button extends Component
 		handler.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 	}
 	
-	public boolean isInside(int mouseX, int mouseY)
+	protected boolean isInside(int mouseX, int mouseY)
 	{
 		return mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 	}
 	
+	/**
+	 * Sets the text to display in the button
+	 * 
+	 * @param text the text
+	 */
+	public void setText(String text)
+	{
+		this.text = text;
+	}
+	
+	/**
+	 * Gets the text currently displayed in the button
+	 * 
+	 * @return the button text
+	 */
+	public String getText()
+	{
+		return text;
+	}
+	
+	/**
+	 * Displays a message when hovering the button.
+	 * 
+	 * @param toolTipTitle title of the tool tip
+	 * @param toolTip description of the tool tip
+	 */
 	public void setToolTip(String toolTipTitle, String toolTip)
 	{
 		this.toolTipTitle = toolTipTitle;
 		this.toolTip = toolTip;
 	}
+	
+	//TODO add button text colour and button colour
 }

@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
@@ -15,6 +16,15 @@ public class Label extends Component {
 
 	protected int textColour = Color.WHITE.getRGB();
 	
+	/**
+	 * Default label constructor
+	 * 
+	 * @param text the text to display
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 */
 	public Label(String text, int x, int y, int left, int top) 
 	{
 		super(x, y, left, top);
@@ -30,16 +40,31 @@ public class Label extends Component {
         }
 	}
 	
+	/**
+	 * Sets the text in the label
+	 * 
+	 * @param text the text
+	 */
 	public void setText(String text) 
 	{
 		this.text = text;
 	}
 	
+	/**
+	 * Sets the text colour for this component
+	 * 
+	 * @param color the text colour
+	 */
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the whether shadow should show under the text
+	 * 
+	 * @param color the text colour
+	 */
 	public void setShadow(boolean shadow)
 	{
 		this.shadow = shadow;

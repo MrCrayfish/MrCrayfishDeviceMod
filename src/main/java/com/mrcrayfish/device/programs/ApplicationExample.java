@@ -81,11 +81,11 @@ public class ApplicationExample extends Application
 		checkBoxOn.setSelected(true);
 		super.addComponent(checkBoxOn);
 		
-		textField = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 88, 5, 80);
+		textField = new TextField(x, y, 88, 5, 80);
 		textField.setText("Text Field");
 		super.addComponent(textField);
 		
-		textArea = new TextArea(Minecraft.getMinecraft().fontRendererObj, x, y, 88, 25, 80, 60);
+		textArea = new TextArea(x, y, 88, 25, 80, 60);
 		textArea.setText("Text Area");
 		super.addComponent(textArea);
 		
@@ -107,7 +107,7 @@ public class ApplicationExample extends Application
 		spinner = new Spinner(x, y, 57, 3);
 		super.addComponent(spinner);
 		
-		text = new Text("", Minecraft.getMinecraft().fontRendererObj, x, y, 180, 5, 90);
+		text = new Text("", x, y, 180, 5, 90);
 		text.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 		super.addComponent(text);
 		

@@ -23,18 +23,38 @@ public class CheckBox extends Component implements RadioGroup.Item
 	protected int borderColour = Color.BLACK.getRGB();
 	protected int checkedColour = Color.DARK_GRAY.getRGB();
 	
+	/**
+	 * Default check box constructor
+	 * 
+	 * @param name the name of the check box
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 */
 	public CheckBox(String name, int x, int y, int left, int top) 
 	{
 		super(x, y, left, top);
 		this.name = name;
 	}
 	
+	/**
+	 * Sets the radio group for this button.
+	 * 
+	 * @param group the radio group.
+	 */
 	public void setRadioGroup(RadioGroup group)
 	{
 		this.group = group;
 		this.group.add(this);
 	}
 	
+	/**
+	 * Sets the click listener. Use this to handle custom actions
+	 * when you press the check box.
+	 * 
+	 * @param clickListener
+	 */
 	public void setClickListener(ClickListener listener) 
 	{
 		this.listener = listener;
@@ -87,21 +107,41 @@ public class CheckBox extends Component implements RadioGroup.Item
 		this.checked = enabled;
 	}
 	
+	/**
+	 * Sets the text colour for this component
+	 * 
+	 * @param color the text colour
+	 */
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the background colour for this component
+	 * 
+	 * @param color the background colour
+	 */
 	public void setBackgroundColour(Color color) 
 	{
 		this.backgroundColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the border colour for this component
+	 * 
+	 * @param color the border colour
+	 */
 	public void setBorderColour(Color color) 
 	{
 		this.borderColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the checked colour for this component
+	 * 
+	 * @param color the checked colour
+	 */
 	public void setCheckedColour(Color color)
 	{
 		this.checkedColour = color.getRGB();

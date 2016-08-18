@@ -177,7 +177,7 @@ public class ApplicationEmail extends Application
 		labelEmail = new Label("Email", x, y, 5, 5);
 		layoutRegisterAccount.addComponent(labelEmail);
 
-		fieldEmail = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 15, 80);
+		fieldEmail = new TextField(x, y, 5, 15, 80);
 		layoutRegisterAccount.addComponent(fieldEmail);
 
 		labelDomain = new Label("@endermail.com", x, y, 88, 18);
@@ -374,19 +374,19 @@ public class ApplicationEmail extends Application
 		labelTo = new Label("To", x, y, 5, 8);
 		layoutNewEmail.addComponent(labelTo);
 
-		fieldRecipient = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 5, 200);
+		fieldRecipient = new TextField(x, y, 50, 5, 200);
 		layoutNewEmail.addComponent(fieldRecipient);
 
 		labelSubject = new Label("Subject", x, y, 5, 26);
 		layoutNewEmail.addComponent(labelSubject);
 
-		fieldSubject = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 23, 200);
+		fieldSubject = new TextField(x, y, 50, 23, 200);
 		layoutNewEmail.addComponent(fieldSubject);
 
 		labelMessage = new Label("Message", x, y, 5, 44);
 		layoutNewEmail.addComponent(labelMessage);
 
-		textAreaMessage = new TextArea(Minecraft.getMinecraft().fontRendererObj, x, y, 50, 41, 200, 100);
+		textAreaMessage = new TextArea(x, y, 50, 41, 200, 100);
 		layoutNewEmail.addComponent(textAreaMessage);
 
 		btnSendEmail = new Button(x, y, 6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
@@ -474,7 +474,7 @@ public class ApplicationEmail extends Application
 		btnCancelViewEmail.setToolTip("Cancel", "Go back to Inbox");
 		layoutViewEmail.addComponent(btnCancelViewEmail);
 
-		textMessage = new Text("Hallo", Minecraft.getMinecraft().fontRendererObj, x, y, 5, 54, 230);
+		textMessage = new Text("Hallo", x, y, 5, 54, 230);
 		textMessage.setShadow(false);
 		layoutViewEmail.addComponent(textMessage);
 

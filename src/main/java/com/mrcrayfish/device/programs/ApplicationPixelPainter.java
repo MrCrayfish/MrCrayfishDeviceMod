@@ -124,13 +124,13 @@ public class ApplicationPixelPainter extends Application
 		labelName = new Label("Name", x, y, 5, 5);
 		layoutNewPicture.addComponent(labelName);
 
-		fieldName = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 15, 100);
+		fieldName = new TextField(x, y, 5, 15, 100);
 		layoutNewPicture.addComponent(fieldName);
 
 		labelAuthor = new Label("Author", x, y, 5, 35);
 		layoutNewPicture.addComponent(labelAuthor);
 
-		fieldAuthor = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 45, 100);
+		fieldAuthor = new TextField(x, y, 5, 45, 100);
 		layoutNewPicture.addComponent(fieldAuthor);
 
 		labelSize = new Label("Size", x, y, 110, 5);

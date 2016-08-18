@@ -29,10 +29,20 @@ public class TextArea extends Component
 	protected int backgroundColour = Color.DARK_GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
 
-	public TextArea(FontRenderer fontRendererObj, int x, int y, int left, int top, int width, int height) 
+	/**
+	 * Default text area constructor
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)})
+	 * @param y the application y position (from {@link Application#init(int x, int y)})
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width the width of the text area
+	 * @param height the height of the text area
+	 */
+	public TextArea(int x, int y, int left, int top, int width, int height) 
 	{
 		super(x, y, left, top);
-		this.fontRendererObj = fontRendererObj;
+		this.fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
 		this.width = width;
 		this.height = height;
 		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
@@ -110,7 +120,12 @@ public class TextArea extends Component
             }
         }
 	}
-
+	
+	/**
+	 * Appends text to the text area
+	 * 
+	 * @param append the text to append
+	 */
 	public void writeText(String append)
 	{
 		String newText = this.text + append;
@@ -120,42 +135,80 @@ public class TextArea extends Component
 		}
 	}
 	
+	/**
+	 * Clears the text
+	 */
 	public void clear()
 	{
 		this.text = "";
 	}
 	
+	/**
+	 * Sets the text for this component 
+	 * 
+	 * @param text the text
+	 */
 	public void setText(String text) 
 	{
 		this.text = text;
 	}
 	
+	/**
+	 * Gets the text in the box
+	 * 
+	 * @return the text
+	 */
 	public String getText() 
 	{
 		return text;
 	}
 	
+	/**
+	 * Sets this text area focused. Makes it available for typing.
+	 * 
+	 * @param isFocused whether the text area should be focused
+	 */
 	public void setFocused(boolean isFocused) 
 	{
 		this.isFocused = isFocused;
 	}
 	
+	/**
+	 * Sets the padding for the text area
+	 * 
+	 * @param padding the padding size
+	 */
 	public void setPadding(int padding) 
 	{
 		this.padding = padding;
 		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
 	}
 	
+	/**
+	 * Sets the text colour for this component
+	 * 
+	 * @param color the text colour
+	 */
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the background colour for this component
+	 * 
+	 * @param color the background colour
+	 */
 	public void setBackgroundColour(Color color) 
 	{
 		this.backgroundColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the border colour for this component
+	 * 
+	 * @param color the border colour
+	 */
 	public void setBorderColour(Color color) 
 	{
 		this.borderColour = color.getRGB();

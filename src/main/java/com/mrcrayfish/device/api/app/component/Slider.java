@@ -29,6 +29,15 @@ public class Slider extends Component
 	protected ReleaseListener releaseListener = null;
 	protected SlideListener slideListener = null;
 	
+	/**
+	 * Default slider listener
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width the width of the slider
+	 */
 	public Slider(int x, int y, int left, int top, int width) 
 	{
 		super(x, y, left, top);
@@ -96,41 +105,81 @@ public class Slider extends Component
 		}
 	}
 	
+	/**
+	 * Sets the click listener. Calls the listener when the slider is clicked.
+	 * 
+	 * @param clickListener the click listener
+	 */
 	public void setClickListener(ClickListener clickListener) 
 	{
 		this.clickListener = clickListener;
 	}
 	
+	/**
+	 * Sets the release listener. Calls the listener when the slider is released.
+	 * 
+	 * @param releaseListener the release listener
+	 */
 	public void setReleaseListener(ReleaseListener releaseListener) 
 	{
 		this.releaseListener = releaseListener;
 	}
 	
+	/**
+	 * Sets the slider listener. Calls the listener when the slider is moved.
+	 * 
+	 * @param slideListener the slide listener
+	 */
 	public void setSlideListener(SlideListener slideListener) 
 	{
 		this.slideListener = slideListener;
 	}
 	
+	/**
+	 * Gets the percentage of the slider
+	 * 
+	 * @return the percentage
+	 */
 	public float getPercentage()
 	{
 		return (float) this.newSliderX / (float) (this.width - 8);
 	}
 	
+	/**
+	 * Sets the slider percentage
+	 * 
+	 * @param percentage the percentage
+	 */
 	public void setPercentage(float percentage)
 	{
 		this.newSliderX = (int) ((this.width - 8) * percentage);
 	}
 	
+	/**
+	 * Sets the slider colour for this component
+	 * 
+	 * @param color the slider colour
+	 */
 	public void setSliderColour(Color color) 
 	{
 		this.sliderColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the background colour for this component
+	 * 
+	 * @param color the background colour
+	 */
 	public void setBackgroundColour(Color color) 
 	{
 		this.backgroundColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the border colour for this component
+	 * 
+	 * @param color the border colour
+	 */
 	public void setBorderColour(Color color) 
 	{
 		this.borderColour = color.getRGB();

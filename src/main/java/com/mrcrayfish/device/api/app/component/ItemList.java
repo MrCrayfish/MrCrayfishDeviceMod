@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -24,7 +25,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	
 	protected List<E> items = new ArrayList<E>();
 	protected ListItemRenderer<E> renderer = null;
-	protected ClickListener clickListener = null;
+	protected ItemClickListener<E> itemClickListener = null;
 	
 	protected Button btnUp;
 	protected Button btnDown;
@@ -33,6 +34,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected int backgroundColour = Color.GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
 	
+	/**
+	 * Default constructor for the item list. Should be noted that the
+	 * height is determined by how many visible items there are.
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width width of the list
+	 * @param visibleItems how many items are visible
+	 */
 	public ItemList(int x, int y, int left, int top, int width, int visibleItems) 
 	{
 		super(x, y, left, top);
@@ -115,7 +127,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		if(!this.visible || !this.enabled)
 			return;
-		
+
 		int height = 13;
 		if(renderer != null) height = renderer.getHeight();
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + visibleItems * height + visibleItems))
@@ -125,25 +137,40 @@ public class ItemList<E> extends Component implements Iterable<E>
 				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition + (i * height) + i, xPosition + width, yPosition + (i * height) + i + height))
 				{
 					this.selected = i + offset;
-					if(clickListener != null)
+					if(itemClickListener != null)
 					{
-						clickListener.onClick(this, mouseButton);
+						itemClickListener.onClick(items.get(selected), selected);
 					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Sets the custom item list renderer.
+	 * 
+	 * @param renderer the custom renderer
+	 */
 	public void setListItemRenderer(ListItemRenderer<E> renderer)
 	{
 		this.renderer = renderer;
 	}
 	
-	public void setClickListener(ClickListener clickListener) 
+	/**
+	 * Sets the item click listener for when an item is clicked.
+	 * 
+	 * @param itemClickListener the item click listener
+	 */
+	public void setItemClickListener(ItemClickListener<E> itemClickListener) 
 	{
-		this.clickListener = clickListener;
+		this.itemClickListener = itemClickListener;
 	}
 	
+	/**
+	 * Appends an item to the list
+	 * 
+	 * @param e the item
+	 */
 	public void addItem(E e)
 	{
 		if(e != null)
@@ -152,6 +179,11 @@ public class ItemList<E> extends Component implements Iterable<E>
 		}
 	}
 	
+	/**
+	 * Removes an item at the specified index
+	 * 
+	 * @param index the index to remove
+	 */
 	public void removeItem(int index)
 	{
 		if(index >= 0 && index < items.size())
@@ -162,6 +194,13 @@ public class ItemList<E> extends Component implements Iterable<E>
 		}
 	}
 	
+	/**
+	 * Gets the items at the specified index
+	 * 
+	 * @param pos the item's index
+	 * 
+	 * @return the item
+	 */
 	public E getItem(int pos)
 	{
 		if(pos + offset < items.size())
@@ -171,6 +210,11 @@ public class ItemList<E> extends Component implements Iterable<E>
 		return null;
 	}
 	
+	/**
+	 * Gets the selected item
+	 * 
+	 * @return the selected item
+	 */
 	public E getSelectedItem()
 	{
 		if(selected >= 0 && selected < items.size())
@@ -180,31 +224,59 @@ public class ItemList<E> extends Component implements Iterable<E>
 		return null;
 	}
 	
+	/**
+	 * Gets the selected item's index
+	 * 
+	 * @return the index
+	 */
 	public int getSelectedIndex()
 	{
 		return selected;
 	}
 	
+	/**
+	 * Gets all items from the list
+	 * 
+	 * @return the items
+	 */
 	public List<E> getItems()
 	{
 		return items;
 	}
 	
+	/**
+	 * Removes all items from the list
+	 */
 	public void removeAll()
 	{
 		this.items.clear();
 	}
 	
+	/**
+	 * Sets the text colour for this component
+	 * 
+	 * @param color the text colour
+	 */
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the background colour for this component
+	 * 
+	 * @param color the border colour
+	 */
 	public void setBackgroundColour(Color color) 
 	{
 		this.backgroundColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the border colour for this component
+	 * 
+	 * @param color the border colour
+	 */
 	public void setBorderColour(Color color) 
 	{
 		this.borderColour = color.getRGB();

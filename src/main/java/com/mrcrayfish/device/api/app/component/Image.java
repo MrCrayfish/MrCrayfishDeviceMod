@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -25,11 +26,40 @@ public class Image extends Component
 	private int borderColour = Color.BLACK.getRGB();
 	private int borderThickness = 1;
 	
+	/**
+	 * Default image constructor
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param imageU the image u position on the resource 
+	 * @param imageV the image v position on the resource
+	 * @param imageWidth the image width
+	 * @param imageHeight the image height
+	 * @param resource the resource location of the image
+	 */
 	public Image(int x, int y, int left, int top, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
 	{
 		this(x, y, left, top, imageWidth, imageHeight, imageU, imageV, imageWidth, imageHeight, resource);
 	}
 	
+	/**
+	 * The alternate constructor to specify a custom width and height
+	 * for the image.
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param componentWidth the width of the component
+	 * @param componentHeight the height of the component
+	 * @param imageU the image u position on the resource 
+	 * @param imageV the image v position on the resource
+	 * @param imageWidth the image width
+	 * @param imageHeight the image height
+	 * @param resource the resource location of the image
+	 */
 	public Image(int x, int y, int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
 	{
 		super(x, y, left, top);
@@ -64,6 +94,12 @@ public class Image extends Component
         }
 	}
 	
+	/**
+	 * Sets the alpha for this image. Must be in the range
+	 * of 0.0F to 1.0F
+	 * 
+	 * @param alpha how transparent you want it to be.
+	 */
 	public void setAlpha(float alpha) 
 	{
 		if(alpha < 0.0F)
@@ -79,16 +115,31 @@ public class Image extends Component
 		this.alpha = alpha;
 	}
 	
+	/**
+	 * Makes it so the border shows
+	 * 
+	 * @param show should the border show
+	 */
 	public void setBorderVisible(boolean show)
 	{
 		this.hasBorder = show;
 	}
 	
+	/**
+	 * Sets the border colour for this component
+	 * 
+	 * @param color the border colour
+	 */
 	private void setBorderColor(Color colour)
 	{
 		this.borderColour = colour.getRGB();
 	}
 	
+	/**
+	 * Sets the thickness of the border
+	 * 
+	 * @param thickness how thick in pixels
+	 */
 	public void setBorderThickness(int thickness)
 	{
 		this.borderThickness = thickness;

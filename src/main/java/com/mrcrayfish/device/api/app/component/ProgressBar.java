@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
@@ -17,6 +18,16 @@ public class ProgressBar extends Component
 	protected int backgroundColour = Color.DARK_GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
 	
+	/**
+	 * Default progress bar constructor
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width width of the progress bar
+	 * @param height height of the progress bar
+	 */
 	public ProgressBar(int x, int y, int left, int top, int width, int height)
 	{
 		super(x, y, left, top);
@@ -39,7 +50,12 @@ public class ProgressBar extends Component
 	{
 		return (int) Math.ceil(((width - 4) * ((double) progress / (double) max)));
 	}
-
+	
+	/**
+	 * Sets the current progress.
+	 * 
+	 * @param progress
+	 */
 	public void setProgress(int progress) 
 	{
 		if(progress > max)
@@ -53,11 +69,21 @@ public class ProgressBar extends Component
 		this.progress = progress;
 	}
 	
+	/**
+	 * Gets the current progress.
+	 * 
+	 * @return the progress
+	 */
 	public int getProgress()
 	{
 		return progress;
 	}
 	
+	/**
+	 * Sets the max progress
+	 * 
+	 * @param max the max progress
+	 */
 	public void setMax(int max) 
 	{
 		if(max > 0)

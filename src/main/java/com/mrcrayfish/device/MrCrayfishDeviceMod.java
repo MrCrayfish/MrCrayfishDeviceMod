@@ -1,6 +1,10 @@
 package com.mrcrayfish.device;
 
-import com.mrcrayfish.device.api.TaskManager;
+import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.utils.Bank.TaskDeposit;
+import com.mrcrayfish.device.api.utils.Bank.TaskGetBalance;
+import com.mrcrayfish.device.api.utils.Bank.TaskWithdraw;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.event.EmailEvents;
@@ -82,6 +86,11 @@ public class MrCrayfishDeviceMod
 		TaskBar.registerApplication(new ApplicationPixelPainter());
 		TaskBar.registerApplication(new ApplicationEmail());
 		TaskBar.registerApplication(new ApplicationBoatRacers());
+		ApplicationManager.registerApplication(new ApplicationNoteStash());
+		ApplicationManager.registerApplication(new ApplicationExample());
+		ApplicationManager.registerApplication(new ApplicationPixelPainter());
+		ApplicationManager.registerApplication(new ApplicationEmail());
+		ApplicationManager.registerApplication(new ApplicationBoatRacers());
 		
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));

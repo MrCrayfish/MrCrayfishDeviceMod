@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * The abstract base class for creating applications.
  * 
- * @author Casey
+ * @author MrCrayfish
  */
 public abstract class Application 
 {

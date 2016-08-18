@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.AppInfo;
@@ -58,19 +59,15 @@ public class ApplicationAppStore extends Application
 				
 			}
 		});
-		apps.setClickListener(new ClickListener() {
+		apps.setItemClickListener(new ItemClickListener<AppInfo>() {
 			@Override
-			public void onClick(Component c, int mouseButton) {
-				AppInfo info = apps.getSelectedItem();
-				if(info != null)
-				{
+			public void onClick(AppInfo info, int index) {
+				if(info != null) {
 					appTitle.setText(info.getName());
 					appAuthor.setText(info.getAuthor());
 					appDescription.setText(info.getDescription());
 					btnInstall.setEnabled(true);
-				}
-				else
-				{
+				} else {
 					appTitle.setText("-");
 					appAuthor.setText("-");
 					appDescription.setText("-");
@@ -86,7 +83,7 @@ public class ApplicationAppStore extends Application
 		appAuthor = new Label("", x, y, 130, 16);
 		super.addComponent(appAuthor);
 		
-		appDescription = new Text("", Minecraft.getMinecraft().fontRendererObj, x, y, 130, 35, 100);
+		appDescription = new Text("", x, y, 130, 35, 100);
 		super.addComponent(appDescription);
 		
 		btnInstall = new Button("Install", x, y, 125, 100, 100, 20);

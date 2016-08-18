@@ -10,16 +10,46 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 	protected boolean toggle = false;
 	protected RadioGroup group = null;
 	
+	/**
+	 * Default toggle button constructor
+	 * 
+	 * @param text text to be displayed in the button
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width width of the button
+	 * @param height height of the button
+	 */
 	public ButtonToggle(String text, int x, int y, int left, int top, int width, int height) 
 	{
 		super(text, x, y, left, top, width, height);
 	}
 	
+	/**
+	 * Creates a toggle button with an image inside. The size of the 
+	 * button is based on the size of the image with 3 pixels of padding.
+	 * 
+	 * @param x the application x position (from {@link Application#init(int x, int y)}).
+	 * @param y the application y position (from {@link Application#init(int x, int y)}).
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param icon the icon resource location
+	 * @param iconU the u position on the resource
+	 * @param iconV the v position on the resource
+	 * @param iconWidth width of the icon
+	 * @param iconHeight height of the icon
+	 */
 	public ButtonToggle(int x, int y, int left, int top, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
 	{
 		super(x, y, left, top, icon, iconU, iconV, iconWidth, iconHeight);
 	}
 	
+	/**
+	 * Sets the radio group for this button.
+	 * 
+	 * @param group the radio group.
+	 */
 	public void setRadioGroup(RadioGroup group)
 	{
 		this.group = group;

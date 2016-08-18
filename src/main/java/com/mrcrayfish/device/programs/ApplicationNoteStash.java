@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.Note;
 
@@ -54,9 +55,9 @@ public class ApplicationNoteStash extends Application
 		layoutMain = new Layout(180, 80);
 		
 		notes = new ItemList<Note>(x, y, 5, 5, 100, 5);
-		notes.setClickListener(new ClickListener() {
+		notes.setItemClickListener(new ItemClickListener() {
 			@Override
-			public void onClick(Component c, int mouseButton) {
+			public void onClick(Object e, int index){
 				btnView.setEnabled(true);
 				btnDelete.setEnabled(true);
 			}
@@ -109,10 +110,10 @@ public class ApplicationNoteStash extends Application
 		
 		layoutAddNote = new Layout(180, 80);
 
-		title = new TextField(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 5, 114);
+		title = new TextField(x, y, 5, 5, 114);
 		layoutAddNote.addComponent(title);
 		
-		textArea = new TextArea(Minecraft.getMinecraft().fontRendererObj, x, y, 5, 25, 114, 50);
+		textArea = new TextArea(x, y, 5, 25, 114, 50);
 		textArea.setFocused(true);
 		textArea.setPadding(2);
 		layoutAddNote.addComponent(textArea);
@@ -149,7 +150,7 @@ public class ApplicationNoteStash extends Application
 		noteTitle = new Label("", x, y, 5, 5);
 		layoutViewNote.addComponent(noteTitle);
 		
-		noteContent = new Text("", Minecraft.getMinecraft().fontRendererObj, x, y, 5, 18, 110);
+		noteContent = new Text("", x, y, 5, 18, 110);
 		layoutViewNote.addComponent(noteContent);
 		
 		btnBack = new Button("Back", x, y, 124, 5, 50, 20);

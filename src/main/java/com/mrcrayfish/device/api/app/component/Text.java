@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.app.component;
 import java.awt.Color;
 import java.util.List;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
@@ -17,10 +18,20 @@ public class Text extends Component
 	
 	protected int textColour = Color.WHITE.getRGB();
 	
-	public Text(String text, FontRenderer renderer, int x, int y, int left, int top, int width) 
+	/**
+	 * Default text constructor
+	 * 
+	 * @param text the text to display
+	 * @param x the application x position (from {@link Application#init(int x, int y)})
+	 * @param y the application y position (from {@link Application#init(int x, int y)})
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width the max width
+	 */
+	public Text(String text, int x, int y, int left, int top, int width) 
 	{
 		super(x, y, left, top);
-		this.lines = renderer.listFormattedStringToWidth(text, width);
+		this.setText(text);
 		this.width = width;
 	}
 
@@ -36,16 +47,31 @@ public class Text extends Component
         }
 	}
 	
+	/**
+	 * Sets the text for this component 
+	 * 
+	 * @param text the text
+	 */
 	public void setText(String text)
 	{
 		this.lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(text, width);
 	}
 	
+	/**
+	 * Sets the text colour for this component
+	 * 
+	 * @param color the text colour
+	 */
 	public void setTextColour(Color color) 
 	{
 		this.textColour = color.getRGB();
 	}
 	
+	/**
+	 * Sets the whether shadow should show under the text
+	 * 
+	 * @param color the text colour
+	 */
 	public void setShadow(boolean shadow)
 	{
 		this.shadow = shadow;
