@@ -31,8 +31,8 @@ public class Text extends Component
 	public Text(String text, int x, int y, int left, int top, int width) 
 	{
 		super(x, y, left, top);
-		this.setText(text);
 		this.width = width;
+		this.setText(text);
 	}
 
 	@Override
