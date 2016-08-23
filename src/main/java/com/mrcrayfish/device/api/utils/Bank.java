@@ -58,7 +58,7 @@ public class Bank
 	 */
 	public static void pay(Callback callback)
 	{
-		//TaskManager.sendRequest(new TaskPay().setCallback(callback));
+		TaskManager.sendRequest(new TaskPay().setCallback(callback));
 	}
 	
 	/**
@@ -70,10 +70,10 @@ public class Bank
 	 * 
 	 * @param callback he callback object to processing the response
 	 */
-	public static void add(Callback callback)
+	/*public static void add(Callback callback)
 	{
-		//TaskManager.sendRequest(new TaskRemove().setCallback(callback));
-	}
+		TaskManager.sendRequest(new TaskRemove().setCallback(callback));
+	}*/
 	
 	//TODO: Make private. Only the bank application should have access to these.
 	
@@ -121,6 +121,11 @@ public class Bank
 		return uuidToAccount.get(player.getUniqueID());
 	}
 	
+	public Account getAccount(String uuid)
+	{
+		return uuidToAccount.get(uuid);
+	}
+	
 	private static class Account 
 	{
 		private int balance;
@@ -135,6 +140,21 @@ public class Bank
 		public boolean hasAmount(int amount)
 		{
 			return amount <= this.balance;
+		}
+		
+		public void add(int amount) 
+		{
+			if(amount > 0) {
+				this.balance += amount;
+			}
+		}
+		
+		public void remove(int amount)
+		{
+			this.balance -= amount;
+			if(this.balance < 0) {
+				this.balance = 0;
+			}
 		}
 		
 		public boolean deposit(int amount)
@@ -276,6 +296,54 @@ public class Bank
 				}
 				
 				this.amount = account.getBalance();
+				this.setSuccessful();
+			}
+		}
+
+		@Override
+		public void prepareResponse(NBTTagCompound nbt) 
+		{
+			nbt.setInteger("balance", this.amount);
+		}
+
+		@Override
+		public void processResponse(NBTTagCompound nbt) {}
+	}
+	
+	public static class TaskPay extends Task 
+	{
+		private String uuid;
+		private int amount;
+		
+		public TaskPay()
+		{
+			super("bank_pay");
+		}
+		
+		public TaskPay(String uuid, int amount)
+		{
+			this();
+			this.amount = amount;
+		}
+
+		@Override
+		public void prepareRequest(NBTTagCompound nbt)
+		{
+			nbt.setString("player", this.uuid);
+			nbt.setInteger("amount", this.amount);
+		}
+
+		@Override
+		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
+		{
+			String uuid = nbt.getString("uuid");
+			int amount = nbt.getInteger("amount");
+			Account sender = Bank.INSTANCE.getAccount(player);
+			Account recipient = Bank.INSTANCE.getAccount(uuid);
+			if(recipient != null && sender.hasAmount(amount)) {
+				recipient.add(amount);
+				sender.remove(amount);
+				this.amount = sender.getBalance();
 				this.setSuccessful();
 			}
 		}
