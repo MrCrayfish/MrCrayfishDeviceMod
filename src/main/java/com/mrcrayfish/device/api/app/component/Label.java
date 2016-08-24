@@ -7,12 +7,14 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class Label extends Component {
 
 	protected String text;
 	protected int width;
 	protected boolean shadow = true;
+	protected double scale = 1;
 
 	protected int textColour = Color.WHITE.getRGB();
 	
@@ -36,7 +38,11 @@ public class Label extends Component {
 	{
 		if (this.visible)
         {
-			mc.fontRendererObj.drawString(text, xPosition, yPosition, textColour, shadow);
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(xPosition, yPosition, 0);
+			GlStateManager.scale(scale, scale, scale);
+			mc.fontRendererObj.drawString(text, 0, 0, textColour, shadow);
+			GlStateManager.popMatrix();
         }
 	}
 	
@@ -68,5 +74,16 @@ public class Label extends Component {
 	public void setShadow(boolean shadow)
 	{
 		this.shadow = shadow;
+	}
+	
+	/**
+	 * Scales the text, essentially setting the font size. Minecraft
+	 * does not support proper font resizing. The default scale is 1
+	 * 
+	 * @param scale the text scale
+	 */
+	public void setScale(double scale)
+	{
+		this.scale = scale;
 	}
 }
