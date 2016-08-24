@@ -46,6 +46,7 @@ public abstract class Component extends Gui
 	
 	public static final int ALIGN_LEFT = 0;
 	public static final int ALIGN_RIGHT = 1;
+	public static final int ALIGN_CENTER = 1;
 	
 	/**
 	 * The default constructor for a component. For your component to
