@@ -225,6 +225,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 	}
 	
 	/**
+	 * Sets the selected item in the list using the index
+	 * 
+	 * @param index the index of the item
+	 */
+	public void setSelectedIndex(int index)
+	{
+		if(index < 0) index = -1;
+		this.selected = index;
+	}
+	
+	/**
 	 * Gets the selected item's index
 	 * 
 	 * @return the index
