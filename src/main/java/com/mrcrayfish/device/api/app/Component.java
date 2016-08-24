@@ -44,6 +44,9 @@ public abstract class Component extends Gui
 	 */
 	protected boolean visible = true;
 	
+	public static final int ALIGN_LEFT = 0;
+	public static final int ALIGN_RIGHT = 1;
+	
 	/**
 	 * The default constructor for a component. For your component to
 	 * be laid out correctly, make sure you use the x and y parameters

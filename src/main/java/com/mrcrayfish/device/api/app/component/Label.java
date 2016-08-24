@@ -15,6 +15,7 @@ public class Label extends Component {
 	protected int width;
 	protected boolean shadow = true;
 	protected double scale = 1;
+	protected int alignment = ALIGN_LEFT;
 
 	protected int textColour = Color.WHITE.getRGB();
 	
@@ -39,9 +40,15 @@ public class Label extends Component {
 		if (this.visible)
         {
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(xPosition, yPosition, 0);
-			GlStateManager.scale(scale, scale, scale);
-			mc.fontRendererObj.drawString(text, 0, 0, textColour, shadow);
+			{
+				GlStateManager.translate(xPosition, yPosition, 0);
+				GlStateManager.scale(scale, scale, scale);
+				if(alignment == ALIGN_RIGHT) 
+				{
+					GlStateManager.translate(-(mc.fontRendererObj.getStringWidth(text) * scale), 0, 0);
+				}
+				mc.fontRendererObj.drawString(text, 0, 0, textColour, shadow);
+			}
 			GlStateManager.popMatrix();
         }
 	}
@@ -85,5 +92,16 @@ public class Label extends Component {
 	public void setScale(double scale)
 	{
 		this.scale = scale;
+	}
+	
+	/**
+	 * Sets the alignment of the text. Use {@link Component#ALIGN_LEFT} or
+	 * {@link Component#ALIGN_RIGHT} to set alignment.
+	 * 
+	 * @param alignment
+	 */
+	public void setAlignment(int alignment)
+	{
+		this.alignment = alignment;
 	}
 }
