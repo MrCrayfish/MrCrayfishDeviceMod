@@ -2,9 +2,6 @@ package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.api.utils.Bank.TaskDeposit;
-import com.mrcrayfish.device.api.utils.Bank.TaskGetBalance;
-import com.mrcrayfish.device.api.utils.Bank.TaskWithdraw;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.event.BankEvents;
@@ -25,6 +22,11 @@ import com.mrcrayfish.device.programs.email.tasks.TaskRegisterEmailAccount;
 import com.mrcrayfish.device.programs.email.tasks.TaskSendEmail;
 import com.mrcrayfish.device.programs.email.tasks.TaskUpdateInbox;
 import com.mrcrayfish.device.programs.email.tasks.TaskViewEmail;
+import com.mrcrayfish.device.programs.system.ApplicationBank;
+import com.mrcrayfish.device.programs.system.task.TaskDeposit;
+import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
+import com.mrcrayfish.device.programs.system.task.TaskPay;
+import com.mrcrayfish.device.programs.system.task.TaskWithdraw;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -93,6 +95,7 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ApplicationPixelPainter());
 		ApplicationManager.registerApplication(new ApplicationEmail());
 		ApplicationManager.registerApplication(new ApplicationBoatRacers());
+		ApplicationManager.registerApplication(new ApplicationBank());
 		
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
@@ -110,6 +113,7 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerRequest(TaskGetBalance.class);
 		TaskManager.registerRequest(TaskDeposit.class);
 		TaskManager.registerRequest(TaskWithdraw.class);
+		TaskManager.registerRequest(TaskPay.class);
 		
 		proxy.postInit();
 	}

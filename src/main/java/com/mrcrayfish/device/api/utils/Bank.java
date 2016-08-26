@@ -5,17 +5,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.util.InventoryUtil;
+import com.mrcrayfish.device.programs.system.object.Account;
+import com.mrcrayfish.device.programs.system.task.TaskDeposit;
+import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
+import com.mrcrayfish.device.programs.system.task.TaskPay;
+import com.mrcrayfish.device.programs.system.task.TaskWithdraw;
 
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
 
 /**
  * <p>The Bank is a built in currency system that you can use in your application.
@@ -135,7 +134,7 @@ public class Bank
 			NBTTagCompound accountTag = new NBTTagCompound();
 			Account account = uuidToAccount.get(uuid);
 			accountTag.setString("uuid", uuid.toString());
-			accountTag.setInteger("balance", account.balance);
+			accountTag.setInteger("balance", account.getBalance());
 			accountList.appendTag(accountTag);
 		}
 		tag.setTag("accounts", accountList);
@@ -151,240 +150,5 @@ public class Bank
 			Account account = new Account(accountTag.getInteger("balance"));
 			uuidToAccount.put(uuid, account);
 		}
-	}
-	
-	private static class Account 
-	{
-		private int balance;
-		
-		private Account(int balance) 
-		{
-			this.balance = balance;
-		}
-		
-		public int getBalance()
-		{
-			return balance;
-		}
-		
-		public boolean hasAmount(int amount)
-		{
-			return amount <= this.balance;
-		}
-		
-		public void add(int amount) 
-		{
-			if(amount > 0) {
-				this.balance += amount;
-			}
-		}
-		
-		public void remove(int amount)
-		{
-			this.balance -= amount;
-			if(this.balance < 0) {
-				this.balance = 0;
-			}
-		}
-		
-		public boolean deposit(int amount)
-		{
-			if(amount > 0)
-			{
-				this.balance += amount;
-				return true;
-			}
-			return false;
-		}
-		
-		public boolean withdraw(int amount)
-		{
-			if(hasAmount(amount))
-			{
-				this.balance -= amount;
-				return true;
-			}
-			return false;
-		}
-	}
-	
-	public static class TaskGetBalance extends Task 
-	{
-		private int balance;
-		
-		public TaskGetBalance()
-		{
-			super("bank_get_balance");
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt) {}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			Account account = Bank.INSTANCE.getAccount(player);
-			this.balance = account.getBalance();
-			this.setSuccessful();
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt)
-		{
-			nbt.setInteger("balance", this.balance);
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt) {}
-		
-	}
-	
-	public static class TaskDeposit extends Task 
-	{
-		private int amount;
-		
-		public TaskDeposit()
-		{
-			super("bank_deposit");
-		}
-		
-		public TaskDeposit(int amount)
-		{
-			this();
-			this.amount = amount;
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt)
-		{
-			nbt.setInteger("amount", this.amount);
-		}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			int amount = nbt.getInteger("amount");
-			if(InventoryUtil.removeItemWithAmount(player, Items.emerald, amount))
-			{
-				Account account = Bank.INSTANCE.getAccount(player);
-				if(account.deposit(amount))
-				{
-					this.amount = account.getBalance();
-					this.setSuccessful();
-				}
-			}
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt) 
-		{
-			nbt.setInteger("balance", this.amount);
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt) {}
-	}
-	
-	public static class TaskWithdraw extends Task 
-	{
-		private int amount;
-		
-		public TaskWithdraw()
-		{
-			super("bank_withdraw");
-		}
-		
-		public TaskWithdraw(int amount)
-		{
-			this();
-			this.amount = amount;
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt)
-		{
-			nbt.setInteger("amount", this.amount);
-		}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			int amount = nbt.getInteger("amount");
-			Account account = Bank.INSTANCE.getAccount(player);
-			if(account.withdraw(amount))
-			{
-				int stacks = amount / 64;
-				for(int i = 0; i < stacks; i++)
-				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.emerald, 64)));
-				}
-				
-				int remaining = amount % 64;
-				if(remaining > 0)
-				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.emerald, remaining)));
-				}
-				
-				this.amount = account.getBalance();
-				this.setSuccessful();
-			}
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt) 
-		{
-			nbt.setInteger("balance", this.amount);
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt) {}
-	}
-	
-	public static class TaskPay extends Task 
-	{
-		private String uuid;
-		private int amount;
-		
-		public TaskPay()
-		{
-			super("bank_pay");
-		}
-		
-		public TaskPay(String uuid, int amount)
-		{
-			this();
-			this.amount = amount;
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt)
-		{
-			nbt.setString("player", this.uuid);
-			nbt.setInteger("amount", this.amount);
-		}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			String uuid = nbt.getString("uuid");
-			int amount = nbt.getInteger("amount");
-			Account sender = Bank.INSTANCE.getAccount(player);
-			Account recipient = Bank.INSTANCE.getAccount(uuid);
-			if(recipient != null && sender.hasAmount(amount)) {
-				recipient.add(amount);
-				sender.remove(amount);
-				this.amount = sender.getBalance();
-				this.setSuccessful();
-			}
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt) 
-		{
-			nbt.setInteger("balance", this.amount);
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt) {}
 	}
 }
