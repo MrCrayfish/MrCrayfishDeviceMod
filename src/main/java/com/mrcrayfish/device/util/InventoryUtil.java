@@ -6,6 +6,20 @@ import net.minecraft.item.ItemStack;
 
 public class InventoryUtil
 {
+	public static int getItemAmount(EntityPlayer player, Item item)
+	{
+		int amount = 0;
+		for(int i = 0; i < player.inventory.mainInventory.length; i++)
+		{
+			ItemStack stack = player.inventory.mainInventory[i];
+			if(stack != null && stack.getItem() == item)
+			{
+				amount += stack.stackSize;
+			}
+		}
+		return amount;
+	}
+	
 	public static boolean hasItemAndAmount(EntityPlayer player, Item item, int amount)
 	{
 		int count = 0;
