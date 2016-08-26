@@ -23,6 +23,7 @@ public class TextArea extends Component
 	protected int padding = 2;
 	protected int updateCount = 0;
 	protected boolean isFocused = false;
+	protected boolean editable = true;
 	
 	/* Personalisation */
 	protected int textColour = Color.WHITE.getRGB();
@@ -78,7 +79,7 @@ public class TextArea extends Component
 	@Override
 	public void handleClick(int mouseX, int mouseY, int mouseButton)
 	{
-		if(!this.visible || !this.enabled)
+		if(!this.visible || !this.enabled || !this.editable)
 			return;
 		
 		boolean within = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
@@ -88,7 +89,7 @@ public class TextArea extends Component
 	@Override
 	public void handleKeyTyped(char character, int code)
 	{
-		if(!isFocused)
+		if(!isFocused || !editable)
 		{
 			return;
 		}
@@ -212,6 +213,16 @@ public class TextArea extends Component
 	public void setBorderColour(Color color) 
 	{
 		this.borderColour = color.getRGB();
+	}
+	
+	/**
+	 * Sets whether the user can edit the text
+	 * 
+	 * @param editable
+	 */
+	public void setEditable(boolean editable)
+	{
+		this.editable = editable;
 	}
 
 }
