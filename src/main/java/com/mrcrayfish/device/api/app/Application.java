@@ -248,7 +248,8 @@ public abstract class Application
 	/**
 	 * Called when you first load up your application. Allows you to
 	 * read any stored data you have saved. Only called if you have 
-	 * saved data.
+	 * saved data. This method is called after {{@link #init(int, int)}
+	 * so you can update any Components with this data.
 	 * 
 	 * @param tagCompound the tag compound where you saved data is
 	 */
