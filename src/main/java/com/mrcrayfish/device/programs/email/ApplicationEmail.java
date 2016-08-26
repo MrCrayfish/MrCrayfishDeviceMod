@@ -29,12 +29,12 @@ import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.programs.email.tasks.TaskCheckEmailAccount;
-import com.mrcrayfish.device.programs.email.tasks.TaskDeleteEmail;
-import com.mrcrayfish.device.programs.email.tasks.TaskRegisterEmailAccount;
-import com.mrcrayfish.device.programs.email.tasks.TaskSendEmail;
-import com.mrcrayfish.device.programs.email.tasks.TaskUpdateInbox;
-import com.mrcrayfish.device.programs.email.tasks.TaskViewEmail;
+import com.mrcrayfish.device.programs.email.task.TaskCheckEmailAccount;
+import com.mrcrayfish.device.programs.email.task.TaskDeleteEmail;
+import com.mrcrayfish.device.programs.email.task.TaskRegisterEmailAccount;
+import com.mrcrayfish.device.programs.email.task.TaskSendEmail;
+import com.mrcrayfish.device.programs.email.task.TaskUpdateInbox;
+import com.mrcrayfish.device.programs.email.task.TaskViewEmail;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

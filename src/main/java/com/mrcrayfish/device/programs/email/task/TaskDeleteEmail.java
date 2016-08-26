@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.programs.email.tasks;
+package com.mrcrayfish.device.programs.email.task;
 
 import java.util.List;
 
@@ -10,21 +10,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TaskViewEmail extends Task
-{
+public class TaskDeleteEmail extends Task {
+	
 	private int index;
 	
-	public TaskViewEmail() 
+	public TaskDeleteEmail() 
 	{
-		super("view_email");
+		super("delete_email");
 	}
 	
-	public TaskViewEmail(int index) 
+	public TaskDeleteEmail(int index) 
 	{
 		this();
 		this.index = index;
 	}
-	
+
 	@Override
 	public void prepareRequest(NBTTagCompound nbt) 
 	{
@@ -40,7 +40,8 @@ public class TaskViewEmail extends Task
 			int index = nbt.getInteger("Index");
 			if(index >= 0 && index < emails.size())
 			{
-				emails.get(index).setRead(true);
+				emails.remove(index);
+				this.setSuccessful();
 			}
 		}
 	}
@@ -50,5 +51,4 @@ public class TaskViewEmail extends Task
 
 	@Override
 	public void processResponse(NBTTagCompound nbt) {}
-	
 }

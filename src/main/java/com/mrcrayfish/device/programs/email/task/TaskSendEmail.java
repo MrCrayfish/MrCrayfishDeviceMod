@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.programs.email.tasks;
+package com.mrcrayfish.device.programs.email.task;
 
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
