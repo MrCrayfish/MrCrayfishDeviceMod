@@ -1,23 +1,27 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import java.awt.Color;
+
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.utils.Bank;
-import com.mrcrayfish.device.api.utils.OnlineRequest;
-import com.mrcrayfish.device.api.utils.OnlineRequest.ResponseHandler;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationBank extends Application
 {
+	private Layout layoutMain;
+	
 	public ApplicationBank()
 	{
 		super(Reference.MOD_ID + "Bank", "The Emerald Bank");
@@ -26,10 +30,20 @@ public class ApplicationBank extends Application
 	@Override
 	public void init(int x, int y)
 	{
-		super.init(x, y);
+		layoutMain = new Layout(120, 120);
+		layoutMain.setBackground(new Background()
+		{
+			@Override
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				gui.drawRect(x, y, x + width, y + 50, Color.GRAY.getRGB());
+			}
+		});
 		
-		final Label label = new Label("Loading balance...", x, y, 5, 5);
-		this.addComponent(label);
+		final Label label = new Label("Loading balance...", x, y, 120, 5);
+		label.setAlignment(Label.ALIGN_CENTER);
+		label.setScale(2);
+		layoutMain.addComponent(label);
 		
 		final TextField amountField = new TextField(x, y, 5, 15, 70);
 		this.addComponent(amountField);
@@ -79,6 +93,8 @@ public class ApplicationBank extends Application
 			}
 		});
 		this.addComponent(buttonWithdraw);
+		
+		setCurrentLayout(layoutMain);
 		
 		Bank.getBalance(new Callback()
 		{
