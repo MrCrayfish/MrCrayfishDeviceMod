@@ -21,6 +21,20 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ApplicationBank extends Application
 {
 	private Layout layoutMain;
+	private Label labelBalance;
+	private Label labelAmount;
+	private TextField amountField;
+	private Button btnOne;
+	private Button btnTwo;
+	private Button btnThree;
+	private Button btnFour;
+	private Button btnFive;
+	private Button btnSix;
+	private Button btnSeven;
+	private Button btnEight;
+	private Button btnNine;
+	private Button btnZero;
+	private Button btnClear;
 	
 	public ApplicationBank()
 	{
@@ -30,23 +44,66 @@ public class ApplicationBank extends Application
 	@Override
 	public void init(int x, int y)
 	{
-		layoutMain = new Layout(120, 120);
+		layoutMain = new Layout(120, 143);
 		layoutMain.setBackground(new Background()
 		{
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
 			{
-				gui.drawRect(x, y, x + width, y + 50, Color.GRAY.getRGB());
+				gui.drawRect(x, y, x + width, y + 40, Color.GRAY.getRGB());
+				gui.drawRect(x, y + 39, x + width, y + 40, Color.DARK_GRAY.getRGB());
 			}
 		});
 		
-		final Label label = new Label("Loading balance...", x, y, 120, 5);
-		label.setAlignment(Label.ALIGN_CENTER);
-		label.setScale(2);
-		layoutMain.addComponent(label);
+		labelBalance = new Label("Balance", x, y, 60, 5);
+		labelBalance.setAlignment(Label.ALIGN_CENTER);
+		labelBalance.setShadow(false);
+		layoutMain.addComponent(labelBalance);
 		
-		final TextField amountField = new TextField(x, y, 5, 15, 70);
-		this.addComponent(amountField);
+		labelAmount = new Label("Loading balance...", x, y, 60, 18);
+		labelAmount.setAlignment(Label.ALIGN_CENTER);
+		labelAmount.setScale(2);
+		layoutMain.addComponent(labelAmount);
+		
+		amountField = new TextField(x, y, 5, 45, 110);
+		layoutMain.addComponent(amountField);
+		
+		btnOne = new Button("1", x, y, 5, 65, 16, 16);
+		
+		btnTwo = new Button("2", x, y, 5, 84, 16, 16);
+		
+		btnOne = new Button("1", x, y, 5, 103, 16, 16);
+		layoutMain.addComponent(btnOne);
+		
+		btnTwo = new Button("2", x, y, 24, 103, 16, 16);
+		layoutMain.addComponent(btnTwo);
+		
+		btnThree = new Button("3", x, y, 43, 103, 16, 16);
+		layoutMain.addComponent(btnThree);
+		
+		btnFour = new Button("4", x, y, 5, 84, 16, 16);
+		layoutMain.addComponent(btnFour);
+		
+		btnFive = new Button("5", x, y, 24, 84, 16, 16);
+		layoutMain.addComponent(btnFive);
+		
+		btnSix = new Button("6", x, y, 43, 84, 16, 16);
+		layoutMain.addComponent(btnSix);
+		
+		btnSeven = new Button("7", x, y, 5, 65, 16, 16);
+		layoutMain.addComponent(btnSeven);
+		
+		btnEight = new Button("8", x, y, 24, 65, 16, 16);
+		layoutMain.addComponent(btnEight);
+		
+		btnNine = new Button("9", x, y, 43, 65, 16, 16);
+		layoutMain.addComponent(btnNine);
+		
+		btnZero = new Button("0", x, y, 5, 122, 16, 16);
+		layoutMain.addComponent(btnZero);
+		
+		btnClear = new Button("Clr", x, y, 24, 122, 35, 16);
+		layoutMain.addComponent(btnClear);
 		
 		final Button buttonDeposit = new Button("Deposit", x, y, 5, 35, 30, 16);
 		buttonDeposit.setClickListener(new ClickListener()
@@ -62,7 +119,7 @@ public class ApplicationBank extends Application
 						if(success)
 						{
 							int balance = nbt.getInteger("balance");
-							label.setText("$" + balance);
+							labelAmount.setText("$" + balance);
 							amountField.clear();
 						}
 					}
@@ -85,7 +142,7 @@ public class ApplicationBank extends Application
 						if(success)
 						{
 							int balance = nbt.getInteger("balance");
-							label.setText("$" + balance);
+							labelAmount.setText("$" + balance);
 							amountField.clear();
 						}
 					}
@@ -104,7 +161,7 @@ public class ApplicationBank extends Application
 				if(success)
 				{
 					int balance = nbt.getInteger("balance");
-					label.setText("$" + balance);
+					labelAmount.setText("$" + balance);
 				}
 			}
 		});
