@@ -27,13 +27,13 @@ import net.minecraft.nbt.NBTTagList;
  * 
  * @author MrCrayfish
  */
-public class Bank
+public class BankUtil
 {
-	public static final Bank INSTANCE = new Bank();
+	public static final BankUtil INSTANCE = new BankUtil();
 	
 	private Map<UUID, Account> uuidToAccount = new HashMap<UUID, Account>();
 	
-	private Bank() {}
+	private BankUtil() {}
 	
 	/**
 	 * Sends a request to get the balance of this user's account. To actually get 

@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.utils.Bank;
+import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,8 +36,8 @@ public class TaskPay extends Task
 	{
 		String uuid = nbt.getString("uuid");
 		int amount = nbt.getInteger("amount");
-		Account sender = Bank.INSTANCE.getAccount(player);
-		Account recipient = Bank.INSTANCE.getAccount(uuid);
+		Account sender = BankUtil.INSTANCE.getAccount(player);
+		Account recipient = BankUtil.INSTANCE.getAccount(uuid);
 		if(recipient != null && sender.hasAmount(amount)) {
 			recipient.add(amount);
 			sender.remove(amount);

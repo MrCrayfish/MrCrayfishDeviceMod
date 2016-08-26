@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.utils.Bank;
+import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +23,7 @@ public class TaskGetBalance extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
 	{
-		Account account = Bank.INSTANCE.getAccount(player);
+		Account account = BankUtil.INSTANCE.getAccount(player);
 		this.balance = account.getBalance();
 		this.setSuccessful();
 	}

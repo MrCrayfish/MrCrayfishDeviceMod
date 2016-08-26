@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.util;
+package com.mrcrayfish.device.api.utils;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

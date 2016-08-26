@@ -3,7 +3,7 @@ package com.mrcrayfish.device.event;
 import java.io.File;
 import java.io.IOException;
 
-import com.mrcrayfish.device.api.utils.Bank;
+import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
 import net.minecraft.nbt.CompressedStreamTools;
@@ -30,7 +30,7 @@ public class BankEvents
 				NBTTagCompound nbt = CompressedStreamTools.read(data);
 				if(nbt != null)
 				{
-					Bank.INSTANCE.load(nbt);
+					BankUtil.INSTANCE.load(nbt);
 				}
 			} 
 			catch (IOException e) 
@@ -54,7 +54,7 @@ public class BankEvents
 				}
 				
 				NBTTagCompound nbt = new NBTTagCompound();
-				Bank.INSTANCE.save(nbt);
+				BankUtil.INSTANCE.save(nbt);
 				CompressedStreamTools.write(nbt, data);
 			} 
 			catch (IOException e) 
