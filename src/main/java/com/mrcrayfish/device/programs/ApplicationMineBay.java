@@ -15,6 +15,7 @@ import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.object.Inventory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -29,6 +30,9 @@ public class ApplicationMineBay extends Application
 	private String[] categories = { "Building", "Combat", "Tools", "Food", "Materials", "Redstone", "Alchemy", "Rare", "Misc" };
 	
 	private Layout layoutAdd;
+	private Label labelInventory;
+	private Inventory inventory;
+	private Label labelSetPriceAndAmount;
 	
 	public ApplicationMineBay()
 	{
@@ -52,6 +56,14 @@ public class ApplicationMineBay extends Application
 		});
 		
 		Button btnAddItem = new Button("Add Item", x, y, 50, 5, 60, 15);
+		btnAddItem.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				setCurrentLayout(layoutAdd);
+			}
+		});
 		home.addComponent(btnAddItem);
 		
 		Button btnViewItem = new Button("Your Auctions", x, y, 115, 5, 80, 15);
@@ -120,6 +132,22 @@ public class ApplicationMineBay extends Application
 			}
 		});
 		home.addComponent(btnBuy);
+		
+		layoutAdd = new Layout(186, 100);
+		layoutAdd.setBackground(new Background()
+		{
+			@Override
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				gui.drawRect(x, y + 34, x + width, y + height, Color.GRAY.getRGB());
+			}
+		});
+		
+		inventory = new Inventory(x, y, 5, 39);
+		layoutAdd.addComponent(inventory);
+		
+		labelSetPriceAndAmount = new Label("Set amount and price...", x, y, 5, 80);
+		layoutAdd.addComponent(labelSetPriceAndAmount);
 		
 		setCurrentLayout(home);
 		
