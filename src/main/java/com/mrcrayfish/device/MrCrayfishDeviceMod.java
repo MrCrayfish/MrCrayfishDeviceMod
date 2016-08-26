@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.utils.Bank.TaskGetBalance;
 import com.mrcrayfish.device.api.utils.Bank.TaskWithdraw;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.TaskBar;
+import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceBlocks;
@@ -74,6 +75,7 @@ public class MrCrayfishDeviceMod
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
+		MinecraftForge.EVENT_BUS.register(new BankEvents());
 		
 		proxy.init();
 	}

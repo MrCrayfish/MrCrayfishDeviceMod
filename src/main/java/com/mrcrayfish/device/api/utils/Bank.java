@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
 /**
@@ -116,7 +117,7 @@ public class Bank
 	{
 		if(!uuidToAccount.containsKey(player.getUniqueID()))
 		{
-			uuidToAccount.put(player.getUniqueID(), new Account());
+			uuidToAccount.put(player.getUniqueID(), new Account(0));
 		}
 		return uuidToAccount.get(player.getUniqueID());
 	}
@@ -126,11 +127,40 @@ public class Bank
 		return uuidToAccount.get(uuid);
 	}
 	
+	public void save(NBTTagCompound tag) 
+	{
+		NBTTagList accountList = new NBTTagList();
+		for(UUID uuid : uuidToAccount.keySet())
+		{
+			NBTTagCompound accountTag = new NBTTagCompound();
+			Account account = uuidToAccount.get(uuid);
+			accountTag.setString("uuid", uuid.toString());
+			accountTag.setInteger("balance", account.balance);
+			accountList.appendTag(accountTag);
+		}
+		tag.setTag("accounts", accountList);
+	}
+	
+	public void load(NBTTagCompound tag) 
+	{
+		NBTTagList accountList = (NBTTagList) tag.getTag("accounts");
+		for(int i = 0; i < accountList.tagCount(); i++)
+		{
+			NBTTagCompound accountTag = accountList.getCompoundTagAt(i);
+			UUID uuid = UUID.fromString(accountTag.getString("uuid"));
+			Account account = new Account(accountTag.getInteger("balance"));
+			uuidToAccount.put(uuid, account);
+		}
+	}
+	
 	private static class Account 
 	{
 		private int balance;
 		
-		private Account() {}
+		private Account(int balance) 
+		{
+			this.balance = balance;
+		}
 		
 		public int getBalance()
 		{
