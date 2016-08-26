@@ -10,6 +10,8 @@ public class RenderUtil
 	{
 		GlStateManager.disableDepth();
 		Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(stack, x, y);
+		Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRendererObj, stack, x, y);
+		GlStateManager.disableLighting();
 		GlStateManager.enableDepth();
 	}
 }
