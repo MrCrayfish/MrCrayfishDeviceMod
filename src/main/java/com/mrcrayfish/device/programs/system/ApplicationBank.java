@@ -68,7 +68,7 @@ public class ApplicationBank extends Application
 				gui.drawRect(x + 62, y + 103, x + 115, y + 138, Color.BLACK.getRGB());
 				gui.drawRect(x + 63, y + 104, x + 114, y + 113, Color.DARK_GRAY.getRGB());
 				gui.drawRect(x + 63, y + 114, x + 114, y + 137, Color.GRAY.getRGB());
-				RenderUtil.renderItem(x + 65, y + 118, EMERALD);
+				RenderUtil.renderItem(x + 65, y + 118, EMERALD, false);
 			}
 		});
 		
