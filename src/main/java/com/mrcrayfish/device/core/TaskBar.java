@@ -94,7 +94,7 @@ public class TaskBar
 				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
 			}
 			
-			if(gui.isAppActive(app.getID())) 
+			if(gui.isAppRunning(app.getID())) 
 			{
 				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
@@ -143,13 +143,13 @@ public class TaskBar
 		
 		if(isMouseInside(mouseX, mouseY, x + 315, y + 1, x + 331, y + 16))
 		{
-			gui.openApplication(settings);
+			gui.openWindow(settings);
 			return;
 		}
 		
 		if(isMouseInside(mouseX, mouseY, x + 299, y + 1, x + 315, y + 16))
 		{
-			gui.openApplication(app_store);
+			gui.openWindow(app_store);
 			return;
 		}
 		
@@ -158,7 +158,7 @@ public class TaskBar
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
 			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
 			{
-				gui.openApplication(ApplicationManager.getApps().get(appIndex));
+				gui.openWindow(ApplicationManager.getApps().get(appIndex));
 				return;
 			}
 		}

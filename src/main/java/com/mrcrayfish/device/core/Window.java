@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.gui.GuiButtonClose;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -19,18 +20,22 @@ public class Window
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
-	Application app;
+	private static final int COLOUR_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
+	
+	Wrappable content;
 	int width, height;
 	int offsetX, offsetY;
 	
-	private GuiButton btnClose;
+	Window dialog = null;
 	
-	public Window(Application app) 
+	protected GuiButton btnClose;
+	
+	public Window(Wrappable wrappable) 
 	{
-		this.app = app;
+		this.content = wrappable;
 	}
 	
-	private void setWidth(int width) 
+	protected void setWidth(int width) 
 	{
 		this.width = width + 2;
 		if(this.width > Laptop.SCREEN_WIDTH)
@@ -39,7 +44,7 @@ public class Window
 		}
 	}
 	
-	private void setHeight(int height) 
+	protected void setHeight(int height) 
 	{
 		this.height = height + 14;
 		if(this.height > 178)
@@ -52,24 +57,33 @@ public class Window
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
 		
-		app.init(x + offsetX + 1, y + offsetY + 13);
+		if(content instanceof Application)
+		{
+			((Application) content).setWindow(this);
+		}
+		
+		content.init(x + offsetX + 1, y + offsetY + 13);
 	}
 	
 	public void onTick() 
 	{
-		app.onTick();
+		if(dialog != null)
+		{
+			dialog.onTick();
+		}
+		content.onTick();
 	}
 	
 	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{	
-		if(app.isPendingLayoutUpdate())
+		if(content.isPendingLayoutUpdate())
 		{
-			this.setWidth(app.getWidth());
-			this.setHeight(app.getHeight());
+			this.setWidth(content.getWidth());
+			this.setHeight(content.getHeight());
 			this.offsetX = (Laptop.SCREEN_WIDTH - width) / 2;
 			this.offsetY = (Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height) / 2;
 			updateComponents(x, y);
-			app.clearPendingLayout();
+			content.clearPendingLayout();
 		}
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
@@ -91,41 +105,58 @@ public class Window
 		/* Center */
 		GuiHelper.drawModalRectWithUV(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
 		
-		mc.fontRendererObj.drawString(app.getTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
+		mc.fontRendererObj.drawString(content.getTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
 		btnClose.drawButton(mc, mouseX, mouseY);
 		
 		GlStateManager.disableBlend();
 
-		app.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active, partialTicks);
+		content.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active && dialog == null, partialTicks);
 		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        
+		if(dialog != null)
+		{
+			gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
+			dialog.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
+		}
 	}
 	
 	public void handleButtonClick(Laptop laptop, GuiButton button) 
 	{
 		if(button.equals(btnClose))
 		{
-			laptop.closeApplication(app.getID());
+			laptop.close(content);
 		}
 	}
 	
 	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
+		if(dialog != null)
+		{
+			dialog.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
+			return;
+		}
+		
 		if(btnClose.isMouseOver())
 		{
-			gui.closeApplication(app.getID());
+			gui.close(content);
 			btnClose.playPressSound(gui.mc.getSoundHandler());
 		}
 		else
 		{
-			app.handleClick(mouseX, mouseY, mouseButton);
+			content.handleClick(mouseX, mouseY, mouseButton);
 		}
 	}
 	
 	public void handleKeyTyped(char character, int code)
 	{
-		app.handleKeyTyped(character, code);
+		if(dialog != null)
+		{
+			dialog.handleKeyTyped(character, code);
+			return;
+		}
+		content.handleKeyTyped(character, code);
 	}
 	
 	public void handleWindowMove(int screenStartX, int screenStartY, int mouseDX, int mouseDY)
@@ -164,41 +195,68 @@ public class Window
 	
 	public void handleDrag(int mouseX, int mouseY, int mouseButton)
 	{
-		app.handleDrag(mouseX, mouseY, mouseButton);
+		if(dialog != null)
+		{
+			dialog.handleDrag(mouseX, mouseY, mouseButton);
+			return;
+		}
+		content.handleDrag(mouseX, mouseY, mouseButton);
 	}
 	
 	public void handleRelease(int mouseX, int mouseY, int mouseButton)
 	{
-		app.handleRelease(mouseX, mouseY, mouseButton);
+		if(dialog != null)
+		{
+			dialog.handleRelease(mouseX, mouseY, mouseButton);
+			return;
+		}
+		content.handleRelease(mouseX, mouseY, mouseButton);
 	}
 	
-	public void handleClose(List<GuiButton> buttons)
+	public void handleClose()
 	{
-		buttons.remove(btnClose);
-		app.onClose();
+		content.onClose();
 	}
 	
 	public void updateComponents(int x, int y)
 	{
-		app.updateComponents(x + offsetX + 1, y + offsetY + 13);
+		content.updateComponents(x + offsetX + 1, y + offsetY + 13);
 		btnClose.xPosition = x + offsetX + width - 12;
 		btnClose.yPosition = y + offsetY + 1;
 	}
 	
-	public String getAppId()
+	public void openDialog(Dialog dialog)
 	{
-		return this.app.getID();
+		this.dialog = new DialogWindow(this, dialog);
+		this.dialog.init(null, 0, 0);
 	}
 	
-	public boolean save(NBTTagCompound tagCompound) 
+	public void closeDialog()
 	{
-		if(app.isDirty())
+		if(dialog != null)
 		{
-			NBTTagCompound container = new NBTTagCompound();
-			app.save(container);
-			tagCompound.setTag(app.getID(), container);
-			return true;
+			dialog.handleClose();
+			dialog = null;
 		}
-		return false;
+	}
+	
+	private static class DialogWindow extends Window
+	{
+		private Window parent;
+		
+		public DialogWindow(Window parent, Dialog dialog)
+		{
+			super(dialog);
+			this.parent = parent;
+		}
+		
+		@Override
+		public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
+		{
+			if(btnClose.isMouseOver())
+			{
+				this.parent.closeDialog();
+			}
+		}
 	}
 }
