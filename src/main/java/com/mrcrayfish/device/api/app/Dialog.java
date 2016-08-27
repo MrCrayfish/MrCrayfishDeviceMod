@@ -17,12 +17,14 @@ public class Dialog implements Wrappable
 	private int width;
 	private int height;
 
-	private final Layout defaultLayout;
+	protected final Layout defaultLayout;
 	private Layout customLayout;
 	
 	boolean pendingLayoutUpdate = true;
 	
-	public Dialog() 
+	private DialogWindow window;
+	
+	private Dialog() 
 	{
 		this.defaultLayout = new Layout(100, 40);
 	}
@@ -161,6 +163,14 @@ public class Dialog implements Wrappable
 		this.customLayout = null;
 	}
 	
+	public void close()
+	{
+		if(window != null)
+		{
+			window.closeDialog();
+		}
+	}
+	
 	public static Dialog newConfirmationDialog()
 	{
 		Dialog dialog = new Dialog() 
@@ -178,7 +188,87 @@ public class Dialog implements Wrappable
 
 	public static class Builder
 	{
+	public void setWindow(DialogWindow window)
+	{
+		this.window = window;
+	}
+	
+	public static class DialogConfirmation extends Dialog
+	{
+		private String messageText = "Are you sure?";
+		private String positiveText = "Yes";
+		private String negativeText = "No";
 		
+		private ClickListener postiveListener;
+		private ClickListener negativeListener;
+		
+		@Override
+		public void init(int x, int y)
+		{
+			super.init(x, y);
+			
+			defaultLayout.setBackground(new Background()
+			{
+				@Override
+				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+				{
+					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
+				}
+			});
+			
+			Text message = new Text(messageText, 20, 5, getWidth() - 10);
+			this.addComponent(message);
+			
+			Button postiveButton = new Button(positiveText, 65, 20, 30, 15);
+			if(postiveListener != null)
+			{
+				System.out.println("Setting custom");
+				postiveButton.setClickListener(postiveListener);
+			}
+			else
+			{
+				System.out.println("Setting default");
+				postiveButton.setClickListener(new ClickListener()
+				{
+					@Override
+					public void onClick(Component c, int mouseButton)
+					{
+						close();
+					}
+				});
+			}
+			this.addComponent(postiveButton);
+			
+			Button negativeButton = new Button(negativeText, 30, 20, 30, 15);
+			if(negativeListener != null)
+			{
+				negativeButton.setClickListener(negativeListener);
+			}
+			else
+			{
+				negativeButton.setClickListener(new ClickListener()
+				{
+					@Override
+					public void onClick(Component c, int mouseButton)
+					{
+						close();
+					}
+				});
+			}
+			this.addComponent(negativeButton);
+		}
+		
+		public void setPositiveButton(String positiveText, ClickListener postiveListener)
+		{
+			this.positiveText = positiveText;
+			this.postiveListener = postiveListener;
+		}
+		
+		public void setNegativeButton(String negativeText, ClickListener negativeListener)
+		{
+			this.negativeText = negativeText;
+			this.negativeListener = negativeListener;
+		}
 	}
 
 }
