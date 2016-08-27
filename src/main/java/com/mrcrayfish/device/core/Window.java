@@ -26,7 +26,7 @@ public class Window
 	int width, height;
 	int offsetX, offsetY;
 	
-	Window dialog = null;
+	Window dialogWindow = null;
 	
 	protected GuiButton btnClose;
 	
@@ -67,9 +67,9 @@ public class Window
 	
 	public void onTick() 
 	{
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
-			dialog.onTick();
+			dialogWindow.onTick();
 		}
 		content.onTick();
 	}
@@ -111,14 +111,14 @@ public class Window
 		
 		GlStateManager.disableBlend();
 
-		content.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active && dialog == null, partialTicks);
+		content.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active && dialogWindow == null, partialTicks);
 		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
 			gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
-			dialog.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
+			dialogWindow.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
 		}
 	}
 	
@@ -132,9 +132,9 @@ public class Window
 	
 	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
-			dialog.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
+			dialogWindow.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
 			return;
 		}
 		
@@ -145,15 +145,15 @@ public class Window
 		}
 		else
 		{
-			content.handleClick(mouseX, mouseY, mouseButton);
+			content.handleClick(mouseX, mouseY, mouseButton);	
 		}
 	}
 	
 	public void handleKeyTyped(char character, int code)
 	{
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
-			dialog.handleKeyTyped(character, code);
+			dialogWindow.handleKeyTyped(character, code);
 			return;
 		}
 		content.handleKeyTyped(character, code);
@@ -195,9 +195,9 @@ public class Window
 	
 	public void handleDrag(int mouseX, int mouseY, int mouseButton)
 	{
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
-			dialog.handleDrag(mouseX, mouseY, mouseButton);
+			dialogWindow.handleDrag(mouseX, mouseY, mouseButton);
 			return;
 		}
 		content.handleDrag(mouseX, mouseY, mouseButton);
@@ -205,9 +205,9 @@ public class Window
 	
 	public void handleRelease(int mouseX, int mouseY, int mouseButton)
 	{
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
-			dialog.handleRelease(mouseX, mouseY, mouseButton);
+			dialogWindow.handleRelease(mouseX, mouseY, mouseButton);
 			return;
 		}
 		content.handleRelease(mouseX, mouseY, mouseButton);
@@ -227,20 +227,20 @@ public class Window
 	
 	public void openDialog(Dialog dialog)
 	{
-		this.dialog = new DialogWindow(this, dialog);
-		this.dialog.init(null, 0, 0);
+		this.dialogWindow = new DialogWindow(this, dialog);
+		this.dialogWindow.init(null, 0, 0);
 	}
 	
 	public void closeDialog()
 	{
-		if(dialog != null)
+		if(dialogWindow != null)
 		{
-			dialog.handleClose();
-			dialog = null;
+			dialogWindow.handleClose();
+			dialogWindow = null;
 		}
 	}
 	
-	private static class DialogWindow extends Window
+	public static class DialogWindow extends Window
 	{
 		private Window parent;
 		
@@ -248,11 +248,14 @@ public class Window
 		{
 			super(dialog);
 			this.parent = parent;
+			dialog.setWindow(this);
 		}
 		
 		@Override
 		public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 		{
+			content.handleClick(mouseX, mouseY, mouseButton);
+
 			if(btnClose.isMouseOver())
 			{
 				this.parent.closeDialog();
