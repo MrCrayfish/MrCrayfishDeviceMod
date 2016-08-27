@@ -170,7 +170,7 @@ public class Laptop extends GuiScreen
 			Window window = windows[i];
 			if(window != null)
 			{
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialog))
+				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialogWindow))
 				{
 					windows[i] = null;
 					updateWindowStack();
@@ -178,13 +178,13 @@ public class Laptop extends GuiScreen
 					
 					windows[0].handleClick(this, posX, posY, mouseX, mouseY, mouseButton);
 					
-					if(isMouseWithinWindowBar(mouseX, mouseY, window.dialog))
+					if(isMouseWithinWindowBar(mouseX, mouseY, window.dialogWindow))
 					{
 						this.dragging = true;
 						return;
 					}
 		
-					if(isMouseWithinWindowBar(mouseX, mouseY, window) && window.dialog == null)
+					if(isMouseWithinWindowBar(mouseX, mouseY, window) && window.dialogWindow == null)
 					{
 						this.dragging = true;
 						return;
@@ -230,13 +230,13 @@ public class Laptop extends GuiScreen
 			{
 				if(isMouseOnScreen(mouseX, mouseY))
 				{
-					if(window.dialog == null)
+					if(window.dialogWindow == null)
 					{
 						window.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
 					}
 					else
 					{
-						window.dialog.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						window.dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
 					}
 				}
 				else
@@ -246,7 +246,7 @@ public class Laptop extends GuiScreen
 			}
 			else
 			{
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialog))
+				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialogWindow))
 				{
 					window.handleDrag(mouseX, mouseY, clickedMouseButton);
 				}
