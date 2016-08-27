@@ -21,16 +21,14 @@ public class ProgressBar extends Component
 	/**
 	 * Default progress bar constructor
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width width of the progress bar
 	 * @param height height of the progress bar
 	 */
-	public ProgressBar(int x, int y, int left, int top, int width, int height)
+	public ProgressBar(int left, int top, int width, int height)
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.width = width;
 		this.height = height;
 	}

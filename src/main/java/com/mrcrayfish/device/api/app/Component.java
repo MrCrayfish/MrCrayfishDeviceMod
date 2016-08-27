@@ -63,10 +63,8 @@ public abstract class Component extends Gui
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Component(int x, int y, int left, int top) 
+	public Component(int left, int top) 
 	{
-		this.xPosition = x + left;
-		this.yPosition = y + top;
 		this.left = left;
 		this.top = top;
 	}

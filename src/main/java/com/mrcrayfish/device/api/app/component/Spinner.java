@@ -20,14 +20,12 @@ public class Spinner extends Component
 	/**
 	 * Default spinner constructor
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)})
-	 * @param y the application y position (from {@link Application#init(int x, int y)})
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Spinner(int x, int y, int left, int top)
+	public Spinner(int left, int top)
 	{
-		super(x, y, left, top);
+		super(left, top);
 	}
 	
 	@Override

@@ -140,10 +140,10 @@ public class ApplicationEmail extends Application
 		
 		layoutInit = new Layout(40, 40);
 
-		spinnerInit = new Spinner(x, y, 14, 10);
+		spinnerInit = new Spinner(14, 10);
 		layoutInit.addComponent(spinnerInit);
 
-		labelLoading = new Label("Loading...", x, y, 2, 26);
+		labelLoading = new Label("Loading...", 2, 26);
 		layoutInit.addComponent(labelLoading);
 
 		
@@ -151,13 +151,13 @@ public class ApplicationEmail extends Application
 		
 		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
+		logo = new Image(35, 5, 28, 28, u, v, 14, 14, icon);
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Ender Mail", x, y, 19, 35);
+		labelLogo = new Label("Ender Mail", 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnRegisterAccount = new Button("Register", x, y, 5, 50, 90, 20);
+		btnRegisterAccount = new Button("Register", 5, 50, 90, 20);
 		btnRegisterAccount.setClickListener(new ClickListener()
 		{
 			@Override
@@ -174,16 +174,16 @@ public class ApplicationEmail extends Application
 		
 		layoutRegisterAccount = new Layout(167, 60);
 
-		labelEmail = new Label("Email", x, y, 5, 5);
+		labelEmail = new Label("Email", 5, 5);
 		layoutRegisterAccount.addComponent(labelEmail);
 
-		fieldEmail = new TextField(x, y, 5, 15, 80);
+		fieldEmail = new TextField(5, 15, 80);
 		layoutRegisterAccount.addComponent(fieldEmail);
 
-		labelDomain = new Label("@endermail.com", x, y, 88, 18);
+		labelDomain = new Label("@endermail.com", 88, 18);
 		layoutRegisterAccount.addComponent(labelDomain);
 
-		btnRegister = new Button("Register", x, y, 5, 35, 157, 20);
+		btnRegister = new Button("Register", 5, 35, 157, 20);
 		btnRegister.setClickListener(new ClickListener()
 		{
 			@Override
@@ -241,7 +241,7 @@ public class ApplicationEmail extends Application
 			}
 		});
 
-		listEmails = new ItemList<Email>(x, y, 5, 25, 275, 4);
+		listEmails = new ItemList<Email>(5, 25, 275, 4);
 		listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
 		{
 			@Override
@@ -263,7 +263,7 @@ public class ApplicationEmail extends Application
 		});
 		layoutInbox.addComponent(listEmails);
 
-		btnViewEmail = new Button(x, y, 5, 5, ENDER_MAIL_ICONS, 30, 0, 10, 10);
+		btnViewEmail = new Button(5, 5, ENDER_MAIL_ICONS, 30, 0, 10, 10);
 		btnViewEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -285,7 +285,7 @@ public class ApplicationEmail extends Application
 		btnViewEmail.setToolTip("View", "Opens the currently selected email");
 		layoutInbox.addComponent(btnViewEmail);
 
-		btnNewEmail = new Button(x, y, 25, 5, ENDER_MAIL_ICONS, 0, 0, 10, 10);
+		btnNewEmail = new Button(25, 5, ENDER_MAIL_ICONS, 0, 0, 10, 10);
 		btnNewEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -297,7 +297,7 @@ public class ApplicationEmail extends Application
 		btnNewEmail.setToolTip("New Email", "Send an email to a player");
 		layoutInbox.addComponent(btnNewEmail);
 
-		btnReplyEmail = new Button(x, y, 45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
+		btnReplyEmail = new Button(45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
 		btnReplyEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -315,7 +315,7 @@ public class ApplicationEmail extends Application
 		btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
 		layoutInbox.addComponent(btnReplyEmail);
 
-		btnDeleteEmail = new Button(x, y, 65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
+		btnDeleteEmail = new Button(65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
 		btnDeleteEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -341,7 +341,7 @@ public class ApplicationEmail extends Application
 		btnDeleteEmail.setToolTip("Trash Email", "Deletes the currently select email");
 		layoutInbox.addComponent(btnDeleteEmail);
 
-		btnRefresh = new Button(x, y, 85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
+		btnRefresh = new Button(85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
 		btnRefresh.setClickListener(new ClickListener()
 		{
 			@Override
@@ -371,25 +371,25 @@ public class ApplicationEmail extends Application
 		
 		layoutNewEmail = new Layout(255, 148);
 
-		labelTo = new Label("To", x, y, 5, 8);
+		labelTo = new Label("To", 5, 8);
 		layoutNewEmail.addComponent(labelTo);
 
-		fieldRecipient = new TextField(x, y, 50, 5, 200);
+		fieldRecipient = new TextField(50, 5, 200);
 		layoutNewEmail.addComponent(fieldRecipient);
 
-		labelSubject = new Label("Subject", x, y, 5, 26);
+		labelSubject = new Label("Subject", 5, 26);
 		layoutNewEmail.addComponent(labelSubject);
 
-		fieldSubject = new TextField(x, y, 50, 23, 200);
+		fieldSubject = new TextField(50, 23, 200);
 		layoutNewEmail.addComponent(fieldSubject);
 
-		labelMessage = new Label("Message", x, y, 5, 44);
+		labelMessage = new Label("Message", 5, 44);
 		layoutNewEmail.addComponent(labelMessage);
 
-		textAreaMessage = new TextArea(x, y, 50, 41, 200, 100);
+		textAreaMessage = new TextArea(50, 41, 200, 100);
 		layoutNewEmail.addComponent(textAreaMessage);
 
-		btnSendEmail = new Button(x, y, 6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
+		btnSendEmail = new Button(6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
 		btnSendEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -424,7 +424,7 @@ public class ApplicationEmail extends Application
 		btnSendEmail.setToolTip("Send", "Send email to recipient");
 		layoutNewEmail.addComponent(btnSendEmail);
 
-		btnCancelEmail = new Button(x, y, 28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		btnCancelEmail = new Button(28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
 		btnCancelEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -455,14 +455,14 @@ public class ApplicationEmail extends Application
 			}
 		});
 
-		labelViewSubject = new Label("Subject", x, y, 5, 26);
+		labelViewSubject = new Label("Subject", 5, 26);
 		labelViewSubject.setTextColour(new Color(255, 170, 0));
 		layoutViewEmail.addComponent(labelViewSubject);
 
-		labelFrom = new Label("From", x, y, 5, 38);
+		labelFrom = new Label("From", 5, 38);
 		layoutViewEmail.addComponent(labelFrom);
 
-		btnCancelViewEmail = new Button(x, y, 5, 3, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		btnCancelViewEmail = new Button(5, 3, ENDER_MAIL_ICONS, 40, 0, 10, 10);
 		btnCancelViewEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -474,7 +474,7 @@ public class ApplicationEmail extends Application
 		btnCancelViewEmail.setToolTip("Cancel", "Go back to Inbox");
 		layoutViewEmail.addComponent(btnCancelViewEmail);
 
-		textMessage = new Text("Hallo", x, y, 5, 54, 230);
+		textMessage = new Text("Hallo", 5, 54, 230);
 		textMessage.setShadow(false);
 		layoutViewEmail.addComponent(textMessage);
 

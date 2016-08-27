@@ -50,50 +50,50 @@ public class ApplicationExample extends Application
 	{
 		super.init(x, y);
 		
-		label = new Label("Label", x, y, 5, 5);
+		label = new Label("Label", 5, 5);
 		super.addComponent(label);
 		
-		button = new Button("Button", x, y, 5, 18, 64, 20);
+		button = new Button("Button", 5, 18, 64, 20);
 		super.addComponent(button);
 		
-		leftButton = new ButtonArrow(x, y, 5, 43, ButtonArrow.Type.LEFT);
+		leftButton = new ButtonArrow(5, 43, ButtonArrow.Type.LEFT);
 		super.addComponent(leftButton);
 		
-		upButton = new ButtonArrow(x, y, 22, 43, ButtonArrow.Type.UP);
+		upButton = new ButtonArrow(22, 43, ButtonArrow.Type.UP);
 		super.addComponent(upButton);
 		
-		rightButton = new ButtonArrow(x, y, 39, 43, ButtonArrow.Type.RIGHT);
+		rightButton = new ButtonArrow(39, 43, ButtonArrow.Type.RIGHT);
 		super.addComponent(rightButton);
 		
-		downButton = new ButtonArrow(x, y, 56, 43, ButtonArrow.Type.DOWN);
+		downButton = new ButtonArrow(56, 43, ButtonArrow.Type.DOWN);
 		super.addComponent(downButton);
 		
-		itemList = new ItemList<String>(x, y, 5, 60, 63, 4);
+		itemList = new ItemList<String>(5, 60, 63, 4);
 		itemList.addItem("Item #1");
 		itemList.addItem("Item #2");
 		itemList.addItem("Item #3");
 		super.addComponent(itemList);
 		
-		checkBoxOff = new CheckBox("Off", x, y, 5, 122);
+		checkBoxOff = new CheckBox("Off", 5, 122);
 		super.addComponent(checkBoxOff);
 		
-		checkBoxOn = new CheckBox("On", x, y, 42, 122);
+		checkBoxOn = new CheckBox("On", 42, 122);
 		checkBoxOn.setSelected(true);
 		super.addComponent(checkBoxOn);
 		
-		textField = new TextField(x, y, 88, 5, 80);
+		textField = new TextField(88, 5, 80);
 		textField.setText("Text Field");
 		super.addComponent(textField);
 		
-		textArea = new TextArea(x, y, 88, 25, 80, 60);
+		textArea = new TextArea(88, 25, 80, 60);
 		textArea.setText("Text Area");
 		super.addComponent(textArea);
 		
-		progressBar = new ProgressBar(x, y, 88, 90, 80, 16);
+		progressBar = new ProgressBar(88, 90, 80, 16);
 		progressBar.setProgress(75);
 		super.addComponent(progressBar);
 		
-		slider = new Slider(x, y, 88, 111, 80);
+		slider = new Slider(88, 111, 80);
 		slider.setSlideListener(new SlideListener()
 		{
 			@Override
@@ -104,14 +104,14 @@ public class ApplicationExample extends Application
 		});
 		super.addComponent(slider);
 		
-		spinner = new Spinner(x, y, 57, 3);
+		spinner = new Spinner(57, 3);
 		super.addComponent(spinner);
 		
-		text = new Text("", x, y, 180, 5, 90);
+		text = new Text("", 180, 5, 90);
 		text.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 		super.addComponent(text);
 		
-		image = new Image(x, y, 180, 100, 85, 50, 0, 0, 256, 211, Laptop.WALLPAPERS.get(0));
+		image = new Image(180, 100, 85, 50, 0, 0, 256, 211, Laptop.WALLPAPERS.get(0));
 		image.setAlpha(0.8F);
 		super.addComponent(image);
 	}

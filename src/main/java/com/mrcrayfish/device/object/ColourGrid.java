@@ -24,9 +24,9 @@ public class ColourGrid extends Component
 
 	private int width;
 	
-	public ColourGrid(int x, int y, int left, int top, int width, Canvas canvas, Slider redSlider, Slider greenSlider, Slider blueSlider) 
+	public ColourGrid(int left, int top, int width, Canvas canvas, Slider redSlider, Slider greenSlider, Slider blueSlider) 
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.width = width;
 		this.canvas = canvas;
 		this.redSlider = redSlider;

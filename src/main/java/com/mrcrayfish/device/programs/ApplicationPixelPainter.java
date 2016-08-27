@@ -88,13 +88,13 @@ public class ApplicationPixelPainter extends Application
 		
 		layoutMainMenu = new Layout(100, 100);
 
-		logo = new Image(x, y, 35, 5, 28, 28, u, v, 14, 14, icon);
+		logo = new Image(35, 5, 28, 28, u, v, 14, 14, icon);
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Pixel Painter", x, y, 19, 35);
+		labelLogo = new Label("Pixel Painter", 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnNewPicture = new Button("New", x, y, 5, 50, 90, 20);
+		btnNewPicture = new Button("New", 5, 50, 90, 20);
 		btnNewPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -105,7 +105,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutMainMenu.addComponent(btnNewPicture);
 
-		btnLoadPicture = new Button("Load", x, y, 5, 75, 90, 20);
+		btnLoadPicture = new Button("Load", 5, 75, 90, 20);
 		btnLoadPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -121,33 +121,33 @@ public class ApplicationPixelPainter extends Application
 		
 		layoutNewPicture = new Layout(180, 65);
 
-		labelName = new Label("Name", x, y, 5, 5);
+		labelName = new Label("Name", 5, 5);
 		layoutNewPicture.addComponent(labelName);
 
-		fieldName = new TextField(x, y, 5, 15, 100);
+		fieldName = new TextField(5, 15, 100);
 		layoutNewPicture.addComponent(fieldName);
 
-		labelAuthor = new Label("Author", x, y, 5, 35);
+		labelAuthor = new Label("Author", 5, 35);
 		layoutNewPicture.addComponent(labelAuthor);
 
-		fieldAuthor = new TextField(x, y, 5, 45, 100);
+		fieldAuthor = new TextField(5, 45, 100);
 		layoutNewPicture.addComponent(fieldAuthor);
 
-		labelSize = new Label("Size", x, y, 110, 5);
+		labelSize = new Label("Size", 110, 5);
 		layoutNewPicture.addComponent(labelSize);
 
 		RadioGroup sizeGroup = new RadioGroup();
 
-		checkBox16x = new CheckBox("16x", x, y, 110, 17);
+		checkBox16x = new CheckBox("16x", 110, 17);
 		checkBox16x.setSelected(true);
 		checkBox16x.setRadioGroup(sizeGroup);
 		layoutNewPicture.addComponent(checkBox16x);
 
-		checkBox32x = new CheckBox("32x", x, y, 145, 17);
+		checkBox32x = new CheckBox("32x", 145, 17);
 		checkBox32x.setRadioGroup(sizeGroup);
 		layoutNewPicture.addComponent(checkBox32x);
 
-		btnCreatePicture = new Button("Create", x, y, 110, 40, 65, 20);
+		btnCreatePicture = new Button("Create", 110, 40, 65, 20);
 		btnCreatePicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -164,10 +164,10 @@ public class ApplicationPixelPainter extends Application
 		
 		layoutLoadPicture = new Layout(180, 80);
 
-		listPictures = new ItemList<Picture>(x, y, 5, 5, 100, 5);
+		listPictures = new ItemList<Picture>(5, 5, 100, 5);
 		layoutLoadPicture.addComponent(listPictures);
 
-		btnLoadSavedPicture = new Button("Load", x, y, 124, 5, 50, 20);
+		btnLoadSavedPicture = new Button("Load", 124, 5, 50, 20);
 		btnLoadSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -182,7 +182,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutLoadPicture.addComponent(btnLoadSavedPicture);
 
-		btnDeleteSavedPicture = new Button("Delete", x, y, 124, 30, 50, 20);
+		btnDeleteSavedPicture = new Button("Delete", 124, 30, 50, 20);
 		btnDeleteSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -193,7 +193,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutLoadPicture.addComponent(btnDeleteSavedPicture);
 
-		btnBackSavedPicture = new Button("Back", x, y, 124, 55, 50, 20);
+		btnBackSavedPicture = new Button("Back", 124, 55, 50, 20);
 		btnBackSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -209,12 +209,12 @@ public class ApplicationPixelPainter extends Application
 		
 		layoutDraw = new Layout(213, 140);
 
-		canvas = new Canvas(x, y, 5, 5);
+		canvas = new Canvas(5, 5);
 		layoutDraw.addComponent(canvas);
 
 		RadioGroup toolGroup = new RadioGroup();
 
-		btnPencil = new ButtonToggle(x, y, 138, 5, PIXEL_PAINTER_ICONS, 0, 0, 10, 10);
+		btnPencil = new ButtonToggle(138, 5, PIXEL_PAINTER_ICONS, 0, 0, 10, 10);
 		btnPencil.setClickListener(new ClickListener()
 		{
 			@Override
@@ -226,7 +226,7 @@ public class ApplicationPixelPainter extends Application
 		btnPencil.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnPencil);
 
-		btnBucket = new ButtonToggle(x, y, 138, 24, PIXEL_PAINTER_ICONS, 10, 0, 10, 10);
+		btnBucket = new ButtonToggle(138, 24, PIXEL_PAINTER_ICONS, 10, 0, 10, 10);
 		btnBucket.setClickListener(new ClickListener()
 		{
 			@Override
@@ -238,7 +238,7 @@ public class ApplicationPixelPainter extends Application
 		btnBucket.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnBucket);
 
-		btnEraser = new ButtonToggle(x, y, 138, 43, PIXEL_PAINTER_ICONS, 20, 0, 10, 10);
+		btnEraser = new ButtonToggle(138, 43, PIXEL_PAINTER_ICONS, 20, 0, 10, 10);
 		btnEraser.setClickListener(new ClickListener()
 		{
 			@Override
@@ -250,7 +250,7 @@ public class ApplicationPixelPainter extends Application
 		btnEraser.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEraser);
 
-		btnEyeDropper = new ButtonToggle(x, y, 138, 62, PIXEL_PAINTER_ICONS, 30, 0, 10, 10);
+		btnEyeDropper = new ButtonToggle(138, 62, PIXEL_PAINTER_ICONS, 30, 0, 10, 10);
 		btnEyeDropper.setClickListener(new ClickListener()
 		{
 			@Override
@@ -266,7 +266,7 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEyeDropper);
 
-		btnCancel = new Button(x, y, 138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
+		btnCancel = new Button(138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
 		btnCancel.setClickListener(new ClickListener()
 		{
 			@Override
@@ -281,7 +281,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(btnCancel);
 
-		btnSave = new Button(x, y, 138, 119, PIXEL_PAINTER_ICONS, 40, 0, 10, 10);
+		btnSave = new Button(138, 119, PIXEL_PAINTER_ICONS, 40, 0, 10, 10);
 		btnSave.setClickListener(new ClickListener()
 		{
 			@Override
@@ -297,7 +297,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(btnSave);
 
-		redSlider = new Slider(x, y, 158, 30, 50);
+		redSlider = new Slider(158, 30, 50);
 		redSlider.setSlideListener(new SlideListener()
 		{
 			@Override
@@ -308,7 +308,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(redSlider);
 
-		greenSlider = new Slider(x, y, 158, 46, 50);
+		greenSlider = new Slider(158, 46, 50);
 		greenSlider.setSlideListener(new SlideListener()
 		{
 			@Override
@@ -319,7 +319,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(greenSlider);
 
-		blueSlider = new Slider(x, y, 158, 62, 50);
+		blueSlider = new Slider(158, 62, 50);
 		blueSlider.setSlideListener(new SlideListener()
 		{
 			@Override
@@ -330,7 +330,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(blueSlider);
 
-		colourDisplay = new Component(x, y, 158, 5)
+		colourDisplay = new Component(158, 5)
 		{
 			@Override
 			public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
@@ -341,10 +341,10 @@ public class ApplicationPixelPainter extends Application
 		};
 		layoutDraw.addComponent(colourDisplay);
 
-		colourGrid = new ColourGrid(x, y, 157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
+		colourGrid = new ColourGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
 		layoutDraw.addComponent(colourGrid);
 
-		displayGrid = new CheckBox("Grid", x, y, 166, 120);
+		displayGrid = new CheckBox("Grid", 166, 120);
 		displayGrid.setClickListener(new ClickListener()
 		{
 			@Override

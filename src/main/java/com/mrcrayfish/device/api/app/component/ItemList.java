@@ -38,16 +38,14 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * Default constructor for the item list. Should be noted that the
 	 * height is determined by how many visible items there are.
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width width of the list
 	 * @param visibleItems how many items are visible
 	 */
-	public ItemList(int x, int y, int left, int top, int width, int visibleItems) 
+	public ItemList(int left, int top, int width, int visibleItems) 
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.width = width;
 		this.visibleItems = visibleItems;
 	}
@@ -55,7 +53,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	@Override
 	public void init(Layout layout)
 	{
-		btnUp = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top, ButtonArrow.Type.UP);
+		btnUp = new ButtonArrow(left + width + 3, top, ButtonArrow.Type.UP);
 		btnUp.setEnabled(false);
 		btnUp.setClickListener(new ClickListener() {
 			@Override
@@ -71,7 +69,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		});
 		layout.addComponent(btnUp);
 		
-		btnDown = new ButtonArrow(xPosition - left, yPosition - top, left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+		btnDown = new ButtonArrow(left + width + 3, top + 14, ButtonArrow.Type.DOWN);
 		btnDown.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {

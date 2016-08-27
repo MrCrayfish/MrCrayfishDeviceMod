@@ -33,16 +33,14 @@ public class TextArea extends Component
 	/**
 	 * Default text area constructor
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)})
-	 * @param y the application y position (from {@link Application#init(int x, int y)})
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width the width of the text area
 	 * @param height the height of the text area
 	 */
-	public TextArea(int x, int y, int left, int top, int width, int height) 
+	public TextArea(int left, int top, int width, int height) 
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
 		this.width = width;
 		this.height = height;

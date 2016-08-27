@@ -54,7 +54,7 @@ public class ApplicationNoteStash extends Application
 		
 		layoutMain = new Layout(180, 80);
 		
-		notes = new ItemList<Note>(x, y, 5, 5, 100, 5);
+		notes = new ItemList<Note>(5, 5, 100, 5);
 		notes.setItemClickListener(new ItemClickListener() {
 			@Override
 			public void onClick(Object e, int index){
@@ -64,7 +64,7 @@ public class ApplicationNoteStash extends Application
 		});
 		layoutMain.addComponent(notes);
 		
-		btnNew = new Button("New", x, y, 124, 5, 50, 20);
+		btnNew = new Button("New", 124, 5, 50, 20);
 		btnNew.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -73,7 +73,7 @@ public class ApplicationNoteStash extends Application
 		});
 		layoutMain.addComponent(btnNew);
 		
-		btnView = new Button("View", x, y, 124, 30, 50, 20);
+		btnView = new Button("View", 124, 30, 50, 20);
 		btnView.setEnabled(false);
 		btnView.setClickListener(new ClickListener() {
 			@Override
@@ -89,7 +89,7 @@ public class ApplicationNoteStash extends Application
 		});
 		layoutMain.addComponent(btnView);
 		
-		btnDelete = new Button("Delete", x, y, 124, 55, 50, 20);
+		btnDelete = new Button("Delete", 124, 55, 50, 20);
 		btnDelete.setEnabled(false);
 		btnDelete.setClickListener(new ClickListener() {
 			@Override
@@ -110,15 +110,15 @@ public class ApplicationNoteStash extends Application
 		
 		layoutAddNote = new Layout(180, 80);
 
-		title = new TextField(x, y, 5, 5, 114);
+		title = new TextField(5, 5, 114);
 		layoutAddNote.addComponent(title);
 		
-		textArea = new TextArea(x, y, 5, 25, 114, 50);
+		textArea = new TextArea(5, 25, 114, 50);
 		textArea.setFocused(true);
 		textArea.setPadding(2);
 		layoutAddNote.addComponent(textArea);
 		
-		btnSave = new Button("Save", x, y, 124, 5, 50, 20);
+		btnSave = new Button("Save", 124, 5, 50, 20);
 		btnSave.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -131,7 +131,7 @@ public class ApplicationNoteStash extends Application
 		});
 		layoutAddNote.addComponent(btnSave);
 		
-		btnCancel = new Button("Cancel", x, y, 124, 30, 50, 20);
+		btnCancel = new Button("Cancel", 124, 30, 50, 20);
 		btnCancel.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -147,13 +147,13 @@ public class ApplicationNoteStash extends Application
 		
 		layoutViewNote = new Layout(180, 80);
 		
-		noteTitle = new Label("", x, y, 5, 5);
+		noteTitle = new Label("", 5, 5);
 		layoutViewNote.addComponent(noteTitle);
 		
-		noteContent = new Text("", x, y, 5, 18, 110);
+		noteContent = new Text("", 5, 18, 110);
 		layoutViewNote.addComponent(noteContent);
 		
-		btnBack = new Button("Back", x, y, 124, 5, 50, 20);
+		btnBack = new Button("Back", 124, 5, 50, 20);
 		btnBack.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {

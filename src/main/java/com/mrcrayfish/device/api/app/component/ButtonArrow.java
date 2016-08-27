@@ -15,15 +15,13 @@ public class ButtonArrow extends Button
 	/**
 	 * Creates an arrow button
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}.
-	 * @param y the application y position (from {@link Application#init(int x, int y)}.
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param type the arrow type
 	 */
-	public ButtonArrow(int x, int y, int left, int top, Type type) 
+	public ButtonArrow(int left, int top, Type type) 
 	{
-		super("", x, y, left, top, 12, 12);
+		super("", left, top, 12, 12);
 		this.type = type;
 	}
 	

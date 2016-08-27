@@ -26,7 +26,7 @@ public class ApplicationSettings extends Application
 	public void init(int x, int y) 
 	{
 		super.init(x, y);
-		btnWallpaperNext = new ButtonArrow(x, y, 40, 16, ButtonArrow.Type.RIGHT);
+		btnWallpaperNext = new ButtonArrow(40, 16, ButtonArrow.Type.RIGHT);
 		btnWallpaperNext.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -35,7 +35,7 @@ public class ApplicationSettings extends Application
 		});
 		super.addComponent(btnWallpaperNext);
 		
-		btnWallpaperPrev = new ButtonArrow(x, y, 5, 16, ButtonArrow.Type.LEFT);
+		btnWallpaperPrev = new ButtonArrow(5, 16, ButtonArrow.Type.LEFT);
 		btnWallpaperPrev.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -48,7 +48,7 @@ public class ApplicationSettings extends Application
 	/*@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active) 
 	{
-		super.render(laptop, mc, x, y, mouseX, mouseY, active);
+		super.render(laptop, mc, mouseX, mouseY, active);
 		laptop.drawString(mc.fontRendererObj, "Wallpaper", x + 5, y + 5, Color.WHITE.getRGB());
 		laptop.drawCenteredString(mc.fontRendererObj, Integer.toString(Laptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
 	}*/

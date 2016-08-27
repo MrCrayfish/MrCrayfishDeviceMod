@@ -35,9 +35,9 @@ public class Canvas extends Component
 	
 	private int gridColour = new Color(200, 200, 200, 150).getRGB();
 	
-	public Canvas(int x, int y, int left, int top)
+	public Canvas(int left, int top)
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.currentTool = PENCIL;
 	}
 	

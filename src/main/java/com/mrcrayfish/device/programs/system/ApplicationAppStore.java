@@ -40,10 +40,10 @@ public class ApplicationAppStore extends Application
 	{
 		super.init(x, y);
 		
-		appsLabel = new Label("Application List", x, y, 5, 5);
+		appsLabel = new Label("Application List", 5, 5);
 		super.addComponent(appsLabel);
 		
-		apps = new ItemList<AppInfo>(x, y, 5, 18, 100, 6);
+		apps = new ItemList<AppInfo>(5, 18, 100, 6);
 		apps.addItem(new AppInfo("Blah"));
 		apps.addItem(new AppInfo("Blah"));
 		apps.addItem(new AppInfo("Blah"));
@@ -77,16 +77,16 @@ public class ApplicationAppStore extends Application
 		});
 		super.addComponent(apps);
 		
-		appTitle = new Label("", x, y, 130, 5);
+		appTitle = new Label("", 130, 5);
 		super.addComponent(appTitle);
 		
-		appAuthor = new Label("", x, y, 130, 16);
+		appAuthor = new Label("", 130, 16);
 		super.addComponent(appAuthor);
 		
-		appDescription = new Text("", x, y, 130, 35, 100);
+		appDescription = new Text("", 130, 35, 100);
 		super.addComponent(appDescription);
 		
-		btnInstall = new Button("Install", x, y, 125, 100, 100, 20);
+		btnInstall = new Button("Install", 125, 100, 100, 20);
 		super.addComponent(btnInstall);
 	}
 

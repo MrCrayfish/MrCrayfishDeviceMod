@@ -32,15 +32,13 @@ public class Slider extends Component
 	/**
 	 * Default slider listener
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width the width of the slider
 	 */
-	public Slider(int x, int y, int left, int top, int width) 
+	public Slider(int left, int top, int width) 
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.width = width;
 	}
 

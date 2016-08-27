@@ -29,8 +29,6 @@ public class Image extends Component
 	/**
 	 * Default image constructor
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param imageU the image u position on the resource 
@@ -39,17 +37,15 @@ public class Image extends Component
 	 * @param imageHeight the image height
 	 * @param resource the resource location of the image
 	 */
-	public Image(int x, int y, int left, int top, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
+	public Image(int left, int top, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
 	{
-		this(x, y, left, top, imageWidth, imageHeight, imageU, imageV, imageWidth, imageHeight, resource);
+		this(left, top, imageWidth, imageHeight, imageU, imageV, imageWidth, imageHeight, resource);
 	}
 	
 	/**
 	 * The alternate constructor to specify a custom width and height
 	 * for the image.
 	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param componentWidth the width of the component
@@ -60,9 +56,9 @@ public class Image extends Component
 	 * @param imageHeight the image height
 	 * @param resource the resource location of the image
 	 */
-	public Image(int x, int y, int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
+	public Image(int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource) 
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.image = resource;
 		this.componentWidth = componentWidth;
 		this.componentHeight = componentHeight;

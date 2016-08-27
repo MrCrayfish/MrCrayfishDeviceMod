@@ -58,6 +58,7 @@ public class Laptop extends GuiScreen
 			this.currentWallpaper = 0;
 		}
 		this.windows = new Window[5];
+		this.bar = new TaskBar();
 	}
 	
 	@Override
@@ -66,7 +67,6 @@ public class Laptop extends GuiScreen
 		Keyboard.enableRepeatEvents(true);
 		int posX = (width - DEVICE_WIDTH) / 2;
 		int posY = (height - DEVICE_HEIGHT) / 2;
-		bar = new TaskBar();
 		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 	}
 	

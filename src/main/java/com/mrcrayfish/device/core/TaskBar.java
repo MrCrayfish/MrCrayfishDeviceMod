@@ -40,7 +40,9 @@ public class TaskBar
 
 	public void init(int posX, int posY)
 	{
-		btnLeft = new ButtonArrow(posX, posY, 3, 3, Type.LEFT);
+		btnLeft = new ButtonArrow(0, 0, Type.LEFT);
+		btnLeft.xPosition = posX + 3;
+		btnLeft.yPosition = posY + 3;
 		btnLeft.setClickListener(new ClickListener()
 		{
 			@Override
@@ -52,7 +54,9 @@ public class TaskBar
 				}
 			}
 		});
-		btnRight = new ButtonArrow(posX, posY, 15 + 14 * APPS_DISPLAYED + 14, 3, Type.RIGHT);
+		btnRight = new ButtonArrow(0, 0, Type.RIGHT);
+		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
+		btnRight.yPosition = posY + 3;
 		btnRight.setClickListener(new ClickListener()
 		{
 			@Override

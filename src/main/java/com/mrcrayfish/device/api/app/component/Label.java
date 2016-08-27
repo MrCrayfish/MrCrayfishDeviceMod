@@ -23,14 +23,12 @@ public class Label extends Component {
 	 * Default label constructor
 	 * 
 	 * @param text the text to display
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Label(String text, int x, int y, int left, int top) 
+	public Label(String text, int left, int top) 
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.text = text;
 	}
 
