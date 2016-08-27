@@ -258,8 +258,14 @@ public class Window
 
 			if(btnClose.isMouseOver())
 			{
-				this.parent.closeDialog();
+				parent.closeDialog();
 			}
+		}
+		
+		@Override
+		public void closeDialog()
+		{
+			parent.closeDialog();
 		}
 	}
 }
