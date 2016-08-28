@@ -9,9 +9,9 @@ public class InventoryUtil
 	public static int getItemAmount(EntityPlayer player, Item item)
 	{
 		int amount = 0;
-		for(int i = 0; i < player.inventory.mainInventory.length; i++)
+		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 		{
-			ItemStack stack = player.inventory.mainInventory[i];
+			ItemStack stack = player.inventory.getStackInSlot(i);
 			if(stack != null && stack.getItem() == item)
 			{
 				amount += stack.stackSize;
@@ -37,9 +37,9 @@ public class InventoryUtil
 	{
 		if(hasItemAndAmount(player, item, amount))
 		{
-			for(int i = 0; i < player.inventory.mainInventory.length; i++)
+			for(int i = 0; i < player.inventory.getSizeInventory(); i++)
 			{
-				ItemStack stack = player.inventory.mainInventory[i];
+				ItemStack stack = player.inventory.getStackInSlot(i);
 				if(stack != null && stack.getItem() == item)
 				{
 					if(amount - stack.stackSize < 0)
