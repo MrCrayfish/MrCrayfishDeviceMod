@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.app.component;
 import java.awt.Color;
 
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -31,6 +32,8 @@ public class Inventory extends Component
 	protected static final int COLOUR_MOUSE_OVER = new Color(1F, 1F, 1F, 0.15F).getRGB();
 	
 	protected int selected = -1;
+	
+	protected ClickListener clickListener = null;
 	
 	public Inventory(int left, int top)
 	{
@@ -102,6 +105,10 @@ public class Inventory extends Component
 				if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 18, y + 18))
 				{
 					this.selected = (i * 9) + j + 9;
+					if(clickListener != null)
+					{
+						clickListener.onClick(this, mouseButton);
+					}
 					return;
 				}
 			}
@@ -111,5 +118,10 @@ public class Inventory extends Component
 	public int getSelectedSlotIndex()
 	{
 		return selected;
+	}
+	
+	public void setClickListener(ClickListener clickListener)
+	{
+		this.clickListener = clickListener;
 	}
 }
