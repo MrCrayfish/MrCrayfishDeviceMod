@@ -73,6 +73,31 @@ public class Button extends Component
 		this.iconWidth = iconWidth;
 		this.iconHeight = iconHeight;
 	}
+	
+	/**
+	 * Creates a button with an image inside. The size of the button is based
+	 * on the size of the image with 3 pixels of padding.
+	 * 
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param width width of the button
+	 * @param height height of the button
+	 * @param icon the icon resource location
+	 * @param iconU the u position on the resource
+	 * @param iconV the v position on the resource
+	 * @param iconWidth width of the icon
+	 * @param iconHeight height of the icon
+	 */
+	public Button(int left, int top, int width, int height, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
+	{
+		this("", left, top, Math.max(width, iconWidth + 6), Math.max(height, iconHeight + 6));
+		this.hasIcon = true;
+		this.icon = icon;
+		this.iconU = iconU;
+		this.iconV = iconV;
+		this.iconWidth = iconWidth;
+		this.iconHeight = iconHeight;
+	}
 
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
@@ -120,7 +145,7 @@ public class Button extends Component
             if(hasIcon)
             {
             	mc.getTextureManager().bindTexture(icon);
-            	this.drawTexturedModalRect(xPosition + 3, yPosition + 3, iconU, iconV, iconWidth, iconHeight);
+            	this.drawTexturedModalRect(xPosition + 3 + (width - iconWidth - 6) / 2, yPosition + 3 + (height - iconHeight - 6) / 2, iconU, iconV, iconWidth, iconHeight);
             }
             else
             {
