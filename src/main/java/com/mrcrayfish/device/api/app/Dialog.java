@@ -4,11 +4,19 @@ import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.api.app.Layout.Background;
+import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.Window.DialogWindow;
 import com.mrcrayfish.device.core.Wrappable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 
 public class Dialog implements Wrappable
@@ -26,7 +34,7 @@ public class Dialog implements Wrappable
 	
 	private Dialog() 
 	{
-		this.defaultLayout = new Layout(100, 40);
+		this.defaultLayout = new Layout(150, 40);
 	}
 	
 	protected final void addComponent(Component c)
@@ -179,7 +187,7 @@ public class Dialog implements Wrappable
 			public void init(int x, int y)
 			{
 				super.init(x, y);
-				Label label = new Label("Are you sure?", x, y, 5, 5);
+				Label label = new Label("Are you sure?", 5, 5);
 				this.addComponent(label);
 			}
 		};
@@ -207,6 +215,11 @@ public class Dialog implements Wrappable
 		{
 			super.init(x, y);
 			
+			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			defaultLayout.height += (lines - 1) * 9;
+			
+			setLayout(defaultLayout);
+			
 			defaultLayout.setBackground(new Background()
 			{
 				@Override
@@ -216,10 +229,10 @@ public class Dialog implements Wrappable
 				}
 			});
 			
-			Text message = new Text(messageText, 20, 5, getWidth() - 10);
+			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
-			Button postiveButton = new Button(positiveText, 65, 20, 30, 15);
+			Button postiveButton = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
 			if(postiveListener != null)
 			{
 				System.out.println("Setting custom");
@@ -239,7 +252,7 @@ public class Dialog implements Wrappable
 			}
 			this.addComponent(postiveButton);
 			
-			Button negativeButton = new Button(negativeText, 30, 20, 30, 15);
+			Button negativeButton = new Button(negativeText, getWidth() - 70, getHeight() - 20, 30, 15);
 			if(negativeListener != null)
 			{
 				negativeButton.setClickListener(negativeListener);
@@ -269,6 +282,10 @@ public class Dialog implements Wrappable
 			this.negativeText = negativeText;
 			this.negativeListener = negativeListener;
 		}
+		
+		public void setMessageText(String messageText)
+		{
+			this.messageText = messageText;
+		}
 	}
-
 }

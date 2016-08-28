@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.programs;
+package com.mrcrayfish.device.programs.auction;
 
 import java.awt.Color;
 
@@ -33,6 +33,7 @@ import net.minecraft.util.ResourceLocation;
 public class ApplicationMineBay extends Application
 {
 	private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
+	private static final ResourceLocation MINEBAY_ASSESTS = new ResourceLocation("cdm:textures/gui/minebay.png");
 	
 	private static final ItemStack EMERALD = new ItemStack(Items.emerald);
 	
@@ -65,10 +66,14 @@ public class ApplicationMineBay extends Application
 				gui.drawRect(x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
 				gui.drawRect(x, y + 25, x + 95, y + height, Color.LIGHT_GRAY.getRGB());
 				gui.drawRect(x + 94, y + 25, x + 95, y + height, Color.GRAY.getRGB());
+				
+				mc.getTextureManager().bindTexture(MINEBAY_ASSESTS);
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+				GuiHelper.drawModalRectWithUV(x + 5, y + 6, 0, 0, 61, 11, 61, 12);
 			}
 		});
 		
-		Button btnAddItem = new Button("Add Item", 50, 5, 60, 15);
+		Button btnAddItem = new Button("Add Item", 70, 5, 60, 15);
 		btnAddItem.setClickListener(new ClickListener()
 		{
 			@Override
@@ -79,7 +84,7 @@ public class ApplicationMineBay extends Application
 		});
 		home.addComponent(btnAddItem);
 		
-		Button btnViewItem = new Button("Your Auctions", 115, 5, 80, 15);
+		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
 		home.addComponent(btnViewItem);
 		
 		Label labelBalance = new Label("Balance", 295, 3);
@@ -106,7 +111,7 @@ public class ApplicationMineBay extends Application
 		labelItems.setShadow(false);
 		home.addComponent(labelItems);
 		
-		ItemList<ItemStack> items = new ItemList<ItemStack>(100, 40, 180, 4);
+		final ItemList<ItemStack> items = new ItemList<ItemStack>(100, 40, 180, 4);
 		items.setListItemRenderer(new ListItemRenderer<ItemStack>(20)
 		{
 			@Override
@@ -154,7 +159,6 @@ public class ApplicationMineBay extends Application
 			{
 				gui.drawRect(x, y, x + width, y + 39, Color.LIGHT_GRAY.getRGB());
 				gui.drawRect(x, y + 39, x + width, y + 40, Color.DARK_GRAY.getRGB());
-				//gui.drawRect(x, y + 40, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 				
 				mc.fontRendererObj.drawString("Item", x + 5, y + 5, Color.WHITE.getRGB(), true);
 				mc.fontRendererObj.drawString("Price", x + 65, y + 5, Color.WHITE.getRGB(), true);
@@ -220,7 +224,7 @@ public class ApplicationMineBay extends Application
 					@Override
 					public void onClick(Component c, int mouseButton)
 					{
-						//TODO: Add to database
+						items.addItem(Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex()));
 						dialog.close();
 						setCurrentLayout(home);
 					}
@@ -266,5 +270,10 @@ public class ApplicationMineBay extends Application
 	public void save(NBTTagCompound tagCompound)
 	{
 
+	}
+	
+	public static class AuctionManager
+	{
+		
 	}
 }
