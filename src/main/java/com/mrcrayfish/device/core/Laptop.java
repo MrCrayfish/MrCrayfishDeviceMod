@@ -96,6 +96,19 @@ public class Laptop extends GuiScreen
     }
 	
 	@Override
+	public void onResize(Minecraft mcIn, int p_175273_2_, int p_175273_3_)
+	{
+		super.onResize(mcIn, p_175273_2_, p_175273_3_);
+		for(Window window : windows)
+		{
+			if(window != null)
+			{
+				((Application)window.content).markForLayoutUpdate();
+			}
+		}
+	}
+	
+	@Override
 	public void updateScreen() 
 	{
 		for(Window window : windows)

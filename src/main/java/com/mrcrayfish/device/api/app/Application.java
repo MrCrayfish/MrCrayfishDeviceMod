@@ -318,6 +318,11 @@ public abstract class Application
 		needsDataUpdate = false;
 	}
 	
+	public final void markForLayoutUpdate() 
+	{
+		this.pendingLayoutUpdate = true;
+	}
+
 	/**
 	 * Gets if a layout is currently pending a layout update
 	 * 
