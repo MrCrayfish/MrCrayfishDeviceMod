@@ -114,7 +114,7 @@ public class NumberSelector extends Component
 	
 	public void setMax(int max)
 	{
-		if(max < 0 || max <= min) 
+		if(max < 0 || max < min) 
 		{
 			throw new IllegalArgumentException("The max value must be more or equal to zero and more than the min value");
 		}
