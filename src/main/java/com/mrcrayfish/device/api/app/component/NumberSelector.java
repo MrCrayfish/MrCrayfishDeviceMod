@@ -127,7 +127,7 @@ public class NumberSelector extends Component
 		}
 	}
 	
-	public void setCurrent(int current)
+	public void setNumber(int current)
 	{
 		if(current < min || current > max)
 		{
@@ -135,6 +135,11 @@ public class NumberSelector extends Component
 		}
 		this.current = current;
 		display.setText(Integer.toString(current));
+	}
+	
+	public int getNumber()
+	{
+		return current;
 	}
 
 }
