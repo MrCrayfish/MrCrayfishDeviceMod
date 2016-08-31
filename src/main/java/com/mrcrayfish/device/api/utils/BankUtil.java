@@ -121,7 +121,7 @@ public class BankUtil
 		return uuidToAccount.get(player.getUniqueID());
 	}
 	
-	public Account getAccount(String uuid)
+	public Account getAccount(UUID uuid)
 	{
 		return uuidToAccount.get(uuid);
 	}
