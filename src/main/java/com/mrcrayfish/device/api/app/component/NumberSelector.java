@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
+import java.text.DecimalFormat;
+
 import org.lwjgl.input.Mouse;
 
 import com.mrcrayfish.device.api.app.Component;
@@ -11,6 +13,8 @@ import net.minecraft.client.Minecraft;
 
 public class NumberSelector extends Component
 {
+	protected DecimalFormat format = new DecimalFormat("0");
+	
 	protected int current = 1;
 	protected int min = 1;
 	protected int max = 100;
@@ -41,7 +45,7 @@ public class NumberSelector extends Component
 				if(current < max)
 				{
 					current++;
-					display.setText(Integer.toString(current));
+					display.setText(format.format(current));
 					updateButtons();
 				}
 			}
@@ -50,7 +54,7 @@ public class NumberSelector extends Component
 		
 		display = new TextField(left, top + 10, width);
 		display.setEditable(false);
-		display.setText(Integer.toString(current));
+		display.setText(format.format(current));
 		layout.addComponent(display);
 		
 		btnDown = new Button(left, top + 24, width, 11, COMPONENTS_GUI, 119, 12, 8, 5);
@@ -62,7 +66,7 @@ public class NumberSelector extends Component
 				if(current > min)
 				{
 					current--;
-					display.setText(Integer.toString(current));
+					display.setText(format.format(current));
 					updateButtons();
 				}
 			}
@@ -157,5 +161,9 @@ public class NumberSelector extends Component
 	{
 		return current;
 	}
-
+	
+	public void setFormat(DecimalFormat format)
+	{
+		this.format = format;
+	}
 }
