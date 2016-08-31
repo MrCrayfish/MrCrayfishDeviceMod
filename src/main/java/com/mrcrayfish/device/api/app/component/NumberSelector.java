@@ -42,6 +42,7 @@ public class NumberSelector extends Component
 				{
 					current++;
 					display.setText(Integer.toString(current));
+					updateButtons();
 				}
 			}
 		});
@@ -62,6 +63,7 @@ public class NumberSelector extends Component
 				{
 					current--;
 					display.setText(Integer.toString(current));
+					updateButtons();
 				}
 			}
 		});
@@ -94,6 +96,20 @@ public class NumberSelector extends Component
 		{
 			holdCount = 0;
 			holding = false;
+		}
+	}
+	
+	public void updateButtons()
+	{
+		btnUp.setEnabled(true);
+		btnDown.setEnabled(true);
+		if(current == max)
+		{
+			btnUp.setEnabled(false);
+		}
+		if(current == min)
+		{
+			btnDown.setEnabled(false);
 		}
 	}
 	
