@@ -392,6 +392,10 @@ public abstract class Application
 	 */
 	public String getTitle()
 	{
+		if(currentLayout.hasTitle())
+		{
+			return currentLayout.getTitle();
+		}
 		return DISPLAY_NAME;
 	}
 	

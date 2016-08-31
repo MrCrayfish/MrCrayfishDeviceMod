@@ -39,6 +39,8 @@ public class Layout
 	 */
 	public int height;
 	
+	private String title;
+	
 	private InitListener initListener;
 	private Background background;
 	
@@ -143,6 +145,21 @@ public class Layout
 	public final void clear() 
 	{	
 		this.components.clear();
+	}
+	
+	public boolean hasTitle()
+	{
+		return title != null;
+	}
+	
+	public String getTitle()
+	{
+		return title;
+	}
+	
+	public void setTitle(String title)
+	{
+		this.title = title;
 	}
 	
 	/**
