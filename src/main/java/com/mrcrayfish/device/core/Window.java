@@ -16,21 +16,21 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-public class Window
+public class Window<T extends Wrappable>
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
 	private static final int COLOUR_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
 	
-	Wrappable content;
+	T content;
 	int width, height;
 	int offsetX, offsetY;
 	
-	Window dialogWindow = null;
+	Window<Dialog> dialogWindow = null;
 	
 	protected GuiButton btnClose;
 	
-	public Window(Wrappable wrappable) 
+	public Window(T wrappable) 
 	{
 		this.content = wrappable;
 	}
@@ -126,7 +126,7 @@ public class Window
 	{
 		if(button.equals(btnClose))
 		{
-			laptop.close(content);
+			laptop.close((Application) content);
 		}
 	}
 	
@@ -140,7 +140,7 @@ public class Window
 		
 		if(btnClose.isMouseOver())
 		{
-			gui.close(content);
+			gui.close((Application) content);
 			btnClose.playPressSound(gui.mc.getSoundHandler());
 		}
 		else

@@ -20,6 +20,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+//TODO Intro message (created by mrcrayfish, donate here)
+
 public class Laptop extends GuiScreen 
 {
 	public static final int ID = 0;
@@ -36,7 +38,7 @@ public class Laptop extends GuiScreen
 	public static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
 
 	private TaskBar bar;
-	private Window[] windows;
+	private Window<Application>[] windows;
 	private NBTTagCompound data;
 	
 	public static int currentWallpaper;
@@ -69,17 +71,17 @@ public class Laptop extends GuiScreen
 		int posY = (height - DEVICE_HEIGHT) / 2;
 		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 	}
-	
+
 	@Override
 	public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
         
-        for(Window window : windows)
+        for(Window<Application> window : windows)
 		{
         	if(window != null)
 			{
-        		close((Application) window.content);
+        		close(window.content);
 			}
 		}
         
@@ -99,11 +101,11 @@ public class Laptop extends GuiScreen
 	public void onResize(Minecraft mcIn, int p_175273_2_, int p_175273_3_)
 	{
 		super.onResize(mcIn, p_175273_2_, p_175273_3_);
-		for(Window window : windows)
+		for(Window<Application> window : windows)
 		{
 			if(window != null)
 			{
-				((Application)window.content).markForLayoutUpdate();
+				window.content.markForLayoutUpdate();
 			}
 		}
 	}
@@ -291,8 +293,8 @@ public class Laptop extends GuiScreen
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window window = windows[i];
-			if(window != null && ((Application) window.content).getID().equals(app.getID()))
+			Window<Application> window = windows[i];
+			if(window != null && window.content.getID().equals(app.getID()))
 			{
 				windows[i] = null;
 				updateWindowStack();
@@ -317,31 +319,26 @@ public class Laptop extends GuiScreen
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
 	}
 	
-	public void close(Wrappable wrappable)
+	public void close(Application app)
 	{
-		if(wrappable instanceof Application)
+		for(int i = 0; i < windows.length; i++)
 		{
-			Application app = (Application) wrappable;
-			for(int i = 0; i < windows.length; i++)
+			Window<Application> window = windows[i];
+			if(window != null)
 			{
-				Window window = windows[i];
-				if(window != null && window.content instanceof Application)
+				if(window.content.getID().equals(app.getID()))
 				{
-					Application windowApp = (Application) window.content;
-					if(windowApp.getID().equals(app.getID()))
+					if(app.isDirty())
 					{
-						if(app.isDirty())
-						{
-							NBTTagCompound container = new NBTTagCompound();
-							app.save(container);
-							data.setTag(app.getID(), container);
-							dirty = true;
-						}
-						window.handleClose();
-						windows[i] = null;
-						window = null;
-						return;
+						NBTTagCompound container = new NBTTagCompound();
+						app.save(container);
+						data.setTag(app.getID(), container);
+						dirty = true;
 					}
+					window.handleClose();
+					windows[i] = null;
+					window = null;
+					return;
 				}
 			}
 		}
