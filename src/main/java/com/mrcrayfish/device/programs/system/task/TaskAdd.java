@@ -1,25 +1,25 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import java.util.UUID;
+
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
-import com.mrcrayfish.device.api.utils.InventoryUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TaskDeposit extends Task 
+public class TaskAdd extends Task 
 {
 	private int amount;
 	
-	public TaskDeposit()
+	public TaskAdd()
 	{
-		super("bank_deposit");
+		super("bank_add");
 	}
 	
-	public TaskDeposit(int amount)
+	public TaskAdd(int amount)
 	{
 		this();
 		this.amount = amount;
@@ -35,15 +35,9 @@ public class TaskDeposit extends Task
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
 	{
 		int amount = nbt.getInteger("amount");
-		if(InventoryUtil.removeItemWithAmount(player, Items.emerald, amount))
-		{
-			Account account = BankUtil.INSTANCE.getAccount(player);
-			if(account.deposit(amount))
-			{
-				this.amount = account.getBalance();
-				this.setSuccessful();
-			}
-		}
+		Account sender = BankUtil.INSTANCE.getAccount(player);
+		sender.add(amount);
+		this.setSuccessful();
 	}
 
 	@Override

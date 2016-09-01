@@ -7,10 +7,10 @@ import java.util.UUID;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.programs.system.object.Account;
-import com.mrcrayfish.device.programs.system.task.TaskDeposit;
+import com.mrcrayfish.device.programs.system.task.TaskAdd;
 import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
 import com.mrcrayfish.device.programs.system.task.TaskPay;
-import com.mrcrayfish.device.programs.system.task.TaskWithdraw;
+import com.mrcrayfish.device.programs.system.task.TaskRemove;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,70 +48,45 @@ public class BankUtil
 	}
 	
 	/**
-	 * <p>TODO. This function is not yet implemented.</p>
-	 * 
 	 * <p>Sends a request for the user to pay x amount from their account. Use the callback
 	 * to check if payment was successful. You will also get returned their new balance. Use
 	 * the key "balance" to an integer from the NBT parameter in callback.</p>
 	 * 
-	 * @param callback he callback object to processing the response
+	 * @param uuid the UUID of the player you want to pay
+	 * @param amount the amount to pay 
+	 * @param callback the callback object to processing the response
 	 */
-	public static void pay(Callback callback)
+	public static void pay(String uuid, int amount, Callback callback)
 	{
 		TaskManager.sendRequest(new TaskPay().setCallback(callback));
 	}
 	
 	/**
-	 * <p>TODO. This function is not yet implemented.</p>
-	 * 
 	 * <p>Sends a request to add x amount to the user's account. Use the callback
 	 * to check if addition was successful. You will also get returned their new balance. Use
 	 * the key "balance" to an integer from the NBT parameter in callback.</p>
 	 * 
 	 * @param callback he callback object to processing the response
 	 */
-	/*public static void add(Callback callback)
+	public static void add(int amount, Callback callback)
 	{
-		TaskManager.sendRequest(new TaskRemove().setCallback(callback));
-	}*/
+		TaskManager.sendRequest(new TaskAdd(amount).setCallback(callback));
+	}
+	
+	/**
+	 * <p>Sends a request to remove x amount to the user's account. Use the callback
+	 * to check if removal was successful. You will also get returned their new balance. Use
+	 * the key "balance" to an integer from the NBT parameter in callback.</p>
+	 * 
+	 * @param callback he callback object to processing the response
+	 */
+	public static void remove(int amount, Callback callback)
+	{
+		TaskManager.sendRequest(new TaskRemove(amount).setCallback(callback));
+	}
 	
 	//TODO: Make private. Only the bank application should have access to these.
 	
-	/**
-	 * DO NOT USE. NOT AVAILABLE IN FINAL API
-	 */
-	public static void deposit(int amount)
-	{
-		deposit(amount, null);
-	}
-	
-	/**
-	 * DO NOT USE. NOT AVAILABLE IN FINAL API
-	 */
-	public static void deposit(int amount, Callback callback) 
-	{
-		TaskManager.sendRequest(new TaskDeposit(amount).setCallback(callback));
-	}
-	
-	/**
-	 * DO NOT USE. NOT AVAILABLE IN FINAL API
-	 */
-	public static void withdraw(int amount)
-	{
-		withdraw(amount, null);
-	}
-	
-	/**
-	 * DO NOT USE. NOT AVAILABLE IN FINAL API
-	 */
-	public static void withdraw(int amount, Callback callback) 
-	{
-		TaskManager.sendRequest(new TaskWithdraw(amount).setCallback(callback));
-	}
-	
-	/**
-	 * DO NOT USE. NOT AVAILABLE IN FINAL API
-	 */
 	public Account getAccount(EntityPlayer player)
 	{
 		if(!uuidToAccount.containsKey(player.getUniqueID()))
