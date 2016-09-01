@@ -159,6 +159,16 @@ public class Window<T extends Wrappable>
 		content.handleKeyTyped(character, code);
 	}
 	
+	public void handleKeyReleased(char character, int code)
+	{
+		if(dialogWindow != null)
+		{
+			dialogWindow.handleKeyReleased(character, code);
+			return;
+		}
+		content.handleKeyReleased(character, code);
+	}
+	
 	public void handleWindowMove(int screenStartX, int screenStartY, int mouseDX, int mouseDY)
 	{
 		int newX = offsetX + mouseDX;

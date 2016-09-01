@@ -9,6 +9,7 @@ public interface Wrappable
 	void onTick();
 	void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks);
 	void handleKeyTyped(char character, int code);
+	void handleKeyReleased(char character, int code);
 	void handleClick(int mouseX, int mouseY, int mouseButton);
 	void handleDrag(int mouseX, int mouseY, int mouseButton);
 	void handleRelease(int mouseX, int mouseY, int mouseButton);

@@ -124,6 +124,14 @@ public abstract class Component extends Gui
 	 */
 	public void handleKeyTyped(char character, int code) {}
 	
+	/** 
+	 * Called when a key is released from your keyboard.
+	 * 
+	 * @param character the released character
+	 * @param code the released character code
+	 */
+	public void handleKeyReleased(char character, int code) {}
+	
 	/**
 	 * Called when you drag the mouse with a button pressed down.
 	 * 

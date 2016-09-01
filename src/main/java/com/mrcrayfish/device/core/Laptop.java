@@ -224,14 +224,30 @@ public class Laptop extends GuiScreen
 	}
 	
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException 
-	{
-		if(windows[0] != null)
-		{
-			windows[0].handleKeyTyped(typedChar, keyCode);
-		}
-		super.keyTyped(typedChar, keyCode);
-	}
+	public void handleKeyboardInput() throws IOException
+    {
+        if (Keyboard.getEventKeyState())
+        {
+        	char pressed = Keyboard.getEventCharacter();
+        	int code = Keyboard.getEventKey();
+        	
+        	super.keyTyped(pressed, code);
+        	
+            if(windows[0] != null)
+    		{
+    			windows[0].handleKeyTyped(pressed, code);
+    		}
+        }
+        else
+        {
+        	if(windows[0] != null)
+    		{
+    			windows[0].handleKeyReleased(Keyboard.getEventCharacter(), Keyboard.getEventKey());
+    		}
+        }
+
+        this.mc.dispatchKeypresses();
+    }
 	
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) 

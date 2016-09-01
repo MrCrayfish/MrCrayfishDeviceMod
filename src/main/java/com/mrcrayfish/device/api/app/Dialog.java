@@ -28,7 +28,7 @@ public class Dialog implements Wrappable
 	protected final Layout defaultLayout;
 	private Layout customLayout;
 	
-	boolean pendingLayoutUpdate = true;
+	private boolean pendingLayoutUpdate = true;
 	
 	private DialogWindow window;
 	
@@ -123,6 +123,15 @@ public class Dialog implements Wrappable
 		for (Component c : customLayout.components)
 		{
 			c.handleKeyTyped(character, code);
+		}
+	}
+	
+	@Override
+	public void handleKeyReleased(char character, int code)
+	{
+		for (Component c : customLayout.components)
+		{
+			c.handleKeyReleased(character, code);
 		}
 	}
 

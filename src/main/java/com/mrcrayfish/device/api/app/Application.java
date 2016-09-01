@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.core.Laptop;
@@ -240,6 +241,15 @@ public abstract class Application implements Wrappable
 		for (Component c : currentLayout.components)
 		{
 			c.handleKeyTyped(character, code);
+		}
+	}
+	
+	@Override
+	public void handleKeyReleased(char character, int code)
+	{
+		for (Component c : currentLayout.components)
+		{
+			c.handleKeyReleased(character, code);
 		}
 	}
 
