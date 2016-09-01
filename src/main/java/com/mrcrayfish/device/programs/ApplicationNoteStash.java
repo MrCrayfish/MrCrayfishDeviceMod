@@ -46,9 +46,9 @@ public class ApplicationNoteStash extends Application
 	}
 
 	@Override
-	public void init(int x, int y) 
+	public void init() 
 	{
-		super.init(x, y);
+		super.init();
 
 		/* Main */
 		

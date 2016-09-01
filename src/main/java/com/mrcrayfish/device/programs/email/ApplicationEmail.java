@@ -132,9 +132,9 @@ public class ApplicationEmail extends Application
 	}
 
 	@Override
-	public void init(int x, int y)
+	public void init()
 	{
-		super.init(x, y);
+		super.init();
 
 		/* Loading Layout */
 		

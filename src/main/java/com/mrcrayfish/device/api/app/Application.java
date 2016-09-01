@@ -119,7 +119,7 @@ public abstract class Application implements Wrappable
 	 *            the starting y position
 	 */
 	@Override
-	public void init(int x, int y)
+	public void init()
 	{
 		this.defaultLayout.clear();
 		this.setCurrentLayout(defaultLayout);

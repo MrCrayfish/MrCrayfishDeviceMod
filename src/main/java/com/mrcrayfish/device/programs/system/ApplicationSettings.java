@@ -23,9 +23,9 @@ public class ApplicationSettings extends Application
 	}
 
 	@Override
-	public void init(int x, int y) 
+	public void init() 
 	{
-		super.init(x, y);
+		super.init();
 		btnWallpaperNext = new ButtonArrow(40, 16, ButtonArrow.Type.RIGHT);
 		btnWallpaperNext.setClickListener(new ClickListener() {
 			@Override

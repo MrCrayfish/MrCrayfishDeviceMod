@@ -36,9 +36,9 @@ public class ApplicationAppStore extends Application
 	}
 
 	@Override
-	public void init(int x, int y)
+	public void init()
 	{
-		super.init(x, y);
+		super.init();
 		
 		appsLabel = new Label("Application List", 5, 5);
 		super.addComponent(appsLabel);

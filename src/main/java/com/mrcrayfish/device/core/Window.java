@@ -63,7 +63,7 @@ public class Window<T extends Wrappable>
 			((Application) content).setWindow(this);
 		}
 		
-		content.init(x + offsetX + 1, y + offsetY + 13);
+		content.init();
 	}
 	
 	public void onTick() 

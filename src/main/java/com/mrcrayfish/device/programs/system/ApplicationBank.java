@@ -60,7 +60,7 @@ public class ApplicationBank extends Application
 	}
 	
 	@Override
-	public void init(int x, int y)
+	public void init()
 	{
 		layoutMain = new Layout(120, 143);
 		layoutMain.setBackground(new Background()

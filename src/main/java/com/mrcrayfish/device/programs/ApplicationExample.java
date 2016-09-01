@@ -46,9 +46,9 @@ public class ApplicationExample extends Application
 	}
 	
 	@Override
-	public void init(int x, int y) 
+	public void init() 
 	{
-		super.init(x, y);
+		super.init();
 		
 		label = new Label("Label", 5, 5);
 		super.addComponent(label);

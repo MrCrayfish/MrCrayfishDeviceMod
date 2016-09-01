@@ -140,20 +140,20 @@ public class TaskBar
 		RenderHelper.disableStandardItemLighting();
 	}
 	
-	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton) 
+	public void handleClick(Laptop laptop, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
 		btnLeft.handleClick(mouseX, mouseY, mouseButton);
 		btnRight.handleClick(mouseX, mouseY, mouseButton);
 		
 		if(isMouseInside(mouseX, mouseY, x + 315, y + 1, x + 331, y + 16))
 		{
-			gui.openWindow(settings);
+			laptop.open(settings);
 			return;
 		}
 		
 		if(isMouseInside(mouseX, mouseY, x + 299, y + 1, x + 315, y + 16))
 		{
-			gui.openWindow(app_store);
+			laptop.open(app_store);
 			return;
 		}
 		
@@ -162,7 +162,7 @@ public class TaskBar
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
 			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
 			{
-				gui.openWindow(ApplicationManager.getApps().get(appIndex));
+				laptop.open(ApplicationManager.getApps().get(appIndex));
 				return;
 			}
 		}

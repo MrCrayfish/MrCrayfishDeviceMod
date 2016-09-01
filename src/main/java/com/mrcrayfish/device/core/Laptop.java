@@ -305,7 +305,7 @@ public class Laptop extends GuiScreen
 		super.drawHoveringText(textLines, x, y);
 	}
 
-	public void openWindow(Application app)
+	public void open(Application app)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
