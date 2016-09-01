@@ -231,13 +231,13 @@ public class Laptop extends GuiScreen
         {
         	char pressed = Keyboard.getEventCharacter();
         	int code = Keyboard.getEventKey();
-        	
-        	super.keyTyped(pressed, code);
-        	
+
             if(windows[0] != null)
     		{
     			windows[0].handleKeyTyped(pressed, code);
     		}
+
+        	super.keyTyped(pressed, code);
         }
         else
         {
