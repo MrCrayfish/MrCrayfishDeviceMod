@@ -204,7 +204,56 @@ public abstract class Dialog implements Wrappable
 	
 	public static class Message extends Dialog
 	{
+		private String messageText = "";
 		
+		private ClickListener positiveListener;
+		private Button buttonPositive;
+		
+		public Message(String messageText)
+		{
+			this.messageText = messageText;
+		}
+		
+		@Override
+		public void init()
+		{
+			super.init();
+			
+			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			defaultLayout.height += (lines - 1) * 9;
+			
+			super.init();
+			
+			defaultLayout.setBackground(new Background()
+			{
+				@Override
+				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+				{
+					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
+				}
+			});
+			
+			Text message = new Text(messageText, 5, 5, getWidth() - 10);
+			this.addComponent(message);
+			
+			buttonPositive = new Button("Close", getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonPositive.setClickListener(new ClickListener()
+			{
+				@Override
+				public void onClick(Component c, int mouseButton)
+				{
+					if(positiveListener != null)
+					{
+						positiveListener.onClick(c, mouseButton);
+					}
+					else
+					{
+						close();
+					}
+				}
+			});
+			this.addComponent(buttonPositive);
+		}
 	}
 	
 	public static class Confirmation extends Dialog
@@ -213,7 +262,7 @@ public abstract class Dialog implements Wrappable
 		private String positiveText = "Yes";
 		private String negativeText = "No";
 		
-		private ClickListener postiveListener;
+		private ClickListener positiveListener;
 		private ClickListener negativeListener;
 		
 		private Button buttonPositive;
@@ -222,6 +271,8 @@ public abstract class Dialog implements Wrappable
 		@Override
 		public void init()
 		{
+			super.init();
+			
 			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
@@ -245,9 +296,9 @@ public abstract class Dialog implements Wrappable
 				@Override
 				public void onClick(Component c, int mouseButton)
 				{
-					if(postiveListener != null)
+					if(positiveListener != null)
 					{
-						postiveListener.onClick(c, mouseButton);
+						positiveListener.onClick(c, mouseButton);
 					}
 					else
 					{
@@ -276,10 +327,10 @@ public abstract class Dialog implements Wrappable
 			this.addComponent(buttonNegative);
 		}
 		
-		public void setPositiveButton(String positiveText, ClickListener postiveListener)
+		public void setPositiveButton(String positiveText, ClickListener positiveListener)
 		{
 			this.positiveText = positiveText;
-			this.postiveListener = postiveListener;
+			this.positiveListener = positiveListener;
 		}
 		
 		public void setNegativeButton(String negativeText, ClickListener negativeListener)
