@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -76,7 +77,7 @@ public class TaskBar
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		gui.drawTexturedModalRect(x, y, 0, 0, 1, 18);
-		GuiHelper.drawModalRectWithUV(x + 1, y, 1, 0, gui.SCREEN_WIDTH - 34, 18, 1, 18);
+		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, gui.SCREEN_WIDTH - 34, 18, 1, 18);
 		gui.drawTexturedModalRect(x + gui.SCREEN_WIDTH - 33, y, 2, 0, 33, 18);
 		GlStateManager.disableBlend();
 		

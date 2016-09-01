@@ -45,7 +45,7 @@ public class Inventory extends Component
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
-		GuiHelper.drawModalRectWithUV(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
+		RenderUtil.drawRectWithTexture(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
 
 		InventoryPlayer inventory = mc.thePlayer.inventory;
 		for(int i = 9; i < inventory.getSizeInventory() - 4; i++)

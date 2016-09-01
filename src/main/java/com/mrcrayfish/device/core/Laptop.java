@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageSaveData;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -141,17 +142,17 @@ public class Laptop extends GuiScreen
 		this.drawTexturedModalRect(posX, posY + DEVICE_HEIGHT - BORDER, 0, 11, BORDER, BORDER); // BOTTOM-LEFT
 		
 		/* Edges */
-		GuiHelper.drawModalRectWithUV(posX + BORDER, posY, 10, 0, SCREEN_WIDTH, BORDER, 1, BORDER); // TOP
-		GuiHelper.drawModalRectWithUV(posX + DEVICE_WIDTH - BORDER, posY + BORDER, 11, 10, BORDER, SCREEN_HEIGHT, BORDER, 1); // RIGHT
-		GuiHelper.drawModalRectWithUV(posX + BORDER, posY + DEVICE_HEIGHT - BORDER, 10, 11, SCREEN_WIDTH, BORDER, 1, BORDER); // BOTTOM
-		GuiHelper.drawModalRectWithUV(posX, posY + BORDER, 0, 11, BORDER, SCREEN_HEIGHT, BORDER, 1); // LEFT
+		RenderUtil.drawRectWithTexture(posX + BORDER, posY, 10, 0, SCREEN_WIDTH, BORDER, 1, BORDER); // TOP
+		RenderUtil.drawRectWithTexture(posX + DEVICE_WIDTH - BORDER, posY + BORDER, 11, 10, BORDER, SCREEN_HEIGHT, BORDER, 1); // RIGHT
+		RenderUtil.drawRectWithTexture(posX + BORDER, posY + DEVICE_HEIGHT - BORDER, 10, 11, SCREEN_WIDTH, BORDER, 1, BORDER); // BOTTOM
+		RenderUtil.drawRectWithTexture(posX, posY + BORDER, 0, 11, BORDER, SCREEN_HEIGHT, BORDER, 1); // LEFT
 		
 		/* Center */
-		GuiHelper.drawModalRectWithUV(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
+		RenderUtil.drawRectWithTexture(posX + BORDER, posY + BORDER, 10, 10, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1);
 		
 		/* Wallpaper */
 		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
-		GuiHelper.drawModalRectWithUV(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 256, 144);
+		RenderUtil.drawRectWithTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 256, 144);
 
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)

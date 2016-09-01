@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.gui.GuiButtonClose;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -98,13 +99,13 @@ public class Window<T extends Wrappable>
 		gui.drawTexturedModalRect(x + offsetX, y + offsetY + height - 1, 0, 14, 1, 1);
 		
 		/* Edges */
-		GuiHelper.drawModalRectWithUV(x + offsetX + 1, y + offsetY, 1, 0, width - 14, 13, 1, 13);
-		GuiHelper.drawModalRectWithUV(x + offsetX + width - 1, y + offsetY + 13, 14, 13, 1, height - 14, 1, 1);
-		GuiHelper.drawModalRectWithUV(x + offsetX + 1, y + offsetY + height - 1, 1, 14, width - 2, 1, 13, 1);
-		GuiHelper.drawModalRectWithUV(x + offsetX, y + offsetY + 13, 0, 13, 1, height - 14, 1, 1);
+		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY, 1, 0, width - 14, 13, 1, 13);
+		RenderUtil.drawRectWithTexture(x + offsetX + width - 1, y + offsetY + 13, 14, 13, 1, height - 14, 1, 1);
+		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + height - 1, 1, 14, width - 2, 1, 13, 1);
+		RenderUtil.drawRectWithTexture(x + offsetX, y + offsetY + 13, 0, 13, 1, height - 14, 1, 1);
 		
 		/* Center */
-		GuiHelper.drawModalRectWithUV(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
+		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
 		
 		mc.fontRendererObj.drawString(content.getTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		

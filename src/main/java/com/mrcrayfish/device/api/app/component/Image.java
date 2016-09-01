@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -81,11 +82,11 @@ public class Image extends Component
 			if(hasBorder)
 			{
 				drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColour);
-				GuiHelper.drawModalRectWithUV(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
+				RenderUtil.drawRectWithTexture(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
 			}
 			else
 			{
-				GuiHelper.drawModalRectWithUV(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
+				RenderUtil.drawRectWithTexture(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
 			}
         }
 	}

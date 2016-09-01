@@ -1,10 +1,9 @@
 package com.mrcrayfish.device.api.app.component;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -115,19 +114,19 @@ public class Button extends Component
             GlStateManager.disableDepth();
             
             /* Corners */
-            GuiHelper.drawModalRectWithUV(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
-            GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
-            GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
-            GuiHelper.drawModalRectWithUV(xPosition, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(xPosition + width - 2, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(xPosition + width - 2, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(xPosition, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
 
             /* Middles */
-            GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition, 98 + i * 5, 12, width - 4, 2, 1, 2);
-            GuiHelper.drawModalRectWithUV(xPosition + width - 2, yPosition + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
-            GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition + height - 2, 98 + i * 5, 15, width - 4, 2, 1, 2);
-            GuiHelper.drawModalRectWithUV(xPosition, yPosition + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
+            RenderUtil.drawRectWithTexture(xPosition + 2, yPosition, 98 + i * 5, 12, width - 4, 2, 1, 2);
+            RenderUtil.drawRectWithTexture(xPosition + width - 2, yPosition + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
+            RenderUtil.drawRectWithTexture(xPosition + 2, yPosition + height - 2, 98 + i * 5, 15, width - 4, 2, 1, 2);
+            RenderUtil.drawRectWithTexture(xPosition, yPosition + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
             
             /* Center */
-            GuiHelper.drawModalRectWithUV(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
+            RenderUtil.drawRectWithTexture(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
             
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             
