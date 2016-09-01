@@ -54,7 +54,7 @@ public abstract class Dialog implements Wrappable
 	}
 	
 	@Override
-	public void init(int x, int y)
+	public void init()
 	{
 		this.defaultLayout.clear();
 		this.setLayout(defaultLayout);
@@ -150,6 +150,12 @@ public abstract class Dialog implements Wrappable
 	{
 		return height;
 	}
+	
+	@Override
+	public void markForLayoutUpdate()
+	{
+		this.pendingLayoutUpdate = true;
+	}
 
 	@Override
 	public boolean isPendingLayoutUpdate()
@@ -209,12 +215,12 @@ public abstract class Dialog implements Wrappable
 		private Button buttonNegative;
 
 		@Override
-		public void init(int x, int y)
+		public void init()
 		{
 			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
-			super.init(x, y);
+			super.init();
 
 			defaultLayout.setBackground(new Background()
 			{
