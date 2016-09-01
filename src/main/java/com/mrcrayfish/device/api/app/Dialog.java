@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.RenderHelper;
 
 public abstract class Dialog implements Wrappable
 {
-	private String title;
+	private String title = "Message";
 	private int width;
 	private int height;
 
@@ -132,11 +132,16 @@ public abstract class Dialog implements Wrappable
 			c.handleKeyReleased(character, code);
 		}
 	}
+	
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 
 	@Override
 	public String getTitle()
 	{
-		return "Message";
+		return title;
 	}
 
 	@Override
