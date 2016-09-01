@@ -28,8 +28,8 @@ public class Inventory extends Component
 {
 	protected static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
 	
-	protected static final int HIGHLIGHT = new Color(1F, 1F, 0F, 0.15F).getRGB();
-	protected static final int COLOUR_MOUSE_OVER = new Color(1F, 1F, 1F, 0.15F).getRGB();
+	protected int selectedColour = new Color(1F, 1F, 0F, 0.15F).getRGB();
+	protected int hoverColour = new Color(1F, 1F, 1F, 0.15F).getRGB();
 	
 	protected int selected = -1;
 	
@@ -55,12 +55,12 @@ public class Inventory extends Component
 			
 			if(selected == i)
 			{
-				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, HIGHLIGHT);
+				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColour);
 			}
 			
 			if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 17, yPosition + offsetY + 17))
 			{
-				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, COLOUR_MOUSE_OVER);
+				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColour);
 			}
 			
 			ItemStack stack = inventory.getStackInSlot(i);
@@ -115,13 +115,43 @@ public class Inventory extends Component
 		}
 	}
 	
+	/**
+	 * Gets the selected slot index
+	 * 
+	 * @return the slot index
+	 */
 	public int getSelectedSlotIndex()
 	{
 		return selected;
 	}
 	
+	/**
+	 * Sets the click listener for when an item is clicked
+	 * 
+	 * @param clickListener
+	 */
 	public void setClickListener(ClickListener clickListener)
 	{
 		this.clickListener = clickListener;
+	}
+	
+	/**
+	 * Sets the colour displayed when an item is selected
+	 * 
+	 * @param color the selected colour
+	 */
+	public void setSelectedColour(int selectedColour)
+	{
+		this.selectedColour = selectedColour;
+	}
+	
+	/**
+	 * Sets the colour displayed when a mouse is hovering an item
+	 * 
+	 * @param color the hover colour
+	 */
+	public void setHoverColour(int hoverColour)
+	{
+		this.hoverColour = hoverColour;
 	}
 }
