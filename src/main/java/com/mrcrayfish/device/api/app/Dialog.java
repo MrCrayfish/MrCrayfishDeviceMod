@@ -9,17 +9,15 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 
-public class Dialog implements Wrappable
+public abstract class Dialog implements Wrappable
 {
 	private String title;
 	private int width;
@@ -32,7 +30,7 @@ public class Dialog implements Wrappable
 	
 	private Window<Application> window;
 	
-	private Dialog() 
+	public Dialog() 
 	{
 		this.defaultLayout = new Layout(150, 40);
 	}
@@ -187,30 +185,18 @@ public class Dialog implements Wrappable
 			window.closeDialog();
 		}
 	}
-	
-	public static Dialog newConfirmationDialog()
-	{
-		Dialog dialog = new Dialog() 
-		{
-			@Override
-			public void init(int x, int y)
-			{
-				super.init(x, y);
-				Label label = new Label("Are you sure?", 5, 5);
-				this.addComponent(label);
-			}
-		};
-		return dialog;
-	}
 
-	public static class Builder
-	{
-	public void setWindow(DialogWindow window)
+	public void setWindow(Window<Application> window)
 	{
 		this.window = window;
 	}
 	
-	public static class DialogConfirmation extends Dialog
+	public static class Message extends Dialog
+	{
+		
+	}
+	
+	public static class Confirmation extends Dialog
 	{
 		private String messageText = "Are you sure?";
 		private String positiveText = "Yes";
@@ -219,16 +205,17 @@ public class Dialog implements Wrappable
 		private ClickListener postiveListener;
 		private ClickListener negativeListener;
 		
+		private Button buttonPositive;
+		private Button buttonNegative;
+
 		@Override
 		public void init(int x, int y)
 		{
-			super.init(x, y);
-			
 			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
-			setLayout(defaultLayout);
-			
+			super.init(x, y);
+
 			defaultLayout.setBackground(new Background()
 			{
 				@Override
@@ -241,43 +228,41 @@ public class Dialog implements Wrappable
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
-			Button postiveButton = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
-			if(postiveListener != null)
+			buttonPositive = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonPositive.setClickListener(new ClickListener()
 			{
-				System.out.println("Setting custom");
-				postiveButton.setClickListener(postiveListener);
-			}
-			else
-			{
-				System.out.println("Setting default");
-				postiveButton.setClickListener(new ClickListener()
+				@Override
+				public void onClick(Component c, int mouseButton)
 				{
-					@Override
-					public void onClick(Component c, int mouseButton)
+					if(postiveListener != null)
+					{
+						postiveListener.onClick(c, mouseButton);
+					}
+					else
 					{
 						close();
 					}
-				});
-			}
-			this.addComponent(postiveButton);
+				}
+			});
+			this.addComponent(buttonPositive);
 			
-			Button negativeButton = new Button(negativeText, getWidth() - 70, getHeight() - 20, 30, 15);
-			if(negativeListener != null)
+			buttonNegative = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonNegative.setClickListener(new ClickListener()
 			{
-				negativeButton.setClickListener(negativeListener);
-			}
-			else
-			{
-				negativeButton.setClickListener(new ClickListener()
+				@Override
+				public void onClick(Component c, int mouseButton)
 				{
-					@Override
-					public void onClick(Component c, int mouseButton)
+					if(negativeListener != null)
+					{
+						negativeListener.onClick(c, mouseButton);
+					}
+					else
 					{
 						close();
 					}
-				});
-			}
-			this.addComponent(negativeButton);
+				}
+			});
+			this.addComponent(buttonNegative);
 		}
 		
 		public void setPositiveButton(String positiveText, ClickListener postiveListener)
