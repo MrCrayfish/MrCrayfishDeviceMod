@@ -27,6 +27,7 @@ public class Window<T extends Wrappable>
 	int offsetX, offsetY;
 	
 	Window<Dialog> dialogWindow = null;
+	private Window<Application> parent = null;
 	
 	protected GuiButton btnClose;
 	
@@ -132,20 +133,30 @@ public class Window<T extends Wrappable>
 	
 	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		if(dialogWindow != null)
+		if(content instanceof Dialog)
 		{
-			dialogWindow.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
+			if(btnClose.isMouseOver())
+			{
+				parent.closeDialog();
+			}
+			else
+			{
+				dialogWindow.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
+				dialogWindow.content.handleClick(mouseX, mouseY, mouseButton);
+			}
 			return;
 		}
-		
-		if(btnClose.isMouseOver())
+		else if(content instanceof Application)
 		{
-			gui.close((Application) content);
-			btnClose.playPressSound(gui.mc.getSoundHandler());
-		}
-		else
-		{
-			content.handleClick(mouseX, mouseY, mouseButton);	
+			if(btnClose.isMouseOver())
+			{
+				gui.close((Application) content);
+				btnClose.playPressSound(gui.mc.getSoundHandler());
+			}
+			else
+			{
+				content.handleClick(mouseX, mouseY, mouseButton);	
+			}
 		}
 	}
 	
@@ -237,45 +248,32 @@ public class Window<T extends Wrappable>
 	
 	public void openDialog(Dialog dialog)
 	{
-		this.dialogWindow = new DialogWindow(this, dialog);
-		this.dialogWindow.init(null, 0, 0);
+		if(content instanceof Application)
+		{
+			dialogWindow = new Window(dialog);
+			dialogWindow.init(null, 0, 0);
+			dialog.setWindow((Window<Application>)this);
+		}
 	}
 	
 	public void closeDialog()
 	{
-		if(dialogWindow != null)
-		{
-			dialogWindow.handleClose();
-			dialogWindow = null;
-		}
-	}
-	
-	public static class DialogWindow extends Window
-	{
-		private Window parent;
-		
-		public DialogWindow(Window parent, Dialog dialog)
-		{
-			super(dialog);
-			this.parent = parent;
-			dialog.setWindow(this);
-		}
-		
-		@Override
-		public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
-		{
-			content.handleClick(mouseX, mouseY, mouseButton);
-
-			if(btnClose.isMouseOver())
-			{
-				parent.closeDialog();
-			}
-		}
-		
-		@Override
-		public void closeDialog()
+		if(content instanceof Dialog)
 		{
 			parent.closeDialog();
 		}
+		else if(content instanceof Application)
+		{
+			if(dialogWindow != null)
+			{
+				dialogWindow.handleClose();
+				dialogWindow = null;
+			}
+		}
+	}
+	
+	public void setParent(Window<Application> parent)
+	{
+		this.parent = parent;
 	}
 }

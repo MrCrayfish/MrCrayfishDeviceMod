@@ -11,7 +11,7 @@ import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.Window.DialogWindow;
+import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 
 import net.minecraft.client.Minecraft;
@@ -30,7 +30,7 @@ public class Dialog implements Wrappable
 	
 	private boolean pendingLayoutUpdate = true;
 	
-	private DialogWindow window;
+	private Window<Application> window;
 	
 	private Dialog() 
 	{
