@@ -1,5 +1,9 @@
 package com.mrcrayfish.device.programs.system.object;
 
+import java.util.UUID;
+
+import com.mrcrayfish.device.api.utils.BankUtil;
+
 public class Account 
 {
 	private int balance;
@@ -50,6 +54,20 @@ public class Account
 		{
 			this.balance -= amount;
 			return true;
+		}
+		return false;
+	}
+	
+	public boolean pay(Account reciever, int amount)
+	{
+		if(reciever != null)
+		{
+			if(hasAmount(amount))
+			{
+				this.balance -= amount;
+				reciever.balance += amount;
+				return true;
+			}
 		}
 		return false;
 	}

@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import java.util.UUID;
+
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
@@ -21,6 +23,7 @@ public class TaskPay extends Task
 	public TaskPay(String uuid, int amount)
 	{
 		this();
+		this.uuid = uuid;
 		this.amount = amount;
 	}
 
@@ -37,7 +40,7 @@ public class TaskPay extends Task
 		String uuid = nbt.getString("uuid");
 		int amount = nbt.getInteger("amount");
 		Account sender = BankUtil.INSTANCE.getAccount(player);
-		Account recipient = BankUtil.INSTANCE.getAccount(uuid);
+		Account recipient = BankUtil.INSTANCE.getAccount(UUID.fromString(uuid));
 		if(recipient != null && sender.hasAmount(amount)) {
 			recipient.add(amount);
 			sender.remove(amount);
@@ -49,7 +52,10 @@ public class TaskPay extends Task
 	@Override
 	public void prepareResponse(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("balance", this.amount);
+		if(isSucessful())
+		{
+			nbt.setInteger("balance", this.amount);
+		}
 	}
 
 	@Override

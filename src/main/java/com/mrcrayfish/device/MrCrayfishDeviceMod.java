@@ -1,9 +1,11 @@
 package com.mrcrayfish.device;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
@@ -11,22 +13,28 @@ import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
+import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.ApplicationBoatRacers;
 import com.mrcrayfish.device.programs.ApplicationExample;
 import com.mrcrayfish.device.programs.ApplicationNoteStash;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
+import com.mrcrayfish.device.programs.ApplicationTest;
+import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
+import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
+import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
+import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
-import com.mrcrayfish.device.programs.email.tasks.TaskCheckEmailAccount;
-import com.mrcrayfish.device.programs.email.tasks.TaskDeleteEmail;
-import com.mrcrayfish.device.programs.email.tasks.TaskRegisterEmailAccount;
-import com.mrcrayfish.device.programs.email.tasks.TaskSendEmail;
-import com.mrcrayfish.device.programs.email.tasks.TaskUpdateInbox;
-import com.mrcrayfish.device.programs.email.tasks.TaskViewEmail;
+import com.mrcrayfish.device.programs.email.task.TaskCheckEmailAccount;
+import com.mrcrayfish.device.programs.email.task.TaskDeleteEmail;
+import com.mrcrayfish.device.programs.email.task.TaskRegisterEmailAccount;
+import com.mrcrayfish.device.programs.email.task.TaskSendEmail;
+import com.mrcrayfish.device.programs.email.task.TaskUpdateInbox;
+import com.mrcrayfish.device.programs.email.task.TaskViewEmail;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
-import com.mrcrayfish.device.programs.system.task.TaskDeposit;
+import com.mrcrayfish.device.programs.system.task.TaskAdd;
 import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
 import com.mrcrayfish.device.programs.system.task.TaskPay;
-import com.mrcrayfish.device.programs.system.task.TaskWithdraw;
+import com.mrcrayfish.device.programs.system.task.TaskRemove;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -55,6 +63,8 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) 
 	{
+		setupTaskProxy();
+		
 		/** Block Registering */
 		DeviceBlocks.init();
 		DeviceBlocks.register();
@@ -85,11 +95,6 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
 	{
-		TaskBar.registerApplication(new ApplicationNoteStash());
-		TaskBar.registerApplication(new ApplicationExample());
-		TaskBar.registerApplication(new ApplicationPixelPainter());
-		TaskBar.registerApplication(new ApplicationEmail());
-		TaskBar.registerApplication(new ApplicationBoatRacers());
 		ApplicationManager.registerApplication(new ApplicationNoteStash());
 		ApplicationManager.registerApplication(new ApplicationExample());
 		ApplicationManager.registerApplication(new ApplicationPixelPainter());
@@ -104,18 +109,52 @@ public class MrCrayfishDeviceMod
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
 		
-		TaskManager.registerRequest(TaskUpdateInbox.class);
-		TaskManager.registerRequest(TaskSendEmail.class);
-		TaskManager.registerRequest(TaskCheckEmailAccount.class);
-		TaskManager.registerRequest(TaskRegisterEmailAccount.class);
-		TaskManager.registerRequest(TaskDeleteEmail.class);
-		TaskManager.registerRequest(TaskViewEmail.class);
-		TaskManager.registerRequest(TaskGetBalance.class);
-		TaskManager.registerRequest(TaskDeposit.class);
-		TaskManager.registerRequest(TaskWithdraw.class);
-		TaskManager.registerRequest(TaskPay.class);
+		TaskProxy.registerTask(TaskUpdateInbox.class);
+		TaskProxy.registerTask(TaskSendEmail.class);
+		TaskProxy.registerTask(TaskCheckEmailAccount.class);
+		TaskProxy.registerTask(TaskRegisterEmailAccount.class);
+		TaskProxy.registerTask(TaskDeleteEmail.class);
+		TaskProxy.registerTask(TaskViewEmail.class);
+		TaskProxy.registerTask(TaskGetBalance.class);
+		TaskProxy.registerTask(TaskPay.class);
+		TaskProxy.registerTask(TaskAdd.class);
+		TaskProxy.registerTask(TaskRemove.class);
 		
 		proxy.postInit();
 	}
 	
+	private void setupTaskProxy()
+	{
+		try
+		{
+			Constructor<TaskManager> constructor = TaskManager.class.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			TaskManager manager = constructor.newInstance();
+			TaskProxy.setInstance(manager);
+		}
+		catch (NoSuchMethodException e)
+		{
+			e.printStackTrace();
+		}
+		catch (SecurityException e)
+		{
+			e.printStackTrace();
+		}
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalArgumentException e)
+		{
+			e.printStackTrace();
+		}
+		catch (InvocationTargetException e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

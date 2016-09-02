@@ -13,10 +13,11 @@ import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.InventoryUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.system.object.Account;
 
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,8 @@ import net.minecraft.world.World;
 public class ApplicationBank extends Application
 {
 	private static final ItemStack EMERALD = new ItemStack(Items.emerald);
+	
+	private static boolean registered = false;
 	
 	private Layout layoutMain;
 	private Label labelBalance;
@@ -57,6 +60,7 @@ public class ApplicationBank extends Application
 	public ApplicationBank()
 	{
 		super(Reference.MOD_ID + "Bank", "The Emerald Bank");
+		registerTasks();
 	}
 	
 	@Override
@@ -248,18 +252,22 @@ public class ApplicationBank extends Application
 
 	private void deposit(int amount, Callback callback) 
 	{
-		TaskManager.sendRequest(new TaskDeposit(amount).setCallback(callback));
+		TaskProxy.sendTask(new TaskDeposit(amount).setCallback(callback));
 	}
 	
 	private void withdraw(int amount, Callback callback) 
 	{
-		TaskManager.sendRequest(new TaskWithdraw(amount).setCallback(callback));
+		TaskProxy.sendTask(new TaskWithdraw(amount).setCallback(callback));
 	}
 	
-	public static void registerTasks()
+	public void registerTasks()
 	{
-		TaskManager.registerRequest(TaskDeposit.class);
-		TaskManager.registerRequest(TaskWithdraw.class);
+		if(!registered)
+		{
+			TaskProxy.registerTask(TaskDeposit.class);
+			TaskProxy.registerTask(TaskWithdraw.class);
+			registered = true;
+		}
 	}
 
 	@Override
@@ -274,16 +282,16 @@ public class ApplicationBank extends Application
 		
 	}
 	
-	private static class TaskDeposit extends Task 
+	public static class TaskDeposit extends Task 
 	{
 		private int amount;
 		
-		public TaskDeposit()
+		private TaskDeposit()
 		{
 			super("bank_deposit");
 		}
 		
-		public TaskDeposit(int amount)
+		private TaskDeposit(int amount)
 		{
 			this();
 			this.amount = amount;
@@ -320,16 +328,16 @@ public class ApplicationBank extends Application
 		public void processResponse(NBTTagCompound nbt) {}
 	}
 	
-	private static class TaskWithdraw extends Task 
+	public static class TaskWithdraw extends Task 
 	{
 		private int amount;
 		
-		public TaskWithdraw()
+		private TaskWithdraw()
 		{
 			super("bank_withdraw");
 		}
 		
-		public TaskWithdraw(int amount)
+		private TaskWithdraw(int amount)
 		{
 			this();
 			this.amount = amount;

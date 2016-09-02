@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.system.object.Account;
 import com.mrcrayfish.device.programs.system.task.TaskAdd;
 import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
@@ -44,7 +45,7 @@ public class BankUtil
 	 */
 	public static void getBalance(Callback callback)
 	{
-		TaskManager.sendRequest(new TaskGetBalance().setCallback(callback));
+		TaskProxy.sendTask(new TaskGetBalance().setCallback(callback));
 	}
 	
 	/**
@@ -58,7 +59,7 @@ public class BankUtil
 	 */
 	public static void pay(String uuid, int amount, Callback callback)
 	{
-		TaskManager.sendRequest(new TaskPay().setCallback(callback));
+		TaskProxy.sendTask(new TaskPay().setCallback(callback));
 	}
 	
 	/**
@@ -70,7 +71,7 @@ public class BankUtil
 	 */
 	public static void add(int amount, Callback callback)
 	{
-		TaskManager.sendRequest(new TaskAdd(amount).setCallback(callback));
+		TaskProxy.sendTask(new TaskAdd(amount).setCallback(callback));
 	}
 	
 	/**
@@ -82,7 +83,7 @@ public class BankUtil
 	 */
 	public static void remove(int amount, Callback callback)
 	{
-		TaskManager.sendRequest(new TaskRemove(amount).setCallback(callback));
+		TaskProxy.sendTask(new TaskRemove(amount).setCallback(callback));
 	}
 	
 	//TODO: Make private. Only the bank application should have access to these.
