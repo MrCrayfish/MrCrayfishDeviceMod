@@ -35,6 +35,11 @@ public class Window<T extends Wrappable>
 	public Window(T wrappable) 
 	{
 		this.content = wrappable;
+		if(wrappable instanceof Dialog)
+		{
+			Dialog dialog = (Dialog) wrappable;
+			dialog.setWindow(this);
+		}
 	}
 	
 	protected void setWidth(int width) 
@@ -138,17 +143,22 @@ public class Window<T extends Wrappable>
 		{
 			if(btnClose.isMouseOver())
 			{
-				parent.closeDialog();
+				closeDialog();
 			}
 			else
 			{
-				dialogWindow.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
-				dialogWindow.content.handleClick(mouseX, mouseY, mouseButton);
+				content.handleClick(mouseX, mouseY, mouseButton);
 			}
-			return;
 		}
-		else if(content instanceof Application)
+		
+		if(content instanceof Application)
 		{
+			if(dialogWindow != null)
+			{
+				dialogWindow.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
+				return;
+			}
+			
 			if(btnClose.isMouseOver())
 			{
 				gui.close((Application) content);
@@ -253,7 +263,7 @@ public class Window<T extends Wrappable>
 		{
 			dialogWindow = new Window(dialog);
 			dialogWindow.init(null, 0, 0);
-			dialog.setWindow((Window<Application>)this);
+			dialogWindow.setParent((Window<Application>)this);
 		}
 	}
 	

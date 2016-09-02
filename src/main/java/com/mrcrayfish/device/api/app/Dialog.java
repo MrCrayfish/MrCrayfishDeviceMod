@@ -28,7 +28,7 @@ public abstract class Dialog implements Wrappable
 	
 	private boolean pendingLayoutUpdate = true;
 	
-	private Window<Application> window;
+	private Window window;
 	
 	public Dialog() 
 	{
@@ -197,7 +197,7 @@ public abstract class Dialog implements Wrappable
 		}
 	}
 
-	public void setWindow(Window<Application> window)
+	public void setWindow(Window window)
 	{
 		this.window = window;
 	}
