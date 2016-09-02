@@ -15,10 +15,11 @@ import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.api.utils.BankUtil;
-import com.mrcrayfish.device.api.utils.InventoryUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.system.object.Account;
+import com.mrcrayfish.device.util.InventoryUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -59,7 +60,7 @@ public class ApplicationBank extends Application
 	
 	public ApplicationBank()
 	{
-		super(Reference.MOD_ID + "Bank", "The Emerald Bank");
+		super(Reference.MOD_ID + "Bank", "The Emerald Bank", TaskBar.APP_BAR_GUI, 98, 30);
 		registerTasks();
 	}
 	
