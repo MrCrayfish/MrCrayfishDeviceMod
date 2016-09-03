@@ -137,7 +137,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 					this.selected = i + offset;
 					if(itemClickListener != null)
 					{
-						itemClickListener.onClick(items.get(selected), selected);
+						itemClickListener.onClick(items.get(selected), selected, mouseButton);
 					}
 				}
 			}
