@@ -51,6 +51,7 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.request.prepareResponse(nbt);
 		ByteBufUtils.writeTag(buf, nbt);
+		this.request.complete();
 	}
 
 }

@@ -72,6 +72,11 @@ public abstract class Task
 		return this.success;
 	}
 	
+	public final void complete()
+	{
+		this.success = false;
+	}
+	
 	/**
 	 * Gets the name of the Task
 	 * 
