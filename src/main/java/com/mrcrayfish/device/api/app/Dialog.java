@@ -308,7 +308,7 @@ public abstract class Dialog implements Wrappable
 			});
 			this.addComponent(buttonPositive);
 			
-			buttonNegative = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonNegative = new Button(negativeText, getWidth() - 70, getHeight() - 20, 30, 15);
 			buttonNegative.setClickListener(new ClickListener()
 			{
 				@Override
