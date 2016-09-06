@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
@@ -188,7 +189,7 @@ public class Laptop extends GuiScreen
 					updateWindowStack();
 					windows[0] = window;
 					
-					windows[0].handleClick(this, posX, posY, mouseX, mouseY, mouseButton);
+					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
 					
 					if(isMouseWithinWindowBar(mouseX, mouseY, window.dialogWindow))
 					{
@@ -216,7 +217,7 @@ public class Laptop extends GuiScreen
 		this.dragging = false;
 		if(windows[0] != null)
 		{
-			windows[0].handleRelease(mouseX, mouseY, state);
+			windows[0].handleMouseRelease(mouseX, mouseY, state);
 		}
 	}
 	
@@ -276,12 +277,29 @@ public class Laptop extends GuiScreen
 			{
 				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialogWindow))
 				{
-					window.handleDrag(mouseX, mouseY, clickedMouseButton);
+					window.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
 				}
 			}
 		}
 		this.lastMouseX = mouseX;
 		this.lastMouseY = mouseY;
+	}
+	
+	@Override
+	public void handleMouseInput() throws IOException
+	{
+		super.handleMouseInput();
+		int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+		int scroll = Mouse.getEventDWheel();
+		if(scroll != 0)
+		{
+			boolean up = scroll >= 0;
+			if(windows[0] != null)
+			{
+				windows[0].handleMouseScroll(mouseX, mouseY, up);
+			}
+		}
 	}
 	
 	@Override

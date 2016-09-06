@@ -55,7 +55,7 @@ public class Slider extends Component
 	}
 	
 	@Override
-	public void handleClick(int mouseX, int mouseY, int mouseButton) 
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton) 
 	{
 		if(!this.visible || !this.enabled)
 			return;
@@ -72,7 +72,7 @@ public class Slider extends Component
 	}
 	
 	@Override
-	public void handleDrag(int mouseX, int mouseY, int mouseButton) 
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton) 
 	{
 		if(dragging)
 		{
@@ -93,7 +93,7 @@ public class Slider extends Component
 	}
 	
 	@Override
-	public void handleRelease(int mouseX, int mouseY, int mouseButton) 
+	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton) 
 	{
 		this.dragging = false;
 		this.prevSliderX = this.newSliderX;

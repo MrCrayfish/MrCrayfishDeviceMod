@@ -89,29 +89,38 @@ public abstract class Dialog implements Wrappable
 	}
 
 	@Override
-	public void handleClick(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		for (Component c : customLayout.components)
 		{
-			c.handleClick(mouseX, mouseY, mouseButton);
+			c.handleMouseClick(mouseX, mouseY, mouseButton);
 		}
 	}
 
 	@Override
-	public void handleDrag(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		for (Component c : customLayout.components)
 		{
-			c.handleDrag(mouseX, mouseY, mouseButton);
+			c.handleMouseDrag(mouseX, mouseY, mouseButton);
 		}
 	}
 
 	@Override
-	public void handleRelease(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
 		for (Component c : customLayout.components)
 		{
-			c.handleRelease(mouseX, mouseY, mouseButton);
+			c.handleMouseRelease(mouseX, mouseY, mouseButton);
+		}
+	}
+	
+	@Override
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		for (Component c : customLayout.components)
+		{
+			c.handleMouseScroll(mouseX, mouseY, direction);
 		}
 	}
 

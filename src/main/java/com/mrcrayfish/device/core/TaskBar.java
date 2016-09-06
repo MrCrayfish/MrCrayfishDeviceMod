@@ -143,8 +143,8 @@ public class TaskBar
 	
 	public void handleClick(Laptop laptop, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
-		btnLeft.handleClick(mouseX, mouseY, mouseButton);
-		btnRight.handleClick(mouseX, mouseY, mouseButton);
+		btnLeft.handleMouseClick(mouseX, mouseY, mouseButton);
+		btnRight.handleMouseClick(mouseX, mouseY, mouseButton);
 		
 		if(isMouseInside(mouseX, mouseY, x + 315, y + 1, x + 331, y + 16))
 		{

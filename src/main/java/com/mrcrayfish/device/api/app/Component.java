@@ -114,7 +114,7 @@ public abstract class Component extends Gui
 	 * @param mouseY the current y position of the mouse
 	 * @param mouseButton the clicked mouse button
 	 */
-	public void handleClick(int mouseX, int mouseY, int mouseButton) {}
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton) {}
 	
 	/** 
 	 * Called when a key is typed from your keyboard.
@@ -139,7 +139,7 @@ public abstract class Component extends Gui
 	 * @param mouseY the current y position of the mouse
 	 * @param mouseButton the pressed mouse button
 	 */
-	public void handleDrag(int mouseX, int mouseY, int mouseButton) {}
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton) {}
 	
 	/**
 	 * Called when you release the currently pressed mouse button. You have to do
@@ -150,7 +150,9 @@ public abstract class Component extends Gui
 	 * @param mouseY the y position of the release
 	 * @param mouseButton the button that was released
 	 */
-	public void handleRelease(int mouseX, int mouseY, int mouseButton) {}
+	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton) {}
+	
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction) {}
 	
 	/**
 	 * This method should be ignored. Used for the core.

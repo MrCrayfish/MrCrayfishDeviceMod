@@ -5,7 +5,8 @@ import com.mrcrayfish.device.api.app.Layout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
-public interface Wrappable {
+public interface Wrappable
+{
 
 	/**
 	 * The default initialization method. Clears any components in the default
@@ -56,8 +57,7 @@ public interface Wrappable {
 	void handleKeyTyped(char character, int code);
 
 	/**
-	 * Called when a key is released from your keyboard. Note if you override,
-	 * make sure you call this super method.
+	 * Called when a key is released from your keyboard.
 	 * 
 	 * @param character
 	 *            the released character
@@ -67,8 +67,7 @@ public interface Wrappable {
 	void handleKeyReleased(char character, int code);
 
 	/**
-	 * Called when you press a mouse button. Note if you override, make sure you
-	 * call this super method.
+	 * Called when you press a mouse button.
 	 * 
 	 * @param mouseX
 	 *            the current x position of the mouse
@@ -77,11 +76,10 @@ public interface Wrappable {
 	 * @param mouseButton
 	 *            the clicked mouse button
 	 */
-	void handleClick(int mouseX, int mouseY, int mouseButton);
+	void handleMouseClick(int mouseX, int mouseY, int mouseButton);
 
 	/**
-	 * Called when you drag the mouse with a button pressed down Note if you
-	 * override, make sure you call this super method.
+	 * Called when you drag the mouse with a button pressed down.
 	 * 
 	 * @param mouseX
 	 *            the current x position of the mouse
@@ -90,11 +88,10 @@ public interface Wrappable {
 	 * @param mouseButton
 	 *            the pressed mouse button
 	 */
-	void handleDrag(int mouseX, int mouseY, int mouseButton);
+	void handleMouseDrag(int mouseX, int mouseY, int mouseButton);
 
 	/**
-	 * Called when you release the currently pressed mouse button. Note if you
-	 * override, make sure you call this super method.
+	 * Called when you release the currently pressed mouse button.
 	 * 
 	 * @param mouseX
 	 *            the x position of the release
@@ -103,7 +100,19 @@ public interface Wrappable {
 	 * @param mouseButton
 	 *            the button that was released
 	 */
-	void handleRelease(int mouseX, int mouseY, int mouseButton);
+	void handleMouseRelease(int mouseX, int mouseY, int mouseButton);
+
+	/**
+	 * Called when you scroll the wheel on your mouse.
+	 * 
+	 * @param mouseX
+	 *            the x position of the mouse
+	 * @param mouseY
+	 *            the y position of the mouse
+	 * @param direction
+	 *            the direction of the scroll. true is up, false is down
+	 */
+	void handleMouseScroll(int mouseX, int mouseY, boolean direction);
 
 	/**
 	 * Gets the text in the title bar.
@@ -120,7 +129,8 @@ public interface Wrappable {
 	int getWidth();
 
 	/**
-	 * Gets the height of the content (application/dialog) including the title bar.
+	 * Gets the height of the content (application/dialog) including the title
+	 * bar.
 	 * 
 	 * @return the height
 	 */
@@ -130,7 +140,7 @@ public interface Wrappable {
 	 * Marks the content's layout for updating
 	 */
 	void markForLayoutUpdate();
-	
+
 	/**
 	 * Gets if this content's layout is currently pending a update
 	 * 
@@ -146,8 +156,10 @@ public interface Wrappable {
 	/**
 	 * Updates the components of this content
 	 * 
-	 * @param x the starting rendering x position (left)
-	 * @param y the starting rendering y position (top)
+	 * @param x
+	 *            the starting rendering x position (left)
+	 * @param y
+	 *            the starting rendering y position (top)
 	 */
 	void updateComponents(int x, int y);
 

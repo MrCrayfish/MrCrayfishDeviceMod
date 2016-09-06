@@ -137,40 +137,6 @@ public class Window<T extends Wrappable>
 		}
 	}
 	
-	public void handleClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
-	{
-		if(content instanceof Dialog)
-		{
-			if(btnClose.isMouseOver())
-			{
-				closeDialog();
-			}
-			else
-			{
-				content.handleClick(mouseX, mouseY, mouseButton);
-			}
-		}
-		
-		if(content instanceof Application)
-		{
-			if(dialogWindow != null)
-			{
-				dialogWindow.handleClick(gui, x, y, mouseX, mouseY, mouseButton);
-				return;
-			}
-			
-			if(btnClose.isMouseOver())
-			{
-				gui.close((Application) content);
-				btnClose.playPressSound(gui.mc.getSoundHandler());
-			}
-			else
-			{
-				content.handleClick(mouseX, mouseY, mouseButton);	
-			}
-		}
-	}
-	
 	public void handleKeyTyped(char character, int code)
 	{
 		if(dialogWindow != null)
@@ -225,24 +191,70 @@ public class Window<T extends Wrappable>
 		updateComponents(screenStartX, screenStartY);
 	}
 	
-	public void handleDrag(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		if(dialogWindow != null)
+		if(content instanceof Dialog)
 		{
-			dialogWindow.handleDrag(mouseX, mouseY, mouseButton);
-			return;
+			if(btnClose.isMouseOver())
+			{
+				closeDialog();
+			}
+			else
+			{
+				content.handleMouseClick(mouseX, mouseY, mouseButton);
+			}
 		}
-		content.handleDrag(mouseX, mouseY, mouseButton);
+		
+		if(content instanceof Application)
+		{
+			if(dialogWindow != null)
+			{
+				dialogWindow.handleMouseClick(gui, x, y, mouseX, mouseY, mouseButton);
+				return;
+			}
+			
+			if(btnClose.isMouseOver())
+			{
+				gui.close((Application) content);
+				btnClose.playPressSound(gui.mc.getSoundHandler());
+			}
+			else
+			{
+				content.handleMouseClick(mouseX, mouseY, mouseButton);	
+			}
+		}
 	}
 	
-	public void handleRelease(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		if(dialogWindow != null)
 		{
-			dialogWindow.handleRelease(mouseX, mouseY, mouseButton);
+			dialogWindow.handleMouseDrag(mouseX, mouseY, mouseButton);
 			return;
 		}
-		content.handleRelease(mouseX, mouseY, mouseButton);
+		content.handleMouseDrag(mouseX, mouseY, mouseButton);
+	}
+	
+	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
+	{
+		if(dialogWindow != null)
+		{
+			dialogWindow.handleMouseRelease(mouseX, mouseY, mouseButton);
+			return;
+		}
+		content.handleMouseRelease(mouseX, mouseY, mouseButton);
+	}
+	
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		if(dialogWindow != null)
+		{
+			dialogWindow.handleMouseScroll(mouseX, mouseY, direction);
+			return;
+		}
+		content.handleMouseScroll(mouseX, mouseY, direction);
+		
+		System.out.println("MouseX: " + mouseX + ", MouseY: " + mouseY + ", Direction: " + direction);
 	}
 	
 	public void handleClose()

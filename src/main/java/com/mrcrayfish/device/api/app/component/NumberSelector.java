@@ -95,8 +95,8 @@ public class NumberSelector extends Component
 		{
 			if(holding)
 			{
-				btnUp.handleClick(0, 0, 0);
-				btnDown.handleClick(0, 0, 0);
+				btnUp.handleMouseClick(0, 0, 0);
+				btnDown.handleMouseClick(0, 0, 0);
 			}
 			else
 			{

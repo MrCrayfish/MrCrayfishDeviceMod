@@ -178,11 +178,11 @@ public abstract class Application implements Wrappable
 	 *            the clicked mouse button
 	 */
 	@Override
-	public void handleClick(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		for (Component c : currentLayout.components)
 		{
-			c.handleClick(mouseX, mouseY, mouseButton);
+			c.handleMouseClick(mouseX, mouseY, mouseButton);
 		}
 	}
 
@@ -198,11 +198,11 @@ public abstract class Application implements Wrappable
 	 *            the pressed mouse button
 	 */
 	@Override
-	public void handleDrag(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		for (Component c : currentLayout.components)
 		{
-			c.handleDrag(mouseX, mouseY, mouseButton);
+			c.handleMouseDrag(mouseX, mouseY, mouseButton);
 		}
 	}
 
@@ -218,11 +218,31 @@ public abstract class Application implements Wrappable
 	 *            the button that was released
 	 */
 	@Override
-	public void handleRelease(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
 		for (Component c : currentLayout.components)
 		{
-			c.handleRelease(mouseX, mouseY, mouseButton);
+			c.handleMouseRelease(mouseX, mouseY, mouseButton);
+		}
+	}
+	
+	/**
+	 * Called when you scroll the wheel on your mouse. Note if you override,
+	 * make sure you call this super method.
+	 * 
+	 * @param mouseX
+	 *            the x position of the mouse
+	 * @param mouseY
+	 *            the y position of the mouse
+	 * @param direction
+	 *            the direction of the scroll. true is up, false is down
+	 */
+	@Override
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		for (Component c : currentLayout.components)
+		{
+			c.handleMouseScroll(mouseX, mouseY, direction);
 		}
 	}
 

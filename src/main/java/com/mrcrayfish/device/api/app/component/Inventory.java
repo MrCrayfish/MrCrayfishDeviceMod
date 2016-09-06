@@ -94,7 +94,7 @@ public class Inventory extends Component
 	}
 	
 	@Override
-	public void handleClick(int mouseX, int mouseY, int mouseButton)
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		for(int i = 0; i < 3; i++)
 		{
