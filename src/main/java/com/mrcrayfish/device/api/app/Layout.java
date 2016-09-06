@@ -145,7 +145,7 @@ public class Layout extends Component
 	{
 		if(background != null)
 		{
-			background.render(laptop, mc, xPosition + left, yPosition + top, width, height);
+			background.render(laptop, mc, xPosition, yPosition, width, height);
 		}
 		for(Component c : components)
 		{
