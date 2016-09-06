@@ -92,10 +92,6 @@ public class Laptop extends GuiScreen
         {
         	PacketHandler.INSTANCE.sendToServer(new MessageSaveData(tileX, tileY, tileZ, data));
         }
-        
-        bar = null;
-        windows = null;
-        data = null;
     }
 	
 	@Override
@@ -236,8 +232,8 @@ public class Laptop extends GuiScreen
     		{
     			windows[0].handleKeyTyped(pressed, code);
     		}
-
-        	super.keyTyped(pressed, code);
+            
+            super.keyTyped(pressed, code);
         }
         else
         {
