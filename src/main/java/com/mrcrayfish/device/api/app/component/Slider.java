@@ -60,7 +60,7 @@ public class Slider extends Component
 		if(!this.visible || !this.enabled)
 			return;
 		
-		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + prevSliderX, yPosition, xPosition + prevSliderX + 8, yPosition + 12))
+		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12))
 		{
 			this.dragging = true;
 			this.clickX = mouseX;
@@ -108,6 +108,7 @@ public class Slider extends Component
 	{
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + 12))
 		{
+			prevSliderX = newSliderX;
 			if(direction)
 			{
 				newSliderX++;
