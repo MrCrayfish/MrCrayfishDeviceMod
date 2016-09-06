@@ -58,13 +58,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		btnUp.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				if(offset > 0) {
-					offset--;
-					btnDown.setEnabled(true);
-				}
-				if(offset == 0) {
-					btnUp.setEnabled(false);
-				}
+				scrollUp();
 			}
 		});
 		layout.addComponent(btnUp);
@@ -73,13 +67,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		btnDown.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
-				if(visibleItems + offset < items.size()) {
-					offset++;
-					btnUp.setEnabled(true);
-				}
-				if(visibleItems + offset == items.size()) {
-					btnDown.setEnabled(false);
-				}
+				scrollDown();
 			}
 		});
 		layout.addComponent(btnDown);
@@ -126,8 +114,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		if(!this.visible || !this.enabled)
 			return;
 
-		int height = 13;
-		if(renderer != null) height = renderer.getHeight();
+		int height = renderer != null ? renderer.getHeight() : 13;
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + visibleItems * height + visibleItems))
 		{
 			for(int i = 0; i < visibleItems && i < items.size(); i++)
@@ -141,6 +128,48 @@ public class ItemList<E> extends Component implements Iterable<E>
 					}
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		if(!this.visible || !this.enabled)
+			return;
+
+		int height = renderer != null ? renderer.getHeight() : 13;
+		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + visibleItems * height + visibleItems))
+		{
+			if(direction)
+			{
+				scrollUp();
+			}
+			else
+			{
+				scrollDown();
+			}
+		}
+	}
+	
+	private void scrollUp()
+	{
+		if(offset > 0) {
+			offset--;
+			btnDown.setEnabled(true);
+		}
+		if(offset == 0) {
+			btnUp.setEnabled(false);
+		}
+	}
+	
+	private void scrollDown()
+	{
+		if(visibleItems + offset < items.size()) {
+			offset++;
+			btnUp.setEnabled(true);
+		}
+		if(visibleItems + offset == items.size()) {
+			btnDown.setEnabled(false);
 		}
 	}
 

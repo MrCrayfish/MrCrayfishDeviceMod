@@ -253,8 +253,6 @@ public class Window<T extends Wrappable>
 			return;
 		}
 		content.handleMouseScroll(mouseX, mouseY, direction);
-		
-		System.out.println("MouseX: " + mouseX + ", MouseY: " + mouseY + ", Direction: " + direction);
 	}
 	
 	public void handleClose()

@@ -103,6 +103,34 @@ public class Slider extends Component
 		}
 	}
 	
+	@Override
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + 12))
+		{
+			if(direction)
+			{
+				newSliderX++;
+				if(newSliderX >= width - 8)
+				{
+					newSliderX = width - 8;
+				}
+			}
+			else
+			{
+				newSliderX--;
+				if(newSliderX < 0)
+				{
+					newSliderX = 0;
+				}
+			}
+			if(slideListener != null)
+			{
+				slideListener.onSlide(getPercentage());
+			}
+		}
+	}
+	
 	/**
 	 * Sets the click listener. Calls the listener when the slider is clicked.
 	 * 
@@ -150,6 +178,8 @@ public class Slider extends Component
 	 */
 	public void setPercentage(float percentage)
 	{
+		System.out.println(percentage);
+		if(percentage < 0.0F || percentage > 1.0F) return;
 		this.newSliderX = (int) ((this.width - 8) * percentage);
 	}
 	
