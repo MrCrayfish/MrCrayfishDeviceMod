@@ -91,7 +91,7 @@ public abstract class Component extends Gui
 	 * @param windowActive if the window is active (at front)
 	 * @param partialTicks percentage passed in-between two ticks
 	 */
-	public abstract void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks);
+	public abstract void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks);
 	
 	/**
 	 * The overlay render loop. Renders over the top of the main render

@@ -141,15 +141,15 @@ public final class Layout extends Component
 	 * @param y the starting y rendering position (top most)
 	 */
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 	{
 		if(background != null)
 		{
-			background.render(laptop, mc, xPosition, yPosition, width, height);
+			background.render(laptop, mc, x, y, width, height);
 		}
 		for(Component c : components)
 		{
-			c.render(laptop, mc, mouseX, mouseY, windowActive, partialTicks);
+			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
 		}
 	}
 	

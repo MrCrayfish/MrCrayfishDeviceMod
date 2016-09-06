@@ -82,8 +82,8 @@ public class TaskBar
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		btnLeft.render(gui, mc, mouseX, mouseY, true, partialTicks);
-		btnRight.render(gui, mc, mouseX, mouseY, true, partialTicks);
+		btnLeft.render(gui, mc, btnLeft.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
+		btnRight.render(gui, mc, btnRight.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
 
 		for(int i = 0; i < APPS_DISPLAYED && i < ApplicationManager.getApps().size(); i++)
 		{

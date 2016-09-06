@@ -128,10 +128,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void onTick()
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleTick();
-		}
+		currentLayout.handleTick();
 	}
 
 	// TODO Remove laptop instance
@@ -150,17 +147,8 @@ public abstract class Application implements Wrappable
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
-		currentLayout.render(laptop, mc, x, y, active, partialTicks);
-
-		for (Component c : currentLayout.components)
-		{
-			c.render(laptop, mc, mouseX, mouseY, active, partialTicks);
-		}
-
-		for (Component c : currentLayout.components)
-		{
-			c.renderOverlay(laptop, mc, mouseX, mouseY, active);
-		}
+		currentLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+		currentLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.disableStandardItemLighting();
@@ -180,10 +168,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleMouseClick(mouseX, mouseY, mouseButton);
-		}
+		currentLayout.handleMouseClick(mouseX, mouseY, mouseButton);
 	}
 
 	/**
@@ -200,10 +185,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleMouseDrag(mouseX, mouseY, mouseButton);
-		}
+		currentLayout.handleMouseDrag(mouseX, mouseY, mouseButton);
 	}
 
 	/**
@@ -220,10 +202,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleMouseRelease(mouseX, mouseY, mouseButton);
-		}
+		currentLayout.handleMouseRelease(mouseX, mouseY, mouseButton);
 	}
 	
 	/**
@@ -240,10 +219,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleMouseScroll(mouseX, mouseY, direction);
-		}
+		currentLayout.handleMouseScroll(mouseX, mouseY, direction);
 	}
 
 	/**
@@ -258,19 +234,13 @@ public abstract class Application implements Wrappable
 	@Override
 	public void handleKeyTyped(char character, int code)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleKeyTyped(character, code);
-		}
+		currentLayout.handleKeyTyped(character, code);
 	}
 	
 	@Override
 	public void handleKeyReleased(char character, int code)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.handleKeyReleased(character, code);
-		}
+		currentLayout.handleKeyReleased(character, code);
 	}
 
 	// TODO: Remove from here and put into core
@@ -284,10 +254,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public final void updateComponents(int x, int y)
 	{
-		for (Component c : currentLayout.components)
-		{
-			c.updateComponents(x, y);
-		}
+		currentLayout.updateComponents(x, y);
 	}
 
 	/**

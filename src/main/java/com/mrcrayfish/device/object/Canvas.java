@@ -59,17 +59,17 @@ public class Canvas extends Component
 	public void init(Layout layout) {}
 
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		drawRect(xPosition, yPosition, xPosition + picture.getWidth() * picture.getPixelWidth() + 2, yPosition + picture.getHeight() * picture.getPixelHeight() + 2, Color.DARK_GRAY.getRGB());
 		drawRect(xPosition + 1, yPosition + 1, xPosition + picture.getWidth() * picture.getPixelWidth() + 1, yPosition + picture.getHeight() * picture.getPixelHeight() + 1, Color.WHITE.getRGB());
-		for(int y = 0; y < picture.getHeight(); y++)
+		for(int i = 0; i < picture.getHeight(); i++)
 		{
-			for(int x = 0; x < picture.getWidth(); x++)
+			for(int j = 0; j < picture.getWidth(); j++)
 			{
-				int pixelX = xPosition + x * picture.getPixelWidth() + 1;
-				int pixelY = yPosition + y * picture.getPixelHeight() + 1;
-				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), pixels[x][y]);
+				int pixelX = xPosition + j * picture.getPixelWidth() + 1;
+				int pixelY = yPosition + i * picture.getPixelHeight() + 1;
+				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), pixels[j][i]);
 				if(showGrid)
 				{
 					drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + 1, gridColour);

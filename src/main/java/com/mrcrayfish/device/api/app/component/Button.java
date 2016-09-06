@@ -99,7 +99,7 @@ public class Button extends Component
 	}
 
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		if (this.visible)
         {

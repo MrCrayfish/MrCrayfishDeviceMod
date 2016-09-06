@@ -41,7 +41,7 @@ public class Inventory extends Component
 	}
 
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);

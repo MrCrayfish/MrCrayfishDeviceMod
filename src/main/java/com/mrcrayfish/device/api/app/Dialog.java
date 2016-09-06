@@ -63,26 +63,14 @@ public abstract class Dialog implements Wrappable
 	@Override
 	public void onTick()
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleTick();
-		}
+		customLayout.handleTick();
 	}
 
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
-		customLayout.render(laptop, mc, mouseX, mouseY, active, partialTicks);
-
-		for (Component c : customLayout.components)
-		{
-			c.render(laptop, mc, mouseX, mouseY, active, partialTicks);
-		}
-
-		for (Component c : customLayout.components)
-		{
-			c.renderOverlay(laptop, mc, mouseX, mouseY, active);
-		}
+		customLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+		customLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.disableStandardItemLighting();
@@ -91,55 +79,39 @@ public abstract class Dialog implements Wrappable
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleMouseClick(mouseX, mouseY, mouseButton);
-		}
+		customLayout.handleMouseClick(mouseX, mouseY, mouseButton);
+		
 	}
 
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleMouseDrag(mouseX, mouseY, mouseButton);
-		}
+		customLayout.handleMouseDrag(mouseX, mouseY, mouseButton);
+		
 	}
 
 	@Override
 	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleMouseRelease(mouseX, mouseY, mouseButton);
-		}
+		customLayout.handleMouseRelease(mouseX, mouseY, mouseButton);
 	}
 	
 	@Override
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleMouseScroll(mouseX, mouseY, direction);
-		}
+		customLayout.handleMouseScroll(mouseX, mouseY, direction);
 	}
 
 	@Override
 	public void handleKeyTyped(char character, int code)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleKeyTyped(character, code);
-		}
+		customLayout.handleKeyTyped(character, code);
 	}
 	
 	@Override
 	public void handleKeyReleased(char character, int code)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.handleKeyReleased(character, code);
-		}
+		customLayout.handleKeyReleased(character, code);
 	}
 	
 	public void setTitle(String title)
