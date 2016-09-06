@@ -23,7 +23,7 @@ import net.minecraft.client.gui.Gui;
  * 
  * @author MrCrayfish
  */
-public class Layout extends Component
+public final class Layout extends Component
 {
 	/**
 	 * The list of components in the layout
@@ -91,7 +91,7 @@ public class Layout extends Component
 	 * trigger on initialization listener if set. 
 	 * See {@link #setInitListener(InitListener)}
 	 */
-	protected final void init()
+	protected void init()
 	{
 		if(initListener != null)
 		{
@@ -104,7 +104,7 @@ public class Layout extends Component
 	 * 
 	 * @param c the component
 	 */
-	public final void addComponent(Component c)
+	public void addComponent(Component c)
 	{
 		if(c != null)
 		{
@@ -252,7 +252,7 @@ public class Layout extends Component
 	 * 
 	 * @param initListener
 	 */
-	public final void setInitListener(InitListener initListener)
+	public void setInitListener(InitListener initListener)
 	{
 		this.initListener = initListener;
 	}
@@ -263,7 +263,7 @@ public class Layout extends Component
 	 * 
 	 * @param initListener
 	 */
-	public final void setBackground(Background background) 
+	public void setBackground(Background background) 
 	{
 		this.background = background;
 	}
@@ -271,7 +271,7 @@ public class Layout extends Component
 	/**
 	 * Clears all components in this layout
 	 */
-	public final void clear() 
+	public void clear() 
 	{	
 		this.components.clear();
 	}
