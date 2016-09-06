@@ -150,7 +150,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
-		currentLayout.render(laptop, mc, x, y);
+		currentLayout.render(laptop, mc, x, y, active, partialTicks);
 
 		for (Component c : currentLayout.components)
 		{

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mrcrayfish.device.api.app.listener.InitListener;
+import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -22,7 +23,7 @@ import net.minecraft.client.gui.Gui;
  * 
  * @author MrCrayfish
  */
-public class Layout
+public class Layout extends Component
 {
 	/**
 	 * The list of components in the layout
@@ -54,6 +55,17 @@ public class Layout
 		this(200, 100);
 	}
 	
+	public Layout(int width, int height)
+	{
+		this(0, 0, width, height);
+		if(width < 20  || height < 20)
+			throw new IllegalArgumentException("Height and width of layout must be larger than 20");
+		
+		this.components = new ArrayList<Component>();
+		this.width = width;
+		this.height = height;
+	}
+	
 	/**
 	 * Constructor to set a custom width and height. It should be
 	 * noted that the width must be in the range of 20 to 362 and 
@@ -62,8 +74,9 @@ public class Layout
 	 * @param width
 	 * @param height
 	 */
-	public Layout(int width, int height)
+	public Layout(int left, int top, int width, int height)
 	{
+		super(left, top);
 		if(width < 20  || height < 20)
 			throw new IllegalArgumentException("Height and width of layout must be larger than 20");
 		
@@ -99,6 +112,24 @@ public class Layout
 			c.init(this);
 		}
 	}
+	
+	@Override
+	public void init(Layout layout)
+	{
+		for(Component c : components)
+		{
+			c.init(this);
+		}
+	}
+	
+	@Override
+	public void handleTick()
+	{
+		for(Component c : components)
+		{
+			c.handleTick();
+		}
+	}
 
 	/**
 	 * Renders the background of this layout if a {@link Background}
@@ -109,11 +140,109 @@ public class Layout
 	 * @param x the starting x rendering position (left most)
 	 * @param y the starting y rendering position (top most)
 	 */
-	public final void render(Gui gui, Minecraft mc, int x, int y)
+	@Override
+	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 	{
 		if(background != null)
 		{
-			background.render(gui, mc, x, y, width, height);
+			background.render(laptop, mc, xPosition + left, yPosition + top, width, height);
+		}
+		for(Component c : components)
+		{
+			c.render(laptop, mc, mouseX, mouseY, windowActive, partialTicks);
+		}
+	}
+	
+	@Override
+	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
+	{
+		for(Component c : components)
+		{
+			c.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
+		}
+	}
+	
+	@Override
+	public void handleKeyTyped(char character, int code)
+	{
+		for(Component c : components)
+		{
+			c.handleKeyTyped(character, code);
+		}
+	}
+	
+	@Override
+	public void handleKeyReleased(char character, int code)
+	{
+		for(Component c : components)
+		{
+			c.handleKeyReleased(character, code);
+		}
+	}
+	
+	@Override
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
+	{
+		for(Component c : components)
+		{
+			c.handleMouseClick(mouseX, mouseY, mouseButton);
+		}
+	}
+	
+	@Override
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
+	{
+		for(Component c : components)
+		{
+			c.handleMouseDrag(mouseX, mouseY, mouseButton);
+		}
+	}
+	
+	@Override
+	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
+	{
+		for(Component c : components)
+		{
+			c.handleMouseRelease(mouseX, mouseY, mouseButton);
+		}
+	}
+	
+	@Override
+	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		for(Component c : components)
+		{
+			c.handleMouseScroll(mouseX, mouseY, direction);
+		}
+	}
+	
+	@Override
+	public void updateComponents(int x, int y)
+	{
+		super.updateComponents(x, y);
+		for(Component c : components)
+		{
+			c.updateComponents(x + left, y + top);
+		}
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		super.setEnabled(enabled);
+		for(Component c : components)
+		{
+			c.setEnabled(enabled);
+		}
+	}
+	
+	@Override
+	public void setVisible(boolean visible)
+	{
+		super.setVisible(visible);
+		for(Component c : components)
+		{
+			c.setVisible(visible);
 		}
 	}
 	
@@ -181,4 +310,5 @@ public class Layout
 		 */
 		public void render(Gui gui, Minecraft mc, int x, int y, int width, int height);
 	}
+
 }

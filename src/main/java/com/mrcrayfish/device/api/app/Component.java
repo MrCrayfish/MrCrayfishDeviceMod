@@ -158,7 +158,7 @@ public abstract class Component extends Gui
 	 * This method should be ignored. Used for the core.
 	 * Will probably be removed in the future.
 	 */
-	public final void updateComponents(int x, int y) 
+	public void updateComponents(int x, int y) 
 	{
 		this.xPosition = x + left;
 		this.yPosition = y + top;
@@ -170,7 +170,7 @@ public abstract class Component extends Gui
 	 * 
 	 * @param enabled
 	 */
-	public final void setEnabled(boolean enabled) 
+	public void setEnabled(boolean enabled) 
 	{
 		this.enabled = enabled;
 	}
@@ -181,7 +181,7 @@ public abstract class Component extends Gui
 	 * 
 	 * @param enabled
 	 */
-	public final void setVisible(boolean visible)
+	public void setVisible(boolean visible)
 	{
 		this.visible = visible;
 	}

@@ -72,7 +72,7 @@ public abstract class Dialog implements Wrappable
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
-		customLayout.render(laptop, mc, x, y);
+		customLayout.render(laptop, mc, mouseX, mouseY, active, partialTicks);
 
 		for (Component c : customLayout.components)
 		{
@@ -186,10 +186,7 @@ public abstract class Dialog implements Wrappable
 	@Override
 	public void updateComponents(int x, int y)
 	{
-		for (Component c : customLayout.components)
-		{
-			c.updateComponents(x, y);
-		}
+		customLayout.updateComponents(x, y);
 	}
 
 	@Override
