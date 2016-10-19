@@ -2,6 +2,8 @@ package com.mrcrayfish.device.programs.system;
 
 import java.awt.Color;
 
+import javax.swing.LayoutStyle;
+
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -23,18 +25,29 @@ import com.mrcrayfish.device.util.InventoryUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.model.ModelVillager;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class ApplicationBank extends Application
 {
+	private static boolean registered = false;
+	
 	private static final ItemStack EMERALD = new ItemStack(Items.emerald);
 	
-	private static boolean registered = false;
+	private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
+    private static final ModelVillager villagerModel = new ModelVillager(0.0F);
+	
+	private Layout layoutStart;
 	
 	private Layout layoutMain;
 	private Label labelBalance;
@@ -57,6 +70,7 @@ public class ApplicationBank extends Application
 	private Label labelInventory;
 	
 	private int emeraldAmount;
+	private int rotation;
 	
 	public ApplicationBank()
 	{
@@ -65,8 +79,51 @@ public class ApplicationBank extends Application
 	}
 	
 	@Override
+	public void onTick()
+	{
+		super.onTick();
+		rotation++;
+		if(rotation >= 100) {
+			rotation = 0;
+		}
+	}
+	
+	@Override
 	public void init()
 	{
+		layoutStart = new Layout();
+		layoutStart.setBackground(new Background()
+		{
+			@Override
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				GlStateManager.pushMatrix();
+				{
+					GlStateManager.translate(x + 100, y + 33, 15);
+					GlStateManager.scale((float) -2.5, (float) -2.5, (float) -2.5);
+					GlStateManager.rotate(-10F, 1, 0, 0);
+					GlStateManager.rotate(180F, 0, 0, 1);
+					GlStateManager.rotate(MathHelper.cos((float) (rotation * Math.PI) / 20F) * 20F, 0, 1, 0);
+					mc.getTextureManager().bindTexture(villagerTextures);
+					villagerModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F);
+				}
+				GlStateManager.popMatrix();
+				
+				 /*GlStateManager.pushMatrix();
+					GlStateManager.translate((float) x, (float) y, 3.0F);
+					GlStateManager.scale((float) (-1), (float) -1, (float) -1);
+					GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); //Flips boat up
+					GlStateManager.rotate(90F, 1, 0, 0);
+					GlStateManager.translate(0.0F, -3F, 0.0F);
+					GlStateManager.rotate(-20F, 1.0F, 0.0F, 0.0F);
+					Minecraft.getMinecraft().getTextureManager().bindTexture(villagerTextures);
+					villagerModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F);
+				GlStateManager.popMatrix();*/
+			}
+		});
+		
+		setCurrentLayout(layoutStart);
+		
 		layoutMain = new Layout(120, 143);
 		layoutMain.setBackground(new Background()
 		{
@@ -213,9 +270,7 @@ public class ApplicationBank extends Application
 		labelInventory = new Label("Wallet", 74, 105);
 		labelInventory.setShadow(false);
 		layoutMain.addComponent(labelInventory);
-		
-		setCurrentLayout(layoutMain);
-		
+
 		BankUtil.getBalance(new Callback()
 		{
 			@Override

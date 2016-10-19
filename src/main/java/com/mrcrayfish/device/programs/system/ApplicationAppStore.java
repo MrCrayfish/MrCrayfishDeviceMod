@@ -61,7 +61,7 @@ public class ApplicationAppStore extends Application
 		});
 		apps.setItemClickListener(new ItemClickListener<AppInfo>() {
 			@Override
-			public void onClick(AppInfo info, int index) {
+			public void onClick(AppInfo info, int index, int mouseButton) {
 				if(info != null) {
 					appTitle.setText(info.getName());
 					appAuthor.setText(info.getAuthor());

@@ -1,13 +1,15 @@
 package com.mrcrayfish.device.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.mrcrayfish.device.api.app.Application;
 
 public class ApplicationManager
 {
-	public static final List<Application> APPS = new ArrayList<Application>();
+	private static final List<Application> APPS = new ArrayList<Application>();
+	private static final List<Application> READ_ONLY_APPS = Collections.unmodifiableList(APPS);
 	
 	/**
 	 * Registers an application into the application list
@@ -18,7 +20,14 @@ public class ApplicationManager
 	{
 		if(app != null)
 		{
-			APPS.add(app);
+			if(!APPS.contains(app))
+			{
+				APPS.add(app);
+			}
+			else
+			{
+				throw new RuntimeException("An application with the id '" + app.getID() + "' has already been registered.");
+			}
 		}
 	}
 	
@@ -28,4 +37,8 @@ public class ApplicationManager
 	 * 
 	 * @return the application list
 	 */
+	public static List<Application> getApps()
+	{
+		return READ_ONLY_APPS;
+	}
 }

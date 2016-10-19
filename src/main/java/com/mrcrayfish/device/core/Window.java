@@ -28,7 +28,7 @@ public class Window<T extends Wrappable>
 	int offsetX, offsetY;
 	
 	Window<Dialog> dialogWindow = null;
-	private Window<Application> parent = null;
+	private Window parent = null;
 	
 	protected GuiButton btnClose;
 	
@@ -293,7 +293,7 @@ public class Window<T extends Wrappable>
 		}
 	}
 	
-	public void setParent(Window<Application> parent)
+	public void setParent(Window parent)
 	{
 		this.parent = parent;
 	}
