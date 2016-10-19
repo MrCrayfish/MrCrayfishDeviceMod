@@ -4,15 +4,14 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.components.Button;
-import com.mrcrayfish.device.api.app.components.ButtonArrow;
-import com.mrcrayfish.device.api.app.components.Label;
-import com.mrcrayfish.device.api.app.listeners.ClickListener;
+import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.ButtonArrow;
+import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.object.tiles.Tile.Category;
@@ -31,9 +30,9 @@ public class TileGrid extends Component
 	private List<Tile> tabTiles;
 	private Game game;
 	
-	public TileGrid(int x, int y, int left, int top, Game game)
+	public TileGrid(int left, int top, Game game)
 	{
-		super(x, y, left, top);
+		super(left, top);
 		this.currentCategory = 0;
 		this.tabTiles = new ArrayList<Tile>();
 		this.game = game;
@@ -42,10 +41,10 @@ public class TileGrid extends Component
 	@Override
 	public void init(Layout layout)
 	{
-		labelCurrentCategory = new Label("", xPosition, yPosition, left + 14, top + 2);
+		labelCurrentCategory = new Label("", left + 14, top + 2);
 		layout.addComponent(labelCurrentCategory);
 		
-		btnNextCategory = new ButtonArrow(xPosition, yPosition, left + 81, top, ButtonArrow.Type.RIGHT);
+		btnNextCategory = new ButtonArrow(left + 81, top, ButtonArrow.Type.RIGHT);
 		btnNextCategory.setClickListener(new ClickListener()
 		{
 			@Override
@@ -60,7 +59,7 @@ public class TileGrid extends Component
 		});
 		layout.addComponent(btnNextCategory);
 		
-		btnPrevCategory = new ButtonArrow(xPosition, yPosition, left, top, ButtonArrow.Type.LEFT);
+		btnPrevCategory = new ButtonArrow(left, top, ButtonArrow.Type.LEFT);
 		btnPrevCategory.setClickListener(new ClickListener()
 		{
 			@Override
@@ -79,7 +78,7 @@ public class TileGrid extends Component
 	}
 
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks)
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		drawRect(xPosition, yPosition + 15, xPosition + 93, yPosition + 100, Color.DARK_GRAY.getRGB());
 		drawRect(xPosition + 1, yPosition + 16, xPosition + 92, yPosition + 99, Color.GRAY.getRGB());
@@ -89,15 +88,15 @@ public class TileGrid extends Component
 		for(int i = 0; i < tabTiles.size(); i++)
 		{
 			Tile tile = tabTiles.get(i);
-			int x = i % 6 * 15 + xPosition + 3;
-			int y = i / 6 * 15 + yPosition + 18;
-			if(GuiHelper.isMouseInside(mouseX, mouseY, x - 1, y - 1, x + 12, y + 12) || game.getCurrentTile() == tile)
-				drawRect(x - 1, y - 1, x + 13, y + 13, Color.WHITE.getRGB());
+			int tileX = i % 6 * 15 + xPosition + 3;
+			int tileY = i / 6 * 15 + yPosition + 18;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, tileX - 1, tileY - 1, tileX + 12, tileY + 12) || game.getCurrentTile() == tile)
+				drawRect(tileX - 1, tileY - 1, tileX + 13, tileY + 13, Color.WHITE.getRGB());
 			else
-				drawRect(x - 1, y - 1, x + 13, y + 13, Color.LIGHT_GRAY.getRGB());
+				drawRect(tileX - 1, tileY - 1, tileX + 13, tileY + 13, Color.LIGHT_GRAY.getRGB());
 			GlStateManager.pushAttrib();
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			GuiHelper.drawModalRectWithUV(x, y, tile.x * 16, tile.y * 16, 12, 12, 16, 16);
+			RenderUtil.drawRectWithTexture(tileX, tileY, tile.x * 16, tile.y * 16, 12, 12, 16, 16);
 			GlStateManager.popAttrib();
 		}
 
@@ -105,18 +104,18 @@ public class TileGrid extends Component
 		{
 			for(int i = 0; i < tabTiles.size(); i++)
 			{
-				int x = i % 6 * 15 + xPosition + 2;
-				int y = i / 6 * 15 + yPosition + 17;
-				if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 14, y + 14))
+				int tileX = i % 6 * 15 + xPosition + 2;
+				int tileY = i / 6 * 15 + yPosition + 17;
+				if(GuiHelper.isMouseInside(mouseX, mouseY, tileX, tileY, tileX + 14, tileY + 14))
 				{
-					drawRect(x - 1, y - 1, x + 13, y + 13, Color.WHITE.getRGB());
+					drawRect(tileX - 1, tileY - 1, tileX + 13, tileY + 13, Color.WHITE.getRGB());
 				}
 			}
 		}
 	}
 	
 	@Override
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		for(int i = 0; i < tabTiles.size(); i++)
 		{

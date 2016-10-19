@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.object.tiles;
 
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.Game;
 import com.mrcrayfish.device.object.Game.Layer;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -19,7 +20,7 @@ public class Tile
 	public static final Tile brick = new TileBlock(9, 5, 1).setCategory(Category.BLOCKS);
 	public static final Tile netherrack = new TileBlock(10, 7, 1).setCategory(Category.BLOCKS);
 	public static final Tile soul_sand = new TileBlock(11, 8, 0).setCategory(Category.BLOCKS);
-	public static final Tile farm_land = new Tile(12, 5, 0).setCategory(Category.BLOCKS);
+	public static final Tile farm_land = new TileBlock(12, 5, 0).setCategory(Category.BLOCKS);
 	
 	// Details
 	public static final Tile red_flower = new TileFlower(13, 0, 2).setCategory(Category.DECORATION);
@@ -28,7 +29,7 @@ public class Tile
 	public static final Tile flower_allium = new TileFlower(16, 0, 5).setCategory(Category.DECORATION);
 	public static final Tile lily_pad = new Tile(17, 1, 2).setCategory(Category.DECORATION);
 	public static final Tile wheat = new TileWheat(18, 2, 2).setCategory(Category.DECORATION);
-	public static final Tile cactus = new Tile(19, 3, 2).setCategory(Category.DECORATION); //Need tile
+	public static final Tile cactus = new TileCactus(19).setCategory(Category.DECORATION); //Need tile
 	public static final Tile enchantment_table = new TileEnchantmentTable(20, 5, 2).setCategory(Category.DECORATION);
 	public static final Tile pumpkin = new TileBlock(21, 7, 2, 8, 2).setCategory(Category.DECORATION);
 	public static final Tile wheat_block = new TileBlock(22, 8, 1, 9, 1).setCategory(Category.DECORATION);
@@ -74,10 +75,15 @@ public class Tile
 	
 	public void render(Game game, int x, int y, Layer layer)
 	{
-		GuiHelper.drawModalRectWithUV(game.xPosition + x * Tile.WIDTH , game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16, WIDTH, HEIGHT, 16, 16);	
+		RenderUtil.drawRectWithTexture(game.xPosition + x * Tile.WIDTH , game.yPosition + y * Tile.HEIGHT, this.x * 16, this.y * 16, WIDTH, HEIGHT, 16, 16);	
 	}
 	
 	public void renderForeground(Game game, int x, int y, Layer layer) {}
+	
+	public boolean isFullTile()
+	{
+		return true;
+	}
 	
 	public boolean isSolid()
 	{
