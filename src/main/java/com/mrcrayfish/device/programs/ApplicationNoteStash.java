@@ -57,7 +57,7 @@ public class ApplicationNoteStash extends Application
 		notes = new ItemList<Note>(5, 5, 100, 5);
 		notes.setItemClickListener(new ItemClickListener() {
 			@Override
-			public void onClick(Object e, int index){
+			public void onClick(Object e, int index, int mouseButton){
 				btnView.setEnabled(true);
 				btnDelete.setEnabled(true);
 			}
