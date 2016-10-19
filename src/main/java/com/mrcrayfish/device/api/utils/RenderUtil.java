@@ -27,6 +27,19 @@ public class RenderUtil
 		drawRectWithTexture(x, y, 0, u, v, width, height, textureWidth, textureHeight);
     }
 	
+	/**
+	 * Texture size must be 256x256
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param u
+	 * @param v
+	 * @param width
+	 * @param height
+	 * @param textureWidth
+	 * @param textureHeight
+	 */
 	public static void drawRectWithTexture(double x, double y, double z, float u, float v, int width, int height, float textureWidth, float textureHeight)
     {
 		float scale = 0.00390625F;
