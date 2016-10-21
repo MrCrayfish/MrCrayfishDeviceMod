@@ -4,11 +4,9 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.util.glu.GLU;
-
-import com.mrcrayfish.device.app.Application;
-import com.mrcrayfish.device.app.Component;
-import com.mrcrayfish.device.app.Laptop;
+import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.util.GuiHelper;
 
@@ -38,9 +36,9 @@ public class Game extends Component
 	private boolean renderForeground = true;
 	private boolean renderPlayer = true;
 	
-	public Game(int x, int y, int left, int top, int mapWidth, int mapHeight) throws Exception
+	public Game(int left, int top, int mapWidth, int mapHeight) throws Exception
 	{
-		super(x, y, left, top);
+		super(left, top);
 		
 		if(mapWidth % Tile.WIDTH != 0 || mapHeight % Tile.HEIGHT != 0)
 			throw new Exception("Width and height need to be a multiple of " + Tile.WIDTH);
@@ -87,7 +85,7 @@ public class Game extends Component
 	}
 	
 	@Override
-	public void handleClick(Application app, int mouseX, int mouseY, int mouseButton)
+	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		if(editorMode)
 		{
@@ -108,7 +106,7 @@ public class Game extends Component
 	}
 	
 	@Override
-	public void handleDrag(int mouseX, int mouseY, int mouseButton) 
+	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton) 
 	{
 		if(editorMode)
 		{
@@ -129,7 +127,7 @@ public class Game extends Component
 	}
 	
 	@Override
-	public void render(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		//long start = System.currentTimeMillis();
 		
@@ -271,6 +269,21 @@ public class Game extends Component
 			return tiles[layer.layer][index];
 		}
 		return null;
+	}
+	
+	public boolean isFullTile(Layer layer, int x, int y)
+	{
+		if(x < 0) return true;
+		if(x >= mapWidth) return true;
+		
+		int index = x + y * mapWidth;
+		if(index >= 0 && index < mapWidth * mapHeight)
+		{
+			Tile tile = tiles[layer.layer][index];
+			if(tile != null) 
+				return tile.isFullTile();
+		}
+		return true;
 	}
 	
 	public void setCurrentTile(Tile currentTile)

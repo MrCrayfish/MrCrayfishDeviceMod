@@ -3,6 +3,8 @@ package com.mrcrayfish.device.api.task;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * <p>A Task is simple implementation that allows you to make calls to the
@@ -44,6 +46,11 @@ public abstract class Task
 		return this;
 	}
 	
+	/**
+	 * Runs the callback
+	 * 
+	 * @param nbt the response data
+	 */
 	public final void callback(NBTTagCompound nbt)
 	{
 		if(callback != null)
@@ -72,6 +79,10 @@ public abstract class Task
 		return this.success;
 	}
 	
+	/**
+	 * Sets the task as complete and resets success to false.
+	 * This is used for the core.
+	 */
 	public final void complete()
 	{
 		this.success = false;
