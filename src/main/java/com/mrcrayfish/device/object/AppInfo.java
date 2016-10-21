@@ -2,8 +2,8 @@ package com.mrcrayfish.device.object;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
@@ -48,6 +48,6 @@ public class AppInfo
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(iconResource);
-		GuiHelper.drawModalRectWithUV(x, y, iconU, iconV, 14, 14, 14, 14);
+		RenderUtil.drawRectWithTexture(x, y, iconU, iconV, 14, 14, 14, 14);
 	}
 }
