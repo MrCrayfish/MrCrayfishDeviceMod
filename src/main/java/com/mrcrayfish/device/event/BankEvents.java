@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import com.mrcrayfish.device.api.utils.BankUtil;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;

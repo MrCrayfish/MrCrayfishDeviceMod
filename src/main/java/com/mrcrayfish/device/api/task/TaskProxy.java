@@ -4,6 +4,7 @@ import com.mrcrayfish.device.network.task.TaskManager;
 
 public class TaskProxy
 {
+	//TODO change to reflection
 	private static TaskManager INSTANCE;
 	
 	/**

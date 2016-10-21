@@ -1,8 +1,8 @@
 package com.mrcrayfish.device.programs.email.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.email.EmailManager;
+import com.mrcrayfish.device.programs.email.object.Email;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +35,7 @@ public class TaskSendEmail extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		String name = EmailManager.INSTANCE.getName(player);
+		String name = EmailManager.INSTANCE.getAddress(player);
 		if(name != null)
 		{
 			Email email = Email.readFromNBT(nbt);

@@ -4,10 +4,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.DatabaseManager;
 import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.event.BankEvents;
-import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
@@ -47,6 +47,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
@@ -78,6 +79,8 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
+		System.out.println("init() SIDE: " + event.getSide());
+		
 		/** Crafting Registering */
 		DeviceCrafting.register();
 		
@@ -86,7 +89,7 @@ public class MrCrayfishDeviceMod
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		
-		MinecraftForge.EVENT_BUS.register(new EmailEvents());
+		MinecraftForge.EVENT_BUS.register(DatabaseManager.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
 		
 		proxy.init();
@@ -128,6 +131,12 @@ public class MrCrayfishDeviceMod
 		proxy.postInit();
 	}
 	
+	@EventHandler
+	public void serverStart(FMLServerStartingEvent event)
+	{
+		System.out.println("CALLED");
+	}
+	
 	private void setupTaskProxy()
 	{
 		try
@@ -162,4 +171,6 @@ public class MrCrayfishDeviceMod
 			e.printStackTrace();
 		}
 	}
+	
+	
 }

@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.email.EmailManager;
+import com.mrcrayfish.device.programs.email.object.Email;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class TaskUpdateInbox extends Task
 {
-	private List<ApplicationEmail.Email> emails;
+	private List<Email> emails;
 	
 	public TaskUpdateInbox() 
 	{
@@ -27,7 +27,7 @@ public class TaskUpdateInbox extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		this.emails = EmailManager.INSTANCE.getEmailsForAccount(player);
+		this.emails = EmailManager.INSTANCE.getInbox(player);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class TaskUpdateInbox extends Task
 		NBTTagList tagList = new NBTTagList();
 		if(emails != null)
 		{
-			for(ApplicationEmail.Email email : emails)
+			for(Email email : emails)
 			{
 				NBTTagCompound emailTag = new NBTTagCompound();
 				email.writeToNBT(emailTag);
@@ -47,15 +47,5 @@ public class TaskUpdateInbox extends Task
 	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) 
-	{
-		EmailManager.INSTANCE.getInbox().clear();
-		NBTTagList emails = (NBTTagList) nbt.getTag("emails");
-		for(int i = 0; i < emails.tagCount(); i++)
-		{
-			NBTTagCompound emailTag = emails.getCompoundTagAt(i);
-			Email email = Email.readFromNBT(emailTag);
-			EmailManager.INSTANCE.getInbox().add(email);
-		}
-	}
+	public void processResponse(NBTTagCompound nbt) {}
 }

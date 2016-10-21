@@ -3,8 +3,8 @@ package com.mrcrayfish.device.programs.email.task;
 import java.util.List;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.email.EmailManager;
+import com.mrcrayfish.device.programs.email.object.Email;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +34,7 @@ public class TaskViewEmail extends Task
 	@Override
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
-		List<Email> emails = EmailManager.INSTANCE.getEmailsForAccount(player);
+		List<Email> emails = EmailManager.INSTANCE.getInbox(player);
 		if(emails != null)
 		{
 			int index = nbt.getInteger("Index");

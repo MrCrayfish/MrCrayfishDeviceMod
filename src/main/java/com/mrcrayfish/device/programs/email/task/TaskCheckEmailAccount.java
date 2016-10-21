@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.email.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.email.EmailManager;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,7 +26,7 @@ public class TaskCheckEmailAccount extends Task
 		this.hasAccount = EmailManager.INSTANCE.hasAccount(player.getUniqueID());
 		if(this.hasAccount)
 		{
-			this.name = EmailManager.INSTANCE.getName(player);
+			this.name = EmailManager.INSTANCE.getAddress(player);
 			this.setSuccessful();
 		}
 	}
