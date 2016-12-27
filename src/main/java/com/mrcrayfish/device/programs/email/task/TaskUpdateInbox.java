@@ -28,6 +28,7 @@ public class TaskUpdateInbox extends Task
 	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
 	{
 		this.emails = EmailManager.INSTANCE.getInbox(player);
+		this.setSuccessful();
 	}
 
 	@Override
