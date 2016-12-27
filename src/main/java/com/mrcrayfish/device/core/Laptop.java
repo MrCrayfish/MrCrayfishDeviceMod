@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -26,7 +28,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Laptop extends GuiScreen 
 {
-	public static final int ID = 0;
+	public static final int ID = 1;
 	
 	private static final ResourceLocation LAPTOP_GUI = new ResourceLocation("cdm:textures/gui/laptop.png");
 	public static final List<ResourceLocation> WALLPAPERS = new ArrayList<ResourceLocation>();
@@ -163,6 +165,8 @@ public class Laptop extends GuiScreen
 		
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
+		
+		drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
