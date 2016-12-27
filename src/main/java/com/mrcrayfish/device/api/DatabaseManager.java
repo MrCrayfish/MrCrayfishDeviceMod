@@ -2,46 +2,38 @@ package com.mrcrayfish.device.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.sun.jna.platform.unix.X11.XClientMessageEvent.Data;
+import com.mrcrayfish.device.api.app.Database;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class DatabaseManager
 {
-	private static final String APP_FOLDER = "app_database";
-	
-	private final DatabaseMap DATABASE_MAP;
-	private boolean loaded = false;
-	
 	public static final DatabaseManager INSTANCE = new DatabaseManager();
 	
+	private static final String APP_FOLDER = "app_database";
+	private final DatabaseMap DATABASE_MAP;
+	private boolean loaded = false;
+
 	private DatabaseManager() 
 	{
 		DATABASE_MAP = new DatabaseMap();
 	}
 
-	public void register(Application application, IDatabase database)
+	public void register(Application application, Database database)
 	{
 		System.out.println("Registering database '" + database.getName() + "'");
 		
@@ -51,7 +43,7 @@ public class DatabaseManager
 		}
 		if(!DATABASE_MAP.containsKey(application.getID())) 
 		{
-			DATABASE_MAP.put(application.getID(), new ArrayList<IDatabase>());
+			DATABASE_MAP.put(application.getID(), new ArrayList<Database>());
 		}
 		DATABASE_MAP.get(application.getID()).add(database);
 	}
@@ -64,8 +56,8 @@ public class DatabaseManager
 		File databaseFolder = getDatabaseFolder();
 		for(String appId : DATABASE_MAP.keySet())
 		{
-			List<IDatabase> databases = DATABASE_MAP.get(appId);
-			for(IDatabase database : databases)
+			List<Database> databases = DATABASE_MAP.get(appId);
+			for(Database database : databases)
 			{
 				readDatabase(databaseFolder, appId, database);
 			}
@@ -82,15 +74,15 @@ public class DatabaseManager
 		File databaseFolder = getDatabaseFolder();
 		for(String appId : DATABASE_MAP.keySet())
 		{
-			List<IDatabase> databases = DATABASE_MAP.get(appId);
-			for(IDatabase database : databases) 
+			List<Database> databases = DATABASE_MAP.get(appId);
+			for(Database database : databases) 
 			{
 				writeDatabase(databaseFolder, appId, database);
 			}
 		}
 	}
 	
-	private void readDatabase(File databaseFolder, String appId, IDatabase database)
+	private void readDatabase(File databaseFolder, String appId, Database database)
 	{
 		try
 		{
@@ -111,7 +103,7 @@ public class DatabaseManager
 		}
 	}
 	
-	private void writeDatabase(File databaseFolder, String appId, IDatabase database)
+	private void writeDatabase(File databaseFolder, String appId, Database database)
 	{
 		try
 		{
@@ -147,13 +139,6 @@ public class DatabaseManager
 		return folder;
 	}
 	
-	public static interface IDatabase
-	{
-		public String getName();
-		public void save(NBTTagCompound tag);
-		public void load(NBTTagCompound tag);
-	}
-	
 	private static class DatabaseException extends RuntimeException
 	{
 		private String message;
@@ -172,23 +157,23 @@ public class DatabaseManager
 		}
 	}
 	
-	private static class DatabaseComparator implements Comparator<IDatabase>
+	private static class DatabaseComparator implements Comparator<Database>
 	{
 		@Override
-		public int compare(IDatabase database, IDatabase otherDatabase)
+		public int compare(Database database, Database otherDatabase)
 		{
 			return database.getName().equals(otherDatabase.getName()) ? 1 : 0;
 		}
 	}
 
-	private static class DatabaseMap extends HashMap<String, ArrayList<IDatabase>>
+	private static class DatabaseMap extends HashMap<String, ArrayList<Database>>
 	{
 		private static final DatabaseComparator COMPARATOR = new DatabaseComparator();
 		
-		public boolean contains(String appId, IDatabase database)
+		public boolean contains(String appId, Database database)
 		{
 			if(!containsKey(appId))	return false;
-			List<IDatabase> databases = get(appId);
+			List<Database> databases = get(appId);
 			if(databases == null) return false;
 			for(int i = 0; i < databases.size(); i++)
 			{

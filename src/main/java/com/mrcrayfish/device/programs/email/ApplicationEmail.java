@@ -125,7 +125,7 @@ public class ApplicationEmail extends Application
 	public ApplicationEmail()
 	{
 		super("email", "Ender Mail", TaskBar.APP_BAR_GUI, 70, 30);
-		DatabaseManager.INSTANCE.register(this, EmailManager.class);
+		DatabaseManager.INSTANCE.register(this, EmailManager.INSTANCE);
 	}
 
 	@Override

@@ -6,17 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.mrcrayfish.device.api.DatabaseManager.IDatabase;
-import com.mrcrayfish.device.api.DatabaseManager.Instance;
+import com.mrcrayfish.device.api.app.Database;
 import com.mrcrayfish.device.programs.email.object.Email;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EmailManager implements IDatabase
+public class EmailManager extends Database
 {
 	public static final EmailManager INSTANCE = new EmailManager();
 
