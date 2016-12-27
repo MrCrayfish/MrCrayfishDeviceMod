@@ -30,7 +30,8 @@ public class BlockLaptop extends BlockDirectional implements ITileEntityProvider
 	public BlockLaptop() 
 	{
 		super(Material.anvil);
-		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.BASE));
+		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.BASE));
+		this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
 	}
 	
 	@Override

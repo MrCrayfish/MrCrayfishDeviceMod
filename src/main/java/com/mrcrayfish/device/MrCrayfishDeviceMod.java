@@ -100,9 +100,9 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ApplicationPixelPainter());
 		ApplicationManager.registerApplication(new ApplicationEmail());
 		ApplicationManager.registerApplication(new ApplicationBoatRacers());
-		ApplicationManager.registerApplication(new ApplicationMineBay());
-		ApplicationManager.registerApplication(new ApplicationTest());
-		ApplicationManager.registerApplication(new ApplicationBank());
+		//ApplicationManager.registerApplication(new ApplicationMineBay());
+		//ApplicationManager.registerApplication(new ApplicationTest());
+		//ApplicationManager.registerApplication(new ApplicationBank());
 		
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
@@ -117,13 +117,13 @@ public class MrCrayfishDeviceMod
 		TaskProxy.registerTask(TaskRegisterEmailAccount.class);
 		TaskProxy.registerTask(TaskDeleteEmail.class);
 		TaskProxy.registerTask(TaskViewEmail.class);
-		TaskProxy.registerTask(TaskGetBalance.class);
-		TaskProxy.registerTask(TaskPay.class);
-		TaskProxy.registerTask(TaskAdd.class);
-		TaskProxy.registerTask(TaskRemove.class);
-		TaskProxy.registerTask(TaskAddAuction.class);
-		TaskProxy.registerTask(TaskGetAuctions.class);
-		TaskProxy.registerTask(TaskBuyItem.class);
+		//TaskProxy.registerTask(TaskGetBalance.class);
+		//TaskProxy.registerTask(TaskPay.class);
+		//TaskProxy.registerTask(TaskAdd.class);
+		//TaskProxy.registerTask(TaskRemove.class);
+		//TaskProxy.registerTask(TaskAddAuction.class);
+		//TaskProxy.registerTask(TaskGetAuctions.class);
+		//TaskProxy.registerTask(TaskBuyItem.class);
 		
 		proxy.postInit();
 	}
