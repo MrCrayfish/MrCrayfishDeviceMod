@@ -60,7 +60,7 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 		if(!this.visible || !this.enabled)
 			return;
 		
-		if(this.hovered)
+		if(super.isInside(mouseX, mouseY))
 		{
 			if(clickListener != null)
 			{
@@ -70,8 +70,12 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 			if(group != null)
 			{
 				group.unselect();
+				this.toggle = true;
 			}
-			this.toggle = true;
+			else 
+			{
+				this.toggle = !toggle;
+			}
 		}
 	}
 	
