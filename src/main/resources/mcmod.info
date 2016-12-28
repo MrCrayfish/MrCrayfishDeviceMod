@@ -3,7 +3,7 @@
   "modid": "cdm",
   "name": "MrCrayfish's Device Mod",
   "description": "Adds things",
-  "version": "${version}",
+  "version": "0.0.2",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
