@@ -74,7 +74,7 @@ public class EmailManager extends Database
 	@Override
 	public String getName()
 	{
-		return "default";
+		return "inboxes";
 	}
 
 	@Override

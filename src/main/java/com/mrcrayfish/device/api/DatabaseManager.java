@@ -24,7 +24,7 @@ public class DatabaseManager
 {
 	public static final DatabaseManager INSTANCE = new DatabaseManager();
 	
-	private static final String APP_FOLDER = "app_database";
+	private static final String APP_FOLDER = "data/databases";
 	private final DatabaseMap DATABASE_MAP;
 	private boolean loaded = false;
 
