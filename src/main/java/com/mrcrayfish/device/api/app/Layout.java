@@ -145,7 +145,7 @@ public final class Layout extends Component
 	{
 		if(background != null)
 		{
-			background.render(laptop, mc, x, y, width, height);
+			background.render(laptop, mc, x, y, width, height, mouseX, mouseY, windowActive);
 		}
 		for(Component c : components)
 		{
@@ -308,7 +308,7 @@ public final class Layout extends Component
 		 * @param width the width of the layout
 		 * @param height the height of the layout
 		 */
-		public void render(Gui gui, Minecraft mc, int x, int y, int width, int height);
+		public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive);
 	}
 
 }

@@ -93,7 +93,7 @@ public class ApplicationMineBay extends Application
 		home.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + 25, Color.GRAY.getRGB());
 				gui.drawRect(x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
@@ -233,7 +233,7 @@ public class ApplicationMineBay extends Application
 		layoutSelectItem.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
@@ -300,7 +300,7 @@ public class ApplicationMineBay extends Application
 		layoutAmountAndPrice.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
@@ -394,7 +394,7 @@ public class ApplicationMineBay extends Application
 		layoutDuration.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());

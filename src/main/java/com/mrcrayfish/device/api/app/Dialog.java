@@ -205,7 +205,7 @@ public abstract class Dialog implements Wrappable
 			defaultLayout.setBackground(new Background()
 			{
 				@Override
-				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 				{
 					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 				}
@@ -259,7 +259,7 @@ public abstract class Dialog implements Wrappable
 			defaultLayout.setBackground(new Background()
 			{
 				@Override
-				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 				{
 					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 				}

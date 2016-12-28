@@ -447,7 +447,7 @@ public class ApplicationEmail extends Application
 		layoutViewEmail.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 50, Color.GRAY.getRGB());
 				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 23, Color.DARK_GRAY.getRGB());

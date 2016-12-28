@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
+import java.util.Arrays;
+
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -12,7 +14,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 
 public class Button extends Component
 {
