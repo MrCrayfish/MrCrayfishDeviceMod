@@ -19,6 +19,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class DatabaseManager
 {
@@ -27,6 +29,9 @@ public class DatabaseManager
 	private static final String APP_FOLDER = "data/databases";
 	private final DatabaseMap DATABASE_MAP;
 	private boolean loaded = false;
+	
+	private final int SAVE_INTERVAL = 24000;
+	private int saveCounter = 0;
 
 	private DatabaseManager() 
 	{
@@ -52,7 +57,33 @@ public class DatabaseManager
 	public void load(WorldEvent.Load event)
 	{
 		if(event.world.provider.getDimensionId() != 0 || loaded) return;
-		
+		loadDatabases();
+	}
+	
+	@SubscribeEvent
+	public void save(WorldEvent.Save event)
+	{
+		if(event.world.provider.getDimensionId() != 0) return;
+		saveDatabases();
+	}
+	
+	@SubscribeEvent
+	public void tick(ServerTickEvent event) 
+	{
+		if(event.phase == Phase.END) 
+		{
+			saveCounter++;
+			if(saveCounter >= SAVE_INTERVAL) 
+			{
+				System.out.println("Saving");
+				saveDatabases();
+				saveCounter = 0;
+			}
+		}
+	}
+	
+	private void loadDatabases() 
+	{
 		File databaseFolder = getDatabaseFolder();
 		for(String appId : DATABASE_MAP.keySet())
 		{
@@ -62,15 +93,11 @@ public class DatabaseManager
 				readDatabase(databaseFolder, appId, database);
 			}
 		}
-		
 		loaded = true;
 	}
 	
-	@SubscribeEvent
-	public void save(WorldEvent.Save event)
+	private void saveDatabases()
 	{
-		if(event.world.provider.getDimensionId() != 0) return;
-
 		File databaseFolder = getDatabaseFolder();
 		for(String appId : DATABASE_MAP.keySet())
 		{
