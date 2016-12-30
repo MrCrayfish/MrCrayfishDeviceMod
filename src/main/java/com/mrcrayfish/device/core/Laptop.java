@@ -43,7 +43,9 @@ public class Laptop extends GuiScreen
 
 	private TaskBar bar;
 	private Window<Application>[] windows;
-	private NBTTagCompound data;
+	private NBTTagCompound programData;
+	private NBTTagCompound fileData;
+	private NBTTagCompound systemData;
 	
 	public static int currentWallpaper;
 	private int tileX, tileY, tileZ;
@@ -55,7 +57,9 @@ public class Laptop extends GuiScreen
 	
 	public Laptop(NBTTagCompound data, int tileX, int tileY, int tileZ)
 	{
-		this.data = data;
+		this.programData = data.getCompoundTag("programs");
+		this.fileData = data.getCompoundTag("files");
+		this.systemData = data.getCompoundTag("system");
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.tileZ = tileZ;
@@ -89,10 +93,14 @@ public class Laptop extends GuiScreen
 			}
 		}
         
-        data.setInteger("CurrentWallpaper", this.currentWallpaper);
+        systemData.setInteger("CurrentWallpaper", this.currentWallpaper);
         
         if(dirty)
         {
+        	NBTTagCompound data = new NBTTagCompound();
+        	data.setTag("programs", programData);
+        	data.setTag("files", fileData);
+        	data.setTag("system", systemData);
         	PacketHandler.INSTANCE.sendToServer(new MessageSaveData(tileX, tileY, tileZ, data));
         }
     }
@@ -344,9 +352,9 @@ public class Laptop extends GuiScreen
 		Window window = new Window(app);
 		window.init(buttonList, posX, posY);
 		
-		if(data.hasKey(app.getID()))
+		if(programData.hasKey(app.getID()))
 		{
-			app.load(data.getCompoundTag(app.getID()));
+			app.load(programData.getCompoundTag(app.getID()));
 		}
 		
 		addWindow(window);
@@ -367,7 +375,7 @@ public class Laptop extends GuiScreen
 					{
 						NBTTagCompound container = new NBTTagCompound();
 						app.save(container);
-						data.setTag(app.getID(), container);
+						programData.setTag(app.getID(), container);
 						dirty = true;
 					}
 					window.handleClose();
