@@ -49,7 +49,7 @@ public class Laptop extends GuiScreen
 	private NBTTagCompound fileData;
 	private NBTTagCompound systemData;
 	
-	private Folder homeFolder;
+	private FileSystem fileSystem;
 	
 	public static int currentWallpaper;
 	private int tileX, tileY, tileZ;
@@ -73,21 +73,9 @@ public class Laptop extends GuiScreen
 		}
 		this.windows = new Window[5];
 		this.bar = new TaskBar();
-		setupFileSystem();
+		this.fileSystem = new FileSystem(fileData);
 	}
-	
-	public void setupFileSystem()
-	{
-		if(fileData.hasNoTags()) 
-		{
-			this.homeFolder = new Folder("home");
-		}
-		else
-		{
-			this.homeFolder = Folder.fromTag(fileData);
-		}
-	}
-	
+
 	@Override
 	public void initGui() 
 	{
@@ -374,6 +362,8 @@ public class Laptop extends GuiScreen
 			app.load(programData.getCompoundTag(app.getID()));
 		}
 		
+		app.setFileSystem(fileSystem);
+		
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
@@ -395,9 +385,9 @@ public class Laptop extends GuiScreen
 						programData.setTag(app.getID(), container);
 						dirty = true;
 					}
+					window.content.setFileSystem(null);
 					window.handleClose();
 					windows[i] = null;
-					window = null;
 					return;
 				}
 			}

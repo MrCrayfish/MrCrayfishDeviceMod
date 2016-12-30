@@ -1,8 +1,8 @@
 package com.mrcrayfish.device.api.app;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.core.FileSystem;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
@@ -10,7 +10,6 @@ import com.mrcrayfish.device.core.Wrappable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -35,6 +34,7 @@ public abstract class Application implements Wrappable
 	private boolean needsDataUpdate = false;
 
 	private Window window;
+	private FileSystem fileSystem;
 
 	/* If set to true, will update layout */
 	boolean pendingLayoutUpdate = false;
@@ -476,6 +476,16 @@ public abstract class Application implements Wrappable
 		{
 			window.openDialog(dialog);
 		}
+	}
+	
+	public void setFileSystem(FileSystem fileSystem)
+	{
+		this.fileSystem = fileSystem;
+	}
+	
+	public FileSystem getFileSystem()
+	{
+		return fileSystem;
 	}
 
 	/**
