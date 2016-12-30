@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageSaveData;
@@ -43,9 +44,12 @@ public class Laptop extends GuiScreen
 
 	private TaskBar bar;
 	private Window<Application>[] windows;
+	
 	private NBTTagCompound programData;
 	private NBTTagCompound fileData;
 	private NBTTagCompound systemData;
+	
+	private Folder homeFolder;
 	
 	public static int currentWallpaper;
 	private int tileX, tileY, tileZ;
@@ -63,12 +67,25 @@ public class Laptop extends GuiScreen
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.tileZ = tileZ;
-		this.currentWallpaper = data.getInteger("CurrentWallpaper");
+		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
 		}
 		this.windows = new Window[5];
 		this.bar = new TaskBar();
+		setupFileSystem();
+	}
+	
+	public void setupFileSystem()
+	{
+		if(fileData.hasNoTags()) 
+		{
+			this.homeFolder = new Folder("home");
+		}
+		else
+		{
+			this.homeFolder = Folder.fromTag(fileData);
+		}
 	}
 	
 	@Override
