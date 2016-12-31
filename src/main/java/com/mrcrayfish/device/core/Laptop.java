@@ -351,19 +351,17 @@ public class Laptop extends GuiScreen
 			}
 		}
 		
+		if(programData.hasKey(app.getID()))
+		{
+			app.load(programData.getCompoundTag(app.getID()));
+		}
+		app.setFileSystem(fileSystem);
+		
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		
 		Window window = new Window(app);
 		window.init(buttonList, posX, posY);
-		
-		if(programData.hasKey(app.getID()))
-		{
-			app.load(programData.getCompoundTag(app.getID()));
-		}
-		
-		app.setFileSystem(fileSystem);
-		
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));

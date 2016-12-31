@@ -18,11 +18,6 @@ import com.mrcrayfish.device.programs.ApplicationBoatRacers;
 import com.mrcrayfish.device.programs.ApplicationExample;
 import com.mrcrayfish.device.programs.ApplicationNoteStash;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
-import com.mrcrayfish.device.programs.ApplicationTest;
-import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
-import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
-import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
-import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.TaskCheckEmailAccount;
 import com.mrcrayfish.device.programs.email.task.TaskDeleteEmail;
@@ -31,6 +26,7 @@ import com.mrcrayfish.device.programs.email.task.TaskSendEmail;
 import com.mrcrayfish.device.programs.email.task.TaskUpdateInbox;
 import com.mrcrayfish.device.programs.email.task.TaskViewEmail;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
+import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskAdd;
 import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
 import com.mrcrayfish.device.programs.system.task.TaskPay;
@@ -103,6 +99,7 @@ public class MrCrayfishDeviceMod
 		//ApplicationManager.registerApplication(new ApplicationMineBay());
 		//ApplicationManager.registerApplication(new ApplicationTest());
 		ApplicationManager.registerApplication(new ApplicationBank());
+		ApplicationManager.registerApplication(new ApplicationFileBrowser());
 		
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
 		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));

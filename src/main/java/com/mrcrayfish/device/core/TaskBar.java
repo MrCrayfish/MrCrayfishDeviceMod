@@ -1,15 +1,14 @@
 package com.mrcrayfish.device.core;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Info;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
@@ -17,7 +16,6 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
-import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -87,11 +85,11 @@ public class TaskBar
 
 		for(int i = 0; i < APPS_DISPLAYED && i < ApplicationManager.getApps().size(); i++)
 		{
-			Application app = ApplicationManager.getApps().get(i + offset);
-			if(app.getIcon() != null)
+			Info info = ApplicationManager.getApps().get(i + offset);
+			if(info.getIcon() != null)
 			{
-				mc.getTextureManager().bindTexture(app.getIcon());
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, app.getIconU(), app.getIconV(), 14, 14);
+				mc.getTextureManager().bindTexture(info.getIcon());
+				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, info.getIconU(), info.getIconV(), 14, 14);
 			}
 			else
 			{
@@ -99,7 +97,7 @@ public class TaskBar
 				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
 			}
 			
-			if(gui.isAppRunning(app.getID())) 
+			if(gui.isAppRunning(info.getID())) 
 			{
 				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
@@ -163,7 +161,7 @@ public class TaskBar
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
 			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
 			{
-				laptop.open(ApplicationManager.getApps().get(appIndex));
+				laptop.open((Application) ApplicationManager.getApps().get(appIndex));
 				return;
 			}
 		}

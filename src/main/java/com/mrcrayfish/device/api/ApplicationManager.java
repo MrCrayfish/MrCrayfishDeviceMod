@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Info;
 
 public class ApplicationManager
 {
-	private static final List<Application> APPS = new ArrayList<Application>();
-	private static final List<Application> READ_ONLY_APPS = Collections.unmodifiableList(APPS);
+	private static final List<Info> APPS = new ArrayList<Info>();
 	
 	/**
 	 * Registers an application into the application list
@@ -37,8 +39,20 @@ public class ApplicationManager
 	 * 
 	 * @return the application list
 	 */
-	public static List<Application> getApps()
+	public static ImmutableList<Info> getApps()
 	{
-		return READ_ONLY_APPS;
+		return ImmutableList.<Info>builder().addAll(APPS.iterator()).build();
+	}
+	
+	public static Application getApp(String appId)
+	{
+		for(Info info : APPS)
+		{
+			if(info.getID().equals(appId))
+			{
+				return (Application) info;
+			}
+		}
+		return null;
 	}
 }

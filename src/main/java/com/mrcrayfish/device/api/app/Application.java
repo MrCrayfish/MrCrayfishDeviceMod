@@ -17,14 +17,8 @@ import net.minecraft.util.ResourceLocation;
  * 
  * @author MrCrayfish
  */
-public abstract class Application implements Wrappable
+public abstract class Application extends Info implements Wrappable
 {
-	protected ResourceLocation icon;
-	protected int u, v;
-
-	private final String APP_ID;
-	private final String DISPLAY_NAME;
-
 	private int width, height;
 
 	private final Layout defaultLayout;
@@ -46,8 +40,7 @@ public abstract class Application implements Wrappable
 
 	public Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV)
 	{
-		this.APP_ID = appId;
-		this.DISPLAY_NAME = displayName;
+		super(appId, displayName);
 		this.icon = icon;
 		this.u = iconU;
 		this.v = iconV;
@@ -370,26 +363,6 @@ public abstract class Application implements Wrappable
 	}
 
 	/**
-	 * Gets the id of this application
-	 * 
-	 * @return the applicaiton id
-	 */
-	public final String getID()
-	{
-		return APP_ID;
-	}
-
-	/**
-	 * Gets the name that is displayed in the task bar.
-	 * 
-	 * @return the display name
-	 */
-	public final String getDisplayName()
-	{
-		return DISPLAY_NAME;
-	}
-
-	/**
 	 * Gets the width of this application including the border.
 	 * 
 	 * @return the height
@@ -426,36 +399,6 @@ public abstract class Application implements Wrappable
 			return currentLayout.getTitle();
 		}
 		return DISPLAY_NAME;
-	}
-
-	/**
-	 * Gets the resource location the icon is located in
-	 * 
-	 * @return the icon resource location
-	 */
-	public ResourceLocation getIcon()
-	{
-		return icon;
-	}
-
-	/**
-	 * Gets the u location of the icon
-	 * 
-	 * @return the u position
-	 */
-	public int getIconU()
-	{
-		return u;
-	}
-
-	/**
-	 * Gets the v location of the icon
-	 * 
-	 * @return the v position
-	 */
-	public int getIconV()
-	{
-		return v;
 	}
 
 	/**

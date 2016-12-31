@@ -15,6 +15,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.event.AttachCapabilitiesEvent.Item;
 
 public class ItemList<E> extends Component implements Iterable<E>
 {
@@ -204,6 +205,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 		{
 			items.add(e);
 		}
+	}
+	
+	/**
+	 * Appends an item to the list
+	 * 
+	 * @param e the item
+	 */
+	public void setItems(List<E> newItems) 
+	{
+		items.clear();
+		items.addAll(newItems);
 	}
 	
 	/**
