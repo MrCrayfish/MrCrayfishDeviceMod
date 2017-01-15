@@ -1,0 +1,12 @@
+{
+	"variants": {
+		"facing=north,type=base":   { "model": "cdm:laptop_base"             },
+		"facing=east,type=base":    { "model": "cdm:laptop_base",   "y": 90  },
+		"facing=south,type=base":   { "model": "cdm:laptop_base",   "y": 180 },
+		"facing=west,type=base":    { "model": "cdm:laptop_base",   "y": 270 },
+		"facing=north,type=screen": { "model": "cdm:laptop_screen"           },
+        "facing=east,type=screen":  { "model": "cdm:laptop_screen", "y": 90  },
+        "facing=south,type=screen": { "model": "cdm:laptop_screen", "y": 180 },
+        "facing=west,type=screen":  { "model": "cdm:laptop_screen", "y": 270 }
+	}
+}

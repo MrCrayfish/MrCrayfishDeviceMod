@@ -1,0 +1,84 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+    "textures": {
+        "0": "blocks/cauldron_side"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 225, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 45, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 75, 255, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 45, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 225, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "screen",
+            "from": [ 1.0, -0.0, 1.0 ], 
+            "to": [ 15.0, 1.0, 11.0 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 1.0, 0.0, 15.0, 1.0 ] },
+                "east": { "texture": "#0", "uv": [ 1.0, 0.0, 11.0, 1.0 ] },
+                "south": { "texture": "#0", "uv": [ 2.0, 0.0, 16.0, 1.0 ] },
+                "west": { "texture": "#0", "uv": [ 14.0, 0.0, 24.0, 1.0 ] },
+                "up": { "texture": "#0", "uv": [ 1.0, 1.0, 15.0, 11.0 ] },
+                "down": { "texture": "#0", "uv": [ 1.0, 1.0, 15.0, 11.0 ] }
+            }
+        },
+        {
+            "name": "screen_mount",
+            "from": [ 4.2, -0.0, -0.5 ], 
+            "to": [ 11.8, 0.9, 1.0 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.0, 0.0, 7.6, 0.9 ] },
+                "east": { "texture": "#0", "uv": [ 7.0, 0.0, 8.5, 0.9 ] },
+                "south": { "texture": "#0", "uv": [ 0.0, 0.0, 7.6, 0.9 ] },
+                "west": { "texture": "#0", "uv": [ 7.0, 0.0, 8.5, 0.9 ] },
+                "up": { "texture": "#0", "uv": [ 4.0, 0.0, 11.6, 1.5 ] },
+                "down": { "texture": "#0", "uv": [ 4.0, 0.0, 11.6, 1.5 ] }
+            }
+        },
+        {
+            "name": "actual_screen",
+            "from": [ 2.0, -0.1, 2.0 ], 
+            "to": [ 14.0, 0.0, 10.0 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] },
+                "east": { "texture": "#0", "uv": [ 0.0, 15.0, 1.1, 16.0 ] },
+                "south": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] },
+                "west": { "texture": "#0", "uv": [ 0.0, 15.0, 1.1, 16.0 ] },
+                "up": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] },
+                "down": { "texture": "#0", "uv": [ 0.0, 15.0, 1.0, 16.0 ] }
+            }
+        }
+    ]
+}
