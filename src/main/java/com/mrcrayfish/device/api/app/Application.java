@@ -41,27 +41,34 @@ public abstract class Application implements Wrappable
 
 	public Application(String appId, String displayName)
 	{
-		this(appId, displayName, null, 0, 0);
-	}
-
-	public Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV)
-	{
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
-		this.icon = icon;
-		this.u = iconU;
-		this.v = iconV;
 		this.defaultLayout = new Layout();
 	}
 
 	/**
-	 * Adds a component to the default layout. Don't get this confused with your
+	 * Sets the icon for the application. Icons must be 14 by 14 pixels.
+	 *
+	 * @param icon
+	 * 			the resource location containing the icon
+	 * @param iconU
+	 * 			the u position of the icon
+	 * @param iconV
+	 * 			the v position of the icon
+	 */
+	protected void setIcon(ResourceLocation icon, int iconU, int iconV)
+	{
+		this.icon = icon;
+	}
+
+	/**
+	 * Adds a component to the default layout. Don't get this confused a
 	 * custom layout. You should use
 	 * {@link com.mrcrayfish.device.api.app.Layout#addComponent(Component)}
 	 * instead.
 	 * 
 	 * @param c
-	 *            the component to add to the default layout
+	 * 			the component to add to the default layout
 	 */
 	protected final void addComponent(Component c)
 	{
@@ -112,11 +119,6 @@ public abstract class Application implements Wrappable
 	 * <p>
 	 * The parameters passed are the x and y location of the top left corner or
 	 * your application window.
-	 * 
-	 * @param x
-	 *            the starting x position
-	 * @param y
-	 *            the starting y position
 	 */
 	@Override
 	public void init()
@@ -159,11 +161,11 @@ public abstract class Application implements Wrappable
 	 * call this super method.
 	 * 
 	 * @param mouseX
-	 *            the current x position of the mouse
+	 * 			the current x position of the mouse
 	 * @param mouseY
-	 *            the current y position of the mouse
+	 * 			the current y position of the mouse
 	 * @param mouseButton
-	 *            the clicked mouse button
+	 * 			the clicked mouse button
 	 */
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
@@ -176,11 +178,11 @@ public abstract class Application implements Wrappable
 	 * override, make sure you call this super method.
 	 * 
 	 * @param mouseX
-	 *            the current x position of the mouse
+	 * 			the current x position of the mouse
 	 * @param mouseY
-	 *            the current y position of the mouse
+	 * 			the current y position of the mouse
 	 * @param mouseButton
-	 *            the pressed mouse button
+	 *          the pressed mouse button
 	 */
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
@@ -193,11 +195,11 @@ public abstract class Application implements Wrappable
 	 * override, make sure you call this super method.
 	 * 
 	 * @param mouseX
-	 *            the x position of the release
+	 * 			the x position of the release
 	 * @param mouseY
-	 *            the y position of the release
+	 * 			the y position of the release
 	 * @param mouseButton
-	 *            the button that was released
+	 * 			the button that was released
 	 */
 	@Override
 	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
@@ -210,11 +212,11 @@ public abstract class Application implements Wrappable
 	 * make sure you call this super method.
 	 * 
 	 * @param mouseX
-	 *            the x position of the mouse
+	 * 			the x position of the mouse
 	 * @param mouseY
-	 *            the y position of the mouse
+	 * 			the y position of the mouse
 	 * @param direction
-	 *            the direction of the scroll. true is up, false is down
+	 * 			the direction of the scroll. true is up, false is down
 	 */
 	@Override
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
@@ -271,11 +273,11 @@ public abstract class Application implements Wrappable
 	/**
 	 * Called when you first load up your application. Allows you to read any
 	 * stored data you have saved. Only called if you have saved data. This
-	 * method is called after {{@link #init(int, int)} so you can update any
+	 * method is called after {{@link #init()} so you can update any
 	 * Components with this data.
 	 * 
 	 * @param tagCompound
-	 *            the tag compound where you saved data is
+	 * 			the tag compound where you saved data is
 	 */
 	public abstract void load(NBTTagCompound tagCompound);
 
@@ -285,7 +287,7 @@ public abstract class Application implements Wrappable
 	 * by calling {@link #markDirty()}.
 	 * 
 	 * @param tagCompound
-	 *            the tag compound to save your data to
+	 * 			the tag compound to save your data to
 	 */
 	public abstract void save(NBTTagCompound tagCompound);
 
@@ -294,7 +296,7 @@ public abstract class Application implements Wrappable
 	 * within 20 to 362.
 	 * 
 	 * @param width
-	 *            the width
+	 * 			the width
 	 */
 	protected final void setDefaultWidth(int width)
 	{
@@ -308,7 +310,7 @@ public abstract class Application implements Wrappable
 	 * be within 20 to 164.
 	 * 
 	 * @param height
-	 *            the height
+	 * 			the height
 	 */
 	protected final void setDefaultHeight(int height)
 	{
@@ -459,9 +461,9 @@ public abstract class Application implements Wrappable
 	}
 
 	/**
-	 * Sets the Laptop instance. Used by the core.
+	 * Sets the Window instance. Used by the core.
 	 * 
-	 * @param laptop
+	 * @param window
 	 */
 	public void setWindow(Window window)
 	{
