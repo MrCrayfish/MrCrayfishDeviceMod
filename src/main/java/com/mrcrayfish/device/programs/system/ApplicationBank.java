@@ -74,8 +74,9 @@ public class ApplicationBank extends Application
 	
 	public ApplicationBank()
 	{
-		super(Reference.MOD_ID + "Bank", "The Emerald Bank", TaskBar.APP_BAR_GUI, 98, 30);
-		registerTasks();
+		super(Reference.MOD_ID + "Bank", "The Emerald Bank");
+		this.setIcon(TaskBar.APP_BAR_GUI, 98, 30);
+		this.registerTasks();
 	}
 	
 	@Override

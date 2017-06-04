@@ -61,7 +61,7 @@ public class MrCrayfishDeviceMod
 	
 	public static CreativeTabs tabDevice = new DeviceTab("cdmTabDevice");
 
-	public static final boolean DEVELOPER_MODE = true;
+	public static final boolean DEVELOPER_MODE = false;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) throws LaunchException {

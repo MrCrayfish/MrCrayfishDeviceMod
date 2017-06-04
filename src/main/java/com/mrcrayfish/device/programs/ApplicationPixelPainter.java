@@ -76,7 +76,8 @@ public class ApplicationPixelPainter extends Application
 
 	public ApplicationPixelPainter()
 	{
-		super("pixel_painter", "Pixel Painter", TaskBar.APP_BAR_GUI, 56, 30);
+		super("pixel_painter", "Pixel Painter");
+		this.setIcon(TaskBar.APP_BAR_GUI, 56, 30);
 	}
 
 	@Override

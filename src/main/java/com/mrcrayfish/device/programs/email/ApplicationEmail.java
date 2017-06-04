@@ -129,7 +129,8 @@ public class ApplicationEmail extends Application
 
 	public ApplicationEmail()
 	{
-		super("email", "Ender Mail", TaskBar.APP_BAR_GUI, 70, 30);
+		super("email", "Ender Mail");
+		this.setIcon(TaskBar.APP_BAR_GUI, 70, 30);
 	}
 
 	@Override
