@@ -59,6 +59,8 @@ public abstract class Application implements Wrappable
 	protected void setIcon(ResourceLocation icon, int iconU, int iconV)
 	{
 		this.icon = icon;
+		this.u = iconU;
+		this.v = iconV;
 	}
 
 	/**
