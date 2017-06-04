@@ -33,13 +33,13 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		this.data = data;
 		markDirty();
-		TileEntityUtil.markBlockForUpdate(worldObj, pos);
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 	
 	public void openClose()
 	{
 		open = !open;
-		TileEntityUtil.markBlockForUpdate(worldObj, pos);
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 	
 	@Override

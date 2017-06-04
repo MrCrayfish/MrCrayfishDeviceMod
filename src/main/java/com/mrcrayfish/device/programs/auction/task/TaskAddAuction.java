@@ -55,8 +55,9 @@ public class TaskAddAuction extends Task
 			if(real != null)
 			{
 				ItemStack stack = real.copy();
-				stack.func_190920_e(amount);
-				real.func_190918_g(amount);
+				stack.setCount(amount);
+				real.shrink(amount);
+				//TODO Test this
 				
 				item = new AuctionItem(stack, price, duration, player.getUniqueID());
 				

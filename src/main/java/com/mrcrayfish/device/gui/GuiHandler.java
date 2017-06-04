@@ -22,7 +22,7 @@ public class GuiHandler implements IGuiHandler
 	{
 		if(ID == Laptop.ID)
 		{
-			TileEntity tileEntity = player.worldObj.getTileEntity(new BlockPos(x, y, z));
+			TileEntity tileEntity = player.world.getTileEntity(new BlockPos(x, y, z));
 			if(tileEntity instanceof TileEntityLaptop)
 			{
 				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;

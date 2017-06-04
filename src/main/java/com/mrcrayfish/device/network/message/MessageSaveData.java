@@ -48,7 +48,7 @@ public class MessageSaveData implements IMessage, IMessageHandler<MessageSaveDat
 	@Override
 	public IMessage onMessage(MessageSaveData message, MessageContext ctx) 
 	{
-		World world = ctx.getServerHandler().playerEntity.worldObj;
+		World world = ctx.getServerHandler().playerEntity.world;
 		TileEntity tileEntity = world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 		if(tileEntity instanceof TileEntityLaptop)
 		{

@@ -249,12 +249,12 @@ public class ApplicationMineBay extends Application
 			{
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
-					ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
 					if(stack != null)
 					{
 						buttonAddNext.setEnabled(true);
-						selectorAmount.setMax(stack.func_190916_E());
-						selectorAmount.setNumber(stack.func_190916_E());
+						selectorAmount.setMax(stack.getCount());
+						selectorAmount.setNumber(stack.getCount());
 					}
 					else
 					{
@@ -317,7 +317,7 @@ public class ApplicationMineBay extends Application
 				
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
-					ItemStack stack = mc.thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					ItemStack stack = mc.player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
 					if(stack != null)
 					{
 						GlStateManager.pushMatrix();

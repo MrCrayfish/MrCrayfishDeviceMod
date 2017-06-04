@@ -14,7 +14,7 @@ public class InventoryUtil
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			if(stack != null && stack.getItem() == item)
 			{
-				amount += stack.func_190916_E();
+				amount += stack.getCount();
 			}
 		}
 		return amount;
@@ -27,7 +27,7 @@ public class InventoryUtil
 		{
 			if(stack != null && stack.getItem() == item)
 			{
-				count += stack.func_190916_E();
+				count += stack.getCount();
 			}
 		}
 		return amount <= count;
@@ -42,15 +42,15 @@ public class InventoryUtil
 				ItemStack stack = player.inventory.getStackInSlot(i);
 				if(stack != null && stack.getItem() == item)
 				{
-					if(amount - stack.func_190916_E() < 0)
+					if(amount - stack.getCount() < 0)
 					{
-						stack.func_190918_g(amount);
+						stack.shrink(amount);
 						return true;
 					}
 					else
 					{
-						amount -= stack.func_190916_E();
-						player.inventory.mainInventory.set(i, ItemStack.field_190927_a);
+						amount -= stack.getCount();
+						player.inventory.mainInventory.set(i, ItemStack.EMPTY);
 						if(amount == 0) return true;
 					}
 				}

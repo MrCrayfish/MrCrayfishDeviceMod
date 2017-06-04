@@ -106,7 +106,7 @@ public class TaskBar
 		}
 		
 		
-		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
+		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		

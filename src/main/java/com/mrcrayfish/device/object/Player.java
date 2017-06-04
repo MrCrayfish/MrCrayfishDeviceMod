@@ -38,7 +38,7 @@ public class Player
 		this.direction = new Vec2d(0, 0);
 		this.velocity = new Vec2d(0, 0);
 		this.boatModel = new ModelBoat();
-		boolean slim = Minecraft.getMinecraft().thePlayer.getSkinType().equals("slim");
+		boolean slim = Minecraft.getMinecraft().player.getSkinType().equals("slim");
 		this.playerModel = new ModelDummyPlayer(0F, slim);
 		this.playerModel.isRiding = true;
 		this.playerModel.isChild = false;
@@ -147,7 +147,7 @@ public class Player
 		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 		GlStateManager.rotate(rot - 90F, 0.0F, 1.0F, 0.0F);
 		GlStateManager.translate(0F, -12F, 5F);
-		Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().thePlayer.getLocationSkin());
+		Minecraft.getMinecraft().getTextureManager().bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
 		playerModel.render((Entity) null, 0F, 0F, 0F, 0F, 0F, 1F);
 		GlStateManager.popMatrix();
 	}

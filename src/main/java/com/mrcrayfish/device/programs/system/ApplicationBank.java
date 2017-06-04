@@ -126,7 +126,7 @@ public class ApplicationBank extends Application
 		labelTeller = new Label(TextFormatting.YELLOW + "Casey The Teller", 60, 7);
 		layoutStart.addComponent(labelTeller);
 		
-		textWelcome = new Text(TextFormatting.BLACK + "Hello " + Minecraft.getMinecraft().thePlayer.getName() + ", welcome to The Emerald Bank! How can I help you?", 62, 25, 125);
+		textWelcome = new Text(TextFormatting.BLACK + "Hello " + Minecraft.getMinecraft().player.getName() + ", welcome to The Emerald Bank! How can I help you?", 62, 25, 125);
 		layoutStart.addComponent(textWelcome);
 		
 		btnDepositWithdraw = new Button("View Account", 54, 74, 76, 20);
@@ -290,7 +290,7 @@ public class ApplicationBank extends Application
 		});
 		layoutMain.addComponent(buttonWithdraw);
 		
-		emeraldAmount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().thePlayer, Items.EMERALD);
+		emeraldAmount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
 		labelEmeraldAmount = new Label("x " + emeraldAmount, 83, 123);
 		layoutMain.addComponent(labelEmeraldAmount);
 		
@@ -442,13 +442,13 @@ public class ApplicationBank extends Application
 				int stacks = amount / 64;
 				for(int i = 0; i < stacks; i++)
 				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, 64)));
+					world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, 64)));
 				}
 				
 				int remaining = amount % 64;
 				if(remaining > 0)
 				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, remaining)));
+					world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, remaining)));
 				}
 				
 				this.amount = account.getBalance();
