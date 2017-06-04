@@ -155,7 +155,8 @@ public class ApplicationEmail extends Application
 		logo = new Image(35, 5, 28, 28, u, v, 14, 14, icon);
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Ender Mail", 19, 35);
+		labelLogo = new Label("Ender Mail", 50, 35);
+		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
 		btnRegisterAccount = new Button("Register", 5, 50, 90, 20);
