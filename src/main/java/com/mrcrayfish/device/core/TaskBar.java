@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.ApplicationManager;
@@ -31,7 +32,7 @@ public class TaskBar
 	private static Application settings = new ApplicationSettings(); 
 	private static Application app_store = new ApplicationAppStore(); 
 	
-	private static final int APPS_DISPLAYED = 10;
+	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
 	public static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;

@@ -107,11 +107,8 @@ public class ApplicationBank extends Application
 					GlStateManager.rotate(-10F, 1, 0, 0);
 					GlStateManager.rotate(180F, 0, 0, 1);
 					GlStateManager.rotate(-20F, 0, 1, 0);
-					if(windowActive)
-					{
-						scaleX = (mouseX - x - 25) / (float) width;
-						scaleY = (mouseY - y - 20) / (float) height;
-					}
+					scaleX = (mouseX - x - 25) / (float) width;
+					scaleY = (mouseY - y - 20) / (float) height;
 					mc.getTextureManager().bindTexture(villagerTextures);
 					villagerModel.render(null, 0F, 0F, 0F, -70F * scaleX + 20F, 30F * scaleY, 1F);
 					GlStateManager.disableDepth();

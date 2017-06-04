@@ -8,6 +8,7 @@ import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * The Layout class is the main implementation for displaying
@@ -149,6 +150,7 @@ public final class Layout extends Component
 		}
 		for(Component c : components)
 		{
+			GlStateManager.disableDepth();
 			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
 		}
 	}

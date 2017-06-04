@@ -38,6 +38,7 @@ import com.mrcrayfish.device.programs.system.task.TaskRemove;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -59,10 +60,17 @@ public class MrCrayfishDeviceMod
 	public static IProxyInterface proxy;
 	
 	public static CreativeTabs tabDevice = new DeviceTab("cdmTabDevice");
-	
+
+	public static final boolean DEVELOPER_MODE = true;
+
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) 
-	{
+	public void preInit(FMLPreInitializationEvent event) throws LaunchException {
+
+		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
+		{
+			throw new LaunchException();
+		}
+
 		setupTaskProxy();
 		
 		/** Block Registering */
@@ -85,8 +93,11 @@ public class MrCrayfishDeviceMod
 		DeviceTileEntites.register();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-		
-		MinecraftForge.EVENT_BUS.register(new EmailEvents());
+
+		if(!DEVELOPER_MODE)
+		{
+			MinecraftForge.EVENT_BUS.register(new EmailEvents());
+		}
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
 		
 		proxy.init();
@@ -95,35 +106,52 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
 	{
-		ApplicationManager.registerApplication(new ApplicationNoteStash());
-		ApplicationManager.registerApplication(new ApplicationExample());
-		ApplicationManager.registerApplication(new ApplicationPixelPainter());
-		ApplicationManager.registerApplication(new ApplicationEmail());
-		ApplicationManager.registerApplication(new ApplicationBoatRacers());
-		//ApplicationManager.registerApplication(new ApplicationMineBay());
-		//ApplicationManager.registerApplication(new ApplicationTest());
+		// Applications (Both)
 		ApplicationManager.registerApplication(new ApplicationBank());
-		
-		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
-		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
-		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
-		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_4.png"));
-		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
-		Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
-		
-		TaskProxy.registerTask(TaskUpdateInbox.class);
-		TaskProxy.registerTask(TaskSendEmail.class);
-		TaskProxy.registerTask(TaskCheckEmailAccount.class);
-		TaskProxy.registerTask(TaskRegisterEmailAccount.class);
-		TaskProxy.registerTask(TaskDeleteEmail.class);
-		TaskProxy.registerTask(TaskViewEmail.class);
+
+		// Tasks (Both)
 		TaskProxy.registerTask(TaskGetBalance.class);
 		TaskProxy.registerTask(TaskPay.class);
 		TaskProxy.registerTask(TaskAdd.class);
 		TaskProxy.registerTask(TaskRemove.class);
-		//TaskProxy.registerTask(TaskAddAuction.class);
-		//TaskProxy.registerTask(TaskGetAuctions.class);
-		//TaskProxy.registerTask(TaskBuyItem.class);
+
+		if(!DEVELOPER_MODE)
+		{
+			// Applications (Normal)
+			ApplicationManager.registerApplication(new ApplicationNoteStash());
+			ApplicationManager.registerApplication(new ApplicationPixelPainter());
+			ApplicationManager.registerApplication(new ApplicationEmail());
+			ApplicationManager.registerApplication(new ApplicationBoatRacers());
+			//ApplicationManager.registerApplication(new ApplicationMineBay());
+			//ApplicationManager.registerApplication(new ApplicationTest());
+
+			// Wallpapers (Normal)
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_4.png"));
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
+
+			// Tasks (Normal)
+			TaskProxy.registerTask(TaskUpdateInbox.class);
+			TaskProxy.registerTask(TaskSendEmail.class);
+			TaskProxy.registerTask(TaskCheckEmailAccount.class);
+			TaskProxy.registerTask(TaskRegisterEmailAccount.class);
+			TaskProxy.registerTask(TaskDeleteEmail.class);
+			TaskProxy.registerTask(TaskViewEmail.class);
+			//TaskProxy.registerTask(TaskAddAuction.class);
+			//TaskProxy.registerTask(TaskGetAuctions.class);
+			//TaskProxy.registerTask(TaskBuyItem.class);
+		}
+		else
+		{
+			// Applications (Developers)
+			ApplicationManager.registerApplication(new ApplicationExample());
+
+			// Wallpapers (Developers)
+			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
+		}
 		
 		proxy.postInit();
 	}

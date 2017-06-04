@@ -19,7 +19,6 @@ public class RenderUtil
 		if(overlay) Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRendererObj, stack, x, y);
 		GlStateManager.enableAlpha();
 		GlStateManager.disableLighting();
-		GlStateManager.enableDepth();
 	}
 	
 	public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight)

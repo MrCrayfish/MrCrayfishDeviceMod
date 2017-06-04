@@ -113,7 +113,6 @@ public class Button extends Component
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            GlStateManager.disableDepth();
             
             /* Corners */
             RenderUtil.drawRectWithTexture(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
@@ -152,8 +151,6 @@ public class Button extends Component
             {
             	this.drawCenteredString(fontrenderer, this.text, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
             }
-            
-            GlStateManager.enableDepth();
         }
 	}
 	
