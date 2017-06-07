@@ -13,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Resource;
+
 /**
  * The abstract base class for creating applications.
  * 
@@ -20,11 +22,10 @@ import net.minecraft.util.ResourceLocation;
  */
 public abstract class Application implements Wrappable
 {
-	protected ResourceLocation icon;
-	protected int u, v;
+	protected final String APP_ID;
+	protected final String DISPLAY_NAME;
 
-	private final String APP_ID;
-	private final String DISPLAY_NAME;
+	protected Icon icon;
 
 	private int width, height;
 
@@ -44,23 +45,6 @@ public abstract class Application implements Wrappable
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
 		this.defaultLayout = new Layout();
-	}
-
-	/**
-	 * Sets the icon for the application. Icons must be 14 by 14 pixels.
-	 *
-	 * @param icon
-	 * 			the resource location containing the icon
-	 * @param iconU
-	 * 			the u position of the icon
-	 * @param iconV
-	 * 			the v position of the icon
-	 */
-	protected void setIcon(ResourceLocation icon, int iconU, int iconV)
-	{
-		this.icon = icon;
-		this.u = iconU;
-		this.v = iconV;
 	}
 
 	/**
@@ -433,33 +417,23 @@ public abstract class Application implements Wrappable
 	}
 
 	/**
+	 * Sets the icon for the application. Icons must be 14 by 14 pixels.
+	 *
+	 * @param icon
+	 */
+	protected void setIcon(ResourceLocation resource, int u, int v)
+	{
+		this.icon = new Icon(resource, u, v);
+	}
+
+	/**
 	 * Gets the resource location the icon is located in
 	 * 
 	 * @return the icon resource location
 	 */
-	public ResourceLocation getIcon()
+	public Icon getIcon()
 	{
 		return icon;
-	}
-
-	/**
-	 * Gets the u location of the icon
-	 * 
-	 * @return the u position
-	 */
-	public int getIconU()
-	{
-		return u;
-	}
-
-	/**
-	 * Gets the v location of the icon
-	 * 
-	 * @return the v position
-	 */
-	public int getIconV()
-	{
-		return v;
 	}
 
 	/**
@@ -495,5 +469,35 @@ public abstract class Application implements Wrappable
 			return false;
 		Application app = (Application) obj;
 		return app.getID().equals(this.getID());
+	}
+
+	public static class Icon {
+
+		protected ResourceLocation icon;
+		protected int u, v;
+
+		/**
+		 *
+		 * @param resource
+		 * @param u
+		 * @param v
+		 */
+		public Icon(ResourceLocation resource, int u, int v) {
+			this.icon = resource;
+			this.u = u;
+			this.v = v;
+		}
+
+		public ResourceLocation getResource() {
+			return icon;
+		}
+
+		public int getU() {
+			return u;
+		}
+
+		public int getV() {
+			return v;
+		}
 	}
 }

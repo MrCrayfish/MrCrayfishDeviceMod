@@ -91,8 +91,8 @@ public class TaskBar
 			Application app = ApplicationManager.getApps().get(i + offset);
 			if(app.getIcon() != null)
 			{
-				mc.getTextureManager().bindTexture(app.getIcon());
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, app.getIconU(), app.getIconV(), 14, 14);
+				mc.getTextureManager().bindTexture(app.getIcon().getResource());
+				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, app.getIcon().getU(), app.getIcon().getU(), 14, 14);
 			}
 			else
 			{
