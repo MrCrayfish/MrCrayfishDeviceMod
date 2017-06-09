@@ -28,5 +28,7 @@ public class TaskGetAuctions extends Task
 	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) {}
+	public void processResponse(NBTTagCompound nbt) {
+		AuctionManager.INSTANCE.readFromNBT(nbt);
+	}
 }

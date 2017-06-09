@@ -80,12 +80,11 @@ public class AuctionManager
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		NBTTagList tagList = new NBTTagList();
-		for(AuctionItem item : items)
-		{
+		items.stream().filter(i -> i.isValid()).forEach(i -> {
 			NBTTagCompound itemTag = new NBTTagCompound();
-			item.writeToNBT(itemTag);
+			i.writeToNBT(itemTag);
 			tagList.appendTag(itemTag);
-		}
+		});
 		tag.setTag("auctionItems", tagList);
 	}
 	
