@@ -45,7 +45,10 @@ public class ApplicationMineBay extends Application
 	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
 	
 	private String[] categories = { "Building", "Combat", "Tools", "Food", "Materials", "Redstone", "Alchemy", "Rare", "Misc" };
-	
+
+	private Layout layoutMyAuctions;
+	private ItemList<AuctionItem> items;
+
 	/* Add Item Layout */
 	private Layout layoutSelectItem;
 	private Inventory inventory;
@@ -89,8 +92,8 @@ public class ApplicationMineBay extends Application
 	@Override
 	public void init()
 	{
-		final Layout home = new Layout(300, 145);
-		home.setBackground(new Background()
+		super.init();
+		getCurrentLayout().setBackground(new Background()
 		{
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
@@ -107,44 +110,47 @@ public class ApplicationMineBay extends Application
 		});
 		
 		Button btnAddItem = new Button("Add Item", 70, 5, 60, 15);
-		btnAddItem.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutSelectItem);
-			}
-		});
-		home.addComponent(btnAddItem);
-		
+		btnAddItem.setClickListener((c, mouseButton) -> setCurrentLayout(layoutSelectItem));
+		super.addComponent(btnAddItem);
+
 		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
-		home.addComponent(btnViewItem);
+		btnViewItem.setClickListener((c, mouseButton) -> {
+			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
+			task.setCallback((nbt, success) -> {
+                items.removeAll();
+                for(AuctionItem item : AuctionManager.INSTANCE.getItems()) {
+                    items.addItem(item);
+                }
+            });
+			TaskProxy.sendTask(task);
+		});
+		super.addComponent(btnViewItem);
 		
 		Label labelBalance = new Label("Balance", 295, 3);
 		labelBalance.setAlignment(Label.ALIGN_RIGHT);
-		home.addComponent(labelBalance);
+		super.addComponent(labelBalance);
 		
 		final Label labelMoney = new Label("$0", 295, 13);
 		labelMoney.setAlignment(Label.ALIGN_RIGHT);
 		labelMoney.setScale(1);
 		labelMoney.setShadow(false);
-		home.addComponent(labelMoney);
+		super.addComponent(labelMoney);
 		
 		Label labelCategories = new Label("Categories", 5, 29);
 		labelCategories.setShadow(false);
-		home.addComponent(labelCategories);
+		super.addComponent(labelCategories);
 		
 		ItemList<String> categories = new ItemList<String>(5, 40, 70, 7);
 		for(String category : this.categories) {
 			categories.addItem(category);
 		}
-		home.addComponent(categories);
+		super.addComponent(categories);
 		
 		Label labelItems = new Label("Items", 100, 29);
 		labelItems.setShadow(false);
-		home.addComponent(labelItems);
+		super.addComponent(labelItems);
 		
-		final ItemList<AuctionItem> items = new ItemList<AuctionItem>(100, 40, 180, 4);
+		items = new ItemList<AuctionItem>(100, 40, 180, 4);
 		items.setListItemRenderer(new ListItemRenderer<AuctionItem>(20)
 		{
 			@Override
@@ -174,7 +180,7 @@ public class ApplicationMineBay extends Application
 				mc.fontRendererObj.drawString(price, x - mc.fontRendererObj.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
 			}
 		});
-		home.addComponent(items);
+		super.addComponent(items);
 		
 		Button btnBuy = new Button("Buy", 100, 127, 50, 15);
 		btnBuy.setClickListener(new ClickListener()
@@ -223,8 +229,7 @@ public class ApplicationMineBay extends Application
 				openDialog(dialog);
 			}
 		});
-		home.addComponent(btnBuy);
-		
+		super.addComponent(btnBuy);
 		
 		/* Select Item Layout */
 		
@@ -272,7 +277,7 @@ public class ApplicationMineBay extends Application
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				setCurrentLayout(home);
+				restoreDefaultLayout();
 			}
 		});
 		layoutSelectItem.addComponent(buttonAddCancel);
@@ -357,7 +362,7 @@ public class ApplicationMineBay extends Application
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				setCurrentLayout(home);
+				restoreDefaultLayout();
 			}
 		});
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceCancel);
@@ -419,7 +424,7 @@ public class ApplicationMineBay extends Application
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				setCurrentLayout(home);
+				restoreDefaultLayout();
 			}
 		});
 		layoutDuration.addComponent(buttonDurationCancel);
@@ -453,7 +458,7 @@ public class ApplicationMineBay extends Application
 						});
 						TaskProxy.sendTask(task);
 						dialog.close();
-						setCurrentLayout(home);
+						restoreDefaultLayout();
 					}
 				});
 				openDialog(dialog);
@@ -489,9 +494,7 @@ public class ApplicationMineBay extends Application
 		selectorSeconds.setMin(1);
 		selectorSeconds.setFormat(format);
 		layoutDuration.addComponent(selectorSeconds);
-		
-		setCurrentLayout(home);
-		
+
 		BankUtil.getBalance(new Callback()
 		{
 			@Override

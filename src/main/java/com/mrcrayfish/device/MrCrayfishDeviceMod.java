@@ -122,7 +122,7 @@ public class MrCrayfishDeviceMod
 			ApplicationManager.registerApplication(new ApplicationPixelPainter());
 			ApplicationManager.registerApplication(new ApplicationEmail());
 			ApplicationManager.registerApplication(new ApplicationBoatRacers());
-			//ApplicationManager.registerApplication(new ApplicationMineBay());
+			ApplicationManager.registerApplication(new ApplicationMineBay());
 			//ApplicationManager.registerApplication(new ApplicationTest());
 
 			// Wallpapers (Normal)
@@ -140,9 +140,9 @@ public class MrCrayfishDeviceMod
 			TaskProxy.registerTask(TaskRegisterEmailAccount.class);
 			TaskProxy.registerTask(TaskDeleteEmail.class);
 			TaskProxy.registerTask(TaskViewEmail.class);
-			//TaskProxy.registerTask(TaskAddAuction.class);
-			//TaskProxy.registerTask(TaskGetAuctions.class);
-			//TaskProxy.registerTask(TaskBuyItem.class);
+			TaskProxy.registerTask(TaskAddAuction.class);
+			TaskProxy.registerTask(TaskGetAuctions.class);
+			TaskProxy.registerTask(TaskBuyItem.class);
 		}
 		else
 		{
