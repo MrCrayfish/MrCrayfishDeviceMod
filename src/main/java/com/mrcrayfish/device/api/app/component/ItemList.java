@@ -226,14 +226,16 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * 
 	 * @param index the index to remove
 	 */
-	public void removeItem(int index)
+	public E removeItem(int index)
 	{
 		if(index >= 0 && index < items.size())
 		{
-			items.remove(index);
+			E e = items.remove(index);
 			if(index == selected)
 				selected = -1;
+			return e;
 		}
+		return null;
 	}
 	
 	/**
