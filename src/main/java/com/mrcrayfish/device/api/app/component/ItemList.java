@@ -212,7 +212,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	/**
 	 * Appends an item to the list
 	 * 
-	 * @param e the item
+	 * @param newItems the items
 	 */
 	public void setItems(List<E> newItems) 
 	{

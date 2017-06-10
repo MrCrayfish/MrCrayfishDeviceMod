@@ -16,14 +16,15 @@ public class Folder extends File
 		this.files = new ArrayList<File>();
 	}
 	
-	public void add(File file)
+	public boolean add(File file)
 	{
-		if(files.contains(file.name))
+		if(hasFile(file.name))
 		{
-			delete(file.name);
+			return false;
 		}
 		files.add(file);
 		file.parent = this;
+		return true;
 	}
 	
 	public void delete(String name)
@@ -40,26 +41,14 @@ public class Folder extends File
 	{
 		for(File file : files)
 		{
-			if(file.name.equalsIgnoreCase(name) && !file.isFolder())
+			if(file.name.equalsIgnoreCase(name))
 			{
 				return file;
 			}
 		}
 		return null;
 	}
-	
-	public Folder getFolder(String name)
-	{
-		for(File file : files)
-		{
-			if(file.name.equalsIgnoreCase(name) && file.isFolder())
-			{
-				return (Folder) file;
-			}
-		}
-		return null;
-	}
-	
+
 	public boolean hasFile(String name)
 	{
 		for(File file : files) 

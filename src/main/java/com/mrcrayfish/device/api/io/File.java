@@ -4,8 +4,16 @@ import com.mrcrayfish.device.api.app.Application;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.Comparator;
+
 public class File
 {
+	public static final Comparator<File> SORT_BY_NAME = (f1, f2) -> {
+		if(f1 instanceof Folder && !(f2 instanceof Folder)) return -1;
+		if(!(f1 instanceof Folder) && f2 instanceof Folder) return 1;
+		return f1.name.compareTo(f2.name);
+	};
+
 	protected File parent;
 	protected String name;
 	private String openingApp;
@@ -89,6 +97,6 @@ public class File
 	
 	public File copy()
 	{
-		return new File(name, openingApp, data);
+		return new File(name, openingApp, data.copy());
 	}
 }

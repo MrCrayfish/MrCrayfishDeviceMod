@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.Stack;
@@ -49,7 +50,9 @@ public class FileList extends ItemList<File>
     };
 
     private final Folder parent;
+
     private Folder current;
+    private File clipboard;
 
     private Stack<Folder> predecessor = new Stack<>();
 
@@ -67,7 +70,7 @@ public class FileList extends ItemList<File>
         super(left, top, width, visibleItems);
         this.parent = parent;
         this.current = parent;
-        this.openFolder(parent, true);
+        this.openFolder(parent, false);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class FileList extends ItemList<File>
 
     public void goToPreviousFolder()
     {
-        if(predecessor.size() > 1)
+        if(predecessor.size() > 0)
         {
             Folder folder = predecessor.pop();
             openFolder(folder, false);
@@ -97,8 +100,10 @@ public class FileList extends ItemList<File>
 
     public void addFile(File file)
     {
-        super.addItem(file);
-        current.add(file);
+        if(current.add(file))
+        {
+            super.addItem(file);
+        }
     }
 
     public void removeFile(int index)
@@ -108,5 +113,42 @@ public class FileList extends ItemList<File>
         {
             current.delete(file.getName());
         }
+    }
+
+    public void copyFile()
+    {
+        if(selected != -1)
+        {
+            clipboard = getSelectedItem();
+        }
+    }
+
+    public void pasteFile()
+    {
+        if(clipboard != null)
+        {
+            addFile(clipboard.copy());
+        }
+    }
+
+    public boolean isRootFolder()
+    {
+        return predecessor.size() == 0;
+    }
+
+    public String getPath()
+    {
+        StringBuilder builder = new StringBuilder(TextFormatting.GOLD + "/" + TextFormatting.RESET);
+        for(int i = 1; i < predecessor.size(); i++)
+        {
+            builder.append(predecessor.get(i).getName());
+            builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
+        }
+        if(current != parent)
+        {
+            builder.append(current.getName());
+            builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
+        }
+        return builder.toString();
     }
 }
