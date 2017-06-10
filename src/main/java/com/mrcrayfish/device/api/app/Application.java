@@ -1,12 +1,8 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.core.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import com.mrcrayfish.device.core.FileSystem;
-import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.Window;
-import com.mrcrayfish.device.core.Wrappable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -23,7 +19,7 @@ import javax.annotation.Resource;
  */
 public abstract class Application extends Info implements Wrappable
 {
-	protected Icon icon;
+	protected Icon icon = new Icon(TaskBar.APP_BAR_GUI, 0, 30);
 
 	private int width, height;
 
