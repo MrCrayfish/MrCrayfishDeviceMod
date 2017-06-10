@@ -2,6 +2,8 @@ package com.mrcrayfish.device.api.app;
 
 import java.awt.Color;
 
+import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.listener.ResponseListener;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Layout.Background;
@@ -16,6 +18,8 @@ import com.mrcrayfish.device.core.Wrappable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
+
+import javax.annotation.Nonnull;
 
 public abstract class Dialog implements Wrappable
 {
@@ -322,4 +326,107 @@ public abstract class Dialog implements Wrappable
 			this.messageText = messageText;
 		}
 	}
+
+	public static class Input extends Dialog
+	{
+		private String messageText = null;
+
+		private String positiveText = "Ok";
+		private String negativeText = "Cancel";
+
+		private ResponseListener<String> responseListener;
+
+		private TextField textFieldInput;
+		private Button buttonPositive;
+		private Button buttonNegative;
+
+		public Input() {}
+
+		public Input(String messageText)
+		{
+			this.messageText = messageText;
+		}
+
+		@Override
+		public void init()
+		{
+			super.init();
+
+			int offset = 0;
+
+			if(messageText != null)
+			{
+				int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+				defaultLayout.height += lines * 9 + 10;
+				offset += lines * 9 + 5;
+			}
+
+			super.init();
+
+			defaultLayout.setBackground(new Background()
+			{
+				@Override
+				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
+				{
+					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
+				}
+			});
+
+			if(messageText != null)
+			{
+				Text message = new Text(messageText, 5, 5, getWidth() - 10);
+				this.addComponent(message);
+			}
+
+			textFieldInput = new TextField(5, 5 + offset, getWidth() - 10);
+			this.addComponent(textFieldInput);
+
+			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
+			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 15, getHeight() - 20, positiveWidth + 10, 15);
+			buttonPositive.setClickListener((c, mouseButton) -> {
+                if(!textFieldInput.getText().isEmpty()) {
+                    if(responseListener != null)  {
+                        responseListener.onResponse(true, textFieldInput.getText().trim());
+                    }
+                    close();
+                }
+            });
+			this.addComponent(buttonPositive);
+
+			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
+			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeWidth + 10, 15);
+			buttonNegative.setClickListener((c, mouseButton) -> close());
+			this.addComponent(buttonNegative);
+		}
+
+		/**
+		 *
+		 * @param positiveText
+		 */
+		public void setPositiveText(@Nonnull String positiveText)
+		{
+			if(positiveText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.positiveText = positiveText;
+		}
+
+		/**
+		 *
+		 * @param negativeText
+		 */
+		public void setNegativeText(@Nonnull String negativeText)
+		{
+			if(negativeText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.negativeText = negativeText;
+		}
+
+		public void setResponseListener(ResponseListener<String> responseListener)
+		{
+			this.responseListener = responseListener;
+		}
+	}
+
 }
