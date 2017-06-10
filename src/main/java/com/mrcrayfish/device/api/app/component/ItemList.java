@@ -1,9 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -15,6 +13,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.AttachCapabilitiesEvent.Item;
 
 public class ItemList<E> extends Component implements Iterable<E>
@@ -23,8 +22,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected int visibleItems;
 	protected int offset;
 	protected int selected = -1;
-	
-	protected List<E> items = new ArrayList<E>();
+
+	protected List<E> items = NonNullList.create();
 	protected ListItemRenderer<E> renderer = null;
 	protected ItemClickListener<E> itemClickListener = null;
 	
@@ -34,7 +33,9 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected int textColour = Color.WHITE.getRGB();
 	protected int backgroundColour = Color.GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
-	
+
+	private Comparator<E> sorter = null;
+
 	/**
 	 * Default constructor for the item list. Should be noted that the
 	 * height is determined by how many visible items there are.
@@ -204,6 +205,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		if(e != null)
 		{
 			items.add(e);
+			sort();
 		}
 	}
 	
@@ -216,6 +218,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		items.clear();
 		items.addAll(newItems);
+		sort();
 	}
 	
 	/**
@@ -331,6 +334,28 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		this.borderColour = color.getRGB();
 	}
+
+	/**
+	 * Sets the sorter for this item list and updates straight away
+	 * @param sorter the comparator to sort the list by
+	 */
+	public void sortBy(Comparator<E> sorter)
+	{
+		this.sorter = sorter;
+		sort();
+	}
+
+	/**
+	 * Sorts the list
+	 */
+	private void sort()
+	{
+		if(sorter != null)
+		{
+			Collections.sort(items, sorter);
+		}
+	}
+
 
 	@Override
 	public Iterator<E> iterator() 
