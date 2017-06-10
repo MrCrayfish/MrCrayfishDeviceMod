@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.core.FileSystem;
@@ -10,7 +11,10 @@ import com.mrcrayfish.device.core.Wrappable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Resource;
 
 /**
  * The abstract base class for creating applications.
@@ -19,6 +23,8 @@ import net.minecraft.util.ResourceLocation;
  */
 public abstract class Application extends Info implements Wrappable
 {
+	protected Icon icon;
+
 	private int width, height;
 
 	private final Layout defaultLayout;
@@ -35,15 +41,7 @@ public abstract class Application extends Info implements Wrappable
 
 	public Application(String appId, String displayName)
 	{
-		this(appId, displayName, null, 0, 0);
-	}
-
-	public Application(String appId, String displayName, ResourceLocation icon, int iconU, int iconV)
-	{
 		super(appId, displayName);
-		this.icon = icon;
-		this.u = iconU;
-		this.v = iconV;
 		this.defaultLayout = new Layout();
 	}
 
@@ -264,7 +262,7 @@ public abstract class Application extends Info implements Wrappable
 	/**
 	 * Called when you first load up your application. Allows you to read any
 	 * stored data you have saved. Only called if you have saved data. This
-	 * method is called after {{@link #init(int, int)} so you can update any
+	 * method is called after {{@link #init()} so you can update any
 	 * Components with this data.
 	 * 
 	 * @param tagCompound
@@ -402,9 +400,29 @@ public abstract class Application extends Info implements Wrappable
 	}
 
 	/**
-	 * Sets the Laptop instance. Used by the core.
-	 * 
-	 * @param laptop
+	 * Sets the icon for the application. Icons must be 14 by 14 pixels.
+	 *
+	 * @param icon
+	 */
+	protected void setIcon(ResourceLocation resource, int u, int v)
+	{
+		this.icon = new Icon(resource, u, v);
+	}
+
+	/**
+	 * Gets the resource location the icon is located in
+	 *
+	 * @return the icon resource location
+	 */
+	public Icon getIcon()
+	{
+		return icon;
+	}
+
+	/**
+	 * Sets the Window instance. Used by the core.
+	 *
+	 * @param window
 	 */
 	public void setWindow(Window window)
 	{
@@ -420,12 +438,12 @@ public abstract class Application extends Info implements Wrappable
 			window.openDialog(dialog);
 		}
 	}
-	
+
 	public void setFileSystem(FileSystem fileSystem)
 	{
 		this.fileSystem = fileSystem;
 	}
-	
+
 	public FileSystem getFileSystem()
 	{
 		return fileSystem;
@@ -444,5 +462,35 @@ public abstract class Application extends Info implements Wrappable
 			return false;
 		Application app = (Application) obj;
 		return app.getID().equals(this.getID());
+	}
+
+	public static class Icon {
+
+		protected ResourceLocation icon;
+		protected int u, v;
+
+		/**
+		 *
+		 * @param resource
+		 * @param u
+		 * @param v
+		 */
+		public Icon(ResourceLocation resource, int u, int v) {
+			this.icon = resource;
+			this.u = u;
+			this.v = v;
+		}
+
+		public ResourceLocation getResource() {
+			return icon;
+		}
+
+		public int getU() {
+			return u;
+		}
+
+		public int getV() {
+			return v;
+		}
 	}
 }

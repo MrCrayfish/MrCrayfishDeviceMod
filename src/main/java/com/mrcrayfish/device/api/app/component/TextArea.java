@@ -2,7 +2,6 @@ package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 
@@ -11,7 +10,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 public class TextArea extends Component
 {
@@ -68,7 +67,7 @@ public class TextArea extends Component
 	        }
 	        else
 	        {
-	        	text = text + EnumChatFormatting.GRAY + (this.isFocused ? "_" : "");
+	        	text = text + TextFormatting.GRAY + (this.isFocused ? "_" : "");
 	        }
 			this.fontRendererObj.drawSplitString(text, xPosition + padding + 1, yPosition + padding + 2, width - padding * 2 - 2, textColour);
         }

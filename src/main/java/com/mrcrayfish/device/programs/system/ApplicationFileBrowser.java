@@ -58,7 +58,7 @@ public class ApplicationFileBrowser extends Application
 				else
 				{
 					RenderUtil.drawRectWithTexture(x + 4, y + 2, 16, 0, 16, 16, 16, 16);
-					ResourceLocation appIcon = ApplicationManager.getApp(file.getOpeningApp()).getIcon();
+					ResourceLocation appIcon = ApplicationManager.getApp(file.getOpeningApp()).getIcon().getResource();
 					Minecraft.getMinecraft().getTextureManager().bindTexture(appIcon);
 					RenderUtil.drawRectWithTexture(x + width - 18, y + 2, 16, 0, 16, 16, 16, 16);
 				}

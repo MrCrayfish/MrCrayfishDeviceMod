@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -22,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -44,11 +46,11 @@ public class Laptop extends GuiScreen
 
 	private TaskBar bar;
 	private Window<Application>[] windows;
-	
+
 	private NBTTagCompound programData;
 	private NBTTagCompound fileData;
 	private NBTTagCompound systemData;
-	
+
 	private FileSystem fileSystem;
 	
 	public static int currentWallpaper;
@@ -178,8 +180,15 @@ public class Laptop extends GuiScreen
 		
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
-		
-		drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+
+		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
+		{
+			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+		else
+		{
+			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -356,7 +365,7 @@ public class Laptop extends GuiScreen
 			app.load(programData.getCompoundTag(app.getID()));
 		}
 		app.setFileSystem(fileSystem);
-		
+
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		
@@ -364,7 +373,7 @@ public class Laptop extends GuiScreen
 		window.init(buttonList, posX, posY);
 		addWindow(window);
 
-	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 	
 	public void close(Application app)
@@ -386,6 +395,7 @@ public class Laptop extends GuiScreen
 					window.content.setFileSystem(null);
 					window.handleClose();
 					windows[i] = null;
+					window = null;
 					return;
 				}
 			}

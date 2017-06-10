@@ -29,9 +29,10 @@ public class ApplicationBoatRacers extends Application
 
 	public ApplicationBoatRacers() 
 	{
-		super("boat_racer", "Boat Racers", TaskBar.APP_BAR_GUI, 84, 30);
+		super("boat_racer", "Boat Racers");
 		this.setDefaultWidth(320);
 		this.setDefaultHeight(160);
+		this.setIcon(TaskBar.APP_BAR_GUI, 84, 30);
 	}
 	
 	@Override

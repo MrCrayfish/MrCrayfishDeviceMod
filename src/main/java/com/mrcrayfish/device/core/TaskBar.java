@@ -3,6 +3,7 @@ package com.mrcrayfish.device.core;
 import java.awt.Color;
 import java.util.Arrays;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.ApplicationManager;
@@ -29,7 +30,7 @@ public class TaskBar
 	private static Application settings = new ApplicationSettings(); 
 	private static Application app_store = new ApplicationAppStore(); 
 	
-	private static final int APPS_DISPLAYED = 10;
+	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
 	public static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;
@@ -97,14 +98,14 @@ public class TaskBar
 				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
 			}
 			
-			if(gui.isAppRunning(info.getID())) 
+			if(gui.isAppRunning(info.getID()))
 			{
 				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
 		
 		
-		mc.fontRendererObj.drawString(timeToString(mc.thePlayer.worldObj.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
+		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		

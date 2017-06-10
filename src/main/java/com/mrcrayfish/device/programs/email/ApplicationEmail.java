@@ -129,7 +129,8 @@ public class ApplicationEmail extends Application
 
 	public ApplicationEmail()
 	{
-		super("email", "Ender Mail", TaskBar.APP_BAR_GUI, 70, 30);
+		super("email", "Ender Mail");
+		this.setIcon(TaskBar.APP_BAR_GUI, 70, 30);
 	}
 
 	@Override
@@ -152,10 +153,11 @@ public class ApplicationEmail extends Application
 		
 		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, u, v, 14, 14, icon);
+		logo = new Image(35, 5, 28, 28, icon.getU(), icon.getV(), 14, 14, icon.getResource());
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Ender Mail", 19, 35);
+		labelLogo = new Label("Ender Mail", 50, 35);
+		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
 		btnRegisterAccount = new Button("Register", 5, 50, 90, 20);

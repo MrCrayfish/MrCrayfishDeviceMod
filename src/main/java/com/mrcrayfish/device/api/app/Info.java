@@ -4,8 +4,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Info 
 {
-	protected ResourceLocation icon;
-	protected int u, v;
+	protected Application.Icon icon;
 
 	protected final String APP_ID;
 	protected final String DISPLAY_NAME;
@@ -15,44 +14,22 @@ public class Info
 		this.APP_ID = appId;
 		this.DISPLAY_NAME = displayName;
 	}
-	
-	protected void setIcon(ResourceLocation icon, int u, int v) 
+
+	protected void setIcon(ResourceLocation resource, int u, int v)
 	{
-		this.icon = icon;
-		this.u = u;
-		this.v = v;
+		this.icon = new Application.Icon(resource, u, v);
 	}
-	
+
 	/**
 	 * Gets the resource location the icon is located in
-	 * 
+	 *
 	 * @return the icon resource location
 	 */
-	public ResourceLocation getIcon()
+	public Application.Icon getIcon()
 	{
 		return icon;
 	}
 
-	/**
-	 * Gets the u location of the icon
-	 * 
-	 * @return the u position
-	 */
-	public int getIconU()
-	{
-		return u;
-	}
-
-	/**
-	 * Gets the v location of the icon
-	 * 
-	 * @return the v position
-	 */
-	public int getIconV()
-	{
-		return v;
-	}
-	
 	/**
 	 * Gets the id of this application
 	 * 

@@ -8,6 +8,7 @@ import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * The Layout class is the main implementation for displaying
@@ -15,7 +16,7 @@ import net.minecraft.client.gui.Gui;
  * in your application to switch interfaces during runtime.
  * <p>
  * Use {@link com.mrcrayfish.device.api.app.Application#setCurrentLayout(Layout)} 
- * inside of {@link com.mrcrayfish.device.api.app.Application#init(int, int)} 
+ * inside of {@link com.mrcrayfish.device.api.app.Application#init()}
  * to set the layout for your application. 
  * <p>
  * Check out the example applications to get a better understand of
@@ -135,7 +136,7 @@ public final class Layout extends Component
 	 * Renders the background of this layout if a {@link Background}
 	 * has be set. See {@link #setBackground(Background)}.
 	 * 
-	 * @param gui a Gui instance
+	 * @param laptop a Laptop instance
 	 * @param mc a Minecraft instance
 	 * @param x the starting x rendering position (left most)
 	 * @param y the starting y rendering position (top most)
@@ -149,6 +150,7 @@ public final class Layout extends Component
 		}
 		for(Component c : components)
 		{
+			GlStateManager.disableDepth();
 			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
 		}
 	}

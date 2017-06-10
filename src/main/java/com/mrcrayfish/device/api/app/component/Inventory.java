@@ -47,7 +47,7 @@ public class Inventory extends Component
 		mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 		RenderUtil.drawRectWithTexture(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
 
-		InventoryPlayer inventory = mc.thePlayer.inventory;
+		InventoryPlayer inventory = mc.player.inventory;
 		for(int i = 9; i < inventory.getSizeInventory() - 4; i++)
 		{
 			int offsetX = (i % 9) * 18;
@@ -82,7 +82,7 @@ public class Inventory extends Component
 				int y = yPosition + (i * 18) - 1;
 				if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 18, y + 18))
 				{
-					ItemStack stack = mc.thePlayer.inventory.getStackInSlot((i * 9) + j + 9);
+					ItemStack stack = mc.player.inventory.getStackInSlot((i * 9) + j + 9);
 					if(stack != null)
 					{
 						laptop.drawHoveringText(Arrays.asList(new String[] { stack.getDisplayName() }), mouseX, mouseY);
@@ -138,7 +138,7 @@ public class Inventory extends Component
 	/**
 	 * Sets the colour displayed when an item is selected
 	 * 
-	 * @param color the selected colour
+	 * @param selectedColour the selected colour
 	 */
 	public void setSelectedColour(int selectedColour)
 	{
@@ -148,7 +148,7 @@ public class Inventory extends Component
 	/**
 	 * Sets the colour displayed when a mouse is hovering an item
 	 * 
-	 * @param color the hover colour
+	 * @param hoverColour the hover colour
 	 */
 	public void setHoverColour(int hoverColour)
 	{
