@@ -101,12 +101,13 @@ public class FileList extends ItemList<File>
         }
     }
 
-    public void addFile(File file)
+    public boolean addFile(File file)
     {
-        if(current.add(file))
-        {
-            super.addItem(file);
+        if(!current.add(file)) {
+            return false;
         }
+        super.addItem(file);
+        return true;
     }
 
     public void removeFile(int index)
@@ -127,7 +128,7 @@ public class FileList extends ItemList<File>
         }
     }
 
-    public void copyFile()
+    public void setClipboardFileToSelected()
     {
         if(selected != -1)
         {
@@ -136,7 +137,7 @@ public class FileList extends ItemList<File>
         }
     }
 
-    public void cutFile()
+    public void cutSelectedFile()
     {
         if(selected != -1)
         {
@@ -145,18 +146,20 @@ public class FileList extends ItemList<File>
         }
     }
 
-    public void pasteFile()
+    public void pasteClipboardFile()
     {
         if(clipboardFile != null)
         {
             if(canPasteHere())
             {
-                addFile(clipboardFile.copy());
-                if(clipboardDir != null)
+                if(addFile(clipboardFile.copy()))
                 {
-                    clipboardDir.delete(clipboardFile.getName());
-                    clipboardDir = null;
-                    clipboardFile = null;
+                    if(clipboardDir != null)
+                    {
+                        clipboardDir.delete(clipboardFile.getName());
+                        clipboardDir = null;
+                        clipboardFile = null;
+                    }
                 }
             }
             else
@@ -182,7 +185,7 @@ public class FileList extends ItemList<File>
         return true;
     }
 
-    public boolean hasCopiedFile()
+    public boolean hasFileInClipboard()
     {
         return clipboardFile != null;
     }

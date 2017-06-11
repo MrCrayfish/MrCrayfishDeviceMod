@@ -3,26 +3,19 @@ package com.mrcrayfish.device.programs.system;
 
 import java.awt.*;
 
-import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
-import com.mrcrayfish.device.api.utils.RenderUtil;
 
 import com.mrcrayfish.device.programs.system.component.FileList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.Sys;
 
 public class ApplicationFileBrowser extends Application
 {
@@ -98,7 +91,7 @@ public class ApplicationFileBrowser extends Application
 
 		btnCopy = new Button(5, 65, ASSETS, 10, 20, 10, 10);
 		btnCopy.setClickListener((b, mouseButton) -> {
-			fileList.copyFile();
+			fileList.setClipboardFileToSelected();
 			btnPaste.setEnabled(true);
 		});
 		btnCopy.setToolTip("Copy", "Copies the selected file or folder");
@@ -107,7 +100,7 @@ public class ApplicationFileBrowser extends Application
 
 		btnCut = new Button(5, 85, ASSETS, 60, 20, 10, 10);
 		btnCut.setClickListener((c, mouseButton) -> {
-			fileList.cutFile();
+			fileList.cutSelectedFile();
 			btnPaste.setEnabled(true);
 		});
 		btnCut.setToolTip("Cut", "Cuts the selected file or folder");
@@ -116,8 +109,8 @@ public class ApplicationFileBrowser extends Application
 
 		btnPaste = new Button(5, 105, ASSETS, 20, 20, 10, 10);
 		btnPaste.setClickListener((b, mouseButton) -> {
-			fileList.pasteFile();
-			if(!fileList.hasCopiedFile()) {
+			fileList.pasteClipboardFile();
+			if(!fileList.hasFileInClipboard()) {
 				btnPaste.setEnabled(false);
 			}
 		});

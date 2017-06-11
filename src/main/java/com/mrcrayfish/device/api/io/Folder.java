@@ -18,10 +18,14 @@ public class Folder extends File
 	
 	public boolean add(File file)
 	{
+		if(file == null)
+			throw new IllegalArgumentException("You cannot add a null file");
+
 		if(hasFile(file.name))
 		{
 			return false;
 		}
+
 		files.add(file);
 		file.parent = this;
 		return true;
