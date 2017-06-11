@@ -321,7 +321,7 @@ public abstract class Dialog implements Wrappable
 	public static class Input extends Dialog
 	{
 		private String messageText = null;
-
+		private String inputText = "";
 		private String positiveText = "Ok";
 		private String negativeText = "Cancel";
 
@@ -370,6 +370,7 @@ public abstract class Dialog implements Wrappable
 			}
 
 			textFieldInput = new TextField(5, 5 + offset, getWidth() - 10);
+			textFieldInput.setText(inputText);
 			this.addComponent(textFieldInput);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
@@ -402,11 +403,11 @@ public abstract class Dialog implements Wrappable
 			if(inputText == null) {
 				throw new IllegalArgumentException("Text can't be null");
 			}
-			this.textFieldInput.setText(inputText);
+			this.inputText = inputText;
 		}
 
 		/**
-		 *
+		 * Sets the positive button text
 		 * @param positiveText
 		 */
 		public void setPositiveText(@Nonnull String positiveText)
@@ -418,7 +419,7 @@ public abstract class Dialog implements Wrappable
 		}
 
 		/**
-		 *
+		 * Sets the negative button text
 		 * @param negativeText
 		 */
 		public void setNegativeText(@Nonnull String negativeText)
@@ -429,6 +430,11 @@ public abstract class Dialog implements Wrappable
 			this.negativeText = negativeText;
 		}
 
+		/**
+		 * Sets the response listener. The listener is called when the positive
+		 * button is pressed and returns the value in the input text field.
+		 * @param responseListener
+		 */
 		public void setResponseListener(ResponseListener<String> responseListener)
 		{
 			this.responseListener = responseListener;
