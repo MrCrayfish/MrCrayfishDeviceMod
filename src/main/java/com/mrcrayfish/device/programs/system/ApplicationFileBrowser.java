@@ -46,8 +46,6 @@ public class ApplicationFileBrowser extends Application
 	public ApplicationFileBrowser() 
 	{
 		super("file_browser", "File Browser");
-		this.setDefaultWidth(240);
-		this.setDefaultHeight(151);
 	}
 	
 	@Override

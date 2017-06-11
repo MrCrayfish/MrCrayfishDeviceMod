@@ -145,14 +145,37 @@ public class FileList extends ItemList<File>
     {
         if(clipboardFile != null)
         {
-            addFile(clipboardFile.copy());
-            if(clipboardDir != null)
+            if(canPasteHere())
             {
-                clipboardDir.delete(clipboardFile.getName());
-                clipboardDir = null;
-                clipboardFile = null;
+                addFile(clipboardFile.copy());
+                if(clipboardDir != null)
+                {
+                    clipboardDir.delete(clipboardFile.getName());
+                    clipboardDir = null;
+                    clipboardFile = null;
+                }
+            }
+            else
+            {
+                Dialog.Message dialog = new Dialog.Message("You cannot paste a copied folder inside itself");
+                app.openDialog(dialog);
             }
         }
+    }
+
+    public boolean canPasteHere()
+    {
+        if(clipboardFile != null)
+        {
+            if(clipboardFile instanceof Folder)
+            {
+                if(predecessor.contains(clipboardFile) || current == clipboardFile)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public boolean hasCopiedFile()
