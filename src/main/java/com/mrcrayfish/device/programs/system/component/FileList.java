@@ -1,8 +1,8 @@
 package com.mrcrayfish.device.programs.system.component;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.*;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
@@ -49,10 +49,12 @@ public class FileList extends ItemList<File>
         }
     };
 
+    private final Application app;
     private final Folder parent;
 
     private Folder current;
-    private File clipboard;
+    private Folder clipboardDir;
+    private File clipboardFile;
 
     private Stack<Folder> predecessor = new Stack<>();
 
@@ -65,9 +67,10 @@ public class FileList extends ItemList<File>
      * @param width        width of the list
      * @param visibleItems how many items are visible
      */
-    public FileList(int left, int top, int width, int visibleItems, Folder parent)
+    public FileList(Application app, int left, int top, int width, int visibleItems, Folder parent)
     {
         super(left, top, width, visibleItems);
+        this.app = app;
         this.parent = parent;
         this.current = parent;
         this.openFolder(parent, false);
@@ -115,20 +118,46 @@ public class FileList extends ItemList<File>
         }
     }
 
+    public void removeFile(File file)
+    {
+        current.delete(file.getName());
+    }
+
     public void copyFile()
     {
         if(selected != -1)
         {
-            clipboard = getSelectedItem();
+            clipboardDir = null;
+            clipboardFile = getSelectedItem();
+        }
+    }
+
+    public void cutFile()
+    {
+        if(selected != -1)
+        {
+            clipboardDir = current;
+            clipboardFile = getSelectedItem();
         }
     }
 
     public void pasteFile()
     {
-        if(clipboard != null)
+        if(clipboardFile != null)
         {
-            addFile(clipboard.copy());
+            addFile(clipboardFile.copy());
+            if(clipboardDir != null)
+            {
+                clipboardDir.delete(clipboardFile.getName());
+                clipboardDir = null;
+                clipboardFile = null;
+            }
         }
+    }
+
+    public boolean hasCopiedFile()
+    {
+        return clipboardFile != null;
     }
 
     public boolean isRootFolder()
@@ -150,5 +179,25 @@ public class FileList extends ItemList<File>
             builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
         }
         return builder.toString();
+    }
+
+    public void renameSelectedFile()
+    {
+        File file = getSelectedItem();
+        if(file != null)
+        {
+            Dialog.Input dialog = new Dialog.Input("Enter a name");
+            dialog.setResponseListener((success, s) ->
+            {
+                if(success)
+                {
+                    removeFile(file);
+                    addFile(new File(s, file.getOpeningApp(), file.getData()));
+                }
+            });
+            dialog.setTitle("Rename " + (file instanceof Folder ? "Folder" : "File"));
+            dialog.setInputText(file.getName());
+            app.openDialog(dialog);
+        }
     }
 }

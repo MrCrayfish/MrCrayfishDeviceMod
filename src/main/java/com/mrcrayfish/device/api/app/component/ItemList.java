@@ -16,6 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.event.AttachCapabilitiesEvent.Item;
 
+import javax.annotation.Nonnull;
+
 public class ItemList<E> extends Component implements Iterable<E>
 {
 	protected int width;
@@ -200,13 +202,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * 
 	 * @param e the item
 	 */
-	public void addItem(E e)
+	public void addItem(@Nonnull E e)
 	{
-		if(e != null)
-		{
-			items.add(e);
-			sort();
-		}
+		if(e == null)
+			throw new IllegalArgumentException("A null object cannot be added to an ItemList");
+		items.add(e);
+		sort();
 	}
 	
 	/**

@@ -228,10 +228,7 @@ public abstract class Dialog implements Wrappable
 					{
 						positiveListener.onClick(c, mouseButton);
 					}
-					else
-					{
-						close();
-					}
+					close();
 				}
 			});
 			this.addComponent(buttonPositive);
@@ -282,10 +279,7 @@ public abstract class Dialog implements Wrappable
 					{
 						positiveListener.onClick(c, mouseButton);
 					}
-					else
-					{
-						close();
-					}
+					close();
 				}
 			});
 			this.addComponent(buttonPositive);
@@ -300,10 +294,7 @@ public abstract class Dialog implements Wrappable
 					{
 						negativeListener.onClick(c, mouseButton);
 					}
-					else
-					{
-						close();
-					}
+					close();
 				}
 			});
 			this.addComponent(buttonNegative);
@@ -383,9 +374,12 @@ public abstract class Dialog implements Wrappable
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
 			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 15, getHeight() - 20, positiveWidth + 10, 15);
-			buttonPositive.setClickListener((c, mouseButton) -> {
-                if(!textFieldInput.getText().isEmpty()) {
-                    if(responseListener != null)  {
+			buttonPositive.setClickListener((c, mouseButton) ->
+			{
+                if(!textFieldInput.getText().isEmpty())
+                {
+                    if(responseListener != null)
+                    {
                         responseListener.onResponse(true, textFieldInput.getText().trim());
                     }
                     close();
@@ -397,6 +391,18 @@ public abstract class Dialog implements Wrappable
 			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			this.addComponent(buttonNegative);
+		}
+
+		/**
+		 * Sets the initial text for the input text field
+		 * @param inputText
+		 */
+		public void setInputText(@Nonnull String inputText)
+		{
+			if(inputText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.textFieldInput.setText(inputText);
 		}
 
 		/**

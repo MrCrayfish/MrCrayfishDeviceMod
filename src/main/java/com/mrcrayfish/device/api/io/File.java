@@ -24,7 +24,7 @@ public class File
 		this(name, app.getID(), data);
 	}
 	
-	private File(String name, String openingApp, NBTTagCompound data)
+	public File(String name, String openingApp, NBTTagCompound data)
 	{
 		this.name = name;
 		this.openingApp = openingApp;
