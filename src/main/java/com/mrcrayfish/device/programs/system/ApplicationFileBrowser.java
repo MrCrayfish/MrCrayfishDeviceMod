@@ -100,7 +100,25 @@ public class ApplicationFileBrowser extends Application
 
 		btnDelete = new Button(5, 88, ASSETS, 30, 20, 10, 10);
 		btnDelete.setClickListener((b, mouseButton) -> {
-			fileList.removeFile(fileList.getSelectedIndex());
+			File file = fileList.getSelectedItem();
+			if(file != null) {
+				Dialog.Confirmation dialog = new Dialog.Confirmation();
+				StringBuilder builder = new StringBuilder();
+				builder.append("Are you sure you want to delete this ");
+				if(file instanceof Folder) {
+					builder.append("folder");
+				} else {
+					builder.append("file");
+				}
+				builder.append(" '");
+				builder.append(file.getName());
+				builder.append("'?");
+				dialog.setMessageText(builder.toString());
+				dialog.setTitle("Delete");
+				dialog.setPositiveButton("Yes", (c, mouseButton1) -> {
+					fileList.removeFile(fileList.getSelectedIndex());
+				});
+			}
 		});
 		main.addComponent(btnDelete);
 
