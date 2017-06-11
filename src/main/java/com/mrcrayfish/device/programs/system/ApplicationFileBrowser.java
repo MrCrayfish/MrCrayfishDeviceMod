@@ -89,7 +89,9 @@ public class ApplicationFileBrowser extends Application
 		main.addComponent(btnNewFolder);
 
 		btnRename = new Button(5, 45, ASSETS, 50, 20, 10, 10);
-		btnRename.setClickListener((c, mouseButton) -> fileList.renameSelectedFile());
+		btnRename.setClickListener((c, mouseButton) -> {
+			fileList.renameSelectedFile();
+		});
 		btnRename.setToolTip("Rename", "Change the name of the selected file or folder");
 		btnRename.setEnabled(false);
 		main.addComponent(btnRename);

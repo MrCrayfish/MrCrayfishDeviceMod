@@ -120,7 +120,11 @@ public class FileList extends ItemList<File>
 
     public void removeFile(File file)
     {
-        current.delete(file.getName());
+        int index = items.indexOf(file);
+        if(super.removeItem(index) != null)
+        {
+            current.delete(file.getName());
+        }
     }
 
     public void copyFile()
@@ -215,7 +219,16 @@ public class FileList extends ItemList<File>
                 if(success)
                 {
                     removeFile(file);
-                    addFile(new File(s, file.getOpeningApp(), file.getData()));
+                    if(file.isFolder())
+                    {
+                        Folder folder = new Folder(s);
+                        folder.setFiles(((Folder) file.copy()).getFiles());
+                        addFile(folder);
+                    }
+                    else
+                    {
+                        addFile(new File(s, file.getOpeningApp(), file.getData().copy()));
+                    }
                 }
             });
             dialog.setTitle("Rename " + (file instanceof Folder ? "Folder" : "File"));

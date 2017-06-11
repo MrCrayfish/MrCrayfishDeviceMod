@@ -65,6 +65,11 @@ public class Folder extends File
 	{
 		return files;
 	}
+
+	public void setFiles(List<File> files)
+	{
+		this.files = files;
+	}
 	
 	@Override
 	public boolean isFolder() 
@@ -114,6 +119,10 @@ public class Folder extends File
 	@Override
 	public File copy() 
 	{
-		return new Folder(name);
+		Folder folder = new Folder(name);
+		files.forEach(f -> {
+			folder.add(f.copy());
+		});
+		return folder;
 	}
 }
