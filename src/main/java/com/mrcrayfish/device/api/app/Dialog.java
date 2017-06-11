@@ -3,12 +3,10 @@ package com.mrcrayfish.device.api.app;
 import java.awt.Color;
 
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ResponseListener;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
@@ -20,6 +18,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class Dialog implements Wrappable
 {
@@ -325,7 +324,7 @@ public abstract class Dialog implements Wrappable
 		private String positiveText = "Ok";
 		private String negativeText = "Cancel";
 
-		private ResponseListener<String> responseListener;
+		private ResponseHandler<String> responseListener;
 
 		private TextField textFieldInput;
 		private Button buttonPositive;
@@ -371,6 +370,7 @@ public abstract class Dialog implements Wrappable
 
 			textFieldInput = new TextField(5, 5 + offset, getWidth() - 10);
 			textFieldInput.setText(inputText);
+			textFieldInput.setFocused(true);
 			this.addComponent(textFieldInput);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
@@ -379,11 +379,12 @@ public abstract class Dialog implements Wrappable
 			{
                 if(!textFieldInput.getText().isEmpty())
                 {
+                	boolean close = true;
                     if(responseListener != null)
                     {
-                        responseListener.onResponse(true, textFieldInput.getText().trim());
+                        close = responseListener.onResponse(true, textFieldInput.getText().trim());
                     }
-                    close();
+					if(close) close();
                 }
             });
 			this.addComponent(buttonPositive);
@@ -407,6 +408,16 @@ public abstract class Dialog implements Wrappable
 		}
 
 		/**
+		 * Gets the input text field. This will be null if has not been
+		 * @return
+		 */
+		@Nullable
+		public TextField getTextFieldInput()
+		{
+			return textFieldInput;
+		}
+
+		/**
 		 * Sets the positive button text
 		 * @param positiveText
 		 */
@@ -420,6 +431,7 @@ public abstract class Dialog implements Wrappable
 
 		/**
 		 * Sets the negative button text
+		 *
 		 * @param negativeText
 		 */
 		public void setNegativeText(@Nonnull String negativeText)
@@ -431,14 +443,32 @@ public abstract class Dialog implements Wrappable
 		}
 
 		/**
-		 * Sets the response listener. The listener is called when the positive
-		 * button is pressed and returns the value in the input text field.
+		 * Sets the response handler. The handler is called when the positive
+		 * button is pressed and returns the value in the input text field. Returning
+		 * true in the handler indicates that the dialog should close.
+		 *
 		 * @param responseListener
 		 */
-		public void setResponseListener(ResponseListener<String> responseListener)
+		public void setResponseHandler(ResponseHandler<String> responseListener)
 		{
 			this.responseListener = responseListener;
 		}
+	}
+
+	/**
+	 * The response listener interface. Used for handling responses
+	 * from components. The generic is the returned value.
+	 *
+	 * @author MrCrayfish
+	 */
+	public interface ResponseHandler<E>
+	{
+		/**
+		 * Called when a response is thrown.
+		 *
+		 * @param success if the executing task was successful
+		 */
+		boolean onResponse(boolean success, E e);
 	}
 
 }

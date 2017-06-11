@@ -3,7 +3,8 @@ package com.mrcrayfish.device.programs.system.component;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
@@ -161,6 +162,37 @@ public class FileList extends ItemList<File>
                         clipboardFile = null;
                     }
                 }
+                else
+                {
+                    Dialog.Input dialog = new Dialog.Input("A file with the same name already exists in this directory. Please choose a new name");
+                    dialog.setPositiveText("Rename");
+                    dialog.setInputText(clipboardFile.getName());
+                    dialog.setResponseHandler((success, s) ->
+                    {
+                        if(success)
+                        {
+                            File file = renameFile(clipboardFile.copy(), s);
+                            if(addFile(file))
+                            {
+                                if(clipboardDir != null)
+                                {
+                                    clipboardDir.delete(clipboardFile.getName());
+                                    clipboardDir = null;
+                                    clipboardFile = null;
+                                }
+                                return true;
+                            }
+                            else
+                            {
+                                TextField textField = dialog.getTextFieldInput();
+                                textField.setText(s);
+                                textField.setTextColour(Color.RED);
+                            }
+                        }
+                        return false;
+                    });
+                    app.openDialog(dialog);
+                }
             }
             else
             {
@@ -217,26 +249,29 @@ public class FileList extends ItemList<File>
         if(file != null)
         {
             Dialog.Input dialog = new Dialog.Input("Enter a name");
-            dialog.setResponseListener((success, s) ->
+            dialog.setResponseHandler((success, s) ->
             {
                 if(success)
                 {
                     removeFile(file);
-                    if(file.isFolder())
-                    {
-                        Folder folder = new Folder(s);
-                        folder.setFiles(((Folder) file.copy()).getFiles());
-                        addFile(folder);
-                    }
-                    else
-                    {
-                        addFile(new File(s, file.getOpeningApp(), file.getData().copy()));
-                    }
+                    addFile(renameFile(file, s));
                 }
+                return true;
             });
             dialog.setTitle("Rename " + (file instanceof Folder ? "Folder" : "File"));
             dialog.setInputText(file.getName());
             app.openDialog(dialog);
         }
+    }
+
+    private File renameFile(File source, String newName)
+    {
+        if(source.isFolder())
+        {
+            Folder folder = new Folder(newName);
+            folder.setFiles(((Folder) source).getFiles());
+            return folder;
+        }
+        return new File(newName, source.getOpeningApp(), source.getData());
     }
 }

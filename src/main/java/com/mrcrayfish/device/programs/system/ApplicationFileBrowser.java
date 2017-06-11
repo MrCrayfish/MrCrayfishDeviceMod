@@ -69,10 +69,11 @@ public class ApplicationFileBrowser extends Application
 		btnNewFolder = new Button(5, 25, ASSETS, 0, 20, 10, 10);
 		btnNewFolder.setClickListener((b, mouseButton) -> {
 			Dialog.Input dialog = new Dialog.Input("Enter a name");
-			dialog.setResponseListener((success, v) -> {
+			dialog.setResponseHandler((success, v) -> {
 				if(success) {
 					fileList.addFile(new Folder(v));
 				}
+				return true;
 			});
 			dialog.setTitle("Create a Folder");
 			dialog.setPositiveText("Create");
