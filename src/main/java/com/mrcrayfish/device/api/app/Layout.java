@@ -119,7 +119,7 @@ public final class Layout extends Component
 	{
 		for(Component c : components)
 		{
-			c.init(this);
+			c.init(layout);
 		}
 	}
 	

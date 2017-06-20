@@ -55,7 +55,6 @@ public abstract class Application extends Info implements Wrappable
 		if (c != null)
 		{
 			defaultLayout.addComponent(c);
-			c.init(defaultLayout);
 		}
 	}
 
