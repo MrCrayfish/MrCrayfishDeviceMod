@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class Dialog implements Wrappable
+public class Dialog extends Wrappable
 {
 	private String title = "Message";
 	private int width;
@@ -30,9 +30,9 @@ public abstract class Dialog implements Wrappable
 	private Layout customLayout;
 	
 	private boolean pendingLayoutUpdate = true;
-	
+
 	private Window window;
-	
+
 	public Dialog() 
 	{
 		this.defaultLayout = new Layout(150, 40);
@@ -55,7 +55,7 @@ public abstract class Dialog implements Wrappable
 		this.pendingLayoutUpdate = true;
 		this.customLayout.init();
 	}
-	
+
 	@Override
 	public void init()
 	{
@@ -123,7 +123,7 @@ public abstract class Dialog implements Wrappable
 	}
 
 	@Override
-	public String getTitle()
+	public String getWindowTitle()
 	{
 		return title;
 	}
@@ -169,20 +169,12 @@ public abstract class Dialog implements Wrappable
 	{
 		this.customLayout = null;
 	}
-	
+
 	public void close()
 	{
-		if(window != null)
-		{
-			window.closeDialog();
-		}
+		window.close();
 	}
 
-	public void setWindow(Window window)
-	{
-		this.window = window;
-	}
-	
 	public static class Message extends Dialog
 	{
 		private String messageText = "";

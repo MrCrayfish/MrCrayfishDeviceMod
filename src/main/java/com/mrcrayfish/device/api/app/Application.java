@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 /**
@@ -17,13 +18,15 @@ import javax.annotation.Resource;
  * 
  * @author MrCrayfish
  */
-public abstract class Application extends Info implements Wrappable
+public abstract class Application extends Wrappable implements Info
 {
 	protected Icon icon = new Icon(TaskBar.APP_BAR_GUI, 0, 30);
 
 	private int width, height;
 
-	private final Layout defaultLayout;
+	private final String APP_ID;
+	private final String DISPLAY_NAME;
+	private final Layout defaultLayout = new Layout();
 	private Layout currentLayout;
 
 	/** If set to true, will update NBT data for Application */
@@ -37,8 +40,8 @@ public abstract class Application extends Info implements Wrappable
 
 	public Application(String appId, String displayName)
 	{
-		super(appId, displayName);
-		this.defaultLayout = new Layout();
+		this.APP_ID = appId;
+		this.DISPLAY_NAME = displayName;
 	}
 
 	/**
@@ -92,17 +95,7 @@ public abstract class Application extends Info implements Wrappable
 
 	/**
 	 * The default initialization method. Clears any components in the default
-	 * layout and sets it as the current layout. If you override this method and
-	 * are using the default layout, make sure you call it using
-	 * <code>super.init(x, y)</code>
-	 * <p>
-	 * The parameters passed are the x and y location of the top left corner or
-	 * your application window.
-	 * 
-	 * @param x
-	 *            the starting x position
-	 * @param y
-	 *            the starting y position
+	 * layout and sets it as the current layout.
 	 */
 	@Override
 	public void init()
@@ -385,13 +378,36 @@ public abstract class Application extends Info implements Wrappable
 	 * @return The display name
 	 */
 	@Override
-	public String getTitle()
+	public String getWindowTitle()
 	{
 		if(currentLayout.hasTitle())
 		{
 			return currentLayout.getTitle();
 		}
 		return DISPLAY_NAME;
+	}
+
+	@Override
+	public String getID()
+	{
+		return APP_ID;
+	}
+
+	@Override
+	public String getDisplayName()
+	{
+		return DISPLAY_NAME;
+	}
+
+	/**
+	 * Gets the resource location the icon is located in
+	 *
+	 * @return the icon resource location
+	 */
+	@Override
+	public Icon getIcon()
+	{
+		return icon;
 	}
 
 	/**
@@ -402,36 +418,6 @@ public abstract class Application extends Info implements Wrappable
 	protected void setIcon(ResourceLocation resource, int u, int v)
 	{
 		this.icon = new Icon(resource, u, v);
-	}
-
-	/**
-	 * Gets the resource location the icon is located in
-	 *
-	 * @return the icon resource location
-	 */
-	public Icon getIcon()
-	{
-		return icon;
-	}
-
-	/**
-	 * Sets the Window instance. Used by the core.
-	 *
-	 * @param window
-	 */
-	public void setWindow(Window window)
-	{
-		if (window == null)
-			return;
-		this.window = window;
-	}
-
-	public final void openDialog(Dialog dialog)
-	{
-		if (window != null)
-		{
-			window.openDialog(dialog);
-		}
 	}
 
 	public void setFileSystem(FileSystem fileSystem)
@@ -459,8 +445,8 @@ public abstract class Application extends Info implements Wrappable
 		return app.getID().equals(this.getID());
 	}
 
-	public static class Icon {
-
+	public static class Icon
+	{
 		protected ResourceLocation icon;
 		protected int u, v;
 
@@ -470,21 +456,25 @@ public abstract class Application extends Info implements Wrappable
 		 * @param u
 		 * @param v
 		 */
-		public Icon(ResourceLocation resource, int u, int v) {
+		public Icon(ResourceLocation resource, int u, int v)
+		{
 			this.icon = resource;
 			this.u = u;
 			this.v = v;
 		}
 
-		public ResourceLocation getResource() {
+		public ResourceLocation getResource()
+		{
 			return icon;
 		}
 
-		public int getU() {
+		public int getU()
+		{
 			return u;
 		}
 
-		public int getV() {
+		public int getV()
+		{
 			return v;
 		}
 	}

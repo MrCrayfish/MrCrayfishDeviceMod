@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import scala.App;
 
 public class Window<T extends Wrappable>
 {
@@ -26,23 +27,20 @@ public class Window<T extends Wrappable>
 	T content;
 	int width, height;
 	int offsetX, offsetY;
-	
+
+	final Laptop laptop;
 	Window<Dialog> dialogWindow = null;
-	private Window parent = null;
+	Window<? extends  Wrappable> parent = null;
 	
 	protected GuiButton btnClose;
 	
-	public Window(T wrappable) 
+	public Window(T wrappable, Laptop laptop)
 	{
 		this.content = wrappable;
-		if(wrappable instanceof Dialog)
-		{
-			Dialog dialog = (Dialog) wrappable;
-			dialog.setWindow(this);
-		}
+		this.laptop = laptop;
 	}
 	
-	protected void setWidth(int width) 
+	void setWidth(int width)
 	{
 		this.width = width + 2;
 		if(this.width > Laptop.SCREEN_WIDTH)
@@ -51,7 +49,7 @@ public class Window<T extends Wrappable>
 		}
 	}
 	
-	protected void setHeight(int height) 
+	void setHeight(int height)
 	{
 		this.height = height + 14;
 		if(this.height > 178)
@@ -60,15 +58,10 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	public void init(List<GuiButton> buttons, int x, int y)
+	void init(int x, int y)
 	{
-		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
-		
-		if(content instanceof Application)
-		{
-			((Application) content).setWindow(this);
-		}
-		
+		btnClose = new GuiButtonClose(0, offsetX + width - 12, offsetY + 1);
+		content.setWindow(this);
 		content.init();
 	}
 	
@@ -112,12 +105,13 @@ public class Window<T extends Wrappable>
 		/* Center */
 		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
 		
-		mc.fontRendererObj.drawString(content.getTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
+		mc.fontRendererObj.drawString(content.getWindowTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
 		btnClose.drawButton(mc, mouseX, mouseY);
 		
 		GlStateManager.disableBlend();
 
+		/* Render content */
 		content.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active && dialogWindow == null, partialTicks);
 		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -128,15 +122,7 @@ public class Window<T extends Wrappable>
 			dialogWindow.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
 		}
 	}
-	
-	public void handleButtonClick(Laptop laptop, GuiButton button) 
-	{
-		if(button.equals(btnClose))
-		{
-			laptop.close((Application) content);
-		}
-	}
-	
+
 	public void handleKeyTyped(char character, int code)
 	{
 		if(dialogWindow != null)
@@ -191,41 +177,32 @@ public class Window<T extends Wrappable>
 		updateComponents(screenStartX, screenStartY);
 	}
 	
-	public void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
+	void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		if(content instanceof Dialog)
+		if(btnClose.isMouseOver())
 		{
-			if(btnClose.isMouseOver())
-			{
-				closeDialog();
-			}
-			else
-			{
-				content.handleMouseClick(mouseX, mouseY, mouseButton);
-			}
-		}
-		
-		if(content instanceof Application)
-		{
-			if(dialogWindow != null)
-			{
-				dialogWindow.handleMouseClick(gui, x, y, mouseX, mouseY, mouseButton);
-				return;
-			}
-			
-			if(btnClose.isMouseOver())
+			if(content instanceof Application)
 			{
 				gui.close((Application) content);
-				btnClose.playPressSound(gui.mc.getSoundHandler());
+				return;
 			}
-			else
+
+			if(parent != null)
 			{
-				content.handleMouseClick(mouseX, mouseY, mouseButton);	
+				parent.closeDialog();
 			}
 		}
+
+		if(dialogWindow != null)
+		{
+			dialogWindow.handleMouseClick(gui, x, y, mouseX, mouseY, mouseButton);
+			return;
+		}
+
+		content.handleMouseClick(mouseX, mouseY, mouseButton);
 	}
 	
-	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
+	void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		if(dialogWindow != null)
 		{
@@ -235,7 +212,7 @@ public class Window<T extends Wrappable>
 		content.handleMouseDrag(mouseX, mouseY, mouseButton);
 	}
 	
-	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
+	void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
 		if(dialogWindow != null)
 		{
@@ -245,7 +222,7 @@ public class Window<T extends Wrappable>
 		content.handleMouseRelease(mouseX, mouseY, mouseButton);
 	}
 	
-	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
 		if(dialogWindow != null)
 		{
@@ -260,7 +237,7 @@ public class Window<T extends Wrappable>
 		content.onClose();
 	}
 	
-	public void updateComponents(int x, int y)
+	private void updateComponents(int x, int y)
 	{
 		content.updateComponents(x + offsetX + 1, y + offsetY + 13);
 		btnClose.xPosition = x + offsetX + width - 12;
@@ -269,32 +246,57 @@ public class Window<T extends Wrappable>
 	
 	public void openDialog(Dialog dialog)
 	{
-		if(content instanceof Application)
+		if(dialogWindow != null)
 		{
-			dialogWindow = new Window(dialog);
-			dialogWindow.init(null, 0, 0);
-			dialogWindow.setParent((Window<Application>)this);
+			dialogWindow.openDialog(dialog);
+		}
+		else
+		{
+			dialogWindow = new Window(dialog, null);
+			dialogWindow.init(0, 0);
+			dialogWindow.setParent(this);
 		}
 	}
-	
+
 	public void closeDialog()
 	{
-		if(content instanceof Dialog)
+		if(dialogWindow != null)
+		{
+			dialogWindow.handleClose();
+			dialogWindow = null;
+		}
+	}
+
+	public Window<Dialog> getDialogWindow()
+	{
+		return dialogWindow;
+	}
+
+	public void close()
+	{
+		if(content instanceof Application)
+		{
+			laptop.close((Application) content);
+			return;
+		}
+		if(parent != null)
 		{
 			parent.closeDialog();
 		}
-		else if(content instanceof Application)
-		{
-			if(dialogWindow != null)
-			{
-				dialogWindow.handleClose();
-				dialogWindow = null;
-			}
-		}
 	}
-	
+
 	public void setParent(Window parent)
 	{
 		this.parent = parent;
+	}
+
+	public Window getParent()
+	{
+		return parent;
+	}
+
+	public T getContent()
+	{
+		return content;
 	}
 }

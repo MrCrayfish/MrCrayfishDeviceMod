@@ -522,7 +522,7 @@ public class ApplicationEmail extends Application
 	}
 
 	@Override
-	public String getTitle()
+	public String getWindowTitle()
 	{
 		if (getCurrentLayout() == layoutInbox)
 		{

@@ -96,7 +96,7 @@ public class Laptop extends GuiScreen
 		{
         	if(window != null)
 			{
-        		close(window.content);
+        		window.close();
 			}
 		}
         
@@ -206,10 +206,11 @@ public class Laptop extends GuiScreen
 		
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window window = windows[i];
+			Window<Application> window = windows[i];
 			if(window != null)
 			{
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialogWindow))
+				Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
+				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
 				{
 					windows[i] = null;
 					updateWindowStack();
@@ -217,13 +218,13 @@ public class Laptop extends GuiScreen
 					
 					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
 					
-					if(isMouseWithinWindowBar(mouseX, mouseY, window.dialogWindow))
+					if(isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
 					{
 						this.dragging = true;
 						return;
 					}
 		
-					if(isMouseWithinWindowBar(mouseX, mouseY, window) && window.dialogWindow == null)
+					if(isMouseWithinWindowBar(mouseX, mouseY, window) && dialogWindow == null)
 					{
 						this.dragging = true;
 						return;
@@ -280,18 +281,19 @@ public class Laptop extends GuiScreen
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		if(windows[0] != null)
 		{
-			Window window = windows[0];
+			Window<Application> window = windows[0];
+			Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
 			if(dragging)
 			{
 				if(isMouseOnScreen(mouseX, mouseY))
 				{
-					if(window.dialogWindow == null)
+					if(dialogWindow == null)
 					{
 						window.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
 					}
 					else
 					{
-						window.dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
 					}
 				}
 				else
@@ -301,7 +303,7 @@ public class Laptop extends GuiScreen
 			}
 			else
 			{
-				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, window.dialogWindow))
+				if(isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
 				{
 					window.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
 				}
@@ -327,19 +329,7 @@ public class Laptop extends GuiScreen
 			}
 		}
 	}
-	
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException 
-	{
-		for(Window window : windows)
-		{
-			if(window != null)
-			{
-				window.handleButtonClick(this, button);
-			}
-		}
-	}
-	
+
 	@Override
 	public void drawHoveringText(List<String> textLines, int x, int y) 
 	{
@@ -369,8 +359,8 @@ public class Laptop extends GuiScreen
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		
-		Window window = new Window(app);
-		window.init(buttonList, posX, posY);
+		Window window = new Window(app, this);
+		window.init(posX, posY);
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -395,14 +385,13 @@ public class Laptop extends GuiScreen
 					window.content.setFileSystem(null);
 					window.handleClose();
 					windows[i] = null;
-					window = null;
 					return;
 				}
 			}
 		}
 	}
 	
-	public void addWindow(Window window)
+	private void addWindow(Window window)
 	{
 		if(hasReachedWindowLimit())
 			return;
@@ -411,7 +400,7 @@ public class Laptop extends GuiScreen
 		windows[0] = window;
 	}
 	
-	public void updateWindowStack()
+	private void updateWindowStack()
 	{
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
@@ -436,7 +425,7 @@ public class Laptop extends GuiScreen
 		}
 	}
 	
-	public boolean hasReachedWindowLimit()
+	private boolean hasReachedWindowLimit()
 	{
 		for(Window window : windows)
 		{
@@ -445,14 +434,14 @@ public class Laptop extends GuiScreen
 		return true;
 	}
 
-	public boolean isMouseOnScreen(int mouseX, int mouseY) 
+	private boolean isMouseOnScreen(int mouseX, int mouseY)
 	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
 	}
 	
-	public boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window) 
+	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window)
 	{
 		if(window == null) return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
@@ -460,22 +449,15 @@ public class Laptop extends GuiScreen
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 1, posX + window.offsetX + window.width - 13, posY + window.offsetY + 11);
 	}
 	
-	public boolean isMouseWithinWindow(int mouseX, int mouseY, Window window) 
+	private boolean isMouseWithinWindow(int mouseX, int mouseY, Window window)
 	{
 		if(window == null) return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
 	}
-	
-	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window)
-	{
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
-	}
-	
-	public boolean isAppRunning(String id) 
+
+	public boolean isAppRunning(String id)
 	{
 		for(Window window : windows) 
 		{
