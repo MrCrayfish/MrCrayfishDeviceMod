@@ -291,10 +291,9 @@ public class FileBrowser extends Component
         layout.addComponent(main);
 
         openFolder(root, false);
-        openFolder((Folder) root.getFile("Home"), true);
     }
 
-    private void openFolder(Folder folder, boolean push)
+    public void openFolder(Folder folder, boolean push)
     {
         if(push) {
             predecessor.push(current);
