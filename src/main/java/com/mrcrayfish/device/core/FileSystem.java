@@ -1,13 +1,11 @@
 package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.api.io.Folder;
-
 import net.minecraft.nbt.NBTTagCompound;
 
 public class FileSystem 
 {
 	private Folder rootFolder;
-	private Folder homeFolder;
 	
 	FileSystem(NBTTagCompound data) 
 	{
@@ -15,17 +13,23 @@ public class FileSystem
 		{
 			rootFolder = Folder.fromTag(data);
 		}
-		else
-		{
-			setupDefaultSetup();
-		}
+		setupDefaultSetup();
 	}
 
 	private void setupDefaultSetup()
 	{
-		rootFolder = new Folder("Root");
-		rootFolder.add(new Folder("Home"));
-		rootFolder.add(new Folder("Application Data"));
+		if(rootFolder == null)
+		{
+			rootFolder = new Folder("Root");
+		}
+		if(!rootFolder.hasFolder("Home"))
+		{
+			rootFolder.add(new Folder("Home"), true);
+		}
+		if(!rootFolder.hasFolder("Application Data"))
+		{
+			rootFolder.add(new Folder("Application Data"), true);
+		}
 	}
 
 	public Folder getRootFolder()
@@ -35,7 +39,7 @@ public class FileSystem
 	
 	public Folder getHomeFolder()
 	{
-		return (Folder) rootFolder.getFile("home");
+		return (Folder) rootFolder.getFile("Home");
 	}
 	
 	public boolean isUSBPluggedIn()
