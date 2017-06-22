@@ -43,26 +43,17 @@ public class Folder extends File
 	
 	public File getFile(String name)
 	{
-		for(File file : files)
-		{
-			if(file.name.equalsIgnoreCase(name))
-			{
-				return file;
-			}
-		}
-		return null;
+		return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
 	public boolean hasFile(String name)
 	{
-		for(File file : files) 
-		{
-			if(file.name.equalsIgnoreCase(name))
-			{
-				return true;
-			}
-		}
-		return false;
+		return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
+	}
+
+	public boolean hasFolder(String name)
+	{
+		return files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
 	}
 	
 	public List<File> getFiles()
