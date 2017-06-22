@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.core.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -428,6 +430,26 @@ public abstract class Application extends Wrappable implements Info
 	public FileSystem getFileSystem()
 	{
 		return fileSystem;
+	}
+
+	@Nullable
+	public Folder getApplicationFolder()
+	{
+		Folder root = fileSystem.getRootFolder();
+		if(root.hasFile("Application Data"))
+		{
+			File file = root.getFile("Application Data");
+			if(file.isFolder())
+			{
+				Folder apps = (Folder) file;
+				if(!apps.hasFile(APP_ID))
+				{
+					apps.add(new Folder(APP_ID));
+				}
+				return (Folder) apps.getFile(APP_ID);
+			}
+		}
+		return null;
 	}
 
 	/**
