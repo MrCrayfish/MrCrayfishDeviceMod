@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.opengl.GL11;
@@ -597,6 +598,7 @@ public abstract class Dialog extends Wrappable
 	{
 		private final Application app;
 		private final NBTTagCompound fileData;
+		private Folder root;
 
 		private String positiveText = "Save";
 		private String negativeText = "Cancel";
@@ -612,6 +614,7 @@ public abstract class Dialog extends Wrappable
 		public SaveFile(Application app, NBTTagCompound fileData)
 		{
 			this.app = app;
+			this.root = app.getFileSystem().getHomeFolder();
 			this.fileData = fileData;
 			this.setTitle("Save File");
 		}
@@ -624,7 +627,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 143);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, root, FileBrowser.Mode.BASIC);
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
@@ -713,6 +716,11 @@ public abstract class Dialog extends Wrappable
 		public void setResponseHandler(ResponseHandler<File> responseHandler)
 		{
 			this.responseHandler = responseHandler;
+		}
+
+		public void setFolder(Folder root)
+		{
+			this.root = root;
 		}
 	}
 
