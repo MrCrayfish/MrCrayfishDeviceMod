@@ -436,18 +436,14 @@ public abstract class Application extends Wrappable implements Info
 	public Folder getApplicationFolder()
 	{
 		Folder root = fileSystem.getRootFolder();
-		if(root.hasFile("Application Data"))
+		if(root.hasFolder("Application Data"))
 		{
-			File file = root.getFile("Application Data");
-			if(file.isFolder())
+			Folder apps = (Folder) root.getFile("Application Data");
+			if(!apps.hasFolder(APP_ID))
 			{
-				Folder apps = (Folder) file;
-				if(!apps.hasFile(APP_ID))
-				{
-					apps.add(new Folder(APP_ID));
-				}
-				return (Folder) apps.getFile(APP_ID);
+				apps.add(new Folder(APP_ID), true);
 			}
+			return (Folder) apps.getFile(APP_ID);
 		}
 		return null;
 	}
