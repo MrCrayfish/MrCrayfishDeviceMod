@@ -3,6 +3,9 @@ package com.mrcrayfish.device.api.app;
 import java.awt.Color;
 
 import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Layout.Background;
@@ -20,7 +23,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Dialog extends Wrappable
+public abstract class Dialog extends Wrappable
 {
 	private String title = "Message";
 	private int width;
@@ -30,8 +33,7 @@ public class Dialog extends Wrappable
 	private Layout customLayout;
 	
 	private boolean pendingLayoutUpdate = true;
-
-	private Window window;
+	private boolean pendingClose = false;
 
 	public Dialog() 
 	{
@@ -66,6 +68,10 @@ public class Dialog extends Wrappable
 	@Override
 	public void onTick()
 	{
+		if(pendingClose && getWindow().getDialogWindow() == null)
+		{
+			getWindow().close();
+		}
 		customLayout.handleTick();
 	}
 
@@ -83,14 +89,12 @@ public class Dialog extends Wrappable
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		customLayout.handleMouseClick(mouseX, mouseY, mouseButton);
-		
 	}
 
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		customLayout.handleMouseDrag(mouseX, mouseY, mouseButton);
-		
 	}
 
 	@Override
@@ -165,14 +169,11 @@ public class Dialog extends Wrappable
 	}
 
 	@Override
-	public void onClose()
-	{
-		this.customLayout = null;
-	}
+	public void onClose() {}
 
 	public void close()
 	{
-		window.close();
+		this.pendingClose = true;
 	}
 
 	public static class Message extends Dialog
@@ -225,7 +226,15 @@ public class Dialog extends Wrappable
 			this.addComponent(buttonPositive);
 		}
 	}
-	
+
+	/**
+	 * A simple confirmation dialog
+	 *
+	 * This can be used to prompt as user to confirm whether a
+	 * task should run. For instance, the FileBrowser component
+	 * uses this dialog to prompt the user if it should override
+	 * a file.
+	 */
 	public static class Confirmation extends Dialog
 	{
 		private String messageText = "Are you sure?";
@@ -237,6 +246,13 @@ public class Dialog extends Wrappable
 		
 		private Button buttonPositive;
 		private Button buttonNegative;
+
+		public Confirmation() {}
+
+		public Confirmation(String messageText)
+		{
+			this.messageText = messageText;
+		}
 
 		@Override
 		public void init()
@@ -290,16 +306,39 @@ public class Dialog extends Wrappable
 			});
 			this.addComponent(buttonNegative);
 		}
-		
-		public void setPositiveButton(String positiveText, ClickListener positiveListener)
+
+		/**
+		 * Sets the positive button text
+		 * @param positiveText
+		 */
+		public void setPositiveText(@Nonnull String positiveText)
 		{
+			if(positiveText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
 			this.positiveText = positiveText;
+		}
+
+		/**
+		 * Sets the negative button text
+		 *
+		 * @param negativeText
+		 */
+		public void setNegativeText(@Nonnull String negativeText)
+		{
+			if(negativeText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.negativeText = negativeText;
+		}
+		
+		public void setPositiveListener(ClickListener positiveListener)
+		{
 			this.positiveListener = positiveListener;
 		}
 		
-		public void setNegativeButton(String negativeText, ClickListener negativeListener)
+		public void setNegativeListener(ClickListener negativeListener)
 		{
-			this.negativeText = negativeText;
 			this.negativeListener = negativeListener;
 		}
 		
@@ -309,6 +348,9 @@ public class Dialog extends Wrappable
 		}
 	}
 
+	/**
+	 * A simple dialog to retrieve text input from the user
+	 */
 	public static class Input extends Dialog
 	{
 		private String messageText = null;
@@ -444,6 +486,232 @@ public class Dialog extends Wrappable
 		public void setResponseHandler(ResponseHandler<String> responseListener)
 		{
 			this.responseListener = responseListener;
+		}
+	}
+
+	public static class OpenFile extends Dialog
+	{
+		private final Application app;
+
+		private String positiveText = "Open";
+		private String negativeText = "Cancel";
+
+		private Layout main;
+		private FileBrowser browser;
+		private Button buttonPositive;
+		private Button buttonNegative;
+
+		private ResponseHandler<File> responseListener;
+
+		public OpenFile(Application app)
+		{
+			this.app = app;
+			this.setTitle("Open File");
+		}
+
+		@Override
+		public void init()
+		{
+			super.init();
+
+			main = new Layout(225, 125);
+			this.setLayout(main);
+
+			browser = new FileBrowser(0, 0, app, app.getFileSystem().getBaseFolder(), FileBrowser.Mode.BASIC);
+			browser.setItemClickListener((file, index, mouseButton) -> {
+				if(mouseButton == 0)
+				{
+					if(!file.isFolder())
+					{
+						buttonPositive.setEnabled(true);
+					}
+				}
+			});
+			main.addComponent(browser);
+
+			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
+			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 28, getHeight() - 20, positiveWidth + 10, 15);
+			buttonPositive.setEnabled(false);
+			buttonPositive.setClickListener((c, mouseButton) ->
+			{
+				if(mouseButton == 0)
+				{
+					File file = browser.getSelectedFile();
+					if(file != null)
+					{
+						boolean close = true;
+						if (responseListener != null)
+						{
+							close = responseListener.onResponse(true, file);
+						}
+						if (close) close();
+					}
+				}
+			});
+			main.addComponent(buttonPositive);
+
+			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
+			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 28, getHeight() - 20, negativeWidth + 10, 15);
+			buttonNegative.setClickListener((c, mouseButton) -> close());
+			main.addComponent(buttonNegative);
+		}
+
+		/**
+		 * Sets the positive button text
+		 * @param positiveText
+		 */
+		public void setPositiveText(@Nonnull String positiveText)
+		{
+			if(positiveText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.positiveText = positiveText;
+		}
+
+		/**
+		 * Sets the negative button text
+		 *
+		 * @param negativeText
+		 */
+		public void setNegativeText(@Nonnull String negativeText)
+		{
+			if(negativeText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.negativeText = negativeText;
+		}
+
+		/**
+		 * Sets the response handler. The handler is called when the positive
+		 * button is pressed and returns the file that is selected. Returning
+		 * true in the handler indicates that the dialog should close.
+		 *
+		 * @param responseListener
+		 */
+		public void setResponseHandler(ResponseHandler<File> responseListener)
+		{
+			this.responseListener = responseListener;
+		}
+	}
+
+	public static class SaveFile extends Dialog
+	{
+		private final Application app;
+		private final NBTTagCompound fileData;
+
+		private String positiveText = "Save";
+		private String negativeText = "Cancel";
+
+		private Layout main;
+		private FileBrowser browser;
+		private TextField textFieldFileName;
+		private Button buttonPositive;
+		private Button buttonNegative;
+
+		public ResponseHandler<File> responseHandler;
+
+		public SaveFile(Application app, NBTTagCompound fileData)
+		{
+			this.app = app;
+			this.fileData = fileData;
+			this.setTitle("Save File");
+		}
+
+		@Override
+		public void init()
+		{
+			super.init();
+
+			main = new Layout(225, 143);
+			this.setLayout(main);
+
+			browser = new FileBrowser(0, 0, app, app.getFileSystem().getBaseFolder(), FileBrowser.Mode.BASIC);
+			main.addComponent(browser);
+
+			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
+			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 28, getHeight() - 20, positiveWidth + 10, 15);
+			buttonPositive.setClickListener((c, mouseButton) ->
+			{
+				if(mouseButton == 0)
+				{
+					if(!textFieldFileName.getText().isEmpty())
+					{
+						File file = new File(textFieldFileName.getText(), app, fileData.copy());
+						if(!browser.addFile(file))
+						{
+							Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
+							dialog.setPositiveText("Override");
+							dialog.setPositiveListener((c1, mouseButton1) ->
+							{
+								browser.removeFile(file.getName());
+								browser.addFile(file);
+								dialog.close();
+								if(SaveFile.this.responseHandler != null)
+								{
+									SaveFile.this.responseHandler.onResponse(true, file);
+								}
+								SaveFile.this.close();
+							});
+							app.openDialog(dialog);
+						}
+						else
+						{
+							if(responseHandler != null)
+							{
+								responseHandler.onResponse(true, file);
+							}
+							close();
+						}
+					}
+				}
+			});
+			main.addComponent(buttonPositive);
+
+			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
+			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 28, getHeight() - 20, negativeWidth + 10, 15);
+			buttonNegative.setClickListener((c, mouseButton) -> close());
+			main.addComponent(buttonNegative);
+
+			textFieldFileName = new TextField(26, 105, 181);
+			textFieldFileName.setFocused(true);
+			main.addComponent(textFieldFileName);
+		}
+
+		/**
+		 * Sets the positive button text
+		 * @param positiveText
+		 */
+		public void setPositiveText(@Nonnull String positiveText)
+		{
+			if(positiveText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.positiveText = positiveText;
+		}
+
+		/**
+		 * Sets the negative button text
+		 *
+		 * @param negativeText
+		 */
+		public void setNegativeText(@Nonnull String negativeText)
+		{
+			if(negativeText == null) {
+				throw new IllegalArgumentException("Text can't be null");
+			}
+			this.negativeText = negativeText;
+		}
+
+		/**
+		 * Sets the response handler. The handler is called when the positive
+		 * button is pressed and returns the file that is selected. Returning
+		 * true in the handler indicates that the dialog should close.
+		 *
+		 * @param responseHandler
+		 */
+		public void setResponseHandler(ResponseHandler<File> responseHandler)
+		{
+			this.responseHandler = responseHandler;
 		}
 	}
 

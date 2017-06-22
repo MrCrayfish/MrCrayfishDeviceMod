@@ -431,6 +431,28 @@ public abstract class Application extends Wrappable implements Info
 	}
 
 	/**
+	 * Gets the active dialog window for this application
+	 * @return
+	 */
+	@Nullable
+	public Window<Dialog> getActiveDialog()
+	{
+		Window<Dialog> dialogWindow = getWindow().getDialogWindow();
+		if(dialogWindow != null)
+		{
+			while(true)
+			{
+				if(dialogWindow.getDialogWindow() == null)
+				{
+					return dialogWindow;
+				}
+				dialogWindow = dialogWindow.getDialogWindow();
+			}
+		}
+		return dialogWindow;
+	}
+
+	/**
 	 * Check if an application is equal to another. Checking the ID is
 	 * sufficient as they should be unique.
 	 */

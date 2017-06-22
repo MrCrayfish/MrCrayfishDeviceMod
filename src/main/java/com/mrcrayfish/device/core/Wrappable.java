@@ -1,10 +1,7 @@
 package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class Wrappable
 {
@@ -125,7 +122,7 @@ public abstract class Wrappable
 
 	/**
 	 * Gets the width of the content (application/dialog) including the border.
-	 * 
+	 *
 	 * @return the height
 	 */
 	public abstract int getWidth();
@@ -196,4 +193,5 @@ public abstract class Wrappable
 	{
 		window.openDialog(dialog);
 	}
+
 }
