@@ -6,20 +6,36 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class FileSystem 
 {
+	private Folder rootFolder;
 	private Folder homeFolder;
 	
 	FileSystem(NBTTagCompound data) 
 	{
-		homeFolder = new Folder("home");
 		if(!data.hasNoTags())
 		{
-			homeFolder = Folder.fromTag(data);
+			rootFolder = Folder.fromTag(data);
+		}
+		else
+		{
+			setupDefaultSetup();
 		}
 	}
-	
-	public Folder getBaseFolder()
+
+	private void setupDefaultSetup()
 	{
-		return homeFolder;
+		rootFolder = new Folder("Root");
+		rootFolder.add(new Folder("Home"));
+		rootFolder.add(new Folder("Application Data"));
+	}
+
+	public Folder getRootFolder()
+	{
+		return rootFolder;
+	}
+	
+	public Folder getHomeFolder()
+	{
+		return (Folder) rootFolder.getFile("home");
 	}
 	
 	public boolean isUSBPluggedIn()

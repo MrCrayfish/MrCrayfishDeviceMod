@@ -13,7 +13,6 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 
 import net.minecraft.client.Minecraft;
@@ -517,7 +516,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 125);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, app.getFileSystem().getBaseFolder(), FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
 			browser.setItemClickListener((file, index, mouseButton) -> {
 				if(mouseButton == 0)
 				{
@@ -625,7 +624,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 143);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, app.getFileSystem().getBaseFolder(), FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
@@ -646,6 +645,8 @@ public abstract class Dialog extends Wrappable
 								browser.removeFile(file.getName());
 								browser.addFile(file);
 								dialog.close();
+
+								//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
 								if(SaveFile.this.responseHandler != null)
 								{
 									SaveFile.this.responseHandler.onResponse(true, file);

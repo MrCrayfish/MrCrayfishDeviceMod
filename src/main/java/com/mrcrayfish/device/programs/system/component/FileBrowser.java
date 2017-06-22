@@ -8,6 +8,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
@@ -17,12 +18,10 @@ import com.mrcrayfish.device.core.Wrappable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
-import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
 import java.util.Stack;
 
 /**
@@ -31,8 +30,6 @@ import java.util.Stack;
 public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
-
-    private static final int CLICK_INTERVAL = (Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
 
     private static final Color ITEM_BACKGROUND = new Color(215, 217, 224);
     private static final Color ITEM_SELECTED = new Color(221, 208, 208);
@@ -108,16 +105,20 @@ public class FileBrowser extends Component
     public void init(Layout layout)
     {
         main = new Layout(225, mode.getHeight());
-        main.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+        main.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+        {
             Gui.drawRect(x, y, x + width, y + 20, Color.GRAY.getRGB());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
         btnPreviousFolder = new Button(5, 2, ASSETS, 40, 20, 10, 10);
-        btnPreviousFolder.setClickListener((c, mouseButton) -> {
-            if(mouseButton == 0) {
+        btnPreviousFolder.setClickListener((c, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
                 goToPreviousFolder();
-                if(isRootFolder()) {
+                if(isRootFolder())
+                {
                     btnPreviousFolder.setEnabled(false);
                 }
                 updatePath();
@@ -130,10 +131,13 @@ public class FileBrowser extends Component
         int btnIndex = 0;
 
         btnNewFolder = new Button(5, 25 + btnIndex * 20 , ASSETS, 0, 20, 10, 10);
-        btnNewFolder.setClickListener((b, mouseButton) -> {
-            com.mrcrayfish.device.api.app.Dialog.Input dialog = new com.mrcrayfish.device.api.app.Dialog.Input("Enter a name");
-            dialog.setResponseHandler((success, v) -> {
-                if(success) {
+        btnNewFolder.setClickListener((b, mouseButton) ->
+        {
+            Dialog.Input dialog = new Dialog.Input("Enter a name");
+            dialog.setResponseHandler((success, v) ->
+            {
+                if(success)
+                {
                     addFile(new Folder(v));
                 }
                 return true;
@@ -148,7 +152,8 @@ public class FileBrowser extends Component
         btnIndex++;
 
         btnRename = new Button(5, 25 + btnIndex * 20, ASSETS, 50, 20, 10, 10);
-        btnRename.setClickListener((c, mouseButton) -> {
+        btnRename.setClickListener((c, mouseButton) ->
+        {
             renameSelectedFile();
         });
         btnRename.setToolTip("Rename", "Change the name of the selected file or folder");
@@ -160,7 +165,8 @@ public class FileBrowser extends Component
             btnIndex++;
 
             btnCopy = new Button(5, 25 + btnIndex * 20, ASSETS, 10, 20, 10, 10);
-            btnCopy.setClickListener((b, mouseButton) -> {
+            btnCopy.setClickListener((b, mouseButton) ->
+            {
                 setClipboardFileToSelected();
                 btnPaste.setEnabled(true);
             });
@@ -171,7 +177,8 @@ public class FileBrowser extends Component
             btnIndex++;
 
             btnCut = new Button(5, 25 + btnIndex * 20, ASSETS, 60, 20, 10, 10);
-            btnCut.setClickListener((c, mouseButton) -> {
+            btnCut.setClickListener((c, mouseButton) ->
+            {
                 cutSelectedFile();
                 btnPaste.setEnabled(true);
             });
@@ -182,9 +189,11 @@ public class FileBrowser extends Component
             btnIndex++;
 
             btnPaste = new Button(5, 25 + btnIndex * 20, ASSETS, 20, 20, 10, 10);
-            btnPaste.setClickListener((b, mouseButton) -> {
+            btnPaste.setClickListener((b, mouseButton) ->
+            {
                 pasteClipboardFile();
-                if(!hasFileInClipboard()) {
+                if(!hasFileInClipboard())
+                {
                     btnPaste.setEnabled(false);
                 }
             });
@@ -196,15 +205,20 @@ public class FileBrowser extends Component
         btnIndex++;
 
         btnDelete = new Button(5, 25 + btnIndex * 20, ASSETS, 30, 20, 10, 10);
-        btnDelete.setClickListener((b, mouseButton) -> {
+        btnDelete.setClickListener((b, mouseButton) ->
+        {
             File file = fileList.getSelectedItem();
-            if(file != null) {
-                com.mrcrayfish.device.api.app.Dialog.Confirmation dialog = new com.mrcrayfish.device.api.app.Dialog.Confirmation();
+            if(file != null)
+            {
+                Dialog.Confirmation dialog = new Dialog.Confirmation();
                 StringBuilder builder = new StringBuilder();
                 builder.append("Are you sure you want to delete this ");
-                if(file instanceof Folder) {
+                if(file.isFolder())
+                {
                     builder.append("folder");
-                } else {
+                }
+                else
+                {
                     builder.append("file");
                 }
                 builder.append(" '");
@@ -213,7 +227,8 @@ public class FileBrowser extends Component
                 dialog.setMessageText(builder.toString());
                 dialog.setTitle("Delete");
                 dialog.setPositiveText("Yes");
-                dialog.setPositiveListener((c, mouseButton1) -> {
+                dialog.setPositiveListener((c, mouseButton1) ->
+                {
                     removeFile(fileList.getSelectedIndex());
                     btnRename.setEnabled(false);
                     btnDelete.setEnabled(false);
@@ -233,22 +248,34 @@ public class FileBrowser extends Component
         fileList = new ItemList(mode.getOffset(), 25, 180, mode.getVisibleItems());
         fileList.setListItemRenderer(ITEM_RENDERER);
         fileList.sortBy(File.SORT_BY_NAME);
-        fileList.setItemClickListener((file, index, mouseButton) -> {
-            if(mouseButton == 0) {
+        fileList.setItemClickListener((file, index, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
                 btnRename.setEnabled(true);
                 btnDelete.setEnabled(true);
-                if(mode == Mode.FULL) {
+                if(mode == Mode.FULL)
+                {
                     btnCopy.setEnabled(true);
                     btnCut.setEnabled(true);
                 }
-                if(System.currentTimeMillis() - this.lastClick <= CLICK_INTERVAL) {
-                    if(file instanceof Folder) {
+                if(System.currentTimeMillis() - this.lastClick <= 200)
+                {
+                    if(file.isFolder())
+                    {
                         fileList.setSelectedIndex(-1);
                         openFolder((Folder) file, true);
-                        btnPreviousFolder.setEnabled(true);
-                        updatePath();
+                        if(mode == Mode.FULL)
+                        {
+                            btnRename.setEnabled(false);
+                            btnCopy.setEnabled(false);
+                            btnCut.setEnabled(false);
+                            btnDelete.setEnabled(false);
+                        }
                     }
-                } else {
+                }
+                else
+                {
                     this.lastClick = System.currentTimeMillis();
                 }
             }
@@ -264,14 +291,19 @@ public class FileBrowser extends Component
         layout.addComponent(main);
 
         openFolder(root, false);
+        openFolder((Folder) root.getFile("Home"), true);
     }
 
     private void openFolder(Folder folder, boolean push)
     {
-        if(push) predecessor.push(current);
+        if(push) {
+            predecessor.push(current);
+            btnPreviousFolder.setEnabled(true);
+        }
         current = folder;
         fileList.removeAll();
         fileList.setItems(folder.getFiles());
+        updatePath();
     }
 
     private void goToPreviousFolder()
@@ -290,7 +322,8 @@ public class FileBrowser extends Component
 
     public boolean addFile(File file)
     {
-        if(!current.add(file)) {
+        if(!current.add(file))
+        {
             return false;
         }
         fileList.addItem(file);
@@ -377,7 +410,7 @@ public class FileBrowser extends Component
                             }
                             else
                             {
-                                com.mrcrayfish.device.api.app.component.TextField textField = dialog.getTextFieldInput();
+                                TextField textField = dialog.getTextFieldInput();
                                 textField.setText(s);
                                 textField.setTextColour(Color.RED);
                             }
@@ -389,7 +422,7 @@ public class FileBrowser extends Component
             }
             else
             {
-                com.mrcrayfish.device.api.app.Dialog.Message dialog = new com.mrcrayfish.device.api.app.Dialog.Message("You cannot paste a copied folder inside itself");
+                Dialog.Message dialog = new Dialog.Message("You cannot paste a copied folder inside itself");
                 wrappable.openDialog(dialog);
             }
         }
@@ -435,7 +468,6 @@ public class FileBrowser extends Component
         }
         return builder.toString();
     }
-
 
     public void updatePath()
     {

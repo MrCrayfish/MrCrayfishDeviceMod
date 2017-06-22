@@ -20,7 +20,7 @@ public class ApplicationFileBrowser extends Application
 	public void init() 
 	{
 		super.init();
-		browser = new FileBrowser(0, 0, this, getFileSystem().getBaseFolder(), FileBrowser.Mode.FULL);
+		browser = new FileBrowser(0, 0, this, getFileSystem().getRootFolder(), FileBrowser.Mode.FULL);
 		this.addComponent(browser);
 	}
 
