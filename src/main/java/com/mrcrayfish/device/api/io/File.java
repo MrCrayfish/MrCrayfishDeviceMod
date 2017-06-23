@@ -71,6 +71,16 @@ public class File
 	{
 		return openingApp != null && openingApp.equals(app.getID());
 	}
+
+	public boolean delete()
+	{
+		if(parent != null)
+		{
+			parent.delete(this);
+			return true;
+		}
+		return false;
+	}
 	
 	public NBTTagCompound toTag() 
 	{
