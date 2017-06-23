@@ -34,7 +34,8 @@ public class FileBrowser extends Component
     private static final Color ITEM_BACKGROUND = new Color(215, 217, 224);
     private static final Color ITEM_SELECTED = new Color(221, 208, 208);
 
-    private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18) {
+    private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18)
+    {
         @Override
         public void render(File file, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
         {
@@ -55,6 +56,8 @@ public class FileBrowser extends Component
             gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, Color.WHITE.getRGB());
         }
     };
+
+    public static boolean refreshList = false;
 
     private final Wrappable wrappable;
     private final Mode mode;
@@ -293,6 +296,16 @@ public class FileBrowser extends Component
         openFolder(root, false);
     }
 
+    @Override
+    public void handleTick()
+    {
+        if(refreshList)
+        {
+            fileList.removeAll();
+            fileList.setItems(current.getFiles());
+        }
+    }
+
     public void openFolder(Folder folder, boolean push)
     {
         if(push) {
@@ -326,6 +339,7 @@ public class FileBrowser extends Component
             return false;
         }
         fileList.addItem(file);
+        FileBrowser.refreshList = true;
         return true;
     }
 
@@ -335,6 +349,7 @@ public class FileBrowser extends Component
         if(file != null)
         {
             current.delete(file.getName());
+            FileBrowser.refreshList = true;
         }
     }
 
@@ -343,6 +358,7 @@ public class FileBrowser extends Component
         if(fileList.getItems().remove(file))
         {
             current.delete(file.getName());
+            FileBrowser.refreshList = true;
         }
     }
 
@@ -351,6 +367,7 @@ public class FileBrowser extends Component
         if(fileList.getItems().remove(current.getFile(name)))
         {
             current.delete(name);
+            FileBrowser.refreshList = true;
         }
     }
 

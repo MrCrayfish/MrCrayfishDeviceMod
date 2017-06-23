@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -13,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageSaveData;
@@ -21,7 +21,6 @@ import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
@@ -135,6 +134,7 @@ public class Laptop extends GuiScreen
 				window.onTick();
 			}
 		}
+		FileBrowser.refreshList = false;
 	}
 	
 	@Override
@@ -349,12 +349,13 @@ public class Laptop extends GuiScreen
 				return;
 			}
 		}
+
+		app.setFileSystem(fileSystem);
 		
 		if(programData.hasKey(app.getID()))
 		{
 			app.load(programData.getCompoundTag(app.getID()));
 		}
-		app.setFileSystem(fileSystem);
 
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
