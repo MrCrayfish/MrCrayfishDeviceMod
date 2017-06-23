@@ -1,10 +1,10 @@
 package com.mrcrayfish.device.api.io;
 
 import com.mrcrayfish.device.api.app.Application;
-
 import net.minecraft.nbt.NBTTagCompound;
-import scala.App;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Comparator;
 
 public class File
@@ -41,14 +41,19 @@ public class File
 	{
 		return name;
 	}
-	
+
+	@Nullable
 	public String getOpeningApp() 
 	{
 		return openingApp;
 	}
 	
-	public void setData(NBTTagCompound data) 
+	public void setData(@Nonnull NBTTagCompound data)
 	{
+		if(data == null)
+		{
+			throw new DataException("A null compound tag cannot be set to a file");
+		}
 		this.data = data;
 	}
 
@@ -56,7 +61,8 @@ public class File
 	{
 		return data;
 	}
-	
+
+	@Nullable
 	public Folder getParent()
 	{
 		return parent;
@@ -100,15 +106,8 @@ public class File
 	public boolean equals(Object obj) 
 	{
 		if(obj == null) return false;
-		if(obj instanceof File)
-		{
-			return ((File) obj).name.equalsIgnoreCase(name);
-		}
-		if(obj instanceof String)
-		{
-			return ((String) obj).equalsIgnoreCase(name);
-		}
-		return false;
+		if(!(obj instanceof File)) return false;
+		return ((File) obj).name.equalsIgnoreCase(name);
 	}
 	
 	public File copy()

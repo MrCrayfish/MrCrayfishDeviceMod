@@ -27,7 +27,7 @@ public class Folder extends File
 	public boolean add(File file, boolean override)
 	{
 		if(file == null)
-			throw new IllegalArgumentException("You cannot add a null file");
+			throw new IllegalArgumentException("A null file can not be added to a folder");
 
 		if(hasFile(file.name))
 		{
@@ -143,13 +143,14 @@ public class Folder extends File
 	@Override
 	public void setData(NBTTagCompound data) 
 	{
-		throw new DataException("Data cannot be set to a folder");
+		throw new DataException("Data can not be set to a folder");
 	}
 	
 	@Override
+	@Nullable
 	public NBTTagCompound getData() 
 	{
-		throw new DataException("Cannot retrieve data of a folder");
+		throw new DataException("Folders do not contain data");
 	}
 	
 	@Override
