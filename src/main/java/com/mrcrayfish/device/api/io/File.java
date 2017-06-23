@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.io;
 import com.mrcrayfish.device.api.app.Application;
 
 import net.minecraft.nbt.NBTTagCompound;
+import scala.App;
 
 import java.util.Comparator;
 
@@ -64,6 +65,11 @@ public class File
 	public boolean isFolder()
 	{
 		return false;
+	}
+
+	public boolean isForApplication(Application app)
+	{
+		return openingApp != null && openingApp.equals(app.getID());
 	}
 	
 	public NBTTagCompound toTag() 
