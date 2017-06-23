@@ -15,7 +15,7 @@ public class File
 		return f1.name.compareTo(f2.name);
 	};
 
-	protected File parent;
+	protected Folder parent;
 	protected String name;
 	private String openingApp;
 	private NBTTagCompound data;
@@ -57,7 +57,7 @@ public class File
 		return data;
 	}
 	
-	public File getParent() 
+	public Folder getParent()
 	{
 		return parent;
 	}
