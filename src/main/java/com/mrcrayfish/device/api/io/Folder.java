@@ -8,14 +8,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nullable;
+
 public class Folder extends File
 {
-	private List<File> files;
+	private List<File> files = new ArrayList<>();
 	
 	public Folder(String name) 
 	{
 		super(name);
-		this.files = new ArrayList<File>();
 	}
 	
 	public boolean add(File file)
@@ -48,20 +49,27 @@ public class Folder extends File
 			files.remove(file);
 		}
 	}
-	
-	public File getFile(String name)
-	{
-		return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
-	}
 
 	public boolean hasFile(String name)
 	{
 		return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
 	}
 
+	@Nullable
+	public File getFile(String name)
+	{
+		return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
 	public boolean hasFolder(String name)
 	{
 		return files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
+	}
+
+	@Nullable
+	public Folder getFolder(String name)
+	{
+		return (Folder) files.stream().filter(file -> file.isFolder() && file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 	
 	public List<File> getFiles()
