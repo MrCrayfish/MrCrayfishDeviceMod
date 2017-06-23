@@ -50,6 +50,15 @@ public class Folder extends File
 		}
 	}
 
+	public void delete(File file)
+	{
+		if(file != null)
+		{
+			file.parent = null;
+			files.remove(file);
+		}
+	}
+
 	public boolean hasFile(String name)
 	{
 		return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
@@ -134,8 +143,14 @@ public class Folder extends File
 		for(int i = 0; i < list.tagCount(); i++)
 		{
 			NBTTagCompound fileTag = list.getCompoundTagAt(i);
-			File file = File.fromTag(fileTag);
-			folder.files.add(file);
+			if(fileTag.hasKey("files"))
+			{
+				folder.add(Folder.fromTag(fileTag));
+			}
+			else
+			{
+				folder.add(File.fromTag(fileTag));
+			}
 		}
 		return folder;
 	}
