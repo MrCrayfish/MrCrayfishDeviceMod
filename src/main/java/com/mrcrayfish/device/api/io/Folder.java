@@ -2,9 +2,11 @@ package com.mrcrayfish.device.api.io;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 
 public class Folder extends File
 {
@@ -65,6 +67,31 @@ public class Folder extends File
 	public List<File> getFiles()
 	{
 		return files;
+	}
+
+	public List<File> search(Predicate<File> conditions, boolean includeSubFolders)
+	{
+		List<File> found = NonNullList.create();
+		search(found, conditions, includeSubFolders);
+		return found;
+	}
+
+	private void search(List<File> results, Predicate<File> conditions, boolean includeSubFolders)
+	{
+		files.stream().forEach(file ->
+		{
+			if(file.isFolder())
+			{
+				if(includeSubFolders)
+				{
+					((Folder) file).search(results, conditions, includeSubFolders);
+				}
+			}
+			else if(conditions.test(file))
+			{
+				results.add(file);
+			}
+		});
 	}
 
 	public void setFiles(List<File> files)
