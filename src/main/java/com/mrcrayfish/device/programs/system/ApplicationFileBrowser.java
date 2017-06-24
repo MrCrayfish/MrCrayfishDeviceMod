@@ -21,8 +21,9 @@ public class ApplicationFileBrowser extends Application
 	{
 		super.init();
 		browser = new FileBrowser(0, 0, this, getFileSystem().getRootFolder(), FileBrowser.Mode.FULL);
-		browser.openFolder(getFileSystem().getHomeFolder(), true);
 		this.addComponent(browser);
+
+		browser.openFolder(getFileSystem().getHomeFolder(), true);
 	}
 
 	@Override
