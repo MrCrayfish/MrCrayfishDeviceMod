@@ -36,6 +36,7 @@ public abstract class Application extends Wrappable implements Info
 
 	private Window window;
 	private FileSystem fileSystem;
+	private BlockPos laptopPositon;
 
 	/* If set to true, will update layout */
 	boolean pendingLayoutUpdate = false;
@@ -420,6 +421,16 @@ public abstract class Application extends Wrappable implements Info
 	protected void setIcon(ResourceLocation resource, int u, int v)
 	{
 		this.icon = new Icon(resource, u, v);
+	}
+
+	public void setLaptopPosition(BlockPos pos)
+	{
+		this.laptopPositon = pos.toImmutable();
+	}
+
+	public BlockPos getLaptopPositon()
+	{
+		return laptopPositon;
 	}
 
 	public void setFileSystem(FileSystem fileSystem)

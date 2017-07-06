@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -45,6 +46,7 @@ public class Laptop extends GuiScreen
 
 	private TaskBar bar;
 	private Window<Application>[] windows;
+	private BlockPos pos;
 
 	private NBTTagCompound programData;
 	private NBTTagCompound fileData;
@@ -53,21 +55,18 @@ public class Laptop extends GuiScreen
 	private FileSystem fileSystem;
 	
 	public static int currentWallpaper;
-	private int tileX, tileY, tileZ;
 	private int lastMouseX, lastMouseY;
 	
 	private int draggingWindow;
 	private boolean dragging = false;
 	private boolean dirty = false;
 	
-	public Laptop(NBTTagCompound data, int tileX, int tileY, int tileZ)
+	public Laptop(NBTTagCompound data, BlockPos pos)
 	{
 		this.programData = data.getCompoundTag("programs");
 		this.fileData = data.getCompoundTag("files");
+		this.pos = pos;
 		this.systemData = data.getCompoundTag("system");
-		this.tileX = tileX;
-		this.tileY = tileY;
-		this.tileZ = tileZ;
 		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
@@ -350,6 +349,7 @@ public class Laptop extends GuiScreen
 			}
 		}
 
+		app.setLaptopPosition(pos);
 		app.setFileSystem(fileSystem);
 		
 		if(programData.hasKey(app.getID()))
