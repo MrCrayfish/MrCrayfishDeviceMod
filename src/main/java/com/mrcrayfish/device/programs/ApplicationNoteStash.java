@@ -1,26 +1,13 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ItemList;
-import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.Text;
-import com.mrcrayfish.device.api.app.component.TextArea;
-import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.app.listener.ItemClickListener;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.object.Note;
-
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
-import java.util.List;
 
 public class ApplicationNoteStash extends Application 
 {
@@ -132,7 +119,6 @@ public class ApplicationNoteStash extends Application
 			{
                 title.clear();
                 textArea.clear();
-                markDirty();
                 setCurrentLayout(layoutMain);
                 return true;
             });

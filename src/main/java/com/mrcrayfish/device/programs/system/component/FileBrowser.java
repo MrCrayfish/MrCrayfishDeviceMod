@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.Wrappable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -59,6 +60,7 @@ public class FileBrowser extends Component
 
     public static boolean refreshList = false;
 
+    private final FileSystem fileSystem;
     private final Wrappable wrappable;
     private final Mode mode;
 
@@ -96,9 +98,10 @@ public class FileBrowser extends Component
      * @param left how many pixels from the left
      * @param top  how many pixels from the top
      */
-    public FileBrowser(int left, int top, Wrappable wrappable, Folder root, Mode mode)
+    public FileBrowser(int left, int top, FileSystem fileSystem, Wrappable wrappable, Folder root, Mode mode)
     {
         super(left, top);
+        this.fileSystem = fileSystem;
         this.wrappable = wrappable;
         this.root = root;
         this.mode = mode;
@@ -339,6 +342,7 @@ public class FileBrowser extends Component
             return false;
         }
         fileList.addItem(file);
+        //fileSystem.addAction(FileSystem.ActionFactory.makeNewAction(file));
         FileBrowser.refreshList = true;
         return true;
     }
@@ -349,25 +353,22 @@ public class FileBrowser extends Component
         if(file != null)
         {
             current.delete(file.getName());
-            FileBrowser.refreshList = true;
-        }
-    }
-
-    private void removeFile(File file)
-    {
-        if(fileList.getItems().remove(file))
-        {
-            current.delete(file.getName());
+            //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
             FileBrowser.refreshList = true;
         }
     }
 
     public void removeFile(String name)
     {
-        if(fileList.getItems().remove(current.getFile(name)))
+        File file = current.getFile(name);
+        if(file != null)
         {
-            current.delete(name);
-            FileBrowser.refreshList = true;
+            if(fileList.getItems().remove(file))
+            {
+                current.delete(name);
+                //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
+                FileBrowser.refreshList = true;
+            }
         }
     }
 
@@ -413,7 +414,8 @@ public class FileBrowser extends Component
                     {
                         if(success)
                         {
-                            File file = renameFile(clipboardFile.copy(), s);
+                            File file = clipboardFile.copy();
+                            file.rename(s);
                             if(addFile(file))
                             {
                                 if(clipboardDir != null)
@@ -506,8 +508,8 @@ public class FileBrowser extends Component
             {
                 if(success)
                 {
-                    removeFile(file);
-                    addFile(renameFile(file, s));
+                    //fileSystem.addAction(FileSystem.ActionFactory.makeRenameAction(file, s));
+                    file.rename(s);
                 }
                 return true;
             });

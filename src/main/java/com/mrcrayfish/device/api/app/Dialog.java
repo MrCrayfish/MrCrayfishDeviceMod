@@ -517,7 +517,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 125);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app.getFileSystem(), app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
 			browser.setItemClickListener((file, index, mouseButton) -> {
 				if(mouseButton == 0)
 				{
@@ -627,7 +627,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 143);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, root, FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app.getFileSystem(), app, root, FileBrowser.Mode.BASIC);
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);

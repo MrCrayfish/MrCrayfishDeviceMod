@@ -76,7 +76,6 @@ public class OnlineRequest
 					RequestWrapper wrapper = requests.poll();
 					try 
 					{
-						System.out.println("Making request to: " + wrapper.url);
 						HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
 			            connection.connect();
 			            InputStream input = connection.getInputStream();

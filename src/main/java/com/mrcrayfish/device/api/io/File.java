@@ -42,6 +42,11 @@ public class File
 		return name;
 	}
 
+	public void rename(String name)
+	{
+		this.name = name;
+	}
+
 	@Nullable
 	public String getOpeningApp() 
 	{
@@ -91,15 +96,14 @@ public class File
 	public NBTTagCompound toTag() 
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("name", name);
 		tag.setString("openingApp", openingApp);
 		tag.setTag("data", data);
 		return tag;
 	}
 	
-	public static File fromTag(NBTTagCompound tag)
+	public static File fromTag(String name, NBTTagCompound tag)
 	{
-		return new File(tag.getString("name"), tag.getString("openingApp"), tag.getCompoundTag("data"));
+		return new File(name, tag.getString("openingApp"), tag.getCompoundTag("data"));
 	}
 	
 	@Override

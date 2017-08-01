@@ -32,10 +32,7 @@ import com.mrcrayfish.device.programs.email.task.TaskUpdateInbox;
 import com.mrcrayfish.device.programs.email.task.TaskViewEmail;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
-import com.mrcrayfish.device.programs.system.task.TaskAdd;
-import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
-import com.mrcrayfish.device.programs.system.task.TaskPay;
-import com.mrcrayfish.device.programs.system.task.TaskRemove;
+import com.mrcrayfish.device.programs.system.task.*;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -108,6 +105,8 @@ public class MrCrayfishDeviceMod
 		TaskProxy.registerTask(TaskPay.class);
 		TaskProxy.registerTask(TaskAdd.class);
 		TaskProxy.registerTask(TaskRemove.class);
+		TaskProxy.registerTask(TaskUpdateApplicationData.class);
+		TaskProxy.registerTask(TaskUpdateFileSystem.class);
 
 		if(!DEVELOPER_MODE)
 		{

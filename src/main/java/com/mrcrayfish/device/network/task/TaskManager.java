@@ -23,7 +23,7 @@ public class TaskManager
 		{
 			Constructor<Task> constructor = clazz.getDeclaredConstructor();
 			constructor.setAccessible(true);
-			Task task = (Task) constructor.newInstance();
+			Task task = constructor.newInstance();
 			System.out.println("Registering task '" + task.getName() + "'");
 			registeredRequests.put(task.getName(), task);
 		} 
@@ -56,7 +56,7 @@ public class TaskManager
 	public final void sendTask(Task task)
 	{
 		if(!registeredRequests.containsKey(task.getName())) {
-			throw new RuntimeException("Unregistered Task: " + task.getClass().getName() + ". Use TaskManager#requestRequest to register your task.");
+			throw new RuntimeException("Unregistered Task: " + task.getClass().getName() + ". Use TaskManager#registerTask to register your task.");
 		}
 		
 		int requestId = currentId++;

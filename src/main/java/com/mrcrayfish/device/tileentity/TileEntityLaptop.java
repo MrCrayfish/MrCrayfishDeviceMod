@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.util.TileEntityUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -67,7 +68,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.readFromNBT(compound);
 		this.open = compound.getBoolean("open");
-		this.data = compound.getCompoundTag("AppData");
+		this.data = compound.getCompoundTag("data");
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
-		compound.setTag("AppData", data);
+		compound.setTag("data", data);
 		return compound;
 	}
 	
@@ -108,5 +109,48 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public AxisAlignedBB getRenderBoundingBox() 
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+    public NBTTagCompound getApplicationData()
+    {
+        return createAndGetTag("application");
+    }
+
+	public NBTTagCompound getSystemData()
+	{
+		return createAndGetTag("system");
+	}
+
+	public FileSystem getFileSystem()
+	{
+		return FileSystem.fromTag(createAndGetTag("file_system"));
+	}
+
+	public void setApplicationData(String appId, NBTTagCompound appData)
+	{
+		createAndGetTag("application").setTag(appId, appData);
+		markDirty();
+	}
+
+	public void setSystemData(NBTTagCompound systemData)
+	{
+		data.setTag("system", systemData);
+		markDirty();
+	}
+
+	public void setFileSystemData(NBTTagCompound fileSystemData)
+	{
+		data.setTag("file_system", fileSystemData);
+		markDirty();
+	}
+
+	private NBTTagCompound createAndGetTag(String name)
+	{
+		if(!data.hasKey(name))
+		{
+			data.setTag(name, new NBTTagCompound());
+			markDirty();
+		}
+		return data.getCompoundTag(name);
 	}
 }

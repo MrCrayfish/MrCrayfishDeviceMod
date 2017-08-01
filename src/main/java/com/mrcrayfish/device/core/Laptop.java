@@ -1,31 +1,34 @@
 package com.mrcrayfish.device.core;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.programs.system.component.FileBrowser;
-import net.minecraft.util.math.BlockPos;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.network.PacketHandler;
-import com.mrcrayfish.device.network.message.MessageSaveData;
+import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
+import com.mrcrayfish.device.programs.system.task.TaskUpdateFileSystem;
+import com.mrcrayfish.device.programs.system.task.TaskUpdateSystemData;
+import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
@@ -44,36 +47,35 @@ public class Laptop extends GuiScreen
 	public static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
 	public static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
 
-	private TaskBar bar;
-	private Window<Application>[] windows;
-	private BlockPos pos;
+	private static BlockPos pos;
 
-	private NBTTagCompound programData;
-	private NBTTagCompound fileData;
+	private TaskBar bar = new TaskBar();
+	private Window<Application>[] windows = new Window[5];
+
+	private NBTTagCompound appData;
 	private NBTTagCompound systemData;
-
 	private FileSystem fileSystem;
 	
 	public static int currentWallpaper;
 	private int lastMouseX, lastMouseY;
-	
-	private int draggingWindow;
 	private boolean dragging = false;
-	private boolean dirty = false;
 	
-	public Laptop(NBTTagCompound data, BlockPos pos)
+	public Laptop(TileEntityLaptop laptop)
 	{
-		this.programData = data.getCompoundTag("programs");
-		this.fileData = data.getCompoundTag("files");
-		this.pos = pos;
-		this.systemData = data.getCompoundTag("system");
+		this.appData = laptop.getApplicationData();
+		this.systemData = laptop.getSystemData();
+		this.fileSystem = laptop.getFileSystem();
 		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
 		}
-		this.windows = new Window[5];
-		this.bar = new TaskBar();
-		this.fileSystem = new FileSystem(fileData);
+		pos = laptop.getPos();
+	}
+
+	@Nullable
+	public static BlockPos getPos()
+	{
+		return pos;
 	}
 
 	@Override
@@ -89,7 +91,8 @@ public class Laptop extends GuiScreen
 	public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
-        
+
+        /* Close all windows and send application data */
         for(Window<Application> window : windows)
 		{
         	if(window != null)
@@ -97,23 +100,20 @@ public class Laptop extends GuiScreen
         		window.close();
 			}
 		}
-        
-        systemData.setInteger("CurrentWallpaper", this.currentWallpaper);
-        
-        if(dirty)
-        {
-        	NBTTagCompound data = new NBTTagCompound();
-        	data.setTag("programs", programData);
-        	data.setTag("files", fileData);
-        	data.setTag("system", systemData);
-        	PacketHandler.INSTANCE.sendToServer(new MessageSaveData(tileX, tileY, tileZ, data));
-        }
+
+		/* Send system data */
+        NBTTagCompound systemData = new NBTTagCompound();
+        systemData.setInteger("CurrentWallpaper", currentWallpaper);
+        TaskProxy.sendTask(new TaskUpdateSystemData(pos, systemData));
+
+        /* Send file system data */
+		TaskProxy.sendTask(new TaskUpdateFileSystem(pos, fileSystem.toTag()));
     }
 	
 	@Override
-	public void onResize(Minecraft mcIn, int p_175273_2_, int p_175273_3_)
+	public void onResize(Minecraft mcIn, int width, int height)
 	{
-		super.onResize(mcIn, p_175273_2_, p_175273_3_);
+		super.onResize(mcIn, width, height);
 		for(Window<Application> window : windows)
 		{
 			if(window != null)
@@ -133,6 +133,7 @@ public class Laptop extends GuiScreen
 				window.onTick();
 			}
 		}
+
 		FileBrowser.refreshList = false;
 	}
 	
@@ -352,9 +353,9 @@ public class Laptop extends GuiScreen
 		app.setLaptopPosition(pos);
 		app.setFileSystem(fileSystem);
 		
-		if(programData.hasKey(app.getID()))
+		if(appData.hasKey(app.getID()))
 		{
-			app.load(programData.getCompoundTag(app.getID()));
+			app.load(appData.getCompoundTag(app.getID()));
 		}
 
 		int posX = (width - SCREEN_WIDTH) / 2;
@@ -380,8 +381,9 @@ public class Laptop extends GuiScreen
 					{
 						NBTTagCompound container = new NBTTagCompound();
 						app.save(container);
-						programData.setTag(app.getID(), container);
-						dirty = true;
+						app.clean();
+						appData.setTag(app.getID(), container);
+						TaskProxy.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getID(), container));
 					}
 					window.content.setFileSystem(null);
 					window.handleClose();
