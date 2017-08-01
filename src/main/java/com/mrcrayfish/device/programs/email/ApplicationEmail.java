@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mrcrayfish.device.api.task.TaskPipeline;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
@@ -27,9 +28,7 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.email.task.TaskCheckEmailAccount;
 import com.mrcrayfish.device.programs.email.task.TaskDeleteEmail;
 import com.mrcrayfish.device.programs.email.task.TaskRegisterEmailAccount;
@@ -212,7 +211,7 @@ public class ApplicationEmail extends Application
 							}
 						}
 					});
-					TaskProxy.sendTask(taskRegisterAccount);
+					TaskPipeline.sendTask(taskRegisterAccount);
 				}
 			}
 		});
@@ -240,7 +239,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskUpdateInbox);
+				TaskPipeline.sendTask(taskUpdateInbox);
 			}
 		});
 
@@ -275,7 +274,7 @@ public class ApplicationEmail extends Application
 				int index = listEmails.getSelectedIndex();
 				if (index != -1)
 				{
-					TaskProxy.sendTask(new TaskViewEmail(index));
+					TaskPipeline.sendTask(new TaskViewEmail(index));
 					Email email = listEmails.getSelectedItem();
 					email.setRead(true);
 					textMessage.setText(email.message);
@@ -337,7 +336,7 @@ public class ApplicationEmail extends Application
 							EmailManager.INSTANCE.getInbox().remove(index);
 						}
 					});
-					TaskProxy.sendTask(taskDeleteEmail);
+					TaskPipeline.sendTask(taskDeleteEmail);
 				}
 			}
 		});
@@ -363,7 +362,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskUpdateInbox);
+				TaskPipeline.sendTask(taskUpdateInbox);
 			}
 		});
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
@@ -421,7 +420,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskSendEmail);
+				TaskPipeline.sendTask(taskSendEmail);
 			}
 		});
 		btnSendEmail.setToolTip("Send", "Send email to recipient");
@@ -506,7 +505,7 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		TaskProxy.sendTask(taskCheckAccount);
+		TaskPipeline.sendTask(taskCheckAccount);
 	}
 
 	@Override

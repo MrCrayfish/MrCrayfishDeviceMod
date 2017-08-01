@@ -14,7 +14,7 @@ import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskPipeline;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.TaskBar;
@@ -333,20 +333,20 @@ public class ApplicationBank extends Application
 
 	private void deposit(int amount, Callback callback) 
 	{
-		TaskProxy.sendTask(new TaskDeposit(amount).setCallback(callback));
+		TaskPipeline.sendTask(new TaskDeposit(amount).setCallback(callback));
 	}
 	
 	private void withdraw(int amount, Callback callback) 
 	{
-		TaskProxy.sendTask(new TaskWithdraw(amount).setCallback(callback));
+		TaskPipeline.sendTask(new TaskWithdraw(amount).setCallback(callback));
 	}
 	
 	public void registerTasks()
 	{
 		if(!registered)
 		{
-			TaskProxy.registerTask(TaskDeposit.class);
-			TaskProxy.registerTask(TaskWithdraw.class);
+			TaskPipeline.registerTask(TaskDeposit.class);
+			TaskPipeline.registerTask(TaskWithdraw.class);
 			registered = true;
 		}
 	}

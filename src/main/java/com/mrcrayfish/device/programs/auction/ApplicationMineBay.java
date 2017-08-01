@@ -18,15 +18,13 @@ import com.mrcrayfish.device.api.app.component.NumberSelector;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskPipeline;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.auction.object.AuctionItem;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
 import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
-import com.mrcrayfish.device.util.GuiHelper;
 import com.mrcrayfish.device.util.TimeUtil;
 
 import net.minecraft.client.Minecraft;
@@ -122,7 +120,7 @@ public class ApplicationMineBay extends Application
                     items.addItem(item);
                 }
             });
-			TaskProxy.sendTask(task);
+			TaskPipeline.sendTask(task);
 		});
 		super.addComponent(btnViewItem);
 		
@@ -209,7 +207,7 @@ public class ApplicationMineBay extends Application
                                 }
                             }
                         });
-                        TaskProxy.sendTask(task);
+                        TaskPipeline.sendTask(task);
                     }
                 });
 				dialog.setNegativeText("Cancel");
@@ -441,7 +439,7 @@ public class ApplicationMineBay extends Application
                             }
                         }
                     });
-                    TaskProxy.sendTask(task);
+                    TaskPipeline.sendTask(task);
                     dialog.close();
                     restoreDefaultLayout();
                 });
@@ -504,7 +502,7 @@ public class ApplicationMineBay extends Application
 				}
 			}
 		});
-		TaskProxy.sendTask(task);
+		TaskPipeline.sendTask(task);
 	}
 
 	@Override

@@ -122,7 +122,7 @@ public class FileSystem
 
 	public static void sendAction(BlockPos laptopPosition, Action action)
 	{
-		//TaskProxy.sendTask(new TaskSendAction(laptopPosition, action));
+		//TaskPipeline.sendTask(new TaskSendAction(laptopPosition, action));
 	}
 
 	public void readAction(Action action)

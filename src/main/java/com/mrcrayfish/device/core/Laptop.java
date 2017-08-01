@@ -4,7 +4,7 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskPipeline;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
@@ -92,7 +92,7 @@ public class Laptop extends GuiScreen
     {
         Keyboard.enableRepeatEvents(false);
 
-        /* Close all windows and send application data */
+        /* Close all windows and sendTask application data */
         for(Window<Application> window : windows)
 		{
         	if(window != null)
@@ -104,10 +104,10 @@ public class Laptop extends GuiScreen
 		/* Send system data */
         NBTTagCompound systemData = new NBTTagCompound();
         systemData.setInteger("CurrentWallpaper", currentWallpaper);
-        TaskProxy.sendTask(new TaskUpdateSystemData(pos, systemData));
+        TaskPipeline.sendTask(new TaskUpdateSystemData(pos, systemData));
 
         /* Send file system data */
-		TaskProxy.sendTask(new TaskUpdateFileSystem(pos, fileSystem.toTag()));
+		TaskPipeline.sendTask(new TaskUpdateFileSystem(pos, fileSystem.toTag()));
     }
 	
 	@Override
@@ -383,7 +383,7 @@ public class Laptop extends GuiScreen
 						app.save(container);
 						app.clean();
 						appData.setTag(app.getID(), container);
-						TaskProxy.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getID(), container));
+						TaskPipeline.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getID(), container));
 					}
 					window.content.setFileSystem(null);
 					window.handleClose();

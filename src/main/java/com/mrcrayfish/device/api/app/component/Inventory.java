@@ -19,7 +19,7 @@ import scala.actors.threadpool.Arrays;
 /**
  * A component that allows you "access" to the players inventory. Now why access
  * is in quotes is because it's client side only. If you want to process anything,
- * you'll have to send the selected item slot to the server and process it there.
+ * you'll have to sendTask the selected item slot to the server and process it there.
  * You can use a {@link Task} to perform this.
  * 
  * @author MrCrayfish

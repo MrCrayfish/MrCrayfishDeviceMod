@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskPipeline;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
@@ -18,7 +18,6 @@ import com.mrcrayfish.device.programs.ApplicationBoatRacers;
 import com.mrcrayfish.device.programs.ApplicationExample;
 import com.mrcrayfish.device.programs.ApplicationNoteStash;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
-import com.mrcrayfish.device.programs.ApplicationTest;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
@@ -36,7 +35,6 @@ import com.mrcrayfish.device.programs.system.task.*;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -101,12 +99,12 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ApplicationFileBrowser());
 
 		// Tasks (Both)
-		TaskProxy.registerTask(TaskGetBalance.class);
-		TaskProxy.registerTask(TaskPay.class);
-		TaskProxy.registerTask(TaskAdd.class);
-		TaskProxy.registerTask(TaskRemove.class);
-		TaskProxy.registerTask(TaskUpdateApplicationData.class);
-		TaskProxy.registerTask(TaskUpdateFileSystem.class);
+		TaskPipeline.registerTask(TaskGetBalance.class);
+		TaskPipeline.registerTask(TaskPay.class);
+		TaskPipeline.registerTask(TaskAdd.class);
+		TaskPipeline.registerTask(TaskRemove.class);
+		TaskPipeline.registerTask(TaskUpdateApplicationData.class);
+		TaskPipeline.registerTask(TaskUpdateFileSystem.class);
 
 		if(!DEVELOPER_MODE)
 		{
@@ -127,15 +125,15 @@ public class MrCrayfishDeviceMod
 			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
 
 			// Tasks (Normal)
-			TaskProxy.registerTask(TaskUpdateInbox.class);
-			TaskProxy.registerTask(TaskSendEmail.class);
-			TaskProxy.registerTask(TaskCheckEmailAccount.class);
-			TaskProxy.registerTask(TaskRegisterEmailAccount.class);
-			TaskProxy.registerTask(TaskDeleteEmail.class);
-			TaskProxy.registerTask(TaskViewEmail.class);
-			TaskProxy.registerTask(TaskAddAuction.class);
-			TaskProxy.registerTask(TaskGetAuctions.class);
-			TaskProxy.registerTask(TaskBuyItem.class);
+			TaskPipeline.registerTask(TaskUpdateInbox.class);
+			TaskPipeline.registerTask(TaskSendEmail.class);
+			TaskPipeline.registerTask(TaskCheckEmailAccount.class);
+			TaskPipeline.registerTask(TaskRegisterEmailAccount.class);
+			TaskPipeline.registerTask(TaskDeleteEmail.class);
+			TaskPipeline.registerTask(TaskViewEmail.class);
+			TaskPipeline.registerTask(TaskAddAuction.class);
+			TaskPipeline.registerTask(TaskGetAuctions.class);
+			TaskPipeline.registerTask(TaskBuyItem.class);
 		}
 		else {
 			// Applications (Developers)
@@ -155,7 +153,7 @@ public class MrCrayfishDeviceMod
 			Constructor<TaskManager> constructor = TaskManager.class.getDeclaredConstructor();
 			constructor.setAccessible(true);
 			TaskManager manager = constructor.newInstance();
-			TaskProxy.setInstance(manager);
+			TaskPipeline.setInstance(manager);
 		}
 		catch (NoSuchMethodException e)
 		{

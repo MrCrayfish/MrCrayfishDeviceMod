@@ -2,7 +2,7 @@ package com.mrcrayfish.device.api.task;
 
 import com.mrcrayfish.device.network.task.TaskManager;
 
-public class TaskProxy
+public class TaskPipeline
 {
 	private static TaskManager INSTANCE;
 	
@@ -21,11 +21,11 @@ public class TaskProxy
 	
 	/**
 	 * Registers a task. You must do this otherwise your task will
-	 * be rejected if you attempt to send it to the server.
+	 * be rejected if you attempt to sendTask it to the server.
 	 * 
 	 * @param task the class of the Task you want to register
 	 */
-	public static void registerTask(Class clazz)
+	public static void registerTask(Class<? extends Task> clazz)
 	{
 		INSTANCE.registerTask(clazz);
 	}

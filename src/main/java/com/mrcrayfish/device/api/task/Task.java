@@ -100,7 +100,7 @@ public abstract class Task
 	
 	/**
 	 * Called before the request is sent off to the server. 
-	 * You should store the data you want to send into the NBT Tag
+	 * You should store the data you want to sendTask into the NBT Tag
 	 * 
 	 * @param nbt The NBT to be sent to the server
 	 */
@@ -117,7 +117,7 @@ public abstract class Task
 	
 	/**
 	 * Called before the response is sent back to the client. 
-	 * You should store the data you want to send back into the NBT Tag
+	 * You should store the data you want to sendTask back into the NBT Tag
 	 * 
 	 * @param nbt The NBT to be sent back to the client
 	 */
@@ -126,7 +126,7 @@ public abstract class Task
 	/**
 	 * Called when the response arrives to the client. Here you can update data
 	 * on the client side. If you want to update any UI component, you should set
-	 * a Callback before you send the request. See {@link #setCallback(Callback)}
+	 * a Callback before you sendTask the request. See {@link #setCallback(Callback)}
 	 * 
 	 * @param nbt The NBT Tag received from the server
 	 */
