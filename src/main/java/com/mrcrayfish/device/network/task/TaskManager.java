@@ -17,37 +17,29 @@ public class TaskManager
 	
 	private TaskManager() {}
 	
-	public final void registerTask(Class clazz)
+	public final void registerTask(Class<? extends Task> clazz)
 	{
 		try 
 		{
-			Constructor<Task> constructor = clazz.getDeclaredConstructor();
-			constructor.setAccessible(true);
-			Task task = constructor.newInstance();
-			System.out.println("Registering task '" + task.getName() + "'");
-			registeredRequests.put(task.getName(), task);
+			Constructor[] constructors = clazz.getDeclaredConstructors();
+			for(Constructor constructor : constructors)
+			{
+				if(constructor.getParameterCount() == 0)
+				{
+					constructor.setAccessible(true);
+					Task task = (Task) constructor.newInstance();
+					System.out.println("Registering task '" + task.getName() + "'");
+					registeredRequests.put(task.getName(), task);
+					return;
+				}
+			}
+			throw new InstantiationException();
 		} 
-		catch (InstantiationException e) 
-		{	
+		catch (InstantiationException e)
+		{
 			System.err.println("- Missing constructor '" + clazz.getSimpleName() + "()'");
 		} 
-		catch (IllegalAccessException e)
-		{
-			e.printStackTrace();
-		}
-		catch (SecurityException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IllegalArgumentException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchMethodException e)
-		{
-			e.printStackTrace();
-		}
-		catch (InvocationTargetException e)
+		catch (IllegalAccessException | SecurityException | IllegalArgumentException | InvocationTargetException e)
 		{
 			e.printStackTrace();
 		}
