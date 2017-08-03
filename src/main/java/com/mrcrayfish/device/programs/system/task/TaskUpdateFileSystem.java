@@ -22,7 +22,7 @@ public class TaskUpdateFileSystem extends Task
     {
         this();
         this.x = pos.getX();
-        this.y = pos.getZ();
+        this.y = pos.getY();
         this.z = pos.getZ();
         this.tag = tag;
     }
