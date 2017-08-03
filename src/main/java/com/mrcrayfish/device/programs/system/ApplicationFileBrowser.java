@@ -1,11 +1,10 @@
 package com.mrcrayfish.device.programs.system;
 
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ApplicationFileBrowser extends Application
+public class ApplicationFileBrowser extends SystemApplication
 {
 	private FileBrowser browser;
 
@@ -20,6 +19,7 @@ public class ApplicationFileBrowser extends Application
 	public void init() 
 	{
 		super.init();
+
 		browser = new FileBrowser(0, 0, getFileSystem(), this, getFileSystem().getRootFolder(), FileBrowser.Mode.FULL);
 		this.addComponent(browser);
 

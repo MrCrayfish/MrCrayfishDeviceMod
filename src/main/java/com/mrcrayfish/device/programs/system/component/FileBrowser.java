@@ -16,6 +16,8 @@ import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.Wrappable;
+import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -277,6 +279,19 @@ public class FileBrowser extends Component
                             btnCopy.setEnabled(false);
                             btnCut.setEnabled(false);
                             btnDelete.setEnabled(false);
+                        }
+                    }
+                    else if(wrappable instanceof ApplicationFileBrowser)
+                    {
+                        ApplicationFileBrowser fileBrowser = (ApplicationFileBrowser) wrappable;
+                        Application targetApp = ApplicationManager.getApp(file.getOpeningApp());
+                        if(targetApp != null)
+                        {
+                            fileBrowser.getLaptop().open(targetApp);
+                            if(!targetApp.handleFile(file))
+                            {
+                                targetApp.openDialog(new Dialog.Message("Unable to open file"));
+                            }
                         }
                     }
                 }

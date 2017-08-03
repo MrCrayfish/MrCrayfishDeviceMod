@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.task.TaskPipeline;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateFileSystem;
@@ -358,11 +359,13 @@ public class Laptop extends GuiScreen
 			app.load(appData.getCompoundTag(app.getID()));
 		}
 
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		
+		if(app instanceof SystemApplication)
+		{
+			((SystemApplication) app).setLaptop(this);
+		}
+
 		Window window = new Window(app, this);
-		window.init(posX, posY);
+		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2);
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -385,6 +388,12 @@ public class Laptop extends GuiScreen
 						appData.setTag(app.getID(), container);
 						TaskPipeline.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getID(), container));
 					}
+
+					if(app instanceof SystemApplication)
+					{
+						((SystemApplication) app).setLaptop(null);
+					}
+
 					window.content.setFileSystem(null);
 					window.handleClose();
 					windows[i] = null;
