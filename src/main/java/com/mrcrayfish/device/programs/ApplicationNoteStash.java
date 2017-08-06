@@ -8,9 +8,16 @@ import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.core.TaskBar;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
+
+import java.util.function.Predicate;
 
 public class ApplicationNoteStash extends Application 
 {
+	private static final Predicate<File> PREDICATE_FILE_NOTE = file -> !file.isFolder()
+			&& file.getData().hasKey("title", Constants.NBT.TAG_STRING)
+			&& file.getData().hasKey("content", Constants.NBT.TAG_STRING);
+
 	/* Main */
 	private Layout layoutMain;
 	private ItemList<File> notes;
@@ -158,4 +165,17 @@ public class ApplicationNoteStash extends Application
 
 	@Override
 	public void save(NBTTagCompound tagCompound) {}
+
+	@Override
+	public boolean handleFile(File file)
+	{
+		if(!PREDICATE_FILE_NOTE.test(file))
+			return false;
+
+		NBTTagCompound data = file.getData();
+		noteTitle.setText(data.getString("title"));
+		noteContent.setText(data.getString("content"));
+		setCurrentLayout(layoutViewNote);
+		return true;
+	}
 }
