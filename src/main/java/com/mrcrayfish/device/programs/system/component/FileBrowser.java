@@ -488,7 +488,11 @@ public class FileBrowser extends Component
 
     private String getPath()
     {
-        StringBuilder builder = new StringBuilder(TextFormatting.GOLD + "/" + TextFormatting.RESET);
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(TextFormatting.GRAY.toString() + TextFormatting.BOLD + root.getName() + TextFormatting.RESET + ":");
+        builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
+
         for(int i = 1; i < predecessor.size(); i++)
         {
             builder.append(predecessor.get(i).getName());
