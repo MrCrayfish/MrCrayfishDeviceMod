@@ -17,7 +17,6 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
-import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -66,7 +65,7 @@ public class FileBrowser extends Component
     private final Wrappable wrappable;
     private final Mode mode;
 
-    private Layout main;
+    private Layout layoutMain;
     private ItemList<File> fileList;
     private Button btnPreviousFolder;
     private Button btnNewFolder;
@@ -75,11 +74,11 @@ public class FileBrowser extends Component
     private Button btnCut;
     private Button btnPaste;
     private Button btnDelete;
-    private Label label;
+    private Label labelPath;
 
     private Stack<Folder> predecessor = new Stack<>();
-    private Folder root;
-    private Folder current;
+    private Folder rootFolder;
+    private Folder currentFolder;
     private Folder clipboardDir;
     private File clipboardFile;
 
@@ -100,20 +99,20 @@ public class FileBrowser extends Component
      * @param left how many pixels from the left
      * @param top  how many pixels from the top
      */
-    public FileBrowser(int left, int top, FileSystem fileSystem, Wrappable wrappable, Folder root, Mode mode)
+    public FileBrowser(int left, int top, FileSystem fileSystem, Wrappable wrappable, Folder rootFolder, Mode mode)
     {
         super(left, top);
         this.fileSystem = fileSystem;
         this.wrappable = wrappable;
-        this.root = root;
+        this.rootFolder = rootFolder;
         this.mode = mode;
     }
 
     @Override
     public void init(Layout layout)
     {
-        main = new Layout(225, mode.getHeight());
-        main.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+        layoutMain = new Layout(225, mode.getHeight());
+        layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
             Gui.drawRect(x, y, x + width, y + 20, Color.GRAY.getRGB());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
@@ -134,7 +133,7 @@ public class FileBrowser extends Component
         });
         btnPreviousFolder.setToolTip("Previous Folder", "Go back to the previous folder");
         btnPreviousFolder.setEnabled(false);
-        main.addComponent(btnPreviousFolder);
+        layoutMain.addComponent(btnPreviousFolder);
 
         int btnIndex = 0;
 
@@ -155,7 +154,7 @@ public class FileBrowser extends Component
             wrappable.openDialog(dialog);
         });
         btnNewFolder.setToolTip("New Folder", "Creates a new folder in this directory");
-        main.addComponent(btnNewFolder);
+        layoutMain.addComponent(btnNewFolder);
 
         btnIndex++;
 
@@ -166,7 +165,7 @@ public class FileBrowser extends Component
         });
         btnRename.setToolTip("Rename", "Change the name of the selected file or folder");
         btnRename.setEnabled(false);
-        main.addComponent(btnRename);
+        layoutMain.addComponent(btnRename);
 
         if(mode == Mode.FULL)
         {
@@ -180,7 +179,7 @@ public class FileBrowser extends Component
             });
             btnCopy.setToolTip("Copy", "Copies the selected file or folder");
             btnCopy.setEnabled(false);
-            main.addComponent(btnCopy);
+            layoutMain.addComponent(btnCopy);
 
             btnIndex++;
 
@@ -192,7 +191,7 @@ public class FileBrowser extends Component
             });
             btnCut.setToolTip("Cut", "Cuts the selected file or folder");
             btnCut.setEnabled(false);
-            main.addComponent(btnCut);
+            layoutMain.addComponent(btnCut);
 
             btnIndex++;
 
@@ -207,7 +206,7 @@ public class FileBrowser extends Component
             });
             btnPaste.setToolTip("Paste", "Pastes the copied file into this directory");
             btnPaste.setEnabled(false);
-            main.addComponent(btnPaste);
+            layoutMain.addComponent(btnPaste);
         }
 
         btnIndex++;
@@ -251,7 +250,7 @@ public class FileBrowser extends Component
         });
         btnDelete.setToolTip("Delete", "Deletes the selected file or folder");
         btnDelete.setEnabled(false);
-        main.addComponent(btnDelete);
+        layoutMain.addComponent(btnDelete);
 
         fileList = new ItemList(mode.getOffset(), 25, 180, mode.getVisibleItems());
         fileList.setListItemRenderer(ITEM_RENDERER);
@@ -305,13 +304,13 @@ public class FileBrowser extends Component
                 itemClickListener.onClick(file, index, mouseButton);
             }
         });
-        main.addComponent(fileList);
+        layoutMain.addComponent(fileList);
 
-        label = new Label("/", 26, 6);
-        main.addComponent(label);
-        layout.addComponent(main);
+        labelPath = new Label("/", 26, 6);
+        layoutMain.addComponent(labelPath);
+        layout.addComponent(layoutMain);
 
-        openFolder(root, false);
+        openFolder(rootFolder, false);
     }
 
     @Override
@@ -320,17 +319,24 @@ public class FileBrowser extends Component
         if(refreshList)
         {
             fileList.removeAll();
-            fileList.setItems(current.getFiles());
+            fileList.setItems(currentFolder.getFiles());
         }
+    }
+
+    public void setRootFolder(Folder rootFolder)
+    {
+        if(this.rootFolder == rootFolder) return;
+        this.rootFolder = rootFolder;
+        openFolder(rootFolder, false);
     }
 
     public void openFolder(Folder folder, boolean push)
     {
         if(push) {
-            predecessor.push(current);
+            predecessor.push(currentFolder);
             btnPreviousFolder.setEnabled(true);
         }
-        current = folder;
+        currentFolder = folder;
         fileList.removeAll();
         fileList.setItems(folder.getFiles());
         updatePath();
@@ -352,7 +358,7 @@ public class FileBrowser extends Component
 
     public boolean addFile(File file)
     {
-        if(!current.add(file))
+        if(!currentFolder.add(file))
         {
             return false;
         }
@@ -367,7 +373,7 @@ public class FileBrowser extends Component
         File file = fileList.removeItem(index);
         if(file != null)
         {
-            current.delete(file.getName());
+            currentFolder.delete(file.getName());
             //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
             FileBrowser.refreshList = true;
         }
@@ -375,12 +381,12 @@ public class FileBrowser extends Component
 
     public void removeFile(String name)
     {
-        File file = current.getFile(name);
+        File file = currentFolder.getFile(name);
         if(file != null)
         {
             if(fileList.getItems().remove(file))
             {
-                current.delete(name);
+                currentFolder.delete(name);
                 //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
                 FileBrowser.refreshList = true;
             }
@@ -400,7 +406,7 @@ public class FileBrowser extends Component
     {
         if(fileList.getSelectedIndex() != -1)
         {
-            clipboardDir = current;
+            clipboardDir = currentFolder;
             clipboardFile = fileList.getSelectedItem();
         }
     }
@@ -467,7 +473,7 @@ public class FileBrowser extends Component
         {
             if(clipboardFile instanceof Folder)
             {
-                if(predecessor.contains(clipboardFile) || current == clipboardFile)
+                if(predecessor.contains(clipboardFile) || currentFolder == clipboardFile)
                 {
                     return false;
                 }
@@ -490,7 +496,7 @@ public class FileBrowser extends Component
     {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(TextFormatting.GRAY.toString() + TextFormatting.BOLD + root.getName() + TextFormatting.RESET + ":");
+        builder.append(TextFormatting.GRAY.toString() + TextFormatting.BOLD + rootFolder.getName() + TextFormatting.RESET + ":");
         builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
 
         for(int i = 1; i < predecessor.size(); i++)
@@ -498,9 +504,9 @@ public class FileBrowser extends Component
             builder.append(predecessor.get(i).getName());
             builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
         }
-        if(current != root)
+        if(currentFolder != rootFolder)
         {
-            builder.append(current.getName());
+            builder.append(currentFolder.getName());
             builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
         }
         return builder.toString();
@@ -514,7 +520,7 @@ public class FileBrowser extends Component
         {
             path = "..." + Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(path, 190, true);
         }
-        label.setText(path);
+        labelPath.setText(path);
     }
 
     private void renameSelectedFile()
