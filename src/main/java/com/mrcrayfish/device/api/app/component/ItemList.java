@@ -47,7 +47,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public ItemList(int left, int top, int width, int visibleItems) 
 	{
 		super(left, top);
-		this.width = width;
+		this.width = width - 12;
 		this.visibleItems = visibleItems;
 	}
 	
@@ -73,7 +73,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 			}
 		});
 		layout.addComponent(btnDown);
-		
+
 		updateButtons();
 	}
 	
