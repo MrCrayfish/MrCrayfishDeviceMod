@@ -1,9 +1,5 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-import java.util.*;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
@@ -11,12 +7,16 @@ import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.event.AttachCapabilitiesEvent.Item;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class ItemList<E> extends Component implements Iterable<E>
 {
@@ -50,14 +50,14 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public ItemList(int left, int top, int width, int visibleItems) 
 	{
 		super(left, top);
-		this.width = width;
+		this.width = width - 12;
 		this.visibleItems = visibleItems;
 	}
 	
 	@Override
 	public void init(Layout layout)
 	{
-		btnUp = new ButtonArrow(left + width + 3, top, ButtonArrow.Type.UP);
+		btnUp = new ButtonArrow(left + width, top, ButtonArrow.Type.UP);
 		btnUp.setEnabled(false);
 		btnUp.setClickListener(new ClickListener() {
 			@Override
@@ -67,7 +67,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 		});
 		layout.addComponent(btnUp);
 		
-		btnDown = new ButtonArrow(left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+		btnDown = new ButtonArrow(left + width, top + getHeight() - 12, ButtonArrow.Type.DOWN);
+		btnDown.setEnabled(false);
 		btnDown.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -75,6 +76,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 			}
 		});
 		layout.addComponent(btnDown);
+
+		updateButtons();
 	}
 	
 	@Override
@@ -87,10 +90,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 			{
 				height = renderer.getHeight();
 			}
+
+			/* Fill */
+			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + (visibleItems * height) + visibleItems, Color.LIGHT_GRAY.getRGB());
+
+			/* Box */
 			drawHorizontalLine(xPosition, xPosition + width, yPosition, borderColour);
 			drawVerticalLine(xPosition, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
 			drawVerticalLine(xPosition + width, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
 			drawHorizontalLine(xPosition, xPosition + width, yPosition + (visibleItems * height) + visibleItems, borderColour);
+
+			/* Items */
 			for(int i = 0; i < visibleItems; i++)
 			{
 				E item = getItem(i);
@@ -105,10 +115,13 @@ public class ItemList<E> extends Component implements Iterable<E>
 					{
 						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
 						drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColour);
+						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, Color.LIGHT_GRAY.getRGB());
 					}
 				}
 			}
+
+			drawRect(xPosition + width + 1, yPosition, xPosition + width + 11, yPosition + (visibleItems * height) + visibleItems, Color.DARK_GRAY.getRGB());
+			drawVerticalLine(xPosition + width + 11, yPosition, yPosition + (visibleItems * height) + visibleItems, borderColour);
         }
 	}
 
@@ -154,15 +167,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 			}
 		}
 	}
-	
+
+	private int getHeight()
+	{
+		return (renderer != null ? renderer.getHeight() : 13) * visibleItems + visibleItems + 1;
+	}
+
 	private void scrollUp()
 	{
 		if(offset > 0) {
 			offset--;
-			btnDown.setEnabled(true);
-		}
-		if(offset == 0) {
-			btnUp.setEnabled(false);
+			updateButtons();
 		}
 	}
 	
@@ -170,11 +185,14 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		if(visibleItems + offset < items.size()) {
 			offset++;
-			btnUp.setEnabled(true);
+			updateButtons();
 		}
-		if(visibleItems + offset == items.size()) {
-			btnDown.setEnabled(false);
-		}
+	}
+
+	private void updateButtons()
+	{
+		btnUp.setEnabled(offset > 0);
+		btnDown.setEnabled(visibleItems + offset < items.size());
 	}
 
 	/**
@@ -209,13 +227,13 @@ public class ItemList<E> extends Component implements Iterable<E>
 		items.add(e);
 		sort();
 	}
-	
+
 	/**
 	 * Appends an item to the list
-	 * 
+	 *
 	 * @param newItems the items
 	 */
-	public void setItems(List<E> newItems) 
+	public void setItems(List<E> newItems)
 	{
 		items.clear();
 		items.addAll(newItems);

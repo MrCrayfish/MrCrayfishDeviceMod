@@ -4,6 +4,7 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.task.TaskPipeline;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.io.FileSystem;
@@ -33,7 +34,7 @@ import java.util.List;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
-public class Laptop extends GuiScreen 
+public class Laptop extends GuiScreen implements System
 {
 	public static final int ID = 1;
 	
@@ -48,6 +49,7 @@ public class Laptop extends GuiScreen
 	public static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
 	public static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
 
+	private static System system;
 	private static BlockPos pos;
 
 	private TaskBar bar = new TaskBar();
@@ -56,10 +58,16 @@ public class Laptop extends GuiScreen
 	private NBTTagCompound appData;
 	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
-	
+
 	public static int currentWallpaper;
+	private int tileX, tileY, tileZ;
 	private int lastMouseX, lastMouseY;
+
+	private int draggingWindow;
 	private boolean dragging = false;
+	private boolean dirty = false;
+
+	private Layout context = null;
 	
 	public Laptop(TileEntityLaptop laptop)
 	{
@@ -70,6 +78,9 @@ public class Laptop extends GuiScreen
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
 		}
+		this.windows = new Window[5];
+		this.bar = new TaskBar();
+		Laptop.system = this;
 		pos = laptop.getPos();
 	}
 
@@ -109,6 +120,9 @@ public class Laptop extends GuiScreen
 
         /* Send file system data */
 		TaskPipeline.sendTask(new TaskUpdateFileSystem(pos, fileSystem.toTag()));
+
+		Laptop.pos = null;
+        Laptop.system = null;
     }
 	
 	@Override
@@ -125,7 +139,7 @@ public class Laptop extends GuiScreen
 	}
 	
 	@Override
-	public void updateScreen() 
+	public void updateScreen()
 	{
 		for(Window window : windows)
 		{
@@ -182,6 +196,11 @@ public class Laptop extends GuiScreen
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
+		if(context != null)
+		{
+			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
+		}
+
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
 		{
 			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
@@ -195,7 +214,7 @@ public class Laptop extends GuiScreen
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException 
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
 	{
 		this.lastMouseX = mouseX;
 		this.lastMouseY = mouseY;
@@ -204,7 +223,22 @@ public class Laptop extends GuiScreen
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		
 		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
-		
+
+		if(this.context != null)
+		{
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
+			{
+				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
+				return;
+			}
+			else
+			{
+				this.context = null;
+			}
+		}
+
 		for(int i = 0; i < windows.length; i++)
 		{
 			Window<Application> window = windows[i];
@@ -216,7 +250,7 @@ public class Laptop extends GuiScreen
 					windows[i] = null;
 					updateWindowStack();
 					windows[0] = window;
-					
+
 					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
 					
 					if(isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
@@ -504,10 +538,34 @@ public class Laptop extends GuiScreen
 			WALLPAPERS.add(wallpaper);
 		}
 	}
-	
+
+	public static System getSystem()
+	{
+		return system;
+	}
+
 	@Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;
+	}
+
+	@Override
+	public void openContext(Layout layout, int x, int y)
+	{
+		layout.updateComponents(x, y);
+		context = layout;
+	}
+
+	@Override
+	public boolean hasContext()
+	{
+		return context != null;
+	}
+
+	@Override
+	public void closeContext()
+	{
+		context = null;
 	}
 }
