@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 
@@ -42,7 +41,7 @@ public abstract class ComboBox extends Component
     public void handleTick()
     {
         super.handleTick();
-        if(opened && !Laptop.getSystem().hasDropdown())
+        if(opened && !Laptop.getSystem().hasContext())
         {
             opened = false;
         }
@@ -115,7 +114,7 @@ public abstract class ComboBox extends Component
         if(this.hovered && !this.opened)
         {
             this.opened = true;
-            Laptop.getSystem().openDropdown(this.layout, xPosition, yPosition + 17);
+            Laptop.getSystem().openContext(this.layout, xPosition, yPosition + 17);
         }
     }
 
@@ -169,7 +168,7 @@ public abstract class ComboBox extends Component
                 {
                     selected = t;
                     updateValue();
-                    Laptop.getSystem().closeDropdown();
+                    Laptop.getSystem().closeContext();
                 }
             });
             this.layout.addComponent(list);

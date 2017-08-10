@@ -57,7 +57,7 @@ public class Laptop extends GuiScreen implements System
 	private boolean dragging = false;
 	private boolean dirty = false;
 
-	private Layout dropdown = null;
+	private Layout context = null;
 	
 	public Laptop(NBTTagCompound data, int tileX, int tileY, int tileZ)
 	{
@@ -175,9 +175,9 @@ public class Laptop extends GuiScreen implements System
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
-		if(dropdown != null)
+		if(context != null)
 		{
-			dropdown.render(this, mc, dropdown.xPosition, dropdown.yPosition, mouseX, mouseY, true, partialTicks);
+			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
 		}
 
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
@@ -203,18 +203,18 @@ public class Laptop extends GuiScreen implements System
 		
 		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
 
-		if(this.dropdown != null)
+		if(this.context != null)
 		{
-			int dropdownX = dropdown.xPosition;
-			int dropdownY = dropdown.yPosition;
-			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + dropdown.width, dropdownY + dropdown.height))
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
-				this.dropdown.handleMouseClick(mouseX, mouseY, mouseButton);
+				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
 				return;
 			}
 			else
 			{
-				this.dropdown = null;
+				this.context = null;
 			}
 		}
 
@@ -536,21 +536,21 @@ public class Laptop extends GuiScreen implements System
 	}
 
 	@Override
-	public void openDropdown(Layout layout, int x, int y)
+	public void openContext(Layout layout, int x, int y)
 	{
 		layout.updateComponents(x, y);
-		dropdown = layout;
+		context = layout;
 	}
 
 	@Override
-	public boolean hasDropdown()
+	public boolean hasContext()
 	{
-		return dropdown != null;
+		return context != null;
 	}
 
 	@Override
-	public void closeDropdown()
+	public void closeContext()
 	{
-		dropdown = null;
+		context = null;
 	}
 }

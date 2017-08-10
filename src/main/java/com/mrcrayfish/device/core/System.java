@@ -7,9 +7,9 @@ import com.mrcrayfish.device.api.app.Layout;
  */
 public interface System
 {
-    void openDropdown(Layout layout, int x, int y);
+    void openContext(Layout layout, int x, int y);
 
-    boolean hasDropdown();
+    boolean hasContext();
 
-    void closeDropdown();
+    void closeContext();
 }
