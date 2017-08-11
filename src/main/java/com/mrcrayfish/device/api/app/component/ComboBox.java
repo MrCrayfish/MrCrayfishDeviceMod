@@ -22,7 +22,7 @@ public abstract class ComboBox extends Component
 
     protected boolean hovered;
     protected int width = 80;
-    protected int height = 18;
+    protected int height = 14;
 
     protected Layout layout;
 
@@ -88,7 +88,7 @@ public abstract class ComboBox extends Component
             RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition + 2, 98 + i * 5, 14, height - 4, height - 4, 1, 1);
 
             /* Icon */
-            RenderUtil.drawRectWithTexture(xPosition + xOffset + 5, yPosition + 7, 111, 12, 8, 5, 8, 5);
+            RenderUtil.drawRectWithTexture(xPosition + xOffset + 3, yPosition + 5, 111, 12, 8, 5, 8, 5);
 
             /* Box */
             drawHorizontalLine(xPosition, xPosition + xOffset, yPosition, Color.BLACK.getRGB());
@@ -102,7 +102,7 @@ public abstract class ComboBox extends Component
             {
                 text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
             }
-            fontrenderer.drawString(text, xPosition + 4, yPosition + 5, Color.WHITE.getRGB(), true);
+            fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
@@ -114,7 +114,7 @@ public abstract class ComboBox extends Component
         if(this.hovered && !this.opened)
         {
             this.opened = true;
-            Laptop.getSystem().openContext(this.layout, xPosition, yPosition + 17);
+            Laptop.getSystem().openContext(this.layout, xPosition, yPosition + 13);
         }
     }
 
@@ -177,9 +177,9 @@ public abstract class ComboBox extends Component
         @Override
         public String getValue()
         {
-            if(list.getItems().size() <= 0)
+            if(this.selected == null)
                 return "";
-            return this.list.getSelectedItem().toString();
+            return this.selected.toString();
         }
 
         public void setItems(T[] items)
@@ -190,6 +190,8 @@ public abstract class ComboBox extends Component
                 this.list.addItem(t);
             }
             this.selected = this.list.getItem(0);
+            this.layout.height = getListHeight(this.list);
+            updateValue();
         }
 
         public T getSelectedItem()
@@ -206,7 +208,8 @@ public abstract class ComboBox extends Component
 
         private static int getListHeight(ItemList list)
         {
-            return (list.renderer != null ? list.renderer.getHeight() : 13) * list.visibleItems + list.visibleItems + 1;
+            int size = Math.max(2, Math.min(list.visibleItems, list.getItems().size()));
+            return (list.renderer != null ? list.renderer.getHeight() : 13) * size + size + 1;
         }
 
         private static int getListWidth(ItemList list)
