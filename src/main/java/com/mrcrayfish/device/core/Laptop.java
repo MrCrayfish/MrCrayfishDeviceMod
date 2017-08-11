@@ -200,8 +200,6 @@ public class Laptop extends GuiScreen implements System
 		
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
-		
-		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
 
 		if(this.context != null)
 		{
@@ -217,6 +215,8 @@ public class Laptop extends GuiScreen implements System
 				this.context = null;
 			}
 		}
+
+		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
 
 		for(int i = 0; i < windows.length; i++)
 		{
