@@ -150,9 +150,17 @@ public abstract class ComboBox extends Component
         private final ItemList<T> list;
         private T selected;
 
-        public List(int left, int top, T ... items)
+        public List(int left, int top, T[] items)
         {
             super(left, top);
+            this.list = new ItemList(0, 0, width, 6);
+            this.layout = new Layout(width, getListHeight(list));
+            this.setItems(items);
+        }
+
+        public List(int left, int top, int width, T[] items)
+        {
+            super(left, top, width);
             this.list = new ItemList(0, 0, width, 6);
             this.layout = new Layout(width, getListHeight(list));
             this.setItems(items);
