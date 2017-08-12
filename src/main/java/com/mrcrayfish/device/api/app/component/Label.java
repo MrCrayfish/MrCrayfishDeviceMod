@@ -1,13 +1,11 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+
+import java.awt.*;
 
 public class Label extends Component {
 

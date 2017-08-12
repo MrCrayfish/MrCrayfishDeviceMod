@@ -1,16 +1,16 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.text.TextFormatting;
+
+import java.awt.*;
 
 public class TextArea extends Component
 {
@@ -58,8 +58,8 @@ public class TextArea extends Component
 		if (this.visible)
         {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
-			this.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
+			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
+			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
 			String text = this.text;
 			if (this.updateCount / 6 % 2 == 0)
 	        {
@@ -78,9 +78,8 @@ public class TextArea extends Component
 	{
 		if(!this.visible || !this.enabled || !this.editable)
 			return;
-		
-		boolean within = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
-		this.isFocused = within;
+
+		this.isFocused = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
 	}
 	
 	@Override
@@ -103,14 +102,12 @@ public class TextArea extends Component
                     {
                         text = text.substring(0, text.length() - 1);
                     }
-
                     return;
                 case 28:
                 case 156:
                     this.writeText("\n");
                     return;
                 default:
-
                     if (ChatAllowedCharacters.isAllowedCharacter(character))
                     {
                         this.writeText(Character.toString(character));

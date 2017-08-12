@@ -50,9 +50,7 @@ public abstract class ComboBox extends Component
     @Override
     public void init(Layout layout)
     {
-        this.layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
-            Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
-        });
+        this.layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB()));
     }
 
     @Override
@@ -144,7 +142,6 @@ public abstract class ComboBox extends Component
         return i;
     }
 
-
     public static class List<T> extends ComboBox
     {
         private final ItemList<T> list;
@@ -153,7 +150,7 @@ public abstract class ComboBox extends Component
         public List(int left, int top, T[] items)
         {
             super(left, top);
-            this.list = new ItemList(0, 0, width, 6);
+            this.list = new ItemList<>(0, 0, width, 6);
             this.layout = new Layout(width, getListHeight(list));
             this.setItems(items);
         }
@@ -161,7 +158,7 @@ public abstract class ComboBox extends Component
         public List(int left, int top, int width, T[] items)
         {
             super(left, top, width);
-            this.list = new ItemList(0, 0, width, 6);
+            this.list = new ItemList<>(0, 0, width, 6);
             this.layout = new Layout(width, getListHeight(list));
             this.setItems(items);
         }

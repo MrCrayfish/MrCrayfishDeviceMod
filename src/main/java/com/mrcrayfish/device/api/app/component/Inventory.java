@@ -1,20 +1,20 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
+
+import java.awt.*;
+import java.util.Arrays;
 
 /**
  * A component that allows you "access" to the players inventory. Now why access
@@ -55,19 +55,16 @@ public class Inventory extends Component
 			
 			if(selected == i)
 			{
-				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColour);
+				Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColour);
 			}
 			
 			if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 17, yPosition + offsetY + 17))
 			{
-				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColour);
+				Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColour);
 			}
 			
 			ItemStack stack = inventory.getStackInSlot(i);
-			if(stack != null)
-			{
-				RenderUtil.renderItem(xPosition + offsetX + 1, yPosition + offsetY + 1, stack, true);
-			}
+			RenderUtil.renderItem(xPosition + offsetX + 1, yPosition + offsetY + 1, stack, true);
 		}
 	}
 	
@@ -83,10 +80,7 @@ public class Inventory extends Component
 				if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 18, y + 18))
 				{
 					ItemStack stack = mc.player.inventory.getStackInSlot((i * 9) + j + 9);
-					if(stack != null)
-					{
-						laptop.drawHoveringText(Arrays.asList(new String[] { stack.getDisplayName() }), mouseX, mouseY);
-					}
+					laptop.drawHoveringText(Arrays.asList(stack.getDisplayName()), mouseX, mouseY);
 					return;
 				}
 			}

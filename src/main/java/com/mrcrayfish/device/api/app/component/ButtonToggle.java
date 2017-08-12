@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Application;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
@@ -69,7 +68,7 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 			if(group != null)
 			{
-				group.unselect();
+				group.deselect();
 				this.toggle = true;
 			}
 			else 

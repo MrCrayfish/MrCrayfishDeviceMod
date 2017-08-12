@@ -1,15 +1,12 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.text.DecimalFormat;
-
-import org.lwjgl.input.Mouse;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Mouse;
+
+import java.text.DecimalFormat;
 
 public class NumberSelector extends Component
 {
@@ -48,19 +45,15 @@ public class NumberSelector extends Component
 	public void init(Layout layout)
 	{
 		btnUp = new Button(left, top, width, 11, COMPONENTS_GUI, 111, 12, 8, 5);
-		btnUp.setClickListener(new ClickListener()
+		btnUp.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(current < max)
-				{
-					current++;
-					display.setText(format.format(current));
-					updateButtons();
-				}
-			}
-		});
+            if(current < max)
+            {
+                current++;
+                display.setText(format.format(current));
+                updateButtons();
+            }
+        });
 		layout.addComponent(btnUp);
 		
 		display = new TextField(left, top + 10, width);
@@ -69,19 +62,15 @@ public class NumberSelector extends Component
 		layout.addComponent(display);
 		
 		btnDown = new Button(left, top + 24, width, 11, COMPONENTS_GUI, 119, 12, 8, 5);
-		btnDown.setClickListener(new ClickListener()
+		btnDown.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(current > min)
-				{
-					current--;
-					display.setText(format.format(current));
-					updateButtons();
-				}
-			}
-		});
+            if(current > min)
+            {
+                current--;
+                display.setText(format.format(current));
+                updateButtons();
+            }
+        });
 		layout.addComponent(btnDown);
 	}
 
@@ -203,7 +192,7 @@ public class NumberSelector extends Component
 	}
 	
 	/**
-	 * Sets the formating of the display. Read the {@link DecimalFormat}
+	 * Sets the formatting of the display. Read the {@link DecimalFormat}
 	 * documentation for pattern syntax.
 	 * 
 	 * @param format the format
