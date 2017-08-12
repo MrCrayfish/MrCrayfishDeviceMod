@@ -17,14 +17,16 @@ import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-//TODO Add option to set hieght explictly
-
 public class ItemList<E> extends Component implements Iterable<E>
 {
 	protected int width;
 	protected int visibleItems;
 	protected int offset;
 	protected int selected = -1;
+
+	protected boolean showAll = true;
+	protected boolean resized = false;
+	protected boolean initialized = false;
 	
 	protected List<E> items = new ArrayList<E>();
 	protected ListItemRenderer<E> renderer = null;
@@ -46,18 +48,25 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * @param width width of the list
 	 * @param visibleItems how many items are visible
 	 */
-	public ItemList(int left, int top, int width, int visibleItems) 
+	public ItemList(int left, int top, int width, int visibleItems)
 	{
 		super(left, top);
-		this.width = width - 12;
+		this.width = width;
 		this.visibleItems = visibleItems;
+	}
+
+	public ItemList(int left, int top, int width, int visibleItems, boolean showAll)
+	{
+		this(left, top, width, visibleItems);
+		this.showAll = showAll;
 	}
 	
 	@Override
 	public void init(Layout layout)
 	{
-		btnUp = new ButtonArrow(left + width, top, ButtonArrow.Type.UP);
+		btnUp = new ButtonArrow(left + width - 12, top, ButtonArrow.Type.UP);
 		btnUp.setEnabled(false);
+		btnUp.setVisible(false);
 		btnUp.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -66,8 +75,9 @@ public class ItemList<E> extends Component implements Iterable<E>
 		});
 		layout.addComponent(btnUp);
 		
-		btnDown = new ButtonArrow(left + width, top + getHeight() - 12, ButtonArrow.Type.DOWN);
+		btnDown = new ButtonArrow(left + width - 12, top + getHeight() - 12, ButtonArrow.Type.DOWN);
 		btnDown.setEnabled(false);
+		btnDown.setVisible(false);
 		btnDown.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -77,6 +87,9 @@ public class ItemList<E> extends Component implements Iterable<E>
 		layout.addComponent(btnDown);
 
 		updateButtons();
+		updateComponent();
+
+		initialized = true;
 	}
 	
 	@Override
@@ -121,8 +134,11 @@ public class ItemList<E> extends Component implements Iterable<E>
 				}
 			}
 
-			drawRect(xPosition + width + 1, yPosition, xPosition + width + 11, yPosition + (size * height) + size, Color.DARK_GRAY.getRGB());
-			drawVerticalLine(xPosition + width + 11, yPosition, yPosition + (size * height) + size, borderColour);
+			if(items.size() > visibleItems)
+			{
+				drawRect(xPosition + width + 1, yPosition, xPosition + width + 11, yPosition + (size * height) + size, Color.DARK_GRAY.getRGB());
+				drawVerticalLine(xPosition + width + 11, yPosition, yPosition + (size * height) + size, borderColour);
+			}
         }
 	}
 
@@ -179,6 +195,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 
 	private int getSize()
 	{
+		if(showAll) return visibleItems;
 		return Math.max(2, Math.min(visibleItems, items.size()));
 	}
 	
@@ -202,6 +219,24 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		btnDown.setEnabled(getSize() + offset < items.size());
 		btnUp.setEnabled(offset > 0);
+	}
+
+	private void updateComponent()
+	{
+		btnUp.setVisible(items.size() > visibleItems);
+		btnDown.setVisible(items.size() > visibleItems);
+		btnDown.top = top + getHeight() - 12;
+
+		if(!resized && items.size() > visibleItems)
+		{
+			width -= 12;
+			resized = true;
+		}
+		else if(resized && items.size() <= visibleItems)
+		{
+			width += 12;
+			resized = false;
+		}
 	}
 
 	/**
@@ -234,6 +269,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 		if(e != null)
 		{
 			items.add(e);
+			if(initialized)
+				updateComponent();
 		}
 	}
 	
@@ -249,6 +286,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 			items.remove(index);
 			if(index == selected)
 				selected = -1;
+			if(initialized)
+				updateComponent();
 		}
 	}
 	

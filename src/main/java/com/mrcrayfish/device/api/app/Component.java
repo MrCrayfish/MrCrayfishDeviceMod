@@ -27,12 +27,12 @@ public abstract class Component extends Gui
 	/**
 	 * The relative x position from the left.
 	 */
-	protected int left;
+	public int left;
 	
 	/**
 	 * The relative y position from the top.
 	 */
-	protected int top;
+	public int top;
 	
 	/**
 	 * Is the component enabled
