@@ -1,12 +1,9 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.util.Arrays;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
@@ -15,6 +12,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+
+import java.util.Arrays;
 
 public class Button extends Component
 {
@@ -78,7 +77,7 @@ public class Button extends Component
 	/**
 	 * Creates a button with an image inside. The size of the button is based
 	 * on the size of the image with 3 pixels of padding.
-	 * 
+	 *
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width width of the button
@@ -159,7 +158,7 @@ public class Button extends Component
 	{
         if(this.hovered && this.toolTip != null)
         {
-        	laptop.drawHoveringText(Arrays.asList(new String[] { TextFormatting.GOLD + this.toolTipTitle, this.toolTip }), mouseX, mouseY);
+        	laptop.drawHoveringText(Arrays.asList(TextFormatting.GOLD + this.toolTipTitle, this.toolTip), mouseX, mouseY);
         }
 	}
 

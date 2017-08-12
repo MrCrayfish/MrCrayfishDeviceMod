@@ -1,14 +1,11 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
-import org.lwjgl.opengl.GL11;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 public class Spinner extends Component 
 {

@@ -1,11 +1,8 @@
 package com.mrcrayfish.device.api.app.component;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class ButtonArrow extends Button
@@ -30,7 +27,6 @@ public class ButtonArrow extends Button
 	{
 		if (this.visible)
 		{
-			FontRenderer fontrenderer = mc.fontRendererObj;
 			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height && windowActive;
@@ -44,7 +40,7 @@ public class ButtonArrow extends Button
 		}
 	}
 	
-	public static enum Type 
+	public enum Type
 	{
 		LEFT(0), UP(1), RIGHT(2), DOWN(3);
 		

@@ -1,14 +1,12 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
+
+import java.awt.*;
 
 public class CheckBox extends Component implements RadioGroup.Item
 {
@@ -83,7 +81,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 		{
 			if(group != null)
 			{
-				group.unselect();
+				group.deselect();
 			}
 			this.checked = !checked;
 			if(listener != null)
