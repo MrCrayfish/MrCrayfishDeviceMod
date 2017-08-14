@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.listener.ChangeListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -10,14 +11,16 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
  * Created by Casey on 06-Aug-17.
  */
-public abstract class ComboBox extends Component
+public abstract class ComboBox<T> extends Component
 {
-    private String value = "";
+    protected T value;
     private boolean opened = false;
 
     protected boolean hovered;
@@ -25,6 +28,8 @@ public abstract class ComboBox extends Component
     protected int height = 14;
 
     protected Layout layout;
+
+    protected ChangeListener<T> changeListener;
 
     public ComboBox(int left, int top)
     {
@@ -94,8 +99,8 @@ public abstract class ComboBox extends Component
             drawVerticalLine(xPosition, yPosition, yPosition + height - 1, Color.BLACK.getRGB());
             drawRect(xPosition + 1, yPosition + 1, xPosition + xOffset, yPosition + height - 1, Color.DARK_GRAY.getRGB());
 
-            String text = value;
-            int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(value);
+            String text = value.toString();
+            int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
             if(valWidth > (width - height - 8))
             {
                 text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
@@ -116,11 +121,25 @@ public abstract class ComboBox extends Component
         }
     }
 
-    public abstract String getValue();
-
-    public void updateValue()
+    @Nullable
+    public T getValue()
     {
-        value = getValue();
+        return value;
+    }
+
+    protected void updateValue(@Nonnull T newValue)
+    {
+        if(newValue == null)
+            throw new IllegalArgumentException("Value must not be null");
+
+        if(value != newValue)
+        {
+            if(changeListener != null)
+            {
+                changeListener.onChange(value, newValue);
+            }
+            value = newValue;
+        }
     }
 
     protected boolean isInside(int mouseX, int mouseY)
@@ -142,7 +161,12 @@ public abstract class ComboBox extends Component
         return i;
     }
 
-    public static class List<T> extends ComboBox
+    public void setChangeListener(ChangeListener<T> changeListener)
+    {
+        this.changeListener = changeListener;
+    }
+
+    public static class List<T> extends ComboBox<T>
     {
         private final ItemList<T> list;
         private T selected;
@@ -172,23 +196,21 @@ public abstract class ComboBox extends Component
                 if(mouseButton == 0)
                 {
                     selected = t;
-                    updateValue();
+                    updateValue(t);
                     Laptop.getSystem().closeContext();
                 }
             });
             this.layout.addComponent(list);
         }
 
-        @Override
-        public String getValue()
+        public void setItems(@Nonnull T[] items)
         {
-            if(this.selected == null)
-                return "";
-            return this.selected.toString();
-        }
+            if(items == null)
+                throw new IllegalArgumentException("Cannot set null items");
 
-        public void setItems(T[] items)
-        {
+            if(items.length == 0)
+                throw new IllegalArgumentException("The item array must has at least one value");
+
             this.list.removeAll();
             for(T t : items)
             {
@@ -196,7 +218,7 @@ public abstract class ComboBox extends Component
             }
             this.selected = this.list.getItem(0);
             this.layout.height = getListHeight(this.list);
-            updateValue();
+            updateValue(this.selected);
         }
 
         public T getSelectedItem()
@@ -223,18 +245,23 @@ public abstract class ComboBox extends Component
         }
     }
 
-    public static class Custom extends ComboBox
+    public static class Custom<T> extends ComboBox<T>
     {
-        public <T extends Layout> Custom(int left, int top, T t)
+        public Custom(int left, int top)
         {
             super(left, top);
-            this.layout = t;
+            this.layout = new Layout(width, 100);
         }
 
-        @Override
-        public String getValue()
+        public Custom(int left, int top, Layout layout)
         {
-            return "";
+            super(left, top);
+            this.layout = layout;
+        }
+
+        public void setValue(@Nonnull T newVal)
+        {
+            updateValue(newVal);
         }
     }
 }
