@@ -199,7 +199,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	private int getSize()
 	{
 		if(showAll) return visibleItems;
-		return Math.max(2, Math.min(visibleItems, items.size()));
+		return Math.max(1, Math.min(visibleItems, items.size()));
 	}
 	
 	private void scrollUp()
