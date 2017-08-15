@@ -115,13 +115,7 @@ public final class Layout extends Component
 	}
 	
 	@Override
-	public void init(Layout layout)
-	{
-		for(Component c : components)
-		{
-			c.init(this);
-		}
-	}
+	public void init(Layout layout) {}
 	
 	@Override
 	public void handleTick()
