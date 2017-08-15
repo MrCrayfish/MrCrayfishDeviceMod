@@ -157,7 +157,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		{
 			for(int i = 0; i < size && i < items.size(); i++)
 			{
-				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition + (i * height) + i, xPosition + width, yPosition + (i * height) + i + height))
+				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + 1, yPosition + (i * height) + i, xPosition + width - 1, yPosition + (i * height) + i + height))
 				{
 					this.selected = i + offset;
 					if(itemClickListener != null)
