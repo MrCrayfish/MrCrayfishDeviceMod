@@ -103,16 +103,16 @@ public class ItemList<E> extends Component implements Iterable<E>
 			int size = getSize();
 
 			/* Fill */
-			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + (size * height) + size, Color.LIGHT_GRAY.getRGB());
+			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + (size * height) + size, Color.LIGHT_GRAY.getRGB());
 
 			/* Box */
-			drawHorizontalLine(xPosition, xPosition + width, yPosition, borderColour);
+			drawHorizontalLine(xPosition, xPosition + width - 1, yPosition, borderColour);
 			drawVerticalLine(xPosition, yPosition, yPosition + (size * height) + size, borderColour);
-			drawVerticalLine(xPosition + width, yPosition, yPosition + (size * height) + size, borderColour);
-			drawHorizontalLine(xPosition, xPosition + width, yPosition + (size * height) + size, borderColour);
+			drawVerticalLine(xPosition + width - 1, yPosition, yPosition + (size * height) + size, borderColour);
+			drawHorizontalLine(xPosition, xPosition + width - 1, yPosition + (size * height) + size, borderColour);
 
 			/* Items */
-			for(int i = 0; i < size && i < items.size(); i++)
+			for(int i = 0; i < size - 1 && i < items.size(); i++)
 			{
 				E item = getItem(i);
 				if(item != null)
@@ -124,17 +124,33 @@ public class ItemList<E> extends Component implements Iterable<E>
 					}
 					else
 					{
-						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
+						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
 						drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, Color.LIGHT_GRAY.getRGB());
+						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, Color.LIGHT_GRAY.getRGB());
 					}
+				}
+			}
+
+			int i = size - 1;
+			E item = getItem(i);
+			if(item != null)
+			{
+				if(renderer != null)
+				{
+					renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 1, renderer.getHeight(), (i + offset) == selected);
+					drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColour);
+				}
+				else
+				{
+					drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
+					drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
 				}
 			}
 
 			if(items.size() > visibleItems)
 			{
-				drawRect(xPosition + width + 1, yPosition, xPosition + width + 11, yPosition + (size * height) + size, Color.DARK_GRAY.getRGB());
-				drawVerticalLine(xPosition + width + 11, yPosition, yPosition + (size * height) + size, borderColour);
+				drawRect(xPosition + width, yPosition, xPosition + width + 10, yPosition + (size * height) + size, Color.DARK_GRAY.getRGB());
+				drawVerticalLine(xPosition + width + 10, yPosition + 11, yPosition + (size * height) + size - 11, borderColour);
 			}
         }
 	}
@@ -151,7 +167,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		{
 			for(int i = 0; i < size && i < items.size(); i++)
 			{
-				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition + (i * height) + i, xPosition + width, yPosition + (i * height) + i + height))
+				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + 1, yPosition + (i * height) + i, xPosition + width - 1, yPosition + (i * height) + i + height))
 				{
 					if(mouseButton == 0) this.selected = i + offset;
 					if(itemClickListener != null)
@@ -193,7 +209,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	private int getSize()
 	{
 		if(showAll) return visibleItems;
-		return Math.max(2, Math.min(visibleItems, items.size()));
+		return Math.max(1, Math.min(visibleItems, items.size()));
 	}
 
 	private void scrollUp()
@@ -226,12 +242,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 
 		if(!resized && items.size() > visibleItems)
 		{
-			width -= 12;
+			width -= 11;
 			resized = true;
 		}
 		else if(resized && items.size() <= visibleItems)
 		{
-			width += 12;
+			width += 11;
 			resized = false;
 		}
 	}
@@ -311,7 +327,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 */
 	public E getItem(int pos)
 	{
-		if(pos + offset < items.size())
+		if(pos >= 0 && pos + offset < items.size())
 		{
 			return items.get(pos + offset);
 		}

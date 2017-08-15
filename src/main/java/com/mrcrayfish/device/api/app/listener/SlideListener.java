@@ -16,5 +16,5 @@ public interface SlideListener
 	 * 
 	 * @param percentage the percentage from the left
 	 */
-	public void onSlide(float percentage);
+	void onSlide(float percentage);
 }

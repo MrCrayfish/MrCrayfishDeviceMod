@@ -11,5 +11,5 @@ public interface InitListener
 	/**
 	 * Called when a layout is set as the current layout.
 	 */
-	public void onInit();
+	void onInit();
 }

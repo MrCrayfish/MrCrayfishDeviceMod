@@ -5,10 +5,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ItemList;
-import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
@@ -74,6 +71,8 @@ public class FileBrowser extends Component
     private Button btnCut;
     private Button btnPaste;
     private Button btnDelete;
+
+    private ComboBox comboBoxDrive;
     private Label labelPath;
 
     private Stack<Folder> predecessor = new Stack<>();
@@ -306,7 +305,10 @@ public class FileBrowser extends Component
         });
         layoutMain.addComponent(fileList);
 
-        labelPath = new Label("/", 26, 6);
+        comboBoxDrive = new ComboBox.List<String>(26, 3, 44, new String[]{"Root"});
+        layoutMain.addComponent(comboBoxDrive);
+
+        labelPath = new Label("/", 72, 6);
         layoutMain.addComponent(labelPath);
         layout.addComponent(layoutMain);
 
@@ -496,7 +498,6 @@ public class FileBrowser extends Component
     {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(TextFormatting.GRAY.toString() + TextFormatting.BOLD + rootFolder.getName() + TextFormatting.RESET + ":");
         builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
 
         for(int i = 1; i < predecessor.size(); i++)
@@ -516,9 +517,9 @@ public class FileBrowser extends Component
     {
         String path = getPath();
         int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(path);
-        if(width > 190)
+        if(width > 144)
         {
-            path = "..." + Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(path, 190, true);
+            path = "..." + Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(path, 144, true);
         }
         labelPath.setText(path);
     }
