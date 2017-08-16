@@ -6,9 +6,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
+import java.util.regex.Pattern;
 
 public class File
 {
+	public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[a-zA-Z0-9_ ]{1,16}$");
+
 	public static final Comparator<File> SORT_BY_NAME = (f1, f2) -> {
 		if(f1 instanceof Folder && !(f2 instanceof Folder)) return -1;
 		if(!(f1 instanceof Folder) && f2 instanceof Folder) return 1;
@@ -17,24 +20,31 @@ public class File
 
 	protected Folder parent;
 	protected String name;
-	private String openingApp;
-	private NBTTagCompound data;
-	
+	protected String openingApp;
+	protected NBTTagCompound data;
+	protected boolean protect = false;
+
+	protected File() {}
+
 	public File(String name, Application app, NBTTagCompound data) 
 	{
-		this(name, app.getID(), data);
+		this(name, app.getID(), data, false);
 	}
 	
 	public File(String name, String openingApp, NBTTagCompound data)
 	{
+		this(name, openingApp, data, false);
+	}
+
+	private File(String name, String openingApp, NBTTagCompound data, boolean protect)
+	{
+		if(!PATTERN_FILE_NAME.matcher(name).matches())
+			throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[a-zA-Z0-9_ ]{1,16}$");
+
 		this.name = name;
 		this.openingApp = openingApp;
 		this.data = data;
-	}
-	
-	protected File(String name)
-	{
-		this.name = name;
+		this.protect = protect;
 	}
 	
 	public String getName() 
@@ -42,9 +52,12 @@ public class File
 		return name;
 	}
 
-	public void rename(String name)
+	public boolean rename(String name)
 	{
+		if(this.protect)
+			return false;
 		this.name = name;
+		return true;
 	}
 
 	@Nullable
@@ -55,13 +68,12 @@ public class File
 	
 	public void setData(@Nonnull NBTTagCompound data)
 	{
-		if(data == null)
-		{
-			throw new DataException("A null compound tag cannot be set to a file");
-		}
+		if(this.protect)
+			return;
 		this.data = data;
 	}
 
+	@Nullable
 	public NBTTagCompound getData() 
 	{
 		return data;
@@ -71,6 +83,11 @@ public class File
 	public Folder getParent()
 	{
 		return parent;
+	}
+
+	public boolean isProtected()
+	{
+		return protect;
 	}
 	
 	public boolean isFolder()
@@ -85,6 +102,8 @@ public class File
 
 	public boolean delete()
 	{
+		if(this.protect)
+			return false;
 		if(parent != null)
 		{
 			parent.delete(this);
@@ -109,8 +128,10 @@ public class File
 	@Override
 	public boolean equals(Object obj) 
 	{
-		if(obj == null) return false;
-		if(!(obj instanceof File)) return false;
+		if(obj == null)
+			return false;
+		if(!(obj instanceof File))
+			return false;
 		return ((File) obj).name.equalsIgnoreCase(name);
 	}
 	

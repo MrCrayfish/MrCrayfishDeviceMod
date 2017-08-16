@@ -355,7 +355,7 @@ public abstract class Dialog extends Wrappable
 	{
 		private String messageText = null;
 		private String inputText = "";
-		private String positiveText = "Ok";
+		private String positiveText = "Okay";
 		private String negativeText = "Cancel";
 
 		private ResponseHandler<String> responseListener;
@@ -517,7 +517,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 125);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app.getFileSystem(), app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
 			browser.setItemClickListener((file, index, mouseButton) -> {
 				if(mouseButton == 0)
 				{
@@ -627,7 +627,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 143);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app.getFileSystem(), app, root, FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, root, FileBrowser.Mode.BASIC);
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
@@ -638,6 +638,13 @@ public abstract class Dialog extends Wrappable
 				{
 					if(!textFieldFileName.getText().isEmpty())
 					{
+						if(!File.PATTERN_FILE_NAME.matcher(textFieldFileName.getText()).matches())
+						{
+							Dialog.Message dialog = new Dialog.Message("File name may only contain letters, numbers, underscores and spaces.");
+							app.openDialog(dialog);
+							return;
+						}
+
 						File file = new File(textFieldFileName.getText(), app, fileData.copy());
 						if(!browser.addFile(file))
 						{

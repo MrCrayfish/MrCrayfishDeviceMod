@@ -1,8 +1,11 @@
 package com.mrcrayfish.device.api.io;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,13 @@ public class Folder extends File
 
 	public Folder(String name)
 	{
-		super(name);
+		this(name, false);
+	}
+
+	public Folder(String name, boolean protect)
+	{
+		this.name = name;
+		this.protect = protect;
 	}
 
 	public boolean add(File file)
@@ -29,7 +38,8 @@ public class Folder extends File
 
 		if(hasFile(file.name))
 		{
-			if(!override) return false;
+			if(!override || getFile(file.name).isProtected())
+				return false;
 			files.remove(getFile(file.name));
 		}
 
@@ -38,23 +48,23 @@ public class Folder extends File
 		return true;
 	}
 
-	public void delete(String name)
+	public boolean delete(String name)
 	{
-		File file = getFile(name);
-		if(file != null)
-		{
-			file.parent = null;
-			files.remove(file);
-		}
+		return delete(getFile(name));
 	}
 
-	public void delete(File file)
+	public boolean delete(File file)
 	{
 		if(file != null)
 		{
+			if(file.isProtected())
+				return false;
+
 			file.parent = null;
 			files.remove(file);
+			return true;
 		}
+		return false;
 	}
 
 	public boolean hasFile(String name)
@@ -124,15 +134,23 @@ public class Folder extends File
 	public NBTTagCompound toTag()
 	{
 		NBTTagCompound folderTag = new NBTTagCompound();
+
 		NBTTagCompound fileList = new NBTTagCompound();
 		files.stream().forEach(file -> fileList.setTag(file.getName(), file.toTag()));
 		folderTag.setTag("files", fileList);
+
+		if(protect) folderTag.setBoolean("protected", true);
+
 		return folderTag;
 	}
 
 	public static Folder fromTag(String name, NBTTagCompound folderTag)
 	{
 		Folder folder = new Folder(name);
+
+		if(folderTag.hasKey("protected", Constants.NBT.TAG_BYTE))
+			folder.protect = folderTag.getBoolean("protected");
+
 		NBTTagCompound fileList = folderTag.getCompoundTag("files");
 		for(String fileName : fileList.getKeySet())
 		{
@@ -150,16 +168,9 @@ public class Folder extends File
 	}
 
 	@Override
-	public void setData(NBTTagCompound data)
+	public void setData(@Nonnull NBTTagCompound data)
 	{
 		throw new DataException("Data can not be set to a folder");
-	}
-
-	@Override
-	@Nullable
-	public NBTTagCompound getData()
-	{
-		throw new DataException("Folders do not contain data");
 	}
 
 	@Override
@@ -167,7 +178,9 @@ public class Folder extends File
 	{
 		Folder folder = new Folder(name);
 		files.forEach(f -> {
-			folder.add(f.copy());
+			File copy = f.copy();
+			copy.protect = false;
+			folder.add(copy);
 		});
 		return folder;
 	}

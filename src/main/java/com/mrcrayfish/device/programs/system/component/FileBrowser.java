@@ -52,13 +52,13 @@ public class FileBrowser extends Component
                 Minecraft.getMinecraft().getTextureManager().bindTexture(icon.getResource());
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, icon.getU(), icon.getV(), 14, 14, 14, 14);
             }
-            gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, Color.WHITE.getRGB());
+            String text = (file.isProtected() ? TextFormatting.AQUA : TextFormatting.RESET) + file.getName();
+            gui.drawString(Minecraft.getMinecraft().fontRendererObj, text, x + 22, y + 5, Color.WHITE.getRGB());
         }
     };
 
     public static boolean refreshList = false;
 
-    private final FileSystem fileSystem;
     private final Wrappable wrappable;
     private final Mode mode;
 
@@ -98,10 +98,9 @@ public class FileBrowser extends Component
      * @param left how many pixels from the left
      * @param top  how many pixels from the top
      */
-    public FileBrowser(int left, int top, FileSystem fileSystem, Wrappable wrappable, Folder rootFolder, Mode mode)
+    public FileBrowser(int left, int top, Wrappable wrappable, Folder rootFolder, Mode mode)
     {
         super(left, top);
-        this.fileSystem = fileSystem;
         this.wrappable = wrappable;
         this.rootFolder = rootFolder;
         this.mode = mode;
@@ -123,11 +122,6 @@ public class FileBrowser extends Component
             if(mouseButton == 0)
             {
                 goToPreviousFolder();
-                if(isRootFolder())
-                {
-                    btnPreviousFolder.setEnabled(false);
-                }
-                updatePath();
             }
         });
         btnPreviousFolder.setToolTip("Previous Folder", "Go back to the previous folder");
@@ -139,18 +133,10 @@ public class FileBrowser extends Component
         btnNewFolder = new Button(5, 25 + btnIndex * 20 , ASSETS, 0, 20, 10, 10);
         btnNewFolder.setClickListener((b, mouseButton) ->
         {
-            Dialog.Input dialog = new Dialog.Input("Enter a name");
-            dialog.setResponseHandler((success, v) ->
+            if(mouseButton == 0)
             {
-                if(success)
-                {
-                    addFile(new Folder(v));
-                }
-                return true;
-            });
-            dialog.setTitle("Create a Folder");
-            dialog.setPositiveText("Create");
-            wrappable.openDialog(dialog);
+                createFolder();
+            }
         });
         btnNewFolder.setToolTip("New Folder", "Creates a new folder in this directory");
         layoutMain.addComponent(btnNewFolder);
@@ -160,7 +146,10 @@ public class FileBrowser extends Component
         btnRename = new Button(5, 25 + btnIndex * 20, ASSETS, 50, 20, 10, 10);
         btnRename.setClickListener((c, mouseButton) ->
         {
-            renameSelectedFile();
+            if(mouseButton == 0)
+            {
+                renameSelectedFile();
+            }
         });
         btnRename.setToolTip("Rename", "Change the name of the selected file or folder");
         btnRename.setEnabled(false);
@@ -173,8 +162,10 @@ public class FileBrowser extends Component
             btnCopy = new Button(5, 25 + btnIndex * 20, ASSETS, 10, 20, 10, 10);
             btnCopy.setClickListener((b, mouseButton) ->
             {
-                setClipboardFileToSelected();
-                btnPaste.setEnabled(true);
+                if(mouseButton == 0)
+                {
+                    setClipboardFileToSelected();
+                }
             });
             btnCopy.setToolTip("Copy", "Copies the selected file or folder");
             btnCopy.setEnabled(false);
@@ -185,8 +176,10 @@ public class FileBrowser extends Component
             btnCut = new Button(5, 25 + btnIndex * 20, ASSETS, 60, 20, 10, 10);
             btnCut.setClickListener((c, mouseButton) ->
             {
-                cutSelectedFile();
-                btnPaste.setEnabled(true);
+                if(mouseButton == 0)
+                {
+                    cutSelectedFile();
+                }
             });
             btnCut.setToolTip("Cut", "Cuts the selected file or folder");
             btnCut.setEnabled(false);
@@ -197,10 +190,9 @@ public class FileBrowser extends Component
             btnPaste = new Button(5, 25 + btnIndex * 20, ASSETS, 20, 20, 10, 10);
             btnPaste.setClickListener((b, mouseButton) ->
             {
-                pasteClipboardFile();
-                if(!hasFileInClipboard())
+                if(mouseButton == 0)
                 {
-                    btnPaste.setEnabled(false);
+                    pasteClipboardFile();
                 }
             });
             btnPaste.setToolTip("Paste", "Pastes the copied file into this directory");
@@ -213,38 +205,9 @@ public class FileBrowser extends Component
         btnDelete = new Button(5, 25 + btnIndex * 20, ASSETS, 30, 20, 10, 10);
         btnDelete.setClickListener((b, mouseButton) ->
         {
-            File file = fileList.getSelectedItem();
-            if(file != null)
+            if(mouseButton == 0)
             {
-                Dialog.Confirmation dialog = new Dialog.Confirmation();
-                StringBuilder builder = new StringBuilder();
-                builder.append("Are you sure you want to delete this ");
-                if(file.isFolder())
-                {
-                    builder.append("folder");
-                }
-                else
-                {
-                    builder.append("file");
-                }
-                builder.append(" '");
-                builder.append(file.getName());
-                builder.append("'?");
-                dialog.setMessageText(builder.toString());
-                dialog.setTitle("Delete");
-                dialog.setPositiveText("Yes");
-                dialog.setPositiveListener((c, mouseButton1) ->
-                {
-                    removeFile(fileList.getSelectedIndex());
-                    btnRename.setEnabled(false);
-                    btnDelete.setEnabled(false);
-                    if(mode == Mode.FULL)
-                    {
-                        btnCopy.setEnabled(false);
-                        btnCut.setEnabled(false);
-                    }
-                });
-                wrappable.openDialog(dialog);
+                deleteSelectedFile();
             }
         });
         btnDelete.setToolTip("Delete", "Deletes the selected file or folder");
@@ -344,12 +307,33 @@ public class FileBrowser extends Component
         updatePath();
     }
 
+    private void createFolder()
+    {
+        Dialog.Input dialog = new Dialog.Input("Enter a name");
+        dialog.setResponseHandler((success, v) ->
+        {
+            if(success)
+            {
+                addFile(new Folder(v));
+            }
+            return true;
+        });
+        dialog.setTitle("Create a Folder");
+        dialog.setPositiveText("Create");
+        wrappable.openDialog(dialog);
+    }
+
     private void goToPreviousFolder()
     {
         if(predecessor.size() > 0)
         {
             Folder folder = predecessor.pop();
             openFolder(folder, false);
+            if(isRootFolder())
+            {
+                btnPreviousFolder.setEnabled(false);
+            }
+            updatePath();
         }
     }
 
@@ -370,11 +354,61 @@ public class FileBrowser extends Component
         return true;
     }
 
+    private void deleteSelectedFile()
+    {
+        File file = fileList.getSelectedItem();
+        if(file != null)
+        {
+            if(file.isProtected())
+            {
+                String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be deleted.";
+                Dialog.Message dialog = new Dialog.Message(message);
+                wrappable.openDialog(dialog);
+                return;
+            }
+
+            Dialog.Confirmation dialog = new Dialog.Confirmation();
+            StringBuilder builder = new StringBuilder();
+            builder.append("Are you sure you want to delete this ");
+            if(file.isFolder())
+            {
+                builder.append("folder");
+            }
+            else
+            {
+                builder.append("file");
+            }
+            builder.append(" '").append(file.getName()).append("'?");
+            dialog.setMessageText(builder.toString());
+            dialog.setTitle("Delete");
+            dialog.setPositiveText("Yes");
+            dialog.setPositiveListener((c, mouseButton1) ->
+            {
+                removeFile(fileList.getSelectedIndex());
+                btnRename.setEnabled(false);
+                btnDelete.setEnabled(false);
+                if(mode == Mode.FULL)
+                {
+                    btnCopy.setEnabled(false);
+                    btnCut.setEnabled(false);
+                }
+            });
+            wrappable.openDialog(dialog);
+        }
+    }
+
     private void removeFile(int index)
     {
         File file = fileList.removeItem(index);
         if(file != null)
         {
+            if(file.isProtected())
+            {
+                String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be deleted.";
+                Dialog.Message dialog = new Dialog.Message(message);
+                wrappable.openDialog(dialog);
+                return;
+            }
             currentFolder.delete(file.getName());
             //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
             FileBrowser.refreshList = true;
@@ -386,6 +420,13 @@ public class FileBrowser extends Component
         File file = currentFolder.getFile(name);
         if(file != null)
         {
+            if(file.isProtected())
+            {
+                String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be deleted.";
+                Dialog.Message dialog = new Dialog.Message(message);
+                wrappable.openDialog(dialog);
+                return;
+            }
             if(fileList.getItems().remove(file))
             {
                 currentFolder.delete(name);
@@ -399,8 +440,17 @@ public class FileBrowser extends Component
     {
         if(fileList.getSelectedIndex() != -1)
         {
+            File file = fileList.getSelectedItem();
+            if(file.isProtected())
+            {
+                String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be copied.";
+                Dialog.Message dialog = new Dialog.Message(message);
+                wrappable.openDialog(dialog);
+                return;
+            }
             clipboardDir = null;
-            clipboardFile = fileList.getSelectedItem();
+            clipboardFile = file;
+            btnPaste.setEnabled(true);
         }
     }
 
@@ -408,8 +458,17 @@ public class FileBrowser extends Component
     {
         if(fileList.getSelectedIndex() != -1)
         {
+            File file = fileList.getSelectedItem();
+            if(file.isProtected())
+            {
+                String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be cut.";
+                Dialog.Message dialog = new Dialog.Message(message);
+                wrappable.openDialog(dialog);
+                return;
+            }
             clipboardDir = currentFolder;
-            clipboardFile = fileList.getSelectedItem();
+            clipboardFile = file;
+            btnPaste.setEnabled(true);
         }
     }
 
@@ -426,6 +485,7 @@ public class FileBrowser extends Component
                         clipboardDir.delete(clipboardFile.getName());
                         clipboardDir = null;
                         clipboardFile = null;
+                        btnPaste.setEnabled(false);
                     }
                 }
                 else
@@ -438,7 +498,10 @@ public class FileBrowser extends Component
                         if(success)
                         {
                             File file = clipboardFile.copy();
-                            file.rename(s);
+
+                            if(!file.rename(s))
+                                return false;
+
                             if(addFile(file))
                             {
                                 if(clipboardDir != null)
@@ -446,6 +509,7 @@ public class FileBrowser extends Component
                                     clipboardDir.delete(clipboardFile.getName());
                                     clipboardDir = null;
                                     clipboardFile = null;
+                                    btnPaste.setEnabled(false);
                                 }
                                 return true;
                             }
@@ -484,11 +548,6 @@ public class FileBrowser extends Component
         return true;
     }
 
-    private boolean hasFileInClipboard()
-    {
-        return clipboardFile != null;
-    }
-
     private boolean isRootFolder()
     {
         return predecessor.size() == 0;
@@ -513,7 +572,7 @@ public class FileBrowser extends Component
         return builder.toString();
     }
 
-    public void updatePath()
+    private void updatePath()
     {
         String path = getPath();
         int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(path);
@@ -529,6 +588,14 @@ public class FileBrowser extends Component
         File file = fileList.getSelectedItem();
         if(file != null)
         {
+            if(file.isProtected())
+            {
+                String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be renamed.";
+                Dialog.Message dialog = new Dialog.Message(message);
+                wrappable.openDialog(dialog);
+                return;
+            }
+
             Dialog.Input dialog = new Dialog.Input("Enter a name");
             dialog.setResponseHandler((success, s) ->
             {
@@ -543,17 +610,6 @@ public class FileBrowser extends Component
             dialog.setInputText(file.getName());
             wrappable.openDialog(dialog);
         }
-    }
-
-    private File renameFile(File source, String newName)
-    {
-        if(source.isFolder())
-        {
-            Folder folder = new Folder(newName);
-            folder.setFiles(((Folder) source).getFiles());
-            return folder;
-        }
-        return new File(newName, source.getOpeningApp(), source.getData());
     }
 
     public void setItemClickListener(ItemClickListener<File> itemClickListener)

@@ -7,6 +7,8 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -34,24 +36,40 @@ public class FileSystem
 	{
 		if(rootFolder == null)
 		{
-			rootFolder = new Folder("Root");
+			rootFolder = createProtectedFolder("Root");
 		}
 		if(!rootFolder.hasFolder("Home"))
 		{
-			rootFolder.add(new Folder("Home"), true);
+			rootFolder.add(createProtectedFolder("Home"), true);
 		}
 		if(!rootFolder.hasFolder("Application Data"))
 		{
-			rootFolder.add(new Folder("Application Data"), true);
+			rootFolder.add(createProtectedFolder("Application Data"), true);
 		}
 	}
+
+	private Folder createProtectedFolder(String name)
+	{
+		try
+		{
+			Constructor<Folder> constructor = Folder.class.getDeclaredConstructor(String.class, boolean.class);
+			constructor.setAccessible(true);
+			return constructor.newInstance(name, true);
+		}
+		catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	public void updateData(NBTTagCompound tag)
 	{
 		rootFolder = Folder.fromTag("Root", tag.getCompoundTag("Root"));
 	}
 
-	private static final Pattern PATTERN_DIRECTORY = Pattern.compile("^[a-zA-Z0-9 ]{1,16}(/[a-zA-Z0-9 ]{1,16})*/?$");
+	private static final Pattern PATTERN_DIRECTORY = Pattern.compile("^/?[a-zA-Z0-9 ]{1,16}(/[a-zA-Z0-9 ]{1,16})*/?$");
 
 	/**
 	 * Gets a folder in the file system. To get sub folders, simply use a
