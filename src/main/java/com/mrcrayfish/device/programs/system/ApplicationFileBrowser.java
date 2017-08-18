@@ -1,18 +1,22 @@
 package com.mrcrayfish.device.programs.system;
 
 
+import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 public class ApplicationFileBrowser extends SystemApplication
 {
 	private FileBrowser browser;
-
-	public ApplicationFileBrowser() 
+	
+		public ApplicationFileBrowser() 
 	{
 		super("file_browser", "File Browser");
 		this.setDefaultWidth(225);
 		this.setDefaultHeight(145);
+		this.setIcon(TaskBar.APP_BAR_GUI, 0, 44);
+
 	}
 
 	@Override
