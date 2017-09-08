@@ -1,21 +1,19 @@
 package com.mrcrayfish.device.api.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskProxy;
-import com.mrcrayfish.device.network.task.TaskManager;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.programs.system.object.Account;
 import com.mrcrayfish.device.programs.system.task.TaskAdd;
 import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
 import com.mrcrayfish.device.programs.system.task.TaskPay;
 import com.mrcrayfish.device.programs.system.task.TaskRemove;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * <p>The Bank is a built in currency system that you can use in your application.
@@ -45,7 +43,7 @@ public class BankUtil
 	 */
 	public static void getBalance(Callback callback)
 	{
-		TaskProxy.sendTask(new TaskGetBalance().setCallback(callback));
+		TaskManager.sendTask(new TaskGetBalance().setCallback(callback));
 	}
 	
 	/**
@@ -59,7 +57,7 @@ public class BankUtil
 	 */
 	public static void pay(String uuid, int amount, Callback callback)
 	{
-		TaskProxy.sendTask(new TaskPay().setCallback(callback));
+		TaskManager.sendTask(new TaskPay().setCallback(callback));
 	}
 	
 	/**
@@ -71,7 +69,7 @@ public class BankUtil
 	 */
 	public static void add(int amount, Callback callback)
 	{
-		TaskProxy.sendTask(new TaskAdd(amount).setCallback(callback));
+		TaskManager.sendTask(new TaskAdd(amount).setCallback(callback));
 	}
 	
 	/**
@@ -83,7 +81,7 @@ public class BankUtil
 	 */
 	public static void remove(int amount, Callback callback)
 	{
-		TaskProxy.sendTask(new TaskRemove(amount).setCallback(callback));
+		TaskManager.sendTask(new TaskRemove(amount).setCallback(callback));
 	}
 	
 	//TODO: Make private. Only the bank application should have access to these.

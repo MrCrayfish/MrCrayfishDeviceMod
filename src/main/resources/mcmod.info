@@ -2,9 +2,9 @@
 {
   "modid": "cdm",
   "name": "MrCrayfish's Device Mod",
-  "description": "Adds things",
-  "version": "0.0.2",
-  "mcversion": "${mcversion}",
+  "description": "Adds working electronic devices into Minecraft!",
+  "version": "0.0.3",
+  "mcversion": "1.11.2",
   "url": "",
   "updateUrl": "",
   "authorList": ["MrCrayfish"],

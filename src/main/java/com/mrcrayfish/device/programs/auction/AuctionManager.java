@@ -3,6 +3,7 @@ package com.mrcrayfish.device.programs.auction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.mrcrayfish.device.programs.auction.object.AuctionItem;
 
@@ -80,12 +81,11 @@ public class AuctionManager
 	public void writeToNBT(NBTTagCompound tag)
 	{
 		NBTTagList tagList = new NBTTagList();
-		for(AuctionItem item : items)
-		{
+		items.stream().filter(i -> i.isValid()).forEach(i -> {
 			NBTTagCompound itemTag = new NBTTagCompound();
-			item.writeToNBT(itemTag);
+			i.writeToNBT(itemTag);
 			tagList.appendTag(itemTag);
-		}
+		});
 		tag.setTag("auctionItems", tagList);
 	}
 	
@@ -100,5 +100,10 @@ public class AuctionManager
 			AuctionItem item = AuctionItem.readFromNBT(itemTag);
 			items.add(item);
 		}
+	}
+
+	public List<AuctionItem> getItemsForSeller(UUID seller)
+	{
+		return items.stream().filter(i -> i.getSellerId().equals(seller)).collect(Collectors.toList());
 	}
 }

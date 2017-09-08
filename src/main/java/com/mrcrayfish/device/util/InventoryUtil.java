@@ -14,7 +14,7 @@ public class InventoryUtil
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			if(stack != null && stack.getItem() == item)
 			{
-				amount += stack.stackSize;
+				amount += stack.getCount();
 			}
 		}
 		return amount;
@@ -27,7 +27,7 @@ public class InventoryUtil
 		{
 			if(stack != null && stack.getItem() == item)
 			{
-				count += stack.stackSize;
+				count += stack.getCount();
 			}
 		}
 		return amount <= count;
@@ -42,15 +42,15 @@ public class InventoryUtil
 				ItemStack stack = player.inventory.getStackInSlot(i);
 				if(stack != null && stack.getItem() == item)
 				{
-					if(amount - stack.stackSize < 0)
+					if(amount - stack.getCount() < 0)
 					{
-						stack.stackSize -= amount;
+						stack.shrink(amount);
 						return true;
 					}
 					else
 					{
-						amount -= stack.stackSize;
-						player.inventory.mainInventory[i] = null;
+						amount -= stack.getCount();
+						player.inventory.mainInventory.set(i, ItemStack.EMPTY);
 						if(amount == 0) return true;
 					}
 				}

@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.network.task;
 
 import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.network.PacketHandler;
 
 import io.netty.buffer.ByteBuf;
@@ -32,7 +33,7 @@ public class MessageRequest implements IMessage, IMessageHandler<MessageRequest,
 	@Override
 	public IMessage onMessage(MessageRequest message, MessageContext ctx) 
 	{
-		message.request.processRequest(message.nbt, ctx.getServerHandler().playerEntity.worldObj, ctx.getServerHandler().playerEntity);
+		message.request.processRequest(message.nbt, ctx.getServerHandler().playerEntity.world, ctx.getServerHandler().playerEntity);
 		PacketHandler.INSTANCE.sendTo(new MessageResponse(message.id, message.request), ctx.getServerHandler().playerEntity);
 		return null;
 	}

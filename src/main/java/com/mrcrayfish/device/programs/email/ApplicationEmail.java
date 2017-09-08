@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mrcrayfish.device.api.app.Database;
+import com.mrcrayfish.device.api.task.TaskManager;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.DatabaseManager;
@@ -24,7 +26,6 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskProxy;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.programs.email.object.Contact;
 import com.mrcrayfish.device.programs.email.object.Email;
@@ -124,7 +125,8 @@ public class ApplicationEmail extends Application
 
 	public ApplicationEmail()
 	{
-		super("email", "Ender Mail", TaskBar.APP_BAR_GUI, 70, 30);
+		super("email", "Ender Mail");
+		this.setIcon(TaskBar.APP_BAR_GUI, 70, 30);
 		DatabaseManager.INSTANCE.register(this, EmailManager.INSTANCE);
 	}
 
@@ -148,7 +150,7 @@ public class ApplicationEmail extends Application
 		
 		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, u, v, 14, 14, icon);
+		logo = new Image(35, 5, 28, 28, 0, 0, 14, 14, getIcon().getResource());
 		layoutMainMenu.addComponent(logo);
 
 		labelLogo = new Label("Ender Mail", 19, 35);
@@ -206,7 +208,7 @@ public class ApplicationEmail extends Application
 							}
 						}
 					});
-					TaskProxy.sendTask(taskRegisterAccount);
+					TaskManager.sendTask(taskRegisterAccount);
 				}
 			}
 		});
@@ -240,7 +242,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskUpdateInbox);
+				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
 
@@ -275,7 +277,7 @@ public class ApplicationEmail extends Application
 				int index = listEmails.getSelectedIndex();
 				if (index != -1)
 				{
-					TaskProxy.sendTask(new TaskViewEmail(index));
+					TaskManager.sendTask(new TaskViewEmail(index));
 					Email email = listEmails.getSelectedItem();
 					email.setRead(true);
 					textMessage.setText(email.getMessage());
@@ -336,7 +338,7 @@ public class ApplicationEmail extends Application
 							listEmails.removeItem(index);
 						}
 					});
-					TaskProxy.sendTask(taskDeleteEmail);
+					TaskManager.sendTask(taskDeleteEmail);
 				}
 			}
 		});
@@ -368,7 +370,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskUpdateInbox);
+				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
@@ -426,7 +428,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskSendEmail);
+				TaskManager.sendTask(taskSendEmail);
 			}
 		});
 		btnSendEmail.setToolTip("Send", "Send email to recipient");
@@ -454,7 +456,7 @@ public class ApplicationEmail extends Application
 		layoutViewEmail.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 50, Color.GRAY.getRGB());
 				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 23, Color.DARK_GRAY.getRGB());
@@ -506,7 +508,7 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		TaskProxy.sendTask(taskCheckAccount);
+		TaskManager.sendTask(taskCheckAccount);
 	}
 
 	@Override

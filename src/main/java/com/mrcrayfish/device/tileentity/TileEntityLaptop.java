@@ -1,12 +1,13 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.util.TileEntityUtil;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -31,14 +32,14 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public void setAppData(NBTTagCompound data) 
 	{
 		this.data = data;
-		worldObj.markBlockForUpdate(pos);
 		markDirty();
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 	
 	public void openClose()
 	{
 		open = !open;
-		worldObj.markBlockForUpdate(pos);
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 	
 	@Override
@@ -70,26 +71,30 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound compound) 
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) 
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
 		compound.setTag("AppData", data);
+		return compound;
 	}
 	
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
-		NBTTagCompound tagCom = pkt.getNbtCompound();
-		this.readFromNBT(tagCom);
+		this.readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
-		NBTTagCompound tagCom = new NBTTagCompound();
-		this.writeToNBT(tagCom);
-		return new S35PacketUpdateTileEntity(pos, getBlockMetadata(), tagCom);
+		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), this.writeToNBT(new NBTTagCompound()));
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag() 
+	{
+		return this.writeToNBT(new NBTTagCompound());
 	}
 	
 	@Override

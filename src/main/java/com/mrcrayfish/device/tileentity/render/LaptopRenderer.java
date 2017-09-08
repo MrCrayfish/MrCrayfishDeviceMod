@@ -9,17 +9,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.IModel;
 
 public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 {
 	private Minecraft mc = Minecraft.getMinecraft();
-	private IBakedModel model = null;
+	private IModel model = null;
 	
 	@Override
 	public void renderTileEntityAt(TileEntityLaptop te, double x, double y, double z, float partialTicks, int destroyStage) 
@@ -27,7 +28,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 		IBlockState state = DeviceBlocks.laptop.getDefaultState().withProperty(BlockLaptop.TYPE, BlockLaptop.Type.SCREEN);
 		BlockPos pos = te.getPos();
 		
-		bindTexture(TextureMap.locationBlocksTexture);
+		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		GlStateManager.pushMatrix();
 		{
 			GlStateManager.translate(x, y, z);
@@ -40,15 +41,15 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 			
 			GlStateManager.disableLighting();
 			Tessellator tessellator = Tessellator.getInstance();
-			WorldRenderer renderer = tessellator.getWorldRenderer();
-			renderer.begin(7, DefaultVertexFormats.BLOCK);
-			renderer.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
+			VertexBuffer buffer = tessellator.getBuffer();
+			buffer.begin(7, DefaultVertexFormats.BLOCK);
+			buffer.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
 			
 			BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 			IBakedModel ibakedmodel = mc.getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-			blockrendererdispatcher.getBlockModelRenderer().renderModel(getWorld(), ibakedmodel, state, pos, renderer, false);
+			blockrendererdispatcher.getBlockModelRenderer().renderModel(getWorld(), ibakedmodel, state, pos, buffer, false);
 			
-			renderer.setTranslation(0.0D, 0.0D, 0.0D);
+			buffer.setTranslation(0.0D, 0.0D, 0.0D);
 			tessellator.draw();
 			GlStateManager.enableLighting();
 		 }

@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class EmailManager extends Database
+public class EmailManager implements Database
 {
 	public static final EmailManager INSTANCE = new EmailManager();
 

@@ -11,11 +11,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Database;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -56,14 +60,14 @@ public class DatabaseManager
 	@SubscribeEvent
 	public void load(WorldEvent.Load event)
 	{
-		if(event.world.provider.getDimensionId() != 0 || loaded) return;
+		if(event.getWorld().provider.getDimension() != 0 || loaded) return;
 		loadDatabases();
 	}
 	
 	@SubscribeEvent
 	public void save(WorldEvent.Save event)
 	{
-		if(event.world.provider.getDimensionId() != 0) return;
+		if(event.getWorld().provider.getDimension() != 0) return;
 		saveDatabases();
 	}
 	

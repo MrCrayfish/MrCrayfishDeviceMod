@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
+import java.util.Arrays;
+
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -10,9 +12,9 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
+import net.minecraft.util.text.TextFormatting;
 
 public class Button extends Component
 {
@@ -111,7 +113,6 @@ public class Button extends Component
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
-            GlStateManager.disableDepth();
             
             /* Corners */
             RenderUtil.drawRectWithTexture(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
@@ -150,8 +151,6 @@ public class Button extends Component
             {
             	this.drawCenteredString(fontrenderer, this.text, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
             }
-            
-            GlStateManager.enableDepth();
         }
 	}
 	
@@ -160,7 +159,7 @@ public class Button extends Component
 	{
         if(this.hovered && this.toolTip != null)
         {
-        	laptop.drawHoveringText(Arrays.asList(new String[] { EnumChatFormatting.GOLD + this.toolTipTitle, this.toolTip }), mouseX, mouseY);
+        	laptop.drawHoveringText(Arrays.asList(new String[] { TextFormatting.GOLD + this.toolTipTitle, this.toolTip }), mouseX, mouseY);
         }
 	}
 
@@ -209,7 +208,7 @@ public class Button extends Component
 	
 	public void playClickSound(SoundHandler handler) 
 	{
-		handler.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+		handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 	
 	protected boolean isInside(int mouseX, int mouseY)

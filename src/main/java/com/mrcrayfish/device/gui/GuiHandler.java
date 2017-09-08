@@ -5,7 +5,7 @@ import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -22,7 +22,7 @@ public class GuiHandler implements IGuiHandler
 	{
 		if(ID == Laptop.ID)
 		{
-			TileEntity tileEntity = player.worldObj.getTileEntity(new BlockPos(x, y, z));
+			TileEntity tileEntity = player.world.getTileEntity(new BlockPos(x, y, z));
 			if(tileEntity instanceof TileEntityLaptop)
 			{
 				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;

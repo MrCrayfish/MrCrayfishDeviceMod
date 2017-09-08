@@ -2,7 +2,7 @@ package com.mrcrayfish.device;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class DeviceTab extends CreativeTabs 
 {
@@ -12,8 +12,8 @@ public class DeviceTab extends CreativeTabs
 	}
 
 	@Override
-	public Item getTabIconItem() 
+	public ItemStack getTabIconItem() 
 	{
-		return Items.redstone;
+		return new ItemStack(Items.REDSTONE);
 	}
 }
