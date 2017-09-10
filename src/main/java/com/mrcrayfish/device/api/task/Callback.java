@@ -19,5 +19,5 @@ public interface Callback {
 	 * @param nbt the response data
 	 * @param success if the {@link com.mrcrayfish.device.api.task.Task} performed it's intended action correctly.
 	 */
-	public void execute(NBTTagCompound nbt, boolean success);
+	void execute(NBTTagCompound nbt, boolean success);
 }

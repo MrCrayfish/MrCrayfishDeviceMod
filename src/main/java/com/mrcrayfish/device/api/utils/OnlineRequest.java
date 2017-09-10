@@ -65,7 +65,6 @@ public class OnlineRequest
 		{
 			requests.offer(new RequestWrapper(url, handler));
 			requests.notify();
-			System.out.println("Adding Request");
 		}
 	}
 	

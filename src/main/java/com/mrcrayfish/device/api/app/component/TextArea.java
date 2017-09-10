@@ -7,6 +7,7 @@ import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
@@ -58,8 +59,8 @@ public class TextArea extends Component
 		if (this.visible)
         {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			this.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
-			this.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
+			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
+			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
 			String text = this.text;
 			if (this.updateCount / 6 % 2 == 0)
 	        {
@@ -78,18 +79,16 @@ public class TextArea extends Component
 	{
 		if(!this.visible || !this.enabled || !this.editable)
 			return;
-		
-		boolean within = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
-		this.isFocused = within;
+
+		this.isFocused = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
 	}
 	
 	@Override
 	public void handleKeyTyped(char character, int code)
 	{
-		if(!isFocused || !editable)
-		{
+		if(!this.visible || !this.enabled || !this.isFocused || !this.editable)
 			return;
-		}
+
 		if (GuiScreen.isKeyComboCtrlV(code))
         {
             this.writeText(GuiScreen.getClipboardString());
@@ -215,7 +214,7 @@ public class TextArea extends Component
 	/**
 	 * Sets whether the user can edit the text
 	 * 
-	 * @param editable
+	 * @param editable is this component editable
 	 */
 	public void setEditable(boolean editable)
 	{

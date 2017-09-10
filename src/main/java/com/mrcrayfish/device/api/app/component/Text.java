@@ -68,7 +68,7 @@ public class Text extends Component
 	/**
 	 * Sets the whether shadow should show under the text
 	 * 
-	 * @param color the text colour
+	 * @param shadow the text colour
 	 */
 	public void setShadow(boolean shadow)
 	{

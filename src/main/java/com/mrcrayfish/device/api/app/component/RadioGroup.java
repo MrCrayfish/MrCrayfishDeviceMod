@@ -28,20 +28,20 @@ public class RadioGroup
 		}
 	}
 	
-	public static interface Item {
+	public interface Item {
 		
 		/**
 		 * Gets if this item is selected
 		 * 
 		 * @return if this item is selected
 		 */
-		public boolean isSelected();
+		boolean isSelected();
 		
 		/**
 		 * Sets this item as selected or not.
 		 * 
 		 * @param enabled selected or not
 		 */
-		public void setSelected(boolean enabled);
+		void setSelected(boolean enabled);
 	}
 }

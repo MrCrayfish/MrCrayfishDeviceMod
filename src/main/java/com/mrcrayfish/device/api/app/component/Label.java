@@ -74,7 +74,7 @@ public class Label extends Component {
 	/**
 	 * Sets the whether shadow should show under the text
 	 * 
-	 * @param color the text colour
+	 * @param shadow if should render shadow
 	 */
 	public void setShadow(boolean shadow)
 	{
@@ -96,7 +96,7 @@ public class Label extends Component {
 	 * Sets the alignment of the text. Use {@link Component#ALIGN_LEFT} or
 	 * {@link Component#ALIGN_RIGHT} to set alignment.
 	 * 
-	 * @param alignment
+	 * @param alignment the alignment type
 	 */
 	public void setAlignment(int alignment)
 	{

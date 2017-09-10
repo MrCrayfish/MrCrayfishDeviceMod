@@ -16,5 +16,5 @@ public interface ClickListener
 	 * @param c the component that was clicked
 	 * @param mouseButton the mouse button used to click
 	 */
-	public void onClick(Component c, int mouseButton);
+	void onClick(Component c, int mouseButton);
 }

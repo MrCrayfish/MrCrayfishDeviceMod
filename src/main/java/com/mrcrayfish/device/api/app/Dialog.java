@@ -80,14 +80,12 @@ public abstract class Dialog implements Wrappable
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
 		customLayout.handleMouseClick(mouseX, mouseY, mouseButton);
-		
 	}
 
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		customLayout.handleMouseDrag(mouseX, mouseY, mouseButton);
-		
 	}
 
 	@Override
@@ -207,7 +205,7 @@ public abstract class Dialog implements Wrappable
 				@Override
 				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 				{
-					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
+					Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 				}
 			});
 			
@@ -261,7 +259,7 @@ public abstract class Dialog implements Wrappable
 				@Override
 				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 				{
-					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
+					Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 				}
 			});
 			

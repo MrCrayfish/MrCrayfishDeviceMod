@@ -51,7 +51,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 	 * Sets the click listener. Use this to handle custom actions
 	 * when you press the check box.
 	 * 
-	 * @param clickListener
+	 * @param listener the click listener
 	 */
 	public void setClickListener(ClickListener listener) 
 	{

@@ -17,5 +17,5 @@ public interface ItemClickListener<E>
 	 * @param e the component that was clicked
 	 * @param mouseButton the mouse button used to click
 	 */
-	public void onClick(E e, int index, int mouseButton);
+	void onClick(E e, int index, int mouseButton);
 }

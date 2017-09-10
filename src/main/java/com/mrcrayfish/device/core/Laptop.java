@@ -306,10 +306,9 @@ public class Laptop extends GuiScreen
 		int scroll = Mouse.getEventDWheel();
 		if(scroll != 0)
 		{
-			boolean up = scroll >= 0;
 			if(windows[0] != null)
 			{
-				windows[0].handleMouseScroll(mouseX, mouseY, up);
+				windows[0].handleMouseScroll(mouseX, mouseY, scroll >= 0);
 			}
 		}
 	}
@@ -349,7 +348,7 @@ public class Laptop extends GuiScreen
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		
-		Window window = new Window(app);
+		Window<Application> window = new Window<>(app);
 		window.init(buttonList, posX, posY);
 		
 		if(data.hasKey(app.getID()))
@@ -380,14 +379,13 @@ public class Laptop extends GuiScreen
 					}
 					window.handleClose();
 					windows[i] = null;
-					window = null;
 					return;
 				}
 			}
 		}
 	}
 	
-	public void addWindow(Window window)
+	public void addWindow(Window<Application> window)
 	{
 		if(hasReachedWindowLimit())
 			return;
