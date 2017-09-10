@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.utils;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -18,16 +19,15 @@ import com.mrcrayfish.device.util.StreamUtils;
 public class OnlineRequest
 {
 	private static OnlineRequest instance = null;
-	
-	private boolean running = true;
-	
-	private Queue<RequestWrapper> requests;
-	
+
+	private final Queue<RequestWrapper> requests;
+
 	private Thread thread;
+	private boolean running = true;
 	
 	private OnlineRequest() 
 	{
-		this.requests = new ConcurrentLinkedQueue<RequestWrapper>();
+		this.requests = new ConcurrentLinkedQueue<>();
 		start();
 	}
 	
@@ -48,7 +48,7 @@ public class OnlineRequest
 	
 	private void start() 
 	{
-		thread = new Thread(new RequestRunnable(), "OnlineRequest");
+		thread = new Thread(new RequestRunnable(), "Online Request Thread");
 		thread.start();
 	}
 	
@@ -59,9 +59,14 @@ public class OnlineRequest
 	 * @param url the URL you want to make a request to
 	 * @param handler the response handler for the request
 	 */
-	public void make(String url, ResponseHandler handler) 
+	public void make(String url, ResponseHandler handler)
 	{
-		requests.offer(new RequestWrapper(url, handler));
+		synchronized(requests)
+		{
+			requests.offer(new RequestWrapper(url, handler));
+			requests.notify();
+			System.out.println("Adding Request");
+		}
 	}
 	
 	private class RequestRunnable implements Runnable 
@@ -71,12 +76,23 @@ public class OnlineRequest
 		{
 			while(running) 
 			{
-				while(requests.size() > 0)
+				try
+				{
+					synchronized(requests)
+					{
+						requests.wait();
+					}
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+
+				while(!requests.isEmpty())
 				{
 					RequestWrapper wrapper = requests.poll();
 					try 
 					{
-						System.out.println("Making request to: " + wrapper.url);
 						HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
 			            connection.connect();
 			            InputStream input = connection.getInputStream();
@@ -104,7 +120,7 @@ public class OnlineRequest
 		}
 	}
 	
-	public static interface ResponseHandler 
+	public interface ResponseHandler
 	{
 		/**
 		 * Handles the response from an OnlineRequest
@@ -112,6 +128,6 @@ public class OnlineRequest
 		 * @param success if the request was successful or not
 		 * @param response the response from the request. null if success is false
 		 */
-		public void handle(boolean success, String response);
+		void handle(boolean success, String response);
 	}
 }
