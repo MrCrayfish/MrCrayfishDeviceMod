@@ -1,7 +1,5 @@
 package com.mrcrayfish.device.programs.system;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -14,13 +12,12 @@ import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.programs.system.object.Account;
 import com.mrcrayfish.device.util.InventoryUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelVillager;
@@ -33,6 +30,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import java.awt.*;
 
 public class ApplicationBank extends Application
 {
@@ -333,20 +332,20 @@ public class ApplicationBank extends Application
 
 	private void deposit(int amount, Callback callback) 
 	{
-		TaskProxy.sendTask(new TaskDeposit(amount).setCallback(callback));
+		TaskManager.sendTask(new TaskDeposit(amount).setCallback(callback));
 	}
 	
 	private void withdraw(int amount, Callback callback) 
 	{
-		TaskProxy.sendTask(new TaskWithdraw(amount).setCallback(callback));
+		TaskManager.sendTask(new TaskWithdraw(amount).setCallback(callback));
 	}
 	
 	public void registerTasks()
 	{
 		if(!registered)
 		{
-			TaskProxy.registerTask(TaskDeposit.class);
-			TaskProxy.registerTask(TaskWithdraw.class);
+			TaskManager.registerTask(TaskDeposit.class);
+			TaskManager.registerTask(TaskWithdraw.class);
 			registered = true;
 		}
 	}

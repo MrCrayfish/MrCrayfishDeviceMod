@@ -1,18 +1,22 @@
 package com.mrcrayfish.device.api.app.component;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class ItemList<E> extends Component implements Iterable<E>
 {
@@ -24,7 +28,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected boolean showAll = true;
 	protected boolean resized = false;
 	protected boolean initialized = false;
-	
+
 	protected List<E> items = new ArrayList<>();
 	protected ListItemRenderer<E> renderer = null;
 	protected ItemClickListener<E> itemClickListener = null;
@@ -57,20 +61,27 @@ public class ItemList<E> extends Component implements Iterable<E>
 		this(left, top, width, visibleItems);
 		this.showAll = showAll;
 	}
-	
+
 	@Override
 	public void init(Layout layout)
 	{
 		btnUp = new ButtonArrow(left + width - 12, top, ButtonArrow.Type.UP);
 		btnUp.setEnabled(false);
+		btnUp.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0) scrollUp();
+        });
 		btnUp.setVisible(false);
-		btnUp.setClickListener((c, mouseButton) -> scrollUp());
 		layout.addComponent(btnUp);
 		
+		btnDown = new ButtonArrow(left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+		btnDown.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0) scrollDown();
+        });
 		btnDown = new ButtonArrow(left + width - 12, top + getHeight() - 12, ButtonArrow.Type.DOWN);
 		btnDown.setEnabled(false);
 		btnDown.setVisible(false);
-		btnDown.setClickListener((c, mouseButton) -> scrollDown());
 		layout.addComponent(btnDown);
 
 		updateButtons();
@@ -89,7 +100,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 			{
 				height = renderer.getHeight();
 			}
-			
+
 			int size = getSize();
 
 			/* Fill */
@@ -201,7 +212,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		if(showAll) return visibleItems;
 		return Math.max(1, Math.min(visibleItems, items.size()));
 	}
-	
+
 	private void scrollUp()
 	{
 		if(offset > 0) {

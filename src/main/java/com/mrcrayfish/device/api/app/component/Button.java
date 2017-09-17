@@ -182,7 +182,7 @@ public class Button extends Component
 	 * Sets the click listener. Use this to handle custom actions
 	 * when you press the button.
 	 * 
-	 * @param clickListener
+	 * @param clickListener the click listener
 	 */
 	public final void setClickListener(ClickListener clickListener) 
 	{
@@ -205,7 +205,7 @@ public class Button extends Component
         return i;
     }
 	
-	public void playClickSound(SoundHandler handler) 
+	protected void playClickSound(SoundHandler handler)
 	{
 		handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}

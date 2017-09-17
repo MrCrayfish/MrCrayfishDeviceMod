@@ -13,8 +13,6 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 	 * Default toggle button constructor
 	 * 
 	 * @param text text to be displayed in the button
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width width of the button

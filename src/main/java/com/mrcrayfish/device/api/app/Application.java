@@ -37,8 +37,8 @@ public abstract class Application implements Wrappable
 
 	private Window window;
 
-	/* If set to true, will update layout */
-	boolean pendingLayoutUpdate = false;
+	/** If set to true, will update layout */
+	private boolean pendingLayoutUpdate = false;
 
 	public Application(String appId, String displayName)
 	{

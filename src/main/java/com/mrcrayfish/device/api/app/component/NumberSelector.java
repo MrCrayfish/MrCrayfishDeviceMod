@@ -147,7 +147,7 @@ public class NumberSelector extends Component
 	 * argument exception if the value is less than 0 or less than
 	 * the min value.
 	 * 
-	 * @param min the maximum value
+	 * @param max the maximum value
 	 */
 	public void setMax(int max)
 	{
@@ -169,7 +169,7 @@ public class NumberSelector extends Component
 	 * argument exception if the value is not within the bounds
 	 * of the min and max value.
 	 * 
-	 * @param current
+	 * @param current set the current number
 	 */
 	public void setNumber(int current)
 	{
