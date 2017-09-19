@@ -100,7 +100,7 @@ public final class Layout extends Component
 	 * trigger on initialization listener if set. 
 	 * See {@link #setInitListener(InitListener)}
 	 */
-	protected void init()
+	public void init()
 	{
 		if(initListener != null)
 		{

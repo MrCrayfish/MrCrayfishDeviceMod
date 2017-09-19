@@ -49,8 +49,6 @@ public class ApplicationNoteStash extends Application
 	@Override
 	public void init() 
 	{
-		super.init();
-
 		/* Main */
 		
 		layoutMain = new Layout(180, 80);

@@ -87,7 +87,6 @@ public class ApplicationMineBay extends Application
 	@Override
 	public void init()
 	{
-		super.init();
 		getCurrentLayout().setBackground(new Background()
 		{
 			@Override

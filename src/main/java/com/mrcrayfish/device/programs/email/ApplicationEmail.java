@@ -123,10 +123,7 @@ public class ApplicationEmail extends Application
 	@Override
 	public void init()
 	{
-		super.init();
-
 		/* Loading Layout */
-		
 		layoutInit = new Layout(40, 40);
 
 		spinnerInit = new Spinner(14, 10);

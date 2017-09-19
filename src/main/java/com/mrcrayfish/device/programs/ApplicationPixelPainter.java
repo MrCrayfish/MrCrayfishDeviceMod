@@ -83,10 +83,7 @@ public class ApplicationPixelPainter extends Application
 	@Override
 	public void init()
 	{
-		super.init();
-
 		/* Main Menu */
-		
 		layoutMainMenu = new Layout(100, 100);
 
 		logo = new Image(35, 5, 28, 28, icon.getU(), icon.getV(), 14, 14, icon.getResource());
