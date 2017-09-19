@@ -106,6 +106,7 @@ public final class Layout extends Component
 		{
 			initListener.onInit();
 		}
+		handleOnLoad();
 	}
 	
 	/**
@@ -124,7 +125,16 @@ public final class Layout extends Component
 	
 	@Override
 	public void init(Layout layout) {}
-	
+
+	@Override
+	public void handleOnLoad()
+	{
+		for(Component c : components)
+		{
+			c.handleOnLoad();
+		}
+	}
+
 	@Override
 	public void handleTick()
 	{

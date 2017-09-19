@@ -64,12 +64,18 @@ public abstract class Component extends Gui
 		this.top = top;
 	}
 	
-	/***
-	 * Called when this component is initialized. You can add
+	/**
+	 * Called when this component is added to a Layout. You can add
 	 * sub-components through this method. Use {@link Layout#addComponent(Component)}
 	 * @param layout
 	 */
 	public void init(Layout layout) {}
+
+	/**
+	 * Called when the Layout this component is bound to is set as the current layout in an
+	 * application.
+	 */
+	public void handleOnLoad() {}
 	
 	/**
 	 * Called when the game ticks
