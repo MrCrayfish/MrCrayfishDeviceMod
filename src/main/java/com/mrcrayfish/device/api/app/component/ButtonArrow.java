@@ -1,11 +1,8 @@
 package com.mrcrayfish.device.api.app.component;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class ButtonArrow extends Button
@@ -43,7 +40,7 @@ public class ButtonArrow extends Button
 		}
 	}
 	
-	public static enum Type 
+	public enum Type
 	{
 		LEFT(0), UP(1), RIGHT(2), DOWN(3);
 		

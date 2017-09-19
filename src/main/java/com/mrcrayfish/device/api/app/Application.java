@@ -61,7 +61,6 @@ public abstract class Application implements Wrappable
 		if (c != null)
 		{
 			defaultLayout.addComponent(c);
-			c.init(defaultLayout);
 		}
 	}
 

@@ -1,9 +1,5 @@
 package com.mrcrayfish.device.api.app.component;
 
-import com.mrcrayfish.device.api.app.Application;
-
-import net.minecraft.client.gui.FontRenderer;
-
 public class TextField extends TextArea {
 
 	/**

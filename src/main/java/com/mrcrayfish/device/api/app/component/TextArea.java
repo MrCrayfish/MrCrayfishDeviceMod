@@ -1,10 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -12,6 +9,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.text.TextFormatting;
+
+import java.awt.*;
 
 public class TextArea extends Component
 {
@@ -102,14 +101,12 @@ public class TextArea extends Component
                     {
                         text = text.substring(0, text.length() - 1);
                     }
-
                     return;
                 case 28:
                 case 156:
                     this.writeText("\n");
                     return;
                 default:
-
                     if (ChatAllowedCharacters.isAllowedCharacter(character))
                     {
                         this.writeText(Character.toString(character));

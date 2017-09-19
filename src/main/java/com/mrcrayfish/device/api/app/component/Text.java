@@ -1,14 +1,11 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-import java.util.List;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+
+import java.awt.*;
+import java.util.List;
 
 public class Text extends Component 
 {
