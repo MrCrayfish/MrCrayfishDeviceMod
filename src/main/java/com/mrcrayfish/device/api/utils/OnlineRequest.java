@@ -8,6 +8,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.mrcrayfish.device.util.StreamUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * OnlineRequest is a simple built in request system for handling URL connections.
@@ -90,17 +95,19 @@ public class OnlineRequest
 				while(!requests.isEmpty())
 				{
 					RequestWrapper wrapper = requests.poll();
-					try 
+					try(CloseableHttpClient client = HttpClients.createDefault())
 					{
-						HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
-			            connection.connect();
-			            InputStream input = connection.getInputStream();
-			            String response = StreamUtils.convertToString(input);
-			            wrapper.handler.handle(true, response);
-					} 
-					catch(Exception e) 
+						HttpGet get = new HttpGet(wrapper.url);
+						try(CloseableHttpResponse response = client.execute(get))
+						{
+							String raw = StreamUtils.convertToString(response.getEntity().getContent());
+							wrapper.handler.handle(true, raw);
+						}
+					}
+					catch(Exception e)
 					{
-						wrapper.handler.handle(false, null);
+						e.printStackTrace();
+						wrapper.handler.handle(false, "");
 					}
 				}
 			}
