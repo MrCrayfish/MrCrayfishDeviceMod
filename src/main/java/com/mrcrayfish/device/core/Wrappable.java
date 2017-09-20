@@ -167,4 +167,11 @@ public interface Wrappable
 	 * Called when this content is closed
 	 */
 	void onClose();
+
+	/**
+	 * Set the window instance for this wrappable
+	 *
+	 * @param window the window which wraps this wrappable
+	 */
+	void setWindow(Window window);
 }

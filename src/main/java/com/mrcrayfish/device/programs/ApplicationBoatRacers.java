@@ -38,8 +38,6 @@ public class ApplicationBoatRacers extends Application
 	@Override
 	public void init() 
 	{
-		super.init();
-
 		layoutLevelEditor = new Layout(364, 178);
 		
 		try 
