@@ -2,7 +2,9 @@ package com.mrcrayfish.device.core;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
@@ -45,8 +47,8 @@ public class Laptop extends GuiScreen implements System
 
 	private static System system;
 
-	private TaskBar bar;
-	private Window<Application>[] windows;
+	private TaskBar bar = new TaskBar();
+	private Window[] windows = new Window[5];
 	private NBTTagCompound data;
 	
 	public static int currentWallpaper;
@@ -65,12 +67,10 @@ public class Laptop extends GuiScreen implements System
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.tileZ = tileZ;
-		this.currentWallpaper = data.getInteger("CurrentWallpaper");
+		Laptop.currentWallpaper = data.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-			this.currentWallpaper = 0;
+			Laptop.currentWallpaper = 0;
 		}
-		this.windows = new Window[5];
-		this.bar = new TaskBar();
 		Laptop.system = this;
 	}
 	
@@ -375,15 +375,20 @@ public class Laptop extends GuiScreen implements System
 		
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
-		
+
 		Window<Application> window = new Window<>(app);
 		window.init(buttonList, posX, posY);
-		
+
 		if(data.hasKey(app.getID()))
 		{
 			app.load(data.getCompoundTag(app.getID()));
 		}
-		
+
+		if(app.getCurrentLayout() == null)
+		{
+			app.restoreDefaultLayout();
+		}
+
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
