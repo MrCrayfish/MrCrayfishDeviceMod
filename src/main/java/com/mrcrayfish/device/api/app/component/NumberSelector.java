@@ -48,19 +48,15 @@ public class NumberSelector extends Component
 	public void init(Layout layout)
 	{
 		btnUp = new Button(left, top, width, 11, COMPONENTS_GUI, 111, 12, 8, 5);
-		btnUp.setClickListener(new ClickListener()
+		btnUp.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(current < max)
-				{
-					current++;
-					display.setText(format.format(current));
-					updateButtons();
-				}
-			}
-		});
+            if(current < max)
+            {
+                current++;
+                display.setText(format.format(current));
+                updateButtons();
+            }
+        });
 		layout.addComponent(btnUp);
 		
 		display = new TextField(left, top + 10, width);
@@ -69,19 +65,15 @@ public class NumberSelector extends Component
 		layout.addComponent(display);
 		
 		btnDown = new Button(left, top + 24, width, 11, COMPONENTS_GUI, 119, 12, 8, 5);
-		btnDown.setClickListener(new ClickListener()
+		btnDown.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(current > min)
-				{
-					current--;
-					display.setText(format.format(current));
-					updateButtons();
-				}
-			}
-		});
+            if(current > min)
+            {
+                current--;
+                display.setText(format.format(current));
+                updateButtons();
+            }
+        });
 		layout.addComponent(btnDown);
 	}
 
@@ -158,7 +150,7 @@ public class NumberSelector extends Component
 	 * argument exception if the value is less than 0 or less than
 	 * the min value.
 	 * 
-	 * @param min the maximum value
+	 * @param max the maximum value
 	 */
 	public void setMax(int max)
 	{
@@ -180,7 +172,7 @@ public class NumberSelector extends Component
 	 * argument exception if the value is not within the bounds
 	 * of the min and max value.
 	 * 
-	 * @param current
+	 * @param current set the current number
 	 */
 	public void setNumber(int current)
 	{

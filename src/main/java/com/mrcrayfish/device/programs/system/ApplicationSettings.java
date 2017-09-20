@@ -17,9 +17,10 @@ public class ApplicationSettings extends Application
 	
 	public ApplicationSettings() 
 	{
-		super("settings", "Settings", TaskBar.APP_BAR_GUI, 14, 30);
+		super("settings", "Settings");
 		this.setDefaultWidth(80);
 		this.setDefaultHeight(40);
+		this.setIcon(TaskBar.APP_BAR_GUI, 14, 30);
 	}
 
 	@Override

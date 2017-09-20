@@ -16,7 +16,7 @@ public class EmailEvents
 	@SubscribeEvent
 	public void load(WorldEvent.Load event)
 	{
-		if(event.world.provider.getDimensionId() == 0)
+		if(event.getWorld().provider.getDimension() == 0)
 		{
 			try 
 			{
@@ -42,7 +42,7 @@ public class EmailEvents
 	@SubscribeEvent
 	public void save(WorldEvent.Save event)
 	{
-		if(event.world.provider.getDimensionId() == 0)
+		if(event.getWorld().provider.getDimension() == 0)
 		{
 			try 
 			{

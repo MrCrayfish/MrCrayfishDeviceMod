@@ -52,7 +52,7 @@ public class ProgressBar extends Component
 	/**
 	 * Sets the current progress.
 	 * 
-	 * @param progress
+	 * @param progress the progress to set
 	 */
 	public void setProgress(int progress) 
 	{

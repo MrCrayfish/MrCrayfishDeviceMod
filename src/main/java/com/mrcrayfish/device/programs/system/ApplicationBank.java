@@ -1,9 +1,5 @@
 package com.mrcrayfish.device.programs.system;
 
-import java.awt.Color;
-
-import javax.swing.LayoutStyle;
-
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -11,43 +7,46 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.network.task.TaskManager;
 import com.mrcrayfish.device.programs.system.object.Account;
 import com.mrcrayfish.device.util.InventoryUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import java.awt.*;
 
 public class ApplicationBank extends Application
 {
 	private static boolean registered = false;
 	
-	private static final ItemStack EMERALD = new ItemStack(Items.emerald);
-	
+	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
+	private static final ResourceLocation BANK_ASSETS = new ResourceLocation("cdm:textures/gui/bank.png");
 	private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
     private static final ModelVillager villagerModel = new ModelVillager(0.0F);
 	
 	private Layout layoutStart;
+	private Label labelTeller;
+	private Text textWelcome;
+	private Button btnDepositWithdraw;
+	private Button btnTransfer;
 	
 	private Layout layoutMain;
 	private Label labelBalance;
@@ -74,8 +73,9 @@ public class ApplicationBank extends Application
 	
 	public ApplicationBank()
 	{
-		super(Reference.MOD_ID + "Bank", "The Emerald Bank", TaskBar.APP_BAR_GUI, 98, 30);
-		registerTasks();
+		super(Reference.MOD_ID + "Bank", "The Emerald Bank");
+		this.setIcon(TaskBar.APP_BAR_GUI, 98, 30);
+		this.registerTasks();
 	}
 	
 	@Override
@@ -94,33 +94,57 @@ public class ApplicationBank extends Application
 		layoutStart = new Layout();
 		layoutStart.setBackground(new Background()
 		{
+			private float scaleX = 0F;
+			private float scaleY = 0;
+			
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				GlStateManager.pushMatrix();
 				{
-					GlStateManager.translate(x + 100, y + 33, 15);
+					GlStateManager.translate(x + 25, y + 33, 15);
 					GlStateManager.scale((float) -2.5, (float) -2.5, (float) -2.5);
 					GlStateManager.rotate(-10F, 1, 0, 0);
 					GlStateManager.rotate(180F, 0, 0, 1);
-					GlStateManager.rotate(MathHelper.cos((float) (rotation * Math.PI) / 20F) * 20F, 0, 1, 0);
+					GlStateManager.rotate(-20F, 0, 1, 0);
+					scaleX = (mouseX - x - 25) / (float) width;
+					scaleY = (mouseY - y - 20) / (float) height;
 					mc.getTextureManager().bindTexture(villagerTextures);
-					villagerModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F);
+					villagerModel.render(null, 0F, 0F, 0F, -70F * scaleX + 20F, 30F * scaleY, 1F);
+					GlStateManager.disableDepth();
 				}
 				GlStateManager.popMatrix();
 				
-				 /*GlStateManager.pushMatrix();
-					GlStateManager.translate((float) x, (float) y, 3.0F);
-					GlStateManager.scale((float) (-1), (float) -1, (float) -1);
-					GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); //Flips boat up
-					GlStateManager.rotate(90F, 1, 0, 0);
-					GlStateManager.translate(0.0F, -3F, 0.0F);
-					GlStateManager.rotate(-20F, 1.0F, 0.0F, 0.0F);
-					Minecraft.getMinecraft().getTextureManager().bindTexture(villagerTextures);
-					villagerModel.render(null, 0F, 0F, 0F, 0F, 0F, 1F);
-				GlStateManager.popMatrix();*/
+				mc.getTextureManager().bindTexture(BANK_ASSETS);
+				RenderUtil.drawRectWithTexture(x + 46, y + 19, 0, 0, 146, 52, 146, 52);
 			}
 		});
+		
+		labelTeller = new Label(TextFormatting.YELLOW + "Casey The Teller", 60, 7);
+		layoutStart.addComponent(labelTeller);
+		
+		textWelcome = new Text(TextFormatting.BLACK + "Hello " + Minecraft.getMinecraft().player.getName() + ", welcome to The Emerald Bank! How can I help you?", 62, 25, 125);
+		layoutStart.addComponent(textWelcome);
+		
+		btnDepositWithdraw = new Button("View Account", 54, 74, 76, 20);
+		btnDepositWithdraw.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				
+			}
+		});
+		btnDepositWithdraw.setToolTip("View Account", "Shows your balance");
+		layoutStart.addComponent(btnDepositWithdraw);
+		
+		btnTransfer = new Button("Transfer", 133, 74, 58, 20);
+		btnTransfer.setToolTip("Transfer", "Withdraw and deposit emeralds");
+		btnTransfer.setClickListener(new ClickListener() {
+			@Override
+			public void onClick(Component c, int mouseButton) {
+				setCurrentLayout(layoutMain);
+			}
+		});
+		layoutStart.addComponent(btnTransfer);
 		
 		setCurrentLayout(layoutStart);
 		
@@ -128,7 +152,7 @@ public class ApplicationBank extends Application
 		layoutMain.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + 40, Color.GRAY.getRGB());
 				gui.drawRect(x, y + 39, x + width, y + 40, Color.DARK_GRAY.getRGB());
@@ -263,7 +287,7 @@ public class ApplicationBank extends Application
 		});
 		layoutMain.addComponent(buttonWithdraw);
 		
-		emeraldAmount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().thePlayer, Items.emerald);
+		emeraldAmount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
 		labelEmeraldAmount = new Label("x " + emeraldAmount, 83, 123);
 		layoutMain.addComponent(labelEmeraldAmount);
 		
@@ -308,20 +332,20 @@ public class ApplicationBank extends Application
 
 	private void deposit(int amount, Callback callback) 
 	{
-		TaskProxy.sendTask(new TaskDeposit(amount).setCallback(callback));
+		TaskManager.sendTask(new TaskDeposit(amount).setCallback(callback));
 	}
 	
 	private void withdraw(int amount, Callback callback) 
 	{
-		TaskProxy.sendTask(new TaskWithdraw(amount).setCallback(callback));
+		TaskManager.sendTask(new TaskWithdraw(amount).setCallback(callback));
 	}
 	
 	public void registerTasks()
 	{
 		if(!registered)
 		{
-			TaskProxy.registerTask(TaskDeposit.class);
-			TaskProxy.registerTask(TaskWithdraw.class);
+			TaskManager.registerTask(TaskDeposit.class);
+			TaskManager.registerTask(TaskWithdraw.class);
 			registered = true;
 		}
 	}
@@ -363,7 +387,7 @@ public class ApplicationBank extends Application
 		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
 		{
 			int amount = nbt.getInteger("amount");
-			if(InventoryUtil.removeItemWithAmount(player, Items.emerald, amount))
+			if(InventoryUtil.removeItemWithAmount(player, Items.EMERALD, amount))
 			{
 				Account account = BankUtil.INSTANCE.getAccount(player);
 				if(account.deposit(amount))
@@ -415,13 +439,13 @@ public class ApplicationBank extends Application
 				int stacks = amount / 64;
 				for(int i = 0; i < stacks; i++)
 				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.emerald, 64)));
+					world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, 64)));
 				}
 				
 				int remaining = amount % 64;
 				if(remaining > 0)
 				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.emerald, remaining)));
+					world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, remaining)));
 				}
 				
 				this.amount = account.getBalance();

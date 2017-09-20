@@ -40,9 +40,10 @@ public class ApplicationNoteStash extends Application
 	private Text noteContent;
 	private Button btnBack;
 
-	public ApplicationNoteStash() 
+	public ApplicationNoteStash()
 	{
-		super("note_stash", "Note Stash", TaskBar.APP_BAR_GUI, 42, 30);
+		super("note_stash", "Note Stash");
+		this.setIcon(TaskBar.APP_BAR_GUI, 42, 30);
 	}
 
 	@Override

@@ -1,15 +1,17 @@
 package com.mrcrayfish.device.core;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.message.MessageSaveData;
@@ -19,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -26,7 +29,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Laptop extends GuiScreen 
 {
-	public static final int ID = 0;
+	public static final int ID = 1;
 	
 	private static final ResourceLocation LAPTOP_GUI = new ResourceLocation("cdm:textures/gui/laptop.png");
 	public static final List<ResourceLocation> WALLPAPERS = new ArrayList<ResourceLocation>();
@@ -164,6 +167,15 @@ public class Laptop extends GuiScreen
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
+		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
+		{
+			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+		else
+		{
+			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 	
@@ -294,10 +306,9 @@ public class Laptop extends GuiScreen
 		int scroll = Mouse.getEventDWheel();
 		if(scroll != 0)
 		{
-			boolean up = scroll >= 0;
 			if(windows[0] != null)
 			{
-				windows[0].handleMouseScroll(mouseX, mouseY, up);
+				windows[0].handleMouseScroll(mouseX, mouseY, scroll >= 0);
 			}
 		}
 	}
@@ -337,7 +348,7 @@ public class Laptop extends GuiScreen
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		
-		Window window = new Window(app);
+		Window<Application> window = new Window<>(app);
 		window.init(buttonList, posX, posY);
 		
 		if(data.hasKey(app.getID()))
@@ -347,7 +358,7 @@ public class Laptop extends GuiScreen
 		
 		addWindow(window);
 
-	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 	
 	public void close(Application app)
@@ -368,14 +379,13 @@ public class Laptop extends GuiScreen
 					}
 					window.handleClose();
 					windows[i] = null;
-					window = null;
 					return;
 				}
 			}
 		}
 	}
 	
-	public void addWindow(Window window)
+	public void addWindow(Window<Application> window)
 	{
 		if(hasReachedWindowLimit())
 			return;

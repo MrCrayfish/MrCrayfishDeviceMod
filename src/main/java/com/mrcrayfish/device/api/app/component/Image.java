@@ -125,7 +125,7 @@ public class Image extends Component
 	/**
 	 * Sets the border colour for this component
 	 * 
-	 * @param color the border colour
+	 * @param colour the border colour
 	 */
 	private void setBorderColor(Color colour)
 	{

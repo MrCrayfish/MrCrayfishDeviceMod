@@ -10,6 +10,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,30 +44,33 @@ public class Inventory extends Component
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
-		GlStateManager.color(1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
-		RenderUtil.drawRectWithTexture(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
-
-		InventoryPlayer inventory = mc.thePlayer.inventory;
-		for(int i = 9; i < inventory.getSizeInventory() - 4; i++)
+		if (this.visible)
 		{
-			int offsetX = (i % 9) * 18;
-			int offsetY = (i / 9) * 18 - 18;
-			
-			if(selected == i)
+			GlStateManager.color(1.0F, 1.0F, 1.0F);
+			mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
+			RenderUtil.drawRectWithTexture(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
+
+			InventoryPlayer inventory = mc.player.inventory;
+			for(int i = 9; i < inventory.getSizeInventory() - 4; i++)
 			{
-				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColour);
-			}
-			
-			if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 17, yPosition + offsetY + 17))
-			{
-				laptop.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColour);
-			}
-			
-			ItemStack stack = inventory.getStackInSlot(i);
-			if(stack != null)
-			{
-				RenderUtil.renderItem(xPosition + offsetX + 1, yPosition + offsetY + 1, stack, true);
+				int offsetX = (i % 9) * 18;
+				int offsetY = (i / 9) * 18 - 18;
+
+				if(selected == i)
+				{
+					Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColour);
+				}
+
+				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 17, yPosition + offsetY + 17))
+				{
+					Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColour);
+				}
+
+				ItemStack stack = inventory.getStackInSlot(i);
+				if(!stack.isEmpty())
+				{
+					RenderUtil.renderItem(xPosition + offsetX + 1, yPosition + offsetY + 1, stack, true);
+				}
 			}
 		}
 	}
@@ -74,20 +78,23 @@ public class Inventory extends Component
 	@Override
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
-		for(int i = 0; i < 3; i++)
+		if (this.visible)
 		{
-			for(int j = 0; j < 9; j++)
+			for(int i = 0; i < 3; i++)
 			{
-				int x = xPosition + (j * 18) - 1;
-				int y = yPosition + (i * 18) - 1;
-				if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 18, y + 18))
+				for(int j = 0; j < 9; j++)
 				{
-					ItemStack stack = mc.thePlayer.inventory.getStackInSlot((i * 9) + j + 9);
-					if(stack != null)
+					int x = xPosition + (j * 18) - 1;
+					int y = yPosition + (i * 18) - 1;
+					if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 18, y + 18))
 					{
-						laptop.drawHoveringText(Arrays.asList(new String[] { stack.getDisplayName() }), mouseX, mouseY);
+						ItemStack stack = mc.player.inventory.getStackInSlot((i * 9) + j + 9);
+						if(!stack.isEmpty())
+						{
+							laptop.drawHoveringText(Arrays.asList(new String[]{stack.getDisplayName()}), mouseX, mouseY);
+						}
+						return;
 					}
-					return;
 				}
 			}
 		}
@@ -96,6 +103,9 @@ public class Inventory extends Component
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
+		if(!this.visible || !this.enabled)
+			return;
+
 		for(int i = 0; i < 3; i++)
 		{
 			for(int j = 0; j < 9; j++)
@@ -128,7 +138,7 @@ public class Inventory extends Component
 	/**
 	 * Sets the click listener for when an item is clicked
 	 * 
-	 * @param clickListener
+	 * @param clickListener the click listener
 	 */
 	public void setClickListener(ClickListener clickListener)
 	{
@@ -138,7 +148,7 @@ public class Inventory extends Component
 	/**
 	 * Sets the colour displayed when an item is selected
 	 * 
-	 * @param color the selected colour
+	 * @param selectedColour the selected colour
 	 */
 	public void setSelectedColour(int selectedColour)
 	{
@@ -148,7 +158,7 @@ public class Inventory extends Component
 	/**
 	 * Sets the colour displayed when a mouse is hovering an item
 	 * 
-	 * @param color the hover colour
+	 * @param hoverColour the hover colour
 	 */
 	public void setHoverColour(int hoverColour)
 	{

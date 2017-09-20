@@ -32,7 +32,7 @@ public class ApplicationTest extends Application
 		one.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + height, Color.GREEN.getRGB());
 			}
@@ -47,7 +47,7 @@ public class ApplicationTest extends Application
 		two.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
 				gui.drawRect(x, y, x + width, y + height, Color.RED.getRGB());
 			}
@@ -57,7 +57,6 @@ public class ApplicationTest extends Application
 		two.addComponent(labelTwo);
 		
 		this.addComponent(two);
-		
 	}
 
 	@Override

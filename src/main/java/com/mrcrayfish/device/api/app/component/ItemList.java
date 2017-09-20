@@ -1,20 +1,17 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class ItemList<E> extends Component implements Iterable<E>
 {
@@ -55,21 +52,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		btnUp = new ButtonArrow(left + width + 3, top, ButtonArrow.Type.UP);
 		btnUp.setEnabled(false);
-		btnUp.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				scrollUp();
-			}
-		});
+		btnUp.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0) scrollUp();
+        });
 		layout.addComponent(btnUp);
 		
 		btnDown = new ButtonArrow(left + width + 3, top + 14, ButtonArrow.Type.DOWN);
-		btnDown.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				scrollDown();
-			}
-		});
+		btnDown.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0) scrollDown();
+        });
 		layout.addComponent(btnDown);
 	}
 	
@@ -101,7 +94,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 					{
 						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
 						drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i, borderColour);
+						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColour);
 					}
 				}
 			}

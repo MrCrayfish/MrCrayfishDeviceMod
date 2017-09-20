@@ -14,8 +14,6 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 	 * Default toggle button constructor
 	 * 
 	 * @param text text to be displayed in the button
-	 * @param x the application x position (from {@link Application#init(int x, int y)}).
-	 * @param y the application y position (from {@link Application#init(int x, int y)}).
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 * @param width width of the button
@@ -60,7 +58,7 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 		if(!this.visible || !this.enabled)
 			return;
 		
-		if(this.hovered)
+		if(super.isInside(mouseX, mouseY))
 		{
 			if(clickListener != null)
 			{
@@ -70,8 +68,12 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 			if(group != null)
 			{
 				group.unselect();
+				this.toggle = true;
 			}
-			this.toggle = true;
+			else 
+			{
+				this.toggle = !toggle;
+			}
 		}
 	}
 	

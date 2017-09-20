@@ -30,7 +30,6 @@ public class ButtonArrow extends Button
 	{
 		if (this.visible)
 		{
-			FontRenderer fontrenderer = mc.fontRendererObj;
 			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height && windowActive;

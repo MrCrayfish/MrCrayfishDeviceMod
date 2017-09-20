@@ -1,31 +1,31 @@
 package com.mrcrayfish.device.object;
 
+import com.mrcrayfish.device.api.app.Application;
 import org.lwjgl.opengl.GL11;
 
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 public class AppInfo 
 {
+
 	private String name;
 	private String author = "MrCrayfish";
 	private String description = "Hallo";
-	
-	private ResourceLocation iconResource = TaskBar.APP_BAR_GUI;
-	private int iconU = 0, iconV = 46;
-	
-	public AppInfo(String name) 
+	private Application.Icon icon;
+
+	public AppInfo(String name)
 	{
 		this.name = name;
 	}
 	
 	public String getName() 
 	{
-		return EnumChatFormatting.YELLOW + name;
+		return TextFormatting.YELLOW + name;
 	}
 	
 	public String getAuthor() 
@@ -47,7 +47,7 @@ public class AppInfo
 	public void renderIcon(Minecraft mc, int x, int y)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(iconResource);
-		GuiHelper.drawModalRectWithUV(x, y, iconU, iconV, 14, 14, 14, 14);
+		mc.getTextureManager().bindTexture(icon.getResource());
+		RenderUtil.drawRectWithTexture(x, y, icon.getU(), icon.getV(), 14, 14, 14, 14);
 	}
 }

@@ -30,9 +30,10 @@ public class ApplicationAppStore extends Application
 	
 	public ApplicationAppStore() 
 	{
-		super("app_store", "App Store", TaskBar.APP_BAR_GUI, 28, 30);
+		super("app_store", "App Store");
 		this.setDefaultWidth(250);
 		this.setDefaultHeight(150);
+		this.setIcon(TaskBar.APP_BAR_GUI, 28, 30);
 	}
 
 	@Override

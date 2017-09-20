@@ -16,5 +16,5 @@ public interface ReleaseListener
 	 * @param c the component that was clicked
 	 * @param mouseButton the mouse button used to click
 	 */
-	public void onRelease(Component c, int mouseButton);
+	void onRelease(Component c, int mouseButton);
 }

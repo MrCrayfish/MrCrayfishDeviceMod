@@ -1,42 +1,22 @@
 package com.mrcrayfish.device.programs.email;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
-import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.Spinner;
-import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskProxy;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.network.task.TaskManager;
-import com.mrcrayfish.device.programs.email.task.TaskCheckEmailAccount;
-import com.mrcrayfish.device.programs.email.task.TaskDeleteEmail;
-import com.mrcrayfish.device.programs.email.task.TaskRegisterEmailAccount;
-import com.mrcrayfish.device.programs.email.task.TaskSendEmail;
-import com.mrcrayfish.device.programs.email.task.TaskUpdateInbox;
-import com.mrcrayfish.device.programs.email.task.TaskViewEmail;
-
+import com.mrcrayfish.device.programs.email.task.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,6 +25,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ApplicationEmail extends Application
 {
@@ -129,7 +116,8 @@ public class ApplicationEmail extends Application
 
 	public ApplicationEmail()
 	{
-		super("email", "Ender Mail", TaskBar.APP_BAR_GUI, 70, 30);
+		super("email", "Ender Mail");
+		this.setIcon(TaskBar.APP_BAR_GUI, 70, 30);
 	}
 
 	@Override
@@ -152,10 +140,11 @@ public class ApplicationEmail extends Application
 		
 		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, u, v, 14, 14, icon);
+		logo = new Image(35, 5, 28, 28, icon.getU(), icon.getV(), 14, 14, icon.getResource());
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Ender Mail", 19, 35);
+		labelLogo = new Label("Ender Mail", 50, 35);
+		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
 		btnRegisterAccount = new Button("Register", 5, 50, 90, 20);
@@ -210,7 +199,7 @@ public class ApplicationEmail extends Application
 							}
 						}
 					});
-					TaskProxy.sendTask(taskRegisterAccount);
+					TaskManager.sendTask(taskRegisterAccount);
 				}
 			}
 		});
@@ -238,7 +227,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskUpdateInbox);
+				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
 
@@ -248,8 +237,8 @@ public class ApplicationEmail extends Application
 			@Override
 			public void render(Email e, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
 			{
-				if (selected) gui.drawRect(x, y, x + width, y + height, Color.DARK_GRAY.getRGB());
-				else gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
+				if (selected) Gui.drawRect(x, y, x + width, y + height, Color.DARK_GRAY.getRGB());
+				else Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
 
 				if (!e.isRead())
 				{
@@ -273,7 +262,7 @@ public class ApplicationEmail extends Application
 				int index = listEmails.getSelectedIndex();
 				if (index != -1)
 				{
-					TaskProxy.sendTask(new TaskViewEmail(index));
+					TaskManager.sendTask(new TaskViewEmail(index));
 					Email email = listEmails.getSelectedItem();
 					email.setRead(true);
 					textMessage.setText(email.message);
@@ -335,7 +324,7 @@ public class ApplicationEmail extends Application
 							EmailManager.INSTANCE.getInbox().remove(index);
 						}
 					});
-					TaskProxy.sendTask(taskDeleteEmail);
+					TaskManager.sendTask(taskDeleteEmail);
 				}
 			}
 		});
@@ -361,7 +350,7 @@ public class ApplicationEmail extends Application
 						}
 					}
 				});
-				TaskProxy.sendTask(taskUpdateInbox);
+				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
@@ -413,13 +402,9 @@ public class ApplicationEmail extends Application
 							fieldSubject.clear();
 							fieldRecipient.clear();
 						}
-						else
-						{
-
-						}
 					}
 				});
-				TaskProxy.sendTask(taskSendEmail);
+				TaskManager.sendTask(taskSendEmail);
 			}
 		});
 		btnSendEmail.setToolTip("Send", "Send email to recipient");
@@ -447,12 +432,12 @@ public class ApplicationEmail extends Application
 		layoutViewEmail.setBackground(new Background()
 		{
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height)
+			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
-				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 50, Color.GRAY.getRGB());
-				gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 23, Color.DARK_GRAY.getRGB());
-				gui.drawRect(x, y + 49, x + layoutViewEmail.width, y + 50, Color.DARK_GRAY.getRGB());
-				gui.drawRect(x, y + 50, x + layoutViewEmail.width, y + 156, COLOR_EMAIL_CONTENT_BACKGROUND.getRGB());
+				Gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 50, Color.GRAY.getRGB());
+				Gui.drawRect(x, y + 22, x + layoutViewEmail.width, y + 23, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x, y + 49, x + layoutViewEmail.width, y + 50, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x, y + 50, x + layoutViewEmail.width, y + 156, COLOR_EMAIL_CONTENT_BACKGROUND.getRGB());
 			}
 		});
 
@@ -504,7 +489,7 @@ public class ApplicationEmail extends Application
 				}
 			}
 		});
-		TaskProxy.sendTask(taskCheckAccount);
+		TaskManager.sendTask(taskCheckAccount);
 	}
 
 	@Override
