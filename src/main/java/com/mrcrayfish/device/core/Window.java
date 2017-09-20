@@ -35,11 +35,7 @@ public class Window<T extends Wrappable>
 	public Window(T wrappable) 
 	{
 		this.content = wrappable;
-		if(wrappable instanceof Dialog)
-		{
-			Dialog dialog = (Dialog) wrappable;
-			dialog.setWindow(this);
-		}
+		wrappable.setWindow(this);
 	}
 	
 	protected void setWidth(int width) 
@@ -63,12 +59,6 @@ public class Window<T extends Wrappable>
 	public void init(List<GuiButton> buttons, int x, int y)
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
-		
-		if(content instanceof Application)
-		{
-			((Application) content).setWindow(this);
-		}
-		
 		content.init();
 	}
 	

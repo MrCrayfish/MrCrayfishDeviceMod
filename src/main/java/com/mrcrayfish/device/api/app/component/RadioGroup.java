@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class RadioGroup
 {
-	protected Set<Item> group = new HashSet<Item>();
+	protected Set<Item> group = new HashSet<>();
 	
 	/***
 	 * Adds an item to this group
@@ -18,9 +18,9 @@ public class RadioGroup
 	}
 
 	/**
-	 * Unselects all items in this group 
+	 * Deselects all items in this group
 	 */
-	public void unselect()
+	public void deselect()
 	{
 		for(Item item : group)
 		{

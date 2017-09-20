@@ -2,10 +2,13 @@ package com.mrcrayfish.device.core;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.api.app.Layout;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -27,7 +30,7 @@ import net.minecraft.util.ResourceLocation;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
-public class Laptop extends GuiScreen 
+public class Laptop extends GuiScreen implements System
 {
 	public static final int ID = 1;
 	
@@ -42,17 +45,21 @@ public class Laptop extends GuiScreen
 	public static final int SCREEN_WIDTH = DEVICE_WIDTH - BORDER * 2;
 	public static final int SCREEN_HEIGHT = DEVICE_HEIGHT - BORDER * 2;
 
-	private TaskBar bar;
-	private Window<Application>[] windows;
+	private static System system;
+
+	private TaskBar bar = new TaskBar();
+	private Window[] windows = new Window[5];
 	private NBTTagCompound data;
 	
 	public static int currentWallpaper;
 	private int tileX, tileY, tileZ;
 	private int lastMouseX, lastMouseY;
-	
+
 	private int draggingWindow;
 	private boolean dragging = false;
 	private boolean dirty = false;
+
+	private Layout context = null;
 	
 	public Laptop(NBTTagCompound data, int tileX, int tileY, int tileZ)
 	{
@@ -60,12 +67,11 @@ public class Laptop extends GuiScreen
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.tileZ = tileZ;
-		this.currentWallpaper = data.getInteger("CurrentWallpaper");
+		Laptop.currentWallpaper = data.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-			this.currentWallpaper = 0;
+			Laptop.currentWallpaper = 0;
 		}
-		this.windows = new Window[5];
-		this.bar = new TaskBar();
+		Laptop.system = this;
 	}
 	
 	@Override
@@ -96,6 +102,8 @@ public class Laptop extends GuiScreen
         {
         	PacketHandler.INSTANCE.sendToServer(new MessageSaveData(tileX, tileY, tileZ, data));
         }
+
+        Laptop.system = null;
     }
 	
 	@Override
@@ -112,7 +120,7 @@ public class Laptop extends GuiScreen
 	}
 	
 	@Override
-	public void updateScreen() 
+	public void updateScreen()
 	{
 		for(Window window : windows)
 		{
@@ -167,6 +175,11 @@ public class Laptop extends GuiScreen
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
+		if(context != null)
+		{
+			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
+		}
+
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
 		{
 			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
@@ -187,9 +200,24 @@ public class Laptop extends GuiScreen
 		
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
-		
+
+		if(this.context != null)
+		{
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
+			{
+				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
+				return;
+			}
+			else
+			{
+				this.context = null;
+			}
+		}
+
 		this.bar.handleClick(this, posX, posY + SCREEN_HEIGHT - TaskBar.BAR_HEIGHT, mouseX, mouseY, mouseButton);
-		
+
 		for(int i = 0; i < windows.length; i++)
 		{
 			Window window = windows[i];
@@ -200,7 +228,7 @@ public class Laptop extends GuiScreen
 					windows[i] = null;
 					updateWindowStack();
 					windows[0] = window;
-					
+
 					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
 					
 					if(isMouseWithinWindowBar(mouseX, mouseY, window.dialogWindow))
@@ -347,15 +375,20 @@ public class Laptop extends GuiScreen
 		
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
-		
+
 		Window<Application> window = new Window<>(app);
 		window.init(buttonList, posX, posY);
-		
+
 		if(data.hasKey(app.getID()))
 		{
 			app.load(data.getCompoundTag(app.getID()));
 		}
-		
+
+		if(app.getCurrentLayout() == null)
+		{
+			app.restoreDefaultLayout();
+		}
+
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -493,10 +526,34 @@ public class Laptop extends GuiScreen
 			WALLPAPERS.add(wallpaper);
 		}
 	}
+
+	public static System getSystem()
+	{
+		return system;
+	}
 	
 	@Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;
+	}
+
+	@Override
+	public void openContext(Layout layout, int x, int y)
+	{
+		layout.updateComponents(x, y);
+		context = layout;
+	}
+
+	@Override
+	public boolean hasContext()
+	{
+		return context != null;
+	}
+
+	@Override
+	public void closeContext()
+	{
+		context = null;
 	}
 }

@@ -1,15 +1,12 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.text.DecimalFormat;
-
-import org.lwjgl.input.Mouse;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Mouse;
+
+import java.text.DecimalFormat;
 
 public class NumberSelector extends Component
 {
@@ -195,7 +192,7 @@ public class NumberSelector extends Component
 	}
 	
 	/**
-	 * Sets the formating of the display. Read the {@link DecimalFormat}
+	 * Sets the formatting of the display. Read the {@link DecimalFormat}
 	 * documentation for pattern syntax.
 	 * 
 	 * @param format the format

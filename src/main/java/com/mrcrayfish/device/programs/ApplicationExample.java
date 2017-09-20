@@ -48,12 +48,10 @@ public class ApplicationExample extends Application
 	@Override
 	public void init() 
 	{
-		super.init();
-		
 		label = new Label("Label", 5, 5);
 		super.addComponent(label);
 		
-		button = new Button("Button", 5, 18, 64, 20);
+		button = new Button("Button", 5, 18, 63, 20);
 		super.addComponent(button);
 		
 		leftButton = new ButtonArrow(5, 43, ButtonArrow.Type.LEFT);
@@ -104,7 +102,7 @@ public class ApplicationExample extends Application
 		});
 		super.addComponent(slider);
 		
-		spinner = new Spinner(57, 3);
+		spinner = new Spinner(56, 3);
 		super.addComponent(spinner);
 		
 		text = new Text("", 180, 5, 90);

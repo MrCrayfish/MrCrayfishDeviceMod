@@ -61,7 +61,6 @@ public abstract class Application implements Wrappable
 		if (c != null)
 		{
 			defaultLayout.addComponent(c);
-			c.init(defaultLayout);
 		}
 	}
 
@@ -84,7 +83,7 @@ public abstract class Application implements Wrappable
 	 * 
 	 * @return the current layout
 	 */
-	protected final Layout getCurrentLayout()
+	public final Layout getCurrentLayout()
 	{
 		return currentLayout;
 	}
@@ -92,7 +91,7 @@ public abstract class Application implements Wrappable
 	/**
 	 * Restores the current layout to the default layout
 	 */
-	protected final void restoreDefaultLayout()
+	public final void restoreDefaultLayout()
 	{
 		this.setCurrentLayout(defaultLayout);
 	}
@@ -107,11 +106,7 @@ public abstract class Application implements Wrappable
 	 * your application window.
 	 */
 	@Override
-	public void init()
-	{
-		this.defaultLayout.clear();
-		this.setCurrentLayout(defaultLayout);
-	}
+	public abstract void init();
 
 	@Override
 	public void onTick()
@@ -251,8 +246,7 @@ public abstract class Application implements Wrappable
 	@Override
 	public void onClose()
 	{
-		restoreDefaultLayout();
-		defaultLayout.components.clear();
+		defaultLayout.clear();
 		currentLayout = null;
 	}
 

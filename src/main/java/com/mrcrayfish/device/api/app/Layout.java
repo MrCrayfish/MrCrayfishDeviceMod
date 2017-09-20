@@ -59,8 +59,12 @@ public final class Layout extends Component
 	public Layout(int width, int height)
 	{
 		this(0, 0, width, height);
-		if(width < 20  || height < 20)
-			throw new IllegalArgumentException("Height and width of layout must be larger than 20");
+
+		if(width < 13)
+			throw new IllegalArgumentException("Width can not be less than 13 wide");
+
+		if(height < 1)
+			throw new IllegalArgumentException("Height can not be less than 1 tall");
 		
 		this.components = new ArrayList<Component>();
 		this.width = width;
@@ -78,8 +82,12 @@ public final class Layout extends Component
 	public Layout(int left, int top, int width, int height)
 	{
 		super(left, top);
-		if(width < 20  || height < 20)
-			throw new IllegalArgumentException("Height and width of layout must be larger than 20");
+
+		if(width < 13)
+			throw new IllegalArgumentException("Width can not be less than 13 wide");
+
+		if(height < 1)
+			throw new IllegalArgumentException("Height can not be less than 1 tall");
 		
 		this.components = new ArrayList<Component>();
 		this.width = width;
@@ -92,12 +100,13 @@ public final class Layout extends Component
 	 * trigger on initialization listener if set. 
 	 * See {@link #setInitListener(InitListener)}
 	 */
-	protected void init()
+	public void init()
 	{
 		if(initListener != null)
 		{
 			initListener.onInit();
 		}
+		handleOnLoad();
 	}
 	
 	/**
@@ -115,14 +124,17 @@ public final class Layout extends Component
 	}
 	
 	@Override
-	public void init(Layout layout)
+	public void init(Layout layout) {}
+
+	@Override
+	public void handleOnLoad()
 	{
 		for(Component c : components)
 		{
-			c.init(this);
+			c.handleOnLoad();
 		}
 	}
-	
+
 	@Override
 	public void handleTick()
 	{

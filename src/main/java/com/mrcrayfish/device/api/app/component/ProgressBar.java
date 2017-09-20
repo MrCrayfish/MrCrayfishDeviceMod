@@ -1,12 +1,10 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-
 import net.minecraft.client.Minecraft;
+
+import java.awt.*;
 
 public class ProgressBar extends Component 
 {
