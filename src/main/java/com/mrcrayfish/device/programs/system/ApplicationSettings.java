@@ -6,8 +6,6 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.TaskBar;
-
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationSettings extends Application
@@ -17,10 +15,9 @@ public class ApplicationSettings extends Application
 	
 	public ApplicationSettings() 
 	{
-		super("settings", "Settings");
+		//super("settings", "Settings");
 		this.setDefaultWidth(80);
 		this.setDefaultHeight(40);
-		this.setIcon(TaskBar.APP_BAR_GUI, 14, 30);
 	}
 
 	@Override

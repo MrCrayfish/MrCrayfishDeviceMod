@@ -74,7 +74,7 @@ public class ApplicationMineBay extends Application
 	
 	public ApplicationMineBay()
 	{
-		super(Reference.MOD_ID + "MineBay", "MineBay");
+		//super(Reference.MOD_ID + "MineBay", "MineBay");
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
@@ -15,7 +14,6 @@ import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.programs.system.object.Account;
 import com.mrcrayfish.device.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
@@ -73,8 +71,7 @@ public class ApplicationBank extends Application
 	
 	public ApplicationBank()
 	{
-		super(Reference.MOD_ID + "Bank", "The Emerald Bank");
-		this.setIcon(TaskBar.APP_BAR_GUI, 98, 30);
+		//super(Reference.MOD_ID + "Bank", "The Emerald Bank");
 		this.registerTasks();
 	}
 	

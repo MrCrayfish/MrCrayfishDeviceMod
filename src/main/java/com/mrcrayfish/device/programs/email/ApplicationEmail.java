@@ -15,7 +15,6 @@ import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.programs.email.task.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -114,12 +113,6 @@ public class ApplicationEmail extends Application
 	
 	private List<Contact> contacts;
 
-	public ApplicationEmail()
-	{
-		super("email", "Ender Mail");
-		this.setIcon(TaskBar.APP_BAR_GUI, 70, 30);
-	}
-
 	@Override
 	public void init()
 	{
@@ -137,7 +130,7 @@ public class ApplicationEmail extends Application
 		
 		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, icon.getU(), icon.getV(), 14, 14, icon.getResource());
+		logo = new Image(35, 5, 28, 28, 0, 0, 14, 14, info.getIcon());
 		layoutMainMenu.addComponent(logo);
 
 		labelLogo = new Label("Ender Mail", 50, 35);
@@ -512,7 +505,7 @@ public class ApplicationEmail extends Application
 		{
 			return "Contacts";
 		}
-		return super.getDisplayName();
+		return info.getName();
 	}
 
 	public static class EmailManager

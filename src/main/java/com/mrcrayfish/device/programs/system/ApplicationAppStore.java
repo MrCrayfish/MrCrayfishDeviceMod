@@ -1,23 +1,15 @@
 package com.mrcrayfish.device.programs.system;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.app.listener.ItemClickListener;
-import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.object.AppInfo;
-
-import net.minecraft.client.Minecraft;
+import com.mrcrayfish.device.api.app.component.Image;
+import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.Label;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
 
 public class ApplicationAppStore extends Application
 {
@@ -31,10 +23,9 @@ public class ApplicationAppStore extends Application
 	
 	public ApplicationAppStore() 
 	{
-		super("app_market", "App Market");
+		//super("app_market", "App Market");
 		this.setDefaultWidth(250);
 		this.setDefaultHeight(150);
-		this.setIcon(TaskBar.APP_BAR_GUI, 28, 30);
 	}
 
 	@Override

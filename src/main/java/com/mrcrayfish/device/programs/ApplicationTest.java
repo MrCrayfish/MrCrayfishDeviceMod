@@ -20,7 +20,7 @@ public class ApplicationTest extends Application
 {
 	public ApplicationTest()
 	{
-		super(Reference.MOD_ID + "TestApp", "Test App");
+		//super(Reference.MOD_ID + "TestApp", "Test App");
 	}
 	
 	@Override

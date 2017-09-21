@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.object.AppInfo;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -22,29 +23,23 @@ import javax.annotation.Resource;
  */
 public abstract class Application implements Wrappable
 {
-	protected final String APP_ID;
-	protected final String DISPLAY_NAME;
-
-	protected Icon icon;
+	private Window window;
+	protected final AppInfo info = null;
 
 	private int width, height;
 
-	private final Layout defaultLayout;
+	private final Layout defaultLayout = new Layout();
 	private Layout currentLayout;
 
 	/** If set to true, will update NBT data for Application */
 	private boolean needsDataUpdate = false;
 
-	private Window window;
-
 	/** If set to true, will update layout */
 	private boolean pendingLayoutUpdate = false;
 
-	public Application(String appId, String displayName)
+	public AppInfo getInfo()
 	{
-		this.APP_ID = appId;
-		this.DISPLAY_NAME = displayName;
-		this.defaultLayout = new Layout();
+		return info;
 	}
 
 	/**
@@ -352,26 +347,6 @@ public abstract class Application implements Wrappable
 	}
 
 	/**
-	 * Gets the id of this application
-	 * 
-	 * @return the applicaiton id
-	 */
-	public final String getID()
-	{
-		return APP_ID;
-	}
-
-	/**
-	 * Gets the name that is displayed in the task bar.
-	 * 
-	 * @return the display name
-	 */
-	public final String getDisplayName()
-	{
-		return DISPLAY_NAME;
-	}
-
-	/**
 	 * Gets the width of this application including the border.
 	 * 
 	 * @return the height
@@ -407,27 +382,7 @@ public abstract class Application implements Wrappable
 		{
 			return currentLayout.getTitle();
 		}
-		return DISPLAY_NAME;
-	}
-
-	/**
-	 * Sets the icon for the application. Icons must be 14 by 14 pixels.
-	 *
-	 * @param icon
-	 */
-	protected void setIcon(ResourceLocation resource, int u, int v)
-	{
-		this.icon = new Icon(resource, u, v);
-	}
-
-	/**
-	 * Gets the resource location the icon is located in
-	 * 
-	 * @return the icon resource location
-	 */
-	public Icon getIcon()
-	{
-		return icon;
+		return info.getName();
 	}
 
 	/**
@@ -462,36 +417,6 @@ public abstract class Application implements Wrappable
 		if (!(obj instanceof Application))
 			return false;
 		Application app = (Application) obj;
-		return app.getID().equals(this.getID());
-	}
-
-	public static class Icon {
-
-		protected ResourceLocation icon;
-		protected int u, v;
-
-		/**
-		 *
-		 * @param resource
-		 * @param u
-		 * @param v
-		 */
-		public Icon(ResourceLocation resource, int u, int v) {
-			this.icon = resource;
-			this.u = u;
-			this.v = v;
-		}
-
-		public ResourceLocation getResource() {
-			return icon;
-		}
-
-		public int getU() {
-			return u;
-		}
-
-		public int getV() {
-			return v;
-		}
+		return app.info.getId().equals(this.info.getId());
 	}
 }

@@ -1,32 +1,26 @@
 package com.mrcrayfish.device.programs;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonToggle;
-import com.mrcrayfish.device.api.app.component.CheckBox;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Image;
-import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.RadioGroup;
-import com.mrcrayfish.device.api.app.component.Slider;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.Canvas;
 import com.mrcrayfish.device.object.ColourGrid;
 import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -76,8 +70,7 @@ public class ApplicationPixelPainter extends Application
 
 	public ApplicationPixelPainter()
 	{
-		super("pixel_painter", "Pixel Painter");
-		this.setIcon(TaskBar.APP_BAR_GUI, 56, 30);
+		//super("pixel_painter", "Pixel Painter");
 	}
 
 	@Override
@@ -86,7 +79,7 @@ public class ApplicationPixelPainter extends Application
 		/* Main Menu */
 		layoutMainMenu = new Layout(100, 100);
 
-		logo = new Image(35, 5, 28, 28, icon.getU(), icon.getV(), 14, 14, icon.getResource());
+		logo = new Image(35, 5, 28, 28, 0, 0, 14, 14, info.getIcon());
 		layoutMainMenu.addComponent(logo);
 
 		labelLogo = new Label("Pixel Painter", 19, 35);
