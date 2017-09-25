@@ -8,6 +8,7 @@ import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import net.minecraft.client.Minecraft;
@@ -91,23 +92,16 @@ class TaskBar
 		for(int i = 0; i < APPS_DISPLAYED && i < applications.size(); i++)
 		{
 			Application app = applications.get(i + offset);
-			if(app.getInfo().getIcon() != null)
-			{
-				mc.getTextureManager().bindTexture(app.getInfo().getIcon());
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 0, 14, 14);
-			}
-			else
-			{
-				mc.getTextureManager().bindTexture(APP_BAR_GUI);
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
-			}
-			
+			AppInfo info = app.getInfo();
+			mc.getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
+			RenderUtil.drawApplicationIcon(info, x + 18 + i * 16, y + 2);
+
 			if(gui.isAppRunning(app.getInfo().getId()))
 			{
+				mc.getTextureManager().bindTexture(APP_BAR_GUI);
 				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
-		
 		
 		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		

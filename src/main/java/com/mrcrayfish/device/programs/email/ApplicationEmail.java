@@ -15,6 +15,7 @@ import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.programs.email.task.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -130,7 +131,7 @@ public class ApplicationEmail extends Application
 		
 		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, 0, 0, 14, 14, info.getIcon());
+		logo = new Image(35, 5, 28, 28, info.getIconU(), info.getIconV(), 14, 14, Laptop.ICON_TEXTURES);
 		layoutMainMenu.addComponent(logo);
 
 		labelLogo = new Label("Ender Mail", 50, 35);

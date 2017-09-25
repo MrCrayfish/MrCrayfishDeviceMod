@@ -5,19 +5,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class AppInfo 
 {
-
 	private final ResourceLocation APP_ID;
-	private final ResourceLocation ICON;
+	private int iconU = 0, iconV = 0;
 
 	public AppInfo(ResourceLocation appId)
 	{
 		this.APP_ID = appId;
-		this.ICON = generateIcon(appId);
-	}
-
-	private ResourceLocation generateIcon(ResourceLocation appId)
-	{
-		return new ResourceLocation(appId.getResourceDomain(), "textures/icon/" + appId.getResourcePath() + ".png");
 	}
 
 	/**
@@ -50,9 +43,14 @@ public class AppInfo
 		return I18n.format("app." + APP_ID.getResourcePath() + ".desc");
 	}
 
-	public ResourceLocation getIcon()
+	public int getIconU()
 	{
-		return ICON;
+		return iconU;
+	}
+
+	public int getIconV()
+	{
+		return iconV;
 	}
 
 	/*public void renderIcon(Minecraft mc, int x, int y)

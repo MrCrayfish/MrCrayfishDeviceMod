@@ -79,7 +79,7 @@ public class ApplicationPixelPainter extends Application
 		/* Main Menu */
 		layoutMainMenu = new Layout(100, 100);
 
-		logo = new Image(35, 5, 28, 28, 0, 0, 14, 14, info.getIcon());
+		logo = new Image(35, 5, 28, 28, info.getIconU(), info.getIconV(), 14, 14, Laptop.ICON_TEXTURES);
 		layoutMainMenu.addComponent(logo);
 
 		labelLogo = new Label("Pixel Painter", 19, 35);

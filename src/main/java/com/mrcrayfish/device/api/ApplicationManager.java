@@ -21,7 +21,6 @@ public class ApplicationManager
 	 * <p>
 	 * Example: {@code new ResourceLocation("modid:appid");}
 	 *
-	 *
 	 * @param identifier the
 	 * @param clazz
 	 */

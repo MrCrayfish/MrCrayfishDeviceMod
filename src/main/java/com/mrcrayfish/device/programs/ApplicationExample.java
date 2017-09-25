@@ -95,7 +95,7 @@ public class ApplicationExample extends Application
 		text.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 		super.addComponent(text);
 		
-		image = new Image(180, 100, 85, 50, "https://minecraft.net/static/pages/img/minecraft-hero-og.c5517b7973e1.jpg");
+		image = new Image(180, 100, 85, 35, "https://minecraft.net/static/pages/img/minecraft-hero-og.c5517b7973e1.jpg");
 		image.setAlpha(0.8F);
 		super.addComponent(image);
 	}
