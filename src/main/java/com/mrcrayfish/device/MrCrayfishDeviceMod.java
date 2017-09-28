@@ -65,11 +65,11 @@ public class MrCrayfishDeviceMod
 
 		logger = event.getModLog();
 
-		/** Block Registering */
+		/* Block Registering */
 		DeviceBlocks.init();
 		DeviceBlocks.register();
 		
-		/** Packet Registering */
+		/* Packet Registering */
 		PacketHandler.init();
 		
 		proxy.preInit();
@@ -78,10 +78,10 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		/** Crafting Registering */
+		/* Crafting Registering */
 		DeviceCrafting.register();
 		
-		/** Tile Entity Registering */
+		/* Tile Entity Registering */
 		DeviceTileEntites.register();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
@@ -91,6 +91,8 @@ public class MrCrayfishDeviceMod
 			MinecraftForge.EVENT_BUS.register(new EmailEvents());
 		}
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
+
+		registerApplications();
 		
 		proxy.init();
 	}
@@ -98,8 +100,13 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) 
 	{
+		proxy.postInit();
+	}
+
+	private void registerApplications()
+	{
 		// Applications (Both)
-		ApplicationManager.registerApplication(new ApplicationBank());
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
 
 		// Tasks (Both)
 		TaskManager.registerTask(TaskGetBalance.class);
@@ -110,12 +117,11 @@ public class MrCrayfishDeviceMod
 		if(!DEVELOPER_MODE)
 		{
 			// Applications (Normal)
-			ApplicationManager.registerApplication(new ApplicationNoteStash());
-			ApplicationManager.registerApplication(new ApplicationPixelPainter());
-			ApplicationManager.registerApplication(new ApplicationEmail());
-			ApplicationManager.registerApplication(new ApplicationBoatRacers());
-			ApplicationManager.registerApplication(new ApplicationMineBay());
-			//ApplicationManager.registerApplication(new ApplicationTest());
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
 			// Wallpapers (Normal)
 			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
@@ -139,13 +145,11 @@ public class MrCrayfishDeviceMod
 		else
 		{
 			// Applications (Developers)
-			ApplicationManager.registerApplication(new ApplicationExample());
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
 
 			// Wallpapers (Developers)
 			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
 		}
-		
-		proxy.postInit();
 	}
 
 	public static Logger getLogger()

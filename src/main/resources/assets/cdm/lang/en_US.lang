@@ -1,3 +1,5 @@
 itemGroup.cdmTabDevice=MrCrayfish's Device Mod
-
 tile.laptop.name=Laptop
+
+app.bank.name=Bank
+app.example.name=UI Components
