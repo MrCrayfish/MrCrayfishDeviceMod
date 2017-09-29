@@ -8,11 +8,9 @@ import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.object.Game;
 import com.mrcrayfish.device.object.TileGrid;
 import com.mrcrayfish.device.object.tiles.Tile;
-
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationBoatRacers extends Application 
@@ -29,17 +27,14 @@ public class ApplicationBoatRacers extends Application
 
 	public ApplicationBoatRacers() 
 	{
-		super("boat_racer", "Boat Racers");
+		//super("boat_racer", "Boat Racers");
 		this.setDefaultWidth(320);
 		this.setDefaultHeight(160);
-		this.setIcon(TaskBar.APP_BAR_GUI, 84, 30);
 	}
 	
 	@Override
 	public void init() 
 	{
-		super.init();
-
 		layoutLevelEditor = new Layout(364, 178);
 		
 		try 

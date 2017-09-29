@@ -3,14 +3,13 @@ package com.mrcrayfish.device.api.app;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
@@ -21,34 +20,27 @@ import javax.annotation.Nullable;
  *
  * @author MrCrayfish
  */
-public abstract class Application extends Wrappable implements Info
+public abstract class Application extends Wrappable
 {
-    protected Icon icon = new Icon(TaskBar.APP_BAR_GUI, 0, 30);
+	protected final AppInfo info = null;
+	private FileSystem fileSystem;
+	private BlockPos laptopPositon;
 
-    private int width;
-    private int height;
+	private int width, height;
 
-    private final String APP_ID;
-    private final String DISPLAY_NAME;
-    private final Layout defaultLayout = new Layout();
-    private Layout currentLayout;
+	private final Layout defaultLayout = new Layout();
+	private Layout currentLayout;
 
-    /**
-     * If set to true, will update NBT data for Application
-     */
+    /** If set to true, will update NBT data for Application */
     private boolean needsDataUpdate = false;
 
-    private Window window;
-    private FileSystem fileSystem;
-    private BlockPos laptopPositon;
+	/** If set to true, will update layout */
+	private boolean pendingLayoutUpdate = false;
 
-    /* If set to true, will update layout */ boolean pendingLayoutUpdate = false;
-
-    public Application(String appId, String displayName)
-    {
-        this.APP_ID = appId;
-        this.DISPLAY_NAME = displayName;
-    }
+	public AppInfo getInfo()
+	{
+		return info;
+	}
 
     /**
      * Adds a component to the default layout. Don't get this confused with your
@@ -80,34 +72,35 @@ public abstract class Application extends Wrappable implements Info
         this.currentLayout.init();
     }
 
-    /**
-     * Gets the current layout being displayed
-     *
-     * @return the current layout
-     */
-    protected final Layout getCurrentLayout()
-    {
-        return currentLayout;
-    }
+	/**
+	 * Gets the current layout being displayed
+	 * 
+	 * @return the current layout
+	 */
+	public final Layout getCurrentLayout()
+	{
+		return currentLayout;
+	}
 
-    /**
-     * Restores the current layout to the default layout
-     */
-    protected final void restoreDefaultLayout()
-    {
-        this.setCurrentLayout(defaultLayout);
-    }
+	/**
+	 * Restores the current layout to the default layout
+	 */
+	public final void restoreDefaultLayout()
+	{
+		this.setCurrentLayout(defaultLayout);
+	}
 
-    /**
-     * The default initialization method. Clears any components in the default
-     * layout and sets it as the current layout.
-     */
-    @Override
-    public void init()
-    {
-        this.defaultLayout.clear();
-        this.setCurrentLayout(defaultLayout);
-    }
+	/**
+	 * The default initialization method. Clears any components in the default
+	 * layout and sets it as the current layout. If you override this method and
+	 * are using the default layout, make sure you call it using
+	 * <code>super.init(x, y)</code>
+	 * <p>
+	 * The parameters passed are the x and y location of the top left corner or
+	 * your application window.
+	 */
+	@Override
+	public abstract void init();
 
     @Override
     public void onTick()
@@ -227,16 +220,15 @@ public abstract class Application extends Wrappable implements Info
         currentLayout.updateComponents(x, y);
     }
 
-    /**
-     * Called when the application is closed
-     */
-    @Override
-    public void onClose()
-    {
-        restoreDefaultLayout();
-        defaultLayout.components.clear();
-        currentLayout = null;
-    }
+	/**
+	 * Called when the application is closed
+	 */
+	@Override
+	public void onClose()
+	{
+		defaultLayout.clear();
+		currentLayout = null;
+	}
 
     /**
      * Called when you first load up your application. Allows you to read any
@@ -333,16 +325,16 @@ public abstract class Application extends Wrappable implements Info
         this.pendingLayoutUpdate = false;
     }
 
-    /**
-     * Gets the width of this application including the border.
-     *
-     * @return the height
-     */
-    @Override
-    public final int getWidth()
-    {
-        return width;
-    }
+	/**
+	 * Gets the width of this application including the border.
+	 * 
+	 * @return the height
+	 */
+	@Override
+	public final int getWidth()
+	{
+		return width;
+	}
 
     /**
      * Gets the height of this application including the title bar.
@@ -355,55 +347,22 @@ public abstract class Application extends Wrappable implements Info
         return height;
     }
 
-    /**
-     * Gets the text in the title bar of the application. You can change the
-     * text by setting a custom title for your layout. See
-     * {@link Layout#setTitle}.
-     *
-     * @return The display name
-     */
-    @Override
-    public String getWindowTitle()
-    {
-        if(currentLayout.hasTitle())
-        {
-            return currentLayout.getTitle();
-        }
-        return DISPLAY_NAME;
-    }
-
-    @Override
-    public String getID()
-    {
-        return APP_ID;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return DISPLAY_NAME;
-    }
-
-    /**
-     * Gets the resource location the icon is located in
-     *
-     * @return the icon resource location
-     */
-    @Override
-    public Icon getIcon()
-    {
-        return icon;
-    }
-
-    /**
-     * Sets the icon for the application. Icons must be 14 by 14 pixels.
-     *
-     * @param icon
-     */
-    protected void setIcon(ResourceLocation resource, int u, int v)
-    {
-        this.icon = new Icon(resource, u, v);
-    }
+	/**
+	 * Gets the text in the title bar of the application. You can change the
+	 * text by setting a custom title for your layout. See
+	 * {@link Layout#setTitle}.
+	 * 
+	 * @return The display name
+	 */
+	@Override
+	public String getWindowTitle()
+	{
+		if(currentLayout.hasTitle())
+		{
+			return currentLayout.getTitle();
+		}
+		return info.getName();
+	}
 
     public void setLaptopPosition(BlockPos pos)
     {
@@ -432,11 +391,12 @@ public abstract class Application extends Wrappable implements Info
         if(root.hasFolder("Application Data"))
         {
             Folder apps = (Folder) root.getFile("Application Data");
-            if(!apps.hasFolder(APP_ID))
+            String id = info.getFormattedId();
+            if(!apps.hasFolder(id))
             {
-                apps.add(new Folder(APP_ID), true);
+                apps.add(new Folder(id), true);
             }
-            return (Folder) apps.getFile(APP_ID);
+            return (Folder) apps.getFile(id);
         }
         return null;
     }
@@ -476,49 +436,18 @@ public abstract class Application extends Wrappable implements Info
         return true;
     }
 
-    /**
-     * Check if an application is equal to another. Checking the ID is
-     * sufficient as they should be unique.
-     */
-    @Override
-    public boolean equals(Object obj)
-    {
-        if(obj == null) return false;
-        if(!(obj instanceof Application)) return false;
-        Application app = (Application) obj;
-        return app.getID().equals(this.getID());
-    }
-
-    public static class Icon
-    {
-        protected ResourceLocation icon;
-        protected int u, v;
-
-        /**
-         * @param resource
-         * @param u
-         * @param v
-         */
-        public Icon(ResourceLocation resource, int u, int v)
-        {
-            this.icon = resource;
-            this.u = u;
-            this.v = v;
-        }
-
-        public ResourceLocation getResource()
-        {
-            return icon;
-        }
-
-        public int getU()
-        {
-            return u;
-        }
-
-        public int getV()
-        {
-            return v;
-        }
-    }
+	/**
+	 * Check if an application is equal to another. Checking the ID is
+	 * sufficient as they should be unique.
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Application))
+			return false;
+		Application app = (Application) obj;
+		return app.info.getFormattedId().equals(this.info.getFormattedId());
+	}
 }

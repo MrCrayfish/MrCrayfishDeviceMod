@@ -5,22 +5,26 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
-import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
+import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Stack;
 
 /**
@@ -48,9 +52,8 @@ public class FileBrowser extends Component
             }
             else
             {
-                Application.Icon icon = ApplicationManager.getApp(file.getOpeningApp()).getIcon();
-                Minecraft.getMinecraft().getTextureManager().bindTexture(icon.getResource());
-                RenderUtil.drawRectWithTexture(x + 2, y + 2, icon.getU(), icon.getV(), 14, 14, 14, 14);
+                AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
+                if(info != null) RenderUtil.drawApplicationIcon(info, x + 2, y + 2);
             }
             String text = (file.isProtected() ? TextFormatting.AQUA : TextFormatting.RESET) + file.getName();
             gui.drawString(Minecraft.getMinecraft().fontRendererObj, text, x + 22, y + 5, Color.WHITE.getRGB());
@@ -242,16 +245,21 @@ public class FileBrowser extends Component
                             btnDelete.setEnabled(false);
                         }
                     }
-                    else if(wrappable instanceof ApplicationFileBrowser)
+                    else if(wrappable instanceof SystemApplication)
                     {
-                        ApplicationFileBrowser fileBrowser = (ApplicationFileBrowser) wrappable;
-                        Application targetApp = ApplicationManager.getApp(file.getOpeningApp());
-                        if(targetApp != null)
+                        SystemApplication systemApp = (SystemApplication) wrappable;
+                        Laptop laptop = systemApp.getLaptop();
+                        if(laptop != null)
                         {
-                            fileBrowser.getLaptop().open(targetApp);
-                            if(!targetApp.handleFile(file))
+                            //TODO change to check if application is installed
+                            Application targetApp = laptop.getApplication(file.getOpeningApp());
+                            if(targetApp != null)
                             {
-                                targetApp.openDialog(new Dialog.Message("Unable to open file"));
+                                laptop.open(targetApp);
+                                if(!targetApp.handleFile(file))
+                                {
+                                    targetApp.openDialog(new Dialog.Message("Unable to open file"));
+                                }
                             }
                         }
                     }

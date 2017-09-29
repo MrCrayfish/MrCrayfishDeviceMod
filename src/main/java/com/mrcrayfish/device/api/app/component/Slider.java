@@ -72,6 +72,9 @@ public class Slider extends Component
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton) 
 	{
+		if(!this.visible || !this.enabled)
+			return;
+
 		if(dragging)
 		{
 			this.newSliderX = prevSliderX + (mouseX - clickX);
@@ -93,6 +96,9 @@ public class Slider extends Component
 	@Override
 	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton) 
 	{
+		if(!this.visible || !this.enabled)
+			return;
+
 		this.dragging = false;
 		this.prevSliderX = this.newSliderX;
 		if(releaseListener != null)
@@ -104,6 +110,9 @@ public class Slider extends Component
 	@Override
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
+		if(!this.visible || !this.enabled)
+			return;
+
 		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + 12))
 		{
 			prevSliderX = newSliderX;
@@ -177,7 +186,6 @@ public class Slider extends Component
 	 */
 	public void setPercentage(float percentage)
 	{
-		System.out.println(percentage);
 		if(percentage < 0.0F || percentage > 1.0F) return;
 		this.newSliderX = (int) ((this.width - 8) * percentage);
 	}

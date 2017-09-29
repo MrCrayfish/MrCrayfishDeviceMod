@@ -1,22 +1,8 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
-import com.mrcrayfish.device.api.app.component.CheckBox;
-import com.mrcrayfish.device.api.app.component.Image;
-import com.mrcrayfish.device.api.app.component.ItemList;
-import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.ProgressBar;
-import com.mrcrayfish.device.api.app.component.Slider;
-import com.mrcrayfish.device.api.app.component.Spinner;
-import com.mrcrayfish.device.api.app.component.Text;
-import com.mrcrayfish.device.api.app.component.TextArea;
-import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
-import com.mrcrayfish.device.core.Laptop;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationExample extends Application
@@ -40,7 +26,7 @@ public class ApplicationExample extends Application
 	
 	public ApplicationExample() 
 	{
-		super("example", "UI Components");
+		//super("example", "UI Components");
 		this.setDefaultWidth(270);
 		this.setDefaultHeight(140);
 	}
@@ -48,12 +34,10 @@ public class ApplicationExample extends Application
 	@Override
 	public void init() 
 	{
-		super.init();
-		
 		label = new Label("Label", 5, 5);
 		super.addComponent(label);
 		
-		button = new Button("Button", 5, 18, 64, 20);
+		button = new Button("Button", 5, 18, 63, 20);
 		super.addComponent(button);
 		
 		leftButton = new ButtonArrow(5, 43, ButtonArrow.Type.LEFT);
@@ -104,14 +88,14 @@ public class ApplicationExample extends Application
 		});
 		super.addComponent(slider);
 		
-		spinner = new Spinner(57, 3);
+		spinner = new Spinner(56, 3);
 		super.addComponent(spinner);
 		
 		text = new Text("", 180, 5, 90);
 		text.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 		super.addComponent(text);
 		
-		image = new Image(180, 100, 85, 50, 0, 0, 256, 211, Laptop.WALLPAPERS.get(0));
+		image = new Image(180, 100, 85, 35, "https://minecraft.net/static/pages/img/minecraft-hero-og.c5517b7973e1.jpg");
 		image.setAlpha(0.8F);
 		super.addComponent(image);
 	}

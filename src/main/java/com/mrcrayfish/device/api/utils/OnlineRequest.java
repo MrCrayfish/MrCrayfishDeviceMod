@@ -3,10 +3,16 @@ package com.mrcrayfish.device.api.utils;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.mrcrayfish.device.util.StreamUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * OnlineRequest is a simple built in request system for handling URL connections.
@@ -18,16 +24,15 @@ import com.mrcrayfish.device.util.StreamUtils;
 public class OnlineRequest
 {
 	private static OnlineRequest instance = null;
-	
-	private boolean running = true;
-	
-	private Queue<RequestWrapper> requests;
-	
+
+	private final Queue<RequestWrapper> requests;
+
 	private Thread thread;
-	
+	private boolean running = true;
+
 	private OnlineRequest() 
 	{
-		this.requests = new ConcurrentLinkedQueue<RequestWrapper>();
+		this.requests = new ConcurrentLinkedQueue<>();
 		start();
 	}
 	
@@ -48,7 +53,7 @@ public class OnlineRequest
 	
 	private void start() 
 	{
-		thread = new Thread(new RequestRunnable(), "OnlineRequest");
+		thread = new Thread(new RequestRunnable(), "Online Request Thread");
 		thread.start();
 	}
 	
@@ -59,9 +64,13 @@ public class OnlineRequest
 	 * @param url the URL you want to make a request to
 	 * @param handler the response handler for the request
 	 */
-	public void make(String url, ResponseHandler handler) 
+	public void make(String url, ResponseHandler handler)
 	{
-		requests.offer(new RequestWrapper(url, handler));
+		synchronized(requests)
+		{
+			requests.offer(new RequestWrapper(url, handler));
+			requests.notify();
+		}
 	}
 	
 	private class RequestRunnable implements Runnable 
@@ -71,20 +80,34 @@ public class OnlineRequest
 		{
 			while(running) 
 			{
-				while(requests.size() > 0)
+				try
+				{
+					synchronized(requests)
+					{
+						requests.wait();
+					}
+				}
+				catch(InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+
+				while(!requests.isEmpty())
 				{
 					RequestWrapper wrapper = requests.poll();
-					try 
+					try(CloseableHttpClient client = HttpClients.createDefault())
 					{
-						HttpURLConnection connection = (HttpURLConnection) new URL(wrapper.url).openConnection();
-			            connection.connect();
-			            InputStream input = connection.getInputStream();
-			            String response = StreamUtils.convertToString(input);
-			            wrapper.handler.handle(true, response);
-					} 
-					catch(Exception e) 
+						HttpGet get = new HttpGet(wrapper.url);
+						try(CloseableHttpResponse response = client.execute(get))
+						{
+							String raw = StreamUtils.convertToString(response.getEntity().getContent());
+							wrapper.handler.handle(true, raw);
+						}
+					}
+					catch(Exception e)
 					{
-						wrapper.handler.handle(false, null);
+						e.printStackTrace();
+						wrapper.handler.handle(false, "");
 					}
 				}
 			}
@@ -103,7 +126,7 @@ public class OnlineRequest
 		}
 	}
 	
-	public static interface ResponseHandler 
+	public interface ResponseHandler
 	{
 		/**
 		 * Handles the response from an OnlineRequest
@@ -111,6 +134,6 @@ public class OnlineRequest
 		 * @param success if the request was successful or not
 		 * @param response the response from the request. null if success is false
 		 */
-		public void handle(boolean success, String response);
+		void handle(boolean success, String response);
 	}
 }

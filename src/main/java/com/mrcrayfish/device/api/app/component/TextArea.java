@@ -85,10 +85,9 @@ public class TextArea extends Component
 	@Override
 	public void handleKeyTyped(char character, int code)
 	{
-		if(!isFocused || !editable)
-		{
+		if(!this.visible || !this.enabled || !this.isFocused || !this.editable)
 			return;
-		}
+
 		if (GuiScreen.isKeyComboCtrlV(code))
         {
             this.writeText(GuiScreen.getClipboardString());
@@ -212,7 +211,7 @@ public class TextArea extends Component
 	/**
 	 * Sets whether the user can edit the text
 	 * 
-	 * @param editable
+	 * @param editable is this component editable
 	 */
 	public void setEditable(boolean editable)
 	{

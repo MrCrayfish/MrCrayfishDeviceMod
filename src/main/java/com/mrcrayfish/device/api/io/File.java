@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class File
 {
-	public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[a-zA-Z0-9_ ]{1,16}$");
+	public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[\\w. ]{1,32}$");
 
 	public static final Comparator<File> SORT_BY_NAME = (f1, f2) -> {
 		if(f1 instanceof Folder && !(f2 instanceof Folder)) return -1;
@@ -28,21 +28,21 @@ public class File
 
 	public File(String name, Application app, NBTTagCompound data) 
 	{
-		this(name, app.getID(), data, false);
+		this(name, app.getInfo().getFormattedId(), data, false);
 	}
 	
-	public File(String name, String openingApp, NBTTagCompound data)
+	public File(String name, String openingAppId, NBTTagCompound data)
 	{
-		this(name, openingApp, data, false);
+		this(name, openingAppId, data, false);
 	}
 
-	private File(String name, String openingApp, NBTTagCompound data, boolean protect)
+	private File(String name, String openingAppId, NBTTagCompound data, boolean protect)
 	{
 		if(!PATTERN_FILE_NAME.matcher(name).matches())
 			throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[a-zA-Z0-9_ ]{1,16}$");
 
 		this.name = name;
-		this.openingApp = openingApp;
+		this.openingApp = openingAppId;
 		this.data = data;
 		this.protect = protect;
 	}
@@ -97,7 +97,7 @@ public class File
 
 	public boolean isForApplication(Application app)
 	{
-		return openingApp != null && openingApp.equals(app.getID());
+		return openingApp != null && openingApp.equals(app.getInfo().getFormattedId());
 	}
 
 	public boolean delete()

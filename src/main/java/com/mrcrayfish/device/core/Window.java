@@ -16,7 +16,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import scala.App;
 
 public class Window<T extends Wrappable>
 {
@@ -38,6 +37,7 @@ public class Window<T extends Wrappable>
 	{
 		this.content = wrappable;
 		this.laptop = laptop;
+		wrappable.setWindow(this);
 	}
 	
 	void setWidth(int width)
@@ -60,8 +60,7 @@ public class Window<T extends Wrappable>
 
 	void init(int x, int y)
 	{
-		btnClose = new GuiButtonClose(0, offsetX + width - 12, offsetY + 1);
-		content.setWindow(this);
+		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
 		content.init();
 	}
 	

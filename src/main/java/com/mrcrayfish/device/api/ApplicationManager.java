@@ -1,58 +1,78 @@
 package com.mrcrayfish.device.api;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Info;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.object.AppInfo;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import javax.annotation.Nullable;
 
 public class ApplicationManager
 {
-	private static final List<Info> APPS = new ArrayList<Info>();
-	
+	private static final Map<ResourceLocation, AppInfo> APP_INFO = new HashMap<>();
+
 	/**
 	 * Registers an application into the application list
-	 * 
-	 * @param app the application you want to register
+	 *
+	 * The identifier parameter is simply just an id for the application.
+	 * <p>
+	 * Example: {@code new ResourceLocation("modid:appid");}
+	 *
+	 * @param identifier the
+	 * @param clazz
 	 */
-	public static void registerApplication(Application app)
+	public static void registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{
-		if(app != null)
+		if("minecraft".equals(identifier.getResourceDomain()))
 		{
-			if(!APPS.contains(app))
-			{
-				APPS.add(app);
-			}
-			else
-			{
-				throw new RuntimeException("An application with the id '" + app.getID() + "' has already been registered.");
-			}
+			throw new IllegalArgumentException("Invalid identifier domain");
+		}
+
+		try
+		{
+			Application application = clazz.newInstance();
+			List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
+			APPS.add(application);
+
+			AppInfo info = new AppInfo(identifier);
+			APP_INFO.put(identifier, info);
+
+			Field field = Application.class.getDeclaredField("info");
+			field.setAccessible(true);
+
+			Field modifiers = Field.class.getDeclaredField("modifiers");
+			modifiers.setAccessible(true);
+			modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+			field.set(application, info);
+		}
+		catch(InstantiationException | IllegalAccessException | NoSuchFieldException e)
+		{
+			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Get all applications that are registered. Please note
 	 * that this list is read only and cannot be modified.
-	 * 
+	 *
 	 * @return the application list
 	 */
-	public static ImmutableList<Info> getApps()
+	public static Collection<AppInfo> getAvailableApps()
 	{
-		return ImmutableList.<Info>builder().addAll(APPS.iterator()).build();
+		return APP_INFO.values();
 	}
-	
-	public static Application getApp(String appId)
+
+	@Nullable
+	public static AppInfo getApplication(String appId)
 	{
-		for(Info info : APPS)
-		{
-			if(info.getID().equals(appId))
-			{
-				return (Application) info;
-			}
-		}
-		return null;
+		String[] s = appId.split("\\.");
+		if(s.length != 2) return null;
+		return APP_INFO.get(new ResourceLocation(s[0], s[1]));
 	}
 }

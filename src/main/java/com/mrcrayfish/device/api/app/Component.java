@@ -47,17 +47,12 @@ public abstract class Component extends Gui
 	public static final int ALIGN_CENTER = 2;
 	
 	/**
-	 * The default constructor for a component. For your component to
-	 * be laid out correctly, make sure you use the x and y parameters
-	 * from {@link Application#init(int x, int y)} and pass them into the
-	 * x and y arguments of this constructor. 
+	 * The default constructor for a component.
 	 * <p>
-	 * Laying out the components is a simple relative positioning. So for left (x position),
+	 * Laying out components is simply relative positioning. So for left (x position),
 	 * specific how many pixels from the left of the application window you want
-	 * it to be positioned at. The top is the same, but obviously from the top (y position).
-	 * 
-	 * @param x the application x position (from {@link Application#init(int x, int y)}.
-	 * @param y the application y position (from {@link Application#init(int x, int y)}.
+	 * it to be positioned at. The top is the same, but instead from the top (y position).
+	 *
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
@@ -67,12 +62,18 @@ public abstract class Component extends Gui
 		this.top = top;
 	}
 	
-	/***
-	 * Called when this component is initialized. You can add
+	/**
+	 * Called when this component is added to a Layout. You can add
 	 * sub-components through this method. Use {@link Layout#addComponent(Component)}
 	 * @param layout
 	 */
 	public void init(Layout layout) {}
+
+	/**
+	 * Called when the Layout this component is bound to is set as the current layout in an
+	 * application.
+	 */
+	public void handleOnLoad() {}
 	
 	/**
 	 * Called when the game ticks
@@ -156,7 +157,7 @@ public abstract class Component extends Gui
 	 * This method should be ignored. Used for the core.
 	 * Will probably be removed in the future.
 	 */
-	public void updateComponents(int x, int y) 
+	public void updateComponents(int x, int y)
 	{
 		this.xPosition = x + left;
 		this.yPosition = y + top;
@@ -166,9 +167,9 @@ public abstract class Component extends Gui
 	 * Sets whether this component is enabled. You should respect
 	 * this value if you create your own custom components.
 	 * 
-	 * @param enabled
+	 * @param enabled if this component should be enabled or not
 	 */
-	public void setEnabled(boolean enabled) 
+	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
 	}
@@ -177,7 +178,7 @@ public abstract class Component extends Gui
 	 * Sets whether this component is visible. You should respect
 	 * this value if you create your own custom components.
 	 * 
-	 * @param enabled
+	 * @param visible if this component should be visible or not
 	 */
 	public void setVisible(boolean visible)
 	{

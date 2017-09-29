@@ -1,47 +1,70 @@
 package com.mrcrayfish.device.programs.system;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.Text;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.app.listener.ItemClickListener;
-import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.core.TaskBar;
-import com.mrcrayfish.device.object.AppInfo;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
 
 public class ApplicationAppStore extends Application
 {
-	private Label appsLabel;
-	private ItemList<AppInfo> apps;
-	
-	private Label appTitle;
-	private Label appAuthor;
-	private Text appDescription;
-	private Button btnInstall;
+	private static final ResourceLocation BANNER = new ResourceLocation("cdm:textures/app/app_store_banner.png");
+
+	private Layout layoutHome;
+	private Image imageBanner;
+	private Label labelBanner;
+	private Label labelCategories;
+	private ItemList<String> itemListCategories;
 	
 	public ApplicationAppStore() 
 	{
-		super("app_store", "App Store");
+		//super("app_market", "App Market");
 		this.setDefaultWidth(250);
 		this.setDefaultHeight(150);
-		this.setIcon(TaskBar.APP_BAR_GUI, 28, 30);
 	}
 
 	@Override
 	public void init()
 	{
-		super.init();
-		
-		appsLabel = new Label("Application List", 5, 5);
+		layoutHome = new Layout(250, 159);
+		layoutHome.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+			Gui.drawRect(x, y + 50, x + width, y + 51, Color.DARK_GRAY.getRGB());
+			Gui.drawRect(x, y + 51, x + width, y + 63, Color.DARK_GRAY.getRGB());
+        });
+
+		//imageBanner = new Image(0, 0, 250, 50, 0, 0, 512, 141, BANNER);
+		imageBanner = new Image(0, 0, 250, 50, "https://i.imgur.com/VAGCpKY.jpg");
+		layoutHome.addComponent(imageBanner);
+
+		labelBanner = new Label("App Market", 10, 42);
+		labelBanner.setScale(2);
+		layoutHome.addComponent(labelBanner);
+
+		labelCategories = new Label("Categories", 5, 70);
+		layoutHome.addComponent(labelCategories);
+
+		itemListCategories = new ItemList<>(5, 82, 100, 5, true);
+		itemListCategories.addItem("Games");
+		itemListCategories.addItem("Tools");
+		itemListCategories.addItem("Education");
+		itemListCategories.addItem("Entertainment");
+		itemListCategories.addItem("Sports");
+		itemListCategories.addItem("VR");
+		itemListCategories.addItem("Finance");
+		itemListCategories.addItem("Multiplayer");
+		itemListCategories.addItem("Shopping");
+		itemListCategories.addItem("Social");
+		layoutHome.addComponent(itemListCategories);
+
+		this.setCurrentLayout(layoutHome);
+
+		/*appsLabel = new Label("Application List", 5, 5);
 		super.addComponent(appsLabel);
 		
 		apps = new ItemList<AppInfo>(5, 18, 100, 6);
@@ -56,39 +79,15 @@ public class ApplicationAppStore extends Application
 				else
 					gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
 				e.renderIcon(mc, x + 3, y + 3);
-				gui.drawString(mc.fontRendererObj, e.toString(), x + 20, y + 6, Color.WHITE.getRGB());
+				gui.drawString(mc.fontRendererObj, e.getFormattedId(), x + 20, y + 6, Color.WHITE.getRGB());
 				
 			}
 		});
-		apps.setItemClickListener(new ItemClickListener<AppInfo>() {
-			@Override
-			public void onClick(AppInfo info, int index, int mouseButton) {
-				if(info != null) {
-					appTitle.setText(info.getName());
-					appAuthor.setText(info.getAuthor());
-					appDescription.setText(info.getDescription());
-					btnInstall.setEnabled(true);
-				} else {
-					appTitle.setText("-");
-					appAuthor.setText("-");
-					appDescription.setText("-");
-					btnInstall.setEnabled(false);
-				}
-			}
-		});
-		super.addComponent(apps);
-		
-		appTitle = new Label("", 130, 5);
-		super.addComponent(appTitle);
-		
-		appAuthor = new Label("", 130, 16);
-		super.addComponent(appAuthor);
-		
-		appDescription = new Text("", 130, 35, 100);
-		super.addComponent(appDescription);
-		
-		btnInstall = new Button("Install", 125, 100, 100, 20);
-		super.addComponent(btnInstall);
+		apps.setItemClickListener((info, index, mouseButton) ->
+		{
+
+        });
+		super.addComponent(apps);*/
 	}
 
 	@Override

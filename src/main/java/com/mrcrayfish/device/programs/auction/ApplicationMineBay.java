@@ -1,9 +1,5 @@
 package com.mrcrayfish.device.programs.auction;
 
-import java.awt.Color;
-import java.text.DecimalFormat;
-import java.util.List;
-
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -11,14 +7,12 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.Inventory;
-import com.mrcrayfish.device.api.app.component.ItemList;
+import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.NumberSelector;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskPipeline;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.programs.auction.object.AuctionItem;
@@ -26,7 +20,6 @@ import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
 import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
 import com.mrcrayfish.device.util.TimeUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,6 +27,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class ApplicationMineBay extends Application
 {
@@ -77,7 +74,7 @@ public class ApplicationMineBay extends Application
 	
 	public ApplicationMineBay()
 	{
-		super(Reference.MOD_ID + "MineBay", "MineBay");
+		//super(Reference.MOD_ID + "MineBay", "MineBay");
 	}
 	
 	@Override
@@ -90,16 +87,15 @@ public class ApplicationMineBay extends Application
 	@Override
 	public void init()
 	{
-		super.init();
 		getCurrentLayout().setBackground(new Background()
 		{
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
-				gui.drawRect(x, y, x + width, y + 25, Color.GRAY.getRGB());
-				gui.drawRect(x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
-				gui.drawRect(x, y + 25, x + 95, y + height, Color.LIGHT_GRAY.getRGB());
-				gui.drawRect(x + 94, y + 25, x + 95, y + height, Color.GRAY.getRGB());
+				Gui.drawRect(x, y, x + width, y + 25, Color.GRAY.getRGB());
+				Gui.drawRect(x, y + 24, x + width, y + 25, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x, y + 25, x + 95, y + height, Color.LIGHT_GRAY.getRGB());
+				Gui.drawRect(x + 94, y + 25, x + 95, y + height, Color.GRAY.getRGB());
 				
 				mc.getTextureManager().bindTexture(MINEBAY_ASSESTS);
 				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -120,7 +116,7 @@ public class ApplicationMineBay extends Application
                     items.addItem(item);
                 }
             });
-			TaskPipeline.sendTask(task);
+			TaskManager.sendTask(task);
 		});
 		super.addComponent(btnViewItem);
 		
@@ -156,11 +152,11 @@ public class ApplicationMineBay extends Application
 			{
 				if(selected) 
 				{
-					gui.drawRect(x, y, x + width, y + height, Color.DARK_GRAY.getRGB());
+					Gui.drawRect(x, y, x + width, y + height, Color.DARK_GRAY.getRGB());
 				} 
 				else 
 				{
-					gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
+					Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
 				}
 				
 				RenderUtil.renderItem(x + 2, y + 2, e.getStack(), true);
@@ -207,7 +203,7 @@ public class ApplicationMineBay extends Application
                                 }
                             }
                         });
-                        TaskPipeline.sendTask(task);
+                        TaskManager.sendTask(task);
                     }
                 });
 				dialog.setNegativeText("Cancel");
@@ -226,8 +222,8 @@ public class ApplicationMineBay extends Application
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
-				gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
-				gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
+				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
 				mc.fontRendererObj.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
@@ -241,7 +237,7 @@ public class ApplicationMineBay extends Application
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
 					ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(stack != null)
+					if(!stack.isEmpty())
 					{
 						buttonAddNext.setEnabled(true);
 						selectorAmount.setMax(stack.getCount());
@@ -293,23 +289,23 @@ public class ApplicationMineBay extends Application
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
-				gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
-				gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
+				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
 				mc.fontRendererObj.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 				
 				int offsetX = 14;
 				int offsetY = 40;
-				gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
-				gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
+				Gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
 				
 				offsetX = 90;
-				gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
-				gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + 38, y + offsetY + 38, Color.BLACK.getRGB());
+				Gui.drawRect(x + offsetX + 1, y + offsetY + 1, x + offsetX + 37, y + offsetY + 37, Color.DARK_GRAY.getRGB());
 				
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
 					ItemStack stack = mc.player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(stack != null)
+					if(!stack.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						{
@@ -387,8 +383,8 @@ public class ApplicationMineBay extends Application
 			@Override
 			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
 			{
-				gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
-				gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
+				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
+				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
 				mc.fontRendererObj.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
@@ -439,7 +435,7 @@ public class ApplicationMineBay extends Application
                             }
                         }
                     });
-                    TaskPipeline.sendTask(task);
+                    TaskManager.sendTask(task);
                     dialog.close();
                     restoreDefaultLayout();
                 });
@@ -502,7 +498,7 @@ public class ApplicationMineBay extends Application
 				}
 			}
 		});
-		TaskPipeline.sendTask(task);
+		TaskManager.sendTask(task);
 	}
 
 	@Override

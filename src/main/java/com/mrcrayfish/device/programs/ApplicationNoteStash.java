@@ -6,13 +6,12 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
-import com.mrcrayfish.device.core.TaskBar;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.function.Predicate;
 
-public class ApplicationNoteStash extends Application 
+public class ApplicationNoteStash extends Application
 {
 	private static final Predicate<File> PREDICATE_FILE_NOTE = file -> !file.isFolder()
 			&& file.getData().hasKey("title", Constants.NBT.TAG_STRING)
@@ -40,15 +39,12 @@ public class ApplicationNoteStash extends Application
 
 	public ApplicationNoteStash()
 	{
-		super("note_stash", "Note Stash");
-		this.setIcon(TaskBar.APP_BAR_GUI, 42, 30);
+		//super("note_stash", "Note Stash");
 	}
 
 	@Override
 	public void init() 
 	{
-		super.init();
-
 		/* Main */
 		
 		layoutMain = new Layout(180, 80);
@@ -58,7 +54,7 @@ public class ApplicationNoteStash extends Application
 			Folder folder = getApplicationFolder();
 			folder.search(file -> file.isForApplication(this), true).stream().forEach(file -> notes.addItem(file));
 		});
-		
+
 		notes = new ItemList<>(5, 5, 100, 5);
 		notes.setItemClickListener((e, index, mouseButton) ->
 		{

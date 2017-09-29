@@ -12,10 +12,7 @@ public abstract class SystemApplication extends Application
 {
     private Laptop laptop;
 
-    public SystemApplication(String appId, String displayName)
-    {
-        super(appId, displayName);
-    }
+    SystemApplication() {}
 
     public void setLaptop(@Nullable Laptop laptop)
     {
@@ -26,5 +23,11 @@ public abstract class SystemApplication extends Application
     public Laptop getLaptop()
     {
         return laptop;
+    }
+
+    @Override
+    public void onClose()
+    {
+        laptop = null;
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.GlStateManager;
  * <p>
  * Use {@link com.mrcrayfish.device.api.app.Application#setCurrentLayout(Layout)} 
  * inside of {@link com.mrcrayfish.device.api.app.Application#init()}
- * to set the layout for your application. 
+ * to set the current layout for your application.
  * <p>
  * Check out the example applications to get a better understand of
  * how this works.
@@ -100,12 +100,13 @@ public final class Layout extends Component
 	 * trigger on initialization listener if set. 
 	 * See {@link #setInitListener(InitListener)}
 	 */
-	protected void init()
+	public void init()
 	{
 		if(initListener != null)
 		{
 			initListener.onInit();
 		}
+		handleOnLoad();
 	}
 	
 	/**
@@ -124,7 +125,16 @@ public final class Layout extends Component
 	
 	@Override
 	public void init(Layout layout) {}
-	
+
+	@Override
+	public void handleOnLoad()
+	{
+		for(Component c : components)
+		{
+			c.handleOnLoad();
+		}
+	}
+
 	@Override
 	public void handleTick()
 	{
@@ -138,7 +148,7 @@ public final class Layout extends Component
 	 * Renders the background of this layout if a {@link Background}
 	 * has be set. See {@link #setBackground(Background)}.
 	 * 
-	 * @param laptop a Laptop instance
+	 * @param laptop a Gui instance
 	 * @param mc a Minecraft instance
 	 * @param x the starting x rendering position (left most)
 	 * @param y the starting y rendering position (top most)
@@ -265,7 +275,7 @@ public final class Layout extends Component
 	 * Sets the background for this layout.
 	 * See {@link Background}.
 	 * 
-	 * @param initListener
+	 * @param background the background
 	 */
 	public void setBackground(Background background) 
 	{
@@ -312,7 +322,7 @@ public final class Layout extends Component
 		 * @param width the width of the layout
 		 * @param height the height of the layout
 		 */
-		public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive);
+		void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive);
 	}
 
 }

@@ -3,8 +3,6 @@ package com.mrcrayfish.device.api.task;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * <p>A Task is simple implementation that allows you to make calls to the
@@ -108,8 +106,8 @@ public abstract class Task
 	
 	/**
 	 * Called when the request arrives to the server. Here you can perform actions
-	 * with your request. Data attached to the NBT from {@link #prepareRequest()} can be
-	 * accessed from the NBT tag parameter.
+	 * with your request. Data attached to the NBT from {@link Task#prepareRequest(NBTTagCompound nbt)}
+	 * can be accessed from the NBT tag parameter.
 	 * 
 	 * @param nbt The NBT Tag received from the client
 	 */

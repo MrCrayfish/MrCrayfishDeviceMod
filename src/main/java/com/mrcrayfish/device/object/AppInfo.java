@@ -1,53 +1,76 @@
 package com.mrcrayfish.device.object;
 
-import com.mrcrayfish.device.api.app.Application;
-import org.lwjgl.opengl.GL11;
-
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.TaskBar;
-
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 
 public class AppInfo 
 {
+	private final ResourceLocation APP_ID;
+	private int iconU = 0, iconV = 0;
 
-	private String name;
-	private String author = "MrCrayfish";
-	private String description = "Hallo";
-	private Application.Icon icon;
-
-	public AppInfo(String name)
+	public AppInfo(ResourceLocation identifier)
 	{
-		this.name = name;
+		this.APP_ID = identifier;
 	}
-	
+
+	/**
+	 * Gets the id of the application
+	 *
+	 * @return the app resource location
+	 */
+	public ResourceLocation getId()
+	{
+		return APP_ID;
+	}
+
+	/**
+	 * Gets the formatted version of the application's id
+	 *
+	 * @return a formatted id
+	 */
+	public String getFormattedId()
+	{
+		return APP_ID.getResourceDomain() + "." + APP_ID.getResourcePath();
+	}
+
+	/**
+	 * Gets the name of the application
+	 *
+	 * @return the application name
+	 */
 	public String getName() 
 	{
-		return TextFormatting.YELLOW + name;
+		return I18n.format("app." + this.getFormattedId() + ".name");
 	}
 	
 	public String getAuthor() 
 	{
-		return author;
+		return I18n.format("app." + this.getFormattedId() + ".author");
 	}
 	
 	public String getDescription() 
 	{
-		return description;
+		return I18n.format("app." + this.getFormattedId() + ".desc");
 	}
-	
+
+	public int getIconU()
+	{
+		return iconU;
+	}
+
+	public int getIconV()
+	{
+		return iconV;
+	}
+
 	@Override
-	public String toString() 
+	public boolean equals(Object obj)
 	{
-		return name;
-	}
-	
-	public void renderIcon(Minecraft mc, int x, int y)
-	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(icon.getResource());
-		RenderUtil.drawRectWithTexture(x, y, icon.getU(), icon.getV(), 14, 14, 14, 14);
+		if(obj == null)
+			return false;
+		if(!(obj instanceof AppInfo))
+			return false;
+		AppInfo info = (AppInfo) obj;
+		return getFormattedId().equals(info.getFormattedId());
 	}
 }
