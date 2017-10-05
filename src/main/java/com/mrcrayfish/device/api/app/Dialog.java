@@ -1,27 +1,24 @@
 package com.mrcrayfish.device.api.app;
 
-import java.awt.Color;
-
-import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.io.Folder;
-import com.mrcrayfish.device.programs.system.component.FileBrowser;
-import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
-
+import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.nbt.NBTTagCompound;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 
 public abstract class Dialog extends Wrappable
 {
@@ -517,7 +514,8 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 125);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, app.getFileSystem().getHomeFolder(), FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
+			browser.openFolder(FileSystem.DIR_HOME);
 			browser.setItemClickListener((file, index, mouseButton) -> {
 				if(mouseButton == 0)
 				{
@@ -598,7 +596,6 @@ public abstract class Dialog extends Wrappable
 	{
 		private final Application app;
 		private final NBTTagCompound fileData;
-		private Folder root;
 
 		private String positiveText = "Save";
 		private String negativeText = "Cancel";
@@ -611,10 +608,11 @@ public abstract class Dialog extends Wrappable
 
 		public ResponseHandler<File> responseHandler;
 
+		private String path = FileSystem.DIR_HOME;
+
 		public SaveFile(Application app, NBTTagCompound fileData)
 		{
 			this.app = app;
-			this.root = app.getFileSystem().getHomeFolder();
 			this.fileData = fileData;
 			this.setTitle("Save File");
 		}
@@ -627,7 +625,8 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(225, 143);
 			this.setLayout(main);
 
-			browser = new FileBrowser(0, 0, app, root, FileBrowser.Mode.BASIC);
+			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
+			browser.openFolder(path);
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
@@ -646,33 +645,36 @@ public abstract class Dialog extends Wrappable
 						}
 
 						File file = new File(textFieldFileName.getText(), app, fileData.copy());
-						if(!browser.addFile(file))
+						browser.addFile(file, (nbt, success) ->
 						{
-							Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
-							dialog.setPositiveText("Override");
-							dialog.setPositiveListener((c1, mouseButton1) ->
+							if(!success)
 							{
-								browser.removeFile(file.getName());
-								browser.addFile(file);
-								dialog.close();
-
-								//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
-								if(SaveFile.this.responseHandler != null)
+								Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
+								dialog.setPositiveText("Override");
+								dialog.setPositiveListener((c1, mouseButton1) ->
 								{
-									SaveFile.this.responseHandler.onResponse(true, file);
-								}
-								SaveFile.this.close();
-							});
-							app.openDialog(dialog);
-						}
-						else
-						{
-							if(responseHandler != null)
-							{
-								responseHandler.onResponse(true, file);
+									browser.removeFile(file.getName());
+									browser.addFile(file);
+									dialog.close();
+
+									//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
+									if(SaveFile.this.responseHandler != null)
+									{
+										SaveFile.this.responseHandler.onResponse(true, file);
+									}
+									SaveFile.this.close();
+								});
+								app.openDialog(dialog);
 							}
-							close();
-						}
+							else
+							{
+								if(responseHandler != null)
+								{
+									responseHandler.onResponse(true, file);
+								}
+								close();
+							}
+                        });
 					}
 				}
 			});
@@ -725,9 +727,9 @@ public abstract class Dialog extends Wrappable
 			this.responseHandler = responseHandler;
 		}
 
-		public void setFolder(Folder root)
+		public void setFolder(String path)
 		{
-			this.root = root;
+			this.path = path;
 		}
 	}
 

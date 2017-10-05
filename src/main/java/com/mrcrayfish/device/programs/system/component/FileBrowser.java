@@ -13,18 +13,30 @@ import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
+import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.programs.system.task.TaskGetFiles;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import com.mrcrayfish.device.programs.system.task.TaskGetStructure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -84,6 +96,9 @@ public class FileBrowser extends Component
     private Folder clipboardDir;
     private File clipboardFile;
 
+    private String initialFolder = FileSystem.DIR_ROOT;
+    private boolean loadedStructure = false;
+
     private long lastClick = 0;
 
     private ItemClickListener<File> itemClickListener;
@@ -101,11 +116,10 @@ public class FileBrowser extends Component
      * @param left how many pixels from the left
      * @param top  how many pixels from the top
      */
-    public FileBrowser(int left, int top, Wrappable wrappable, Folder rootFolder, Mode mode)
+    public FileBrowser(int left, int top, Wrappable wrappable, Mode mode)
     {
         super(left, top);
         this.wrappable = wrappable;
-        this.rootFolder = rootFolder;
         this.mode = mode;
     }
 
@@ -217,7 +231,7 @@ public class FileBrowser extends Component
         btnDelete.setEnabled(false);
         layoutMain.addComponent(btnDelete);
 
-        fileList = new ItemList(mode.getOffset(), 25, 180, mode.getVisibleItems());
+        fileList = new ItemList<>(mode.getOffset(), 25, 180, mode.getVisibleItems());
         fileList.setListItemRenderer(ITEM_RENDERER);
         fileList.sortBy(File.SORT_BY_NAME);
         fileList.setItemClickListener((file, index, mouseButton) ->
@@ -236,14 +250,16 @@ public class FileBrowser extends Component
                     if(file.isFolder())
                     {
                         fileList.setSelectedIndex(-1);
-                        openFolder((Folder) file, true);
-                        if(mode == Mode.FULL)
+                        openFolder((Folder) file, true, (folder, success) ->
                         {
-                            btnRename.setEnabled(false);
-                            btnCopy.setEnabled(false);
-                            btnCut.setEnabled(false);
-                            btnDelete.setEnabled(false);
-                        }
+                            if(mode == Mode.FULL)
+                            {
+                                btnRename.setEnabled(false);
+                                btnCopy.setEnabled(false);
+                                btnCut.setEnabled(false);
+                                btnDelete.setEnabled(false);
+                            }
+                        });
                     }
                     else if(wrappable instanceof SystemApplication)
                     {
@@ -276,14 +292,47 @@ public class FileBrowser extends Component
         });
         layoutMain.addComponent(fileList);
 
-        comboBoxDrive = new ComboBox.List<String>(26, 3, 44, new String[]{"Root"});
+        comboBoxDrive = new ComboBox.List<>(26, 3, 44, new String[]{"Root"});
         layoutMain.addComponent(comboBoxDrive);
 
         labelPath = new Label("/", 72, 6);
         layoutMain.addComponent(labelPath);
         layout.addComponent(layoutMain);
+    }
 
-        openFolder(rootFolder, false);
+    @Override
+    public void handleOnLoad()
+    {
+        if(!loadedStructure)
+        {
+            Task task = new TaskGetStructure(Laptop.getPos());
+            task.setCallback((nbt, success) ->
+            {
+                if(success)
+                {
+                    NBTTagCompound structureTag = nbt.getCompoundTag("structure");
+                    rootFolder = Folder.fromTag("Root", structureTag);
+                    rootFolder.validate();
+
+                    Folder folder = getFolder(initialFolder);
+                    if(folder != null)
+                    {
+                        pushPredecessors(folder);
+                        openFolder(folder, false, null);
+                    }
+                    else
+                    {
+                        //TODO create error dialog, merge with below
+                    }
+                }
+                else
+                {
+                    //TODO create error dialog
+                }
+            });
+            TaskManager.sendTask(task);
+            loadedStructure = true;
+        }
     }
 
     @Override
@@ -296,16 +345,71 @@ public class FileBrowser extends Component
         }
     }
 
-    public void setRootFolder(Folder rootFolder)
+    public void openFolder(String directory)
     {
-        if(this.rootFolder == rootFolder) return;
-        this.rootFolder = rootFolder;
-        openFolder(rootFolder, false);
+        this.initialFolder = directory;
+        //TODO if synced structure, handle differently
     }
 
-    public void openFolder(Folder folder, boolean push)
+    private Folder getFolder(String path)
     {
-        if(push) {
+        if(path == null)
+            throw new NullPointerException("The path can not be null");
+
+        if(!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
+            throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
+
+        if(path.equals("/")) return rootFolder;
+
+        Folder prev = rootFolder;
+        String[] folders = path.split("/");
+        if(folders.length > 0 && folders.length <= 10)
+        {
+            for(int i = 1; i < folders.length; i++)
+            {
+                Folder temp = prev.getFolder(folders[i]);
+                if(temp == null) return null;
+                prev = temp;
+            }
+            return prev;
+        }
+        return null;
+    }
+
+    private void openFolder(Folder folder, boolean push, Callback<Folder> callback)
+    {
+        if(!folder.isSynced())
+        {
+            Task task = new TaskGetFiles(folder, Laptop.getPos());
+            task.setCallback((nbt, success) ->
+            {
+                if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
+                {
+                    NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
+                    folder.syncFiles(files);
+                    setCurrentFolder(folder, push);
+                }
+                if(callback != null)
+                {
+                    callback.execute(folder, success);
+                }
+            });
+            TaskManager.sendTask(task);
+        }
+        else
+        {
+            setCurrentFolder(folder, push);
+            if(callback != null)
+            {
+                callback.execute(folder, true);
+            }
+        }
+    }
+
+    private void setCurrentFolder(Folder folder, boolean push)
+    {
+        if(push)
+        {
             predecessor.push(currentFolder);
             btnPreviousFolder.setEnabled(true);
         }
@@ -313,6 +417,23 @@ public class FileBrowser extends Component
         fileList.removeAll();
         fileList.setItems(folder.getFiles());
         updatePath();
+    }
+
+    private void pushPredecessors(Folder folder)
+    {
+        List<Folder> predecessors = new ArrayList<>();
+        Folder temp = folder.getParent();
+        while(temp != null)
+        {
+            predecessors.add(temp);
+            temp = temp.getParent();
+        }
+        Collections.reverse(predecessors);
+        predecessors.forEach(f -> predecessor.push(f));
+        if(predecessor.size() > 0)
+        {
+            btnPreviousFolder.setEnabled(true);
+        }
     }
 
     private void createFolder()
@@ -336,12 +457,21 @@ public class FileBrowser extends Component
         if(predecessor.size() > 0)
         {
             Folder folder = predecessor.pop();
-            openFolder(folder, false);
-            if(isRootFolder())
+            openFolder(folder, false, (folder2, success) ->
             {
-                btnPreviousFolder.setEnabled(false);
-            }
-            updatePath();
+                if(success)
+                {
+                    if(isRootFolder())
+                    {
+                        btnPreviousFolder.setEnabled(false);
+                    }
+                    updatePath();
+                }
+                else
+                {
+                    //TODO error dialog for unknown folder
+                }
+            });
         }
     }
 
@@ -350,16 +480,25 @@ public class FileBrowser extends Component
         return fileList.getSelectedItem();
     }
 
-    public boolean addFile(File file)
+    public void addFile(File file)
     {
-        if(!currentFolder.add(file))
+        addFile(file, null);
+    }
+
+    public void addFile(File file, Callback<NBTTagCompound> callback)
+    {
+        currentFolder.add(file, (nbt, success) ->
         {
-            return false;
-        }
-        fileList.addItem(file);
-        //fileSystem.addAction(FileSystem.ActionFactory.makeNewAction(file));
-        FileBrowser.refreshList = true;
-        return true;
+            if(success)
+            {
+                fileList.addItem(file);
+                FileBrowser.refreshList = true;
+            }
+            if(callback != null)
+            {
+                callback.execute(nbt, success);
+            }
+        });
     }
 
     private void deleteSelectedFile()
@@ -407,7 +546,7 @@ public class FileBrowser extends Component
 
     private void removeFile(int index)
     {
-        File file = fileList.removeItem(index);
+        File file = fileList.getItem(index);
         if(file != null)
         {
             if(file.isProtected())
@@ -417,9 +556,14 @@ public class FileBrowser extends Component
                 wrappable.openDialog(dialog);
                 return;
             }
-            currentFolder.delete(file.getName());
-            //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
-            FileBrowser.refreshList = true;
+            currentFolder.delete(file, (o, success) ->
+            {
+                if(success)
+                {
+                    fileList.removeItem(index);
+                    FileBrowser.refreshList = true;
+                }
+            });
         }
     }
 
@@ -435,12 +579,15 @@ public class FileBrowser extends Component
                 wrappable.openDialog(dialog);
                 return;
             }
-            if(fileList.getItems().remove(file))
+            currentFolder.delete(file, (o, success) ->
             {
-                currentFolder.delete(name);
-                //fileSystem.addAction(FileSystem.ActionFactory.makeDeleteAction(file));
-                FileBrowser.refreshList = true;
-            }
+                if(success)
+                {
+                    int index = fileList.getItems().indexOf(file);
+                    fileList.removeItem(index);
+                    FileBrowser.refreshList = true;
+                }
+            });
         }
     }
 
@@ -486,52 +633,63 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
-                if(addFile(clipboardFile.copy()))
+                addFile(clipboardFile.copy(), (nbt, success) ->
                 {
-                    if(clipboardDir != null)
+                    if(success)
                     {
-                        clipboardDir.delete(clipboardFile.getName());
-                        clipboardDir = null;
-                        clipboardFile = null;
-                        btnPaste.setEnabled(false);
-                    }
-                }
-                else
-                {
-                    Dialog.Input dialog = new Dialog.Input("A file with the same name already exists in this directory. Please choose a new name");
-                    dialog.setPositiveText("Rename");
-                    dialog.setInputText(clipboardFile.getName());
-                    dialog.setResponseHandler((success, s) ->
-                    {
-                        if(success)
+                        if(clipboardDir != null)
                         {
-                            File file = clipboardFile.copy();
-
-                            if(!file.rename(s))
-                                return false;
-
-                            if(addFile(file))
+                            clipboardDir.delete(clipboardFile.getName(), (o, s2) ->
                             {
-                                if(clipboardDir != null)
-                                {
-                                    clipboardDir.delete(clipboardFile.getName());
-                                    clipboardDir = null;
-                                    clipboardFile = null;
-                                    btnPaste.setEnabled(false);
-                                }
-                                return true;
-                            }
-                            else
-                            {
-                                TextField textField = dialog.getTextFieldInput();
-                                textField.setText(s);
-                                textField.setTextColour(Color.RED);
-                            }
+                                if(!s2) return;
+                                clipboardDir = null;
+                                clipboardFile = null;
+                                btnPaste.setEnabled(false);
+                            });
                         }
-                        return false;
-                    });
-                    wrappable.openDialog(dialog);
-                }
+                    }
+                    else
+                    {
+                        Dialog.Input dialog = new Dialog.Input("A file with the same name already exists in this directory. Please choose a new name");
+                        dialog.setPositiveText("Rename");
+                        dialog.setInputText(clipboardFile.getName());
+                        dialog.setResponseHandler((s2, s) ->
+                        {
+                            if(s2)
+                            {
+                                File file = clipboardFile.copy();
+                                file.rename(s, (o, s3) ->
+                                {
+                                    if(!s3) return;
+                                    addFile(file, (nbt2, s4) ->
+                                    {
+                                        if(s4)
+                                        {
+                                            if(clipboardDir != null)
+                                            {
+                                                clipboardDir.delete(clipboardFile.getName(), (o1, s5) ->
+                                                {
+                                                    if(!s5) return;
+                                                    clipboardDir = null;
+                                                    clipboardFile = null;
+                                                    btnPaste.setEnabled(false);
+                                                });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            TextField textField = dialog.getTextFieldInput();
+                                            textField.setText(s);
+                                            textField.setTextColour(Color.RED);
+                                        }
+                                    });
+                                });
+                            }
+                            return false;
+                        });
+                        wrappable.openDialog(dialog);
+                    }
+                });
             }
             else
             {
@@ -561,28 +719,10 @@ public class FileBrowser extends Component
         return predecessor.size() == 0;
     }
 
-    private String getPath()
-    {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
-
-        for(int i = 1; i < predecessor.size(); i++)
-        {
-            builder.append(predecessor.get(i).getName());
-            builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
-        }
-        if(currentFolder != rootFolder)
-        {
-            builder.append(currentFolder.getName());
-            builder.append(TextFormatting.GOLD + "/" + TextFormatting.RESET);
-        }
-        return builder.toString();
-    }
-
     private void updatePath()
     {
-        String path = getPath();
+        String path = currentFolder.getPath();
+        path = path.replace("/", TextFormatting.GOLD + "/" + TextFormatting.RESET);
         int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(path);
         if(width > 144)
         {
@@ -609,7 +749,7 @@ public class FileBrowser extends Component
             {
                 if(success)
                 {
-                    //fileSystem.addAction(FileSystem.ActionFactory.makeRenameAction(file, s));
+                    //fileSystem.addAction(FileSystem.FileActionFactory.makeRename(file, s));
                     file.rename(s);
                 }
                 return true;

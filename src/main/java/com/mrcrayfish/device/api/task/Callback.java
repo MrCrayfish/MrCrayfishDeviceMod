@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author MrCrayfish
  */
-public interface Callback {
+public interface Callback<T> {
 	
 	/**
 	 * Executes the callback. You should perform any changes to
@@ -16,8 +16,8 @@ public interface Callback {
 	 * as {@link com.mrcrayfish.device.api.task.Task#processResponse(NBTTagCompound)}'s
 	 * tag does.
 	 * 
-	 * @param nbt the response data
+	 * @param t the response object
 	 * @param success if the {@link com.mrcrayfish.device.api.task.Task} performed it's intended action correctly.
 	 */
-	void execute(NBTTagCompound nbt, boolean success);
+	void execute(T t, boolean success);
 }

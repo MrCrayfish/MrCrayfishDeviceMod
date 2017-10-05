@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.task.Callback;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
@@ -51,8 +52,10 @@ public class ApplicationNoteStash extends Application
 		layoutMain.setInitListener(() ->
 		{
 			notes.getItems().clear();
-			Folder folder = getApplicationFolder();
-			folder.search(file -> file.isForApplication(this), true).stream().forEach(file -> notes.addItem(file));
+			getApplicationFolder((folder, success) ->
+			{
+				folder.search(file -> file.isForApplication(this)).stream().forEach(file -> notes.addItem(file));
+            });
 		});
 
 		notes = new ItemList<>(5, 5, 100, 5);
@@ -117,7 +120,7 @@ public class ApplicationNoteStash extends Application
             data.setString("content", textArea.getText());
 
             Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationNoteStash.this, data);
-            dialog.setFolder(getApplicationFolder());
+            dialog.setFolder(getApplicationFolderPath());
             dialog.setResponseHandler((success, file) ->
 			{
                 title.clear();

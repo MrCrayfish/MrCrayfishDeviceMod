@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public abstract class Task 
 {
 	private String name;
-	private Callback callback = null;
+	private Callback<NBTTagCompound> callback = null;
 	private boolean success = false;
 	
 	public Task(String name)
@@ -38,7 +38,7 @@ public abstract class Task
 	 * 
 	 * @return this Task instance
 	 */
-	public final Task setCallback(Callback callback)
+	public final Task setCallback(Callback<NBTTagCompound> callback)
 	{
 		this.callback = callback;
 		return this;

@@ -19,6 +19,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public boolean open = false;
 	
 	private NBTTagCompound data;
+	private FileSystem fileSystem;
 	
 	public TileEntityLaptop() 
 	{
@@ -123,7 +124,11 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 
 	public FileSystem getFileSystem()
 	{
-		return FileSystem.fromTag(createAndGetTag("file_system"));
+		if(fileSystem == null)
+		{
+			fileSystem = FileSystem.fromTag(createAndGetTag("file_system"));
+		}
+		return fileSystem;
 	}
 
 	public void setApplicationData(String appId, NBTTagCompound appData)

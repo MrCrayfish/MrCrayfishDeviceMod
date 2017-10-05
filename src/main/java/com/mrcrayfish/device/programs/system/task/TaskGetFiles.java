@@ -1,0 +1,105 @@
+package com.mrcrayfish.device.programs.system.task;
+
+import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.ServerFile;
+import com.mrcrayfish.device.core.io.ServerFolder;
+import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Author: MrCrayfish
+ */
+public class TaskGetFiles extends Task
+{
+    private String path;
+    private BlockPos pos;
+    private List<ServerFile> files;
+
+    private TaskGetFiles()
+    {
+        super("get_files");
+    }
+
+    public TaskGetFiles(Folder folder, BlockPos pos)
+    {
+        this();
+        System.out.println(folder.getName());
+        this.path = folder.getPath();
+        this.pos = pos;
+    }
+
+    @Override
+    public void prepareRequest(NBTTagCompound nbt)
+    {
+        nbt.setString("path", path);
+        nbt.setLong("pos", pos.toLong());
+    }
+
+    @Override
+    public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
+    {
+        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("pos")));
+        if(tileEntity instanceof TileEntityLaptop)
+        {
+            TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
+            FileSystem fileSystem = laptop.getFileSystem();
+            ServerFolder found = fileSystem.getFolder(nbt.getString("path"), false);
+            if(found != null)
+            {
+                this.files = found.getFiles().stream().filter(f -> !f.isFolder()).collect(Collectors.toList());
+                this.setSuccessful();
+            }
+        }
+    }
+
+    @Override
+    public void prepareResponse(NBTTagCompound nbt)
+    {
+        if(this.files != null)
+        {
+            NBTTagList list = new NBTTagList();
+            this.files.forEach(f -> {
+                NBTTagCompound fileTag = new NBTTagCompound();
+                fileTag.setString("file_name", f.getName());
+                fileTag.setTag("data", f.getData());
+                list.appendTag(fileTag);
+            });
+            nbt.setTag("files", list);
+        }
+    }
+
+    @Override
+    public void processResponse(NBTTagCompound nbt)
+    {
+
+    }
+
+    protected static String compileDirectory(ServerFile file)
+    {
+        if(file.getParent() == null || file.getParent().getParent() == null)
+            return "/";
+
+        StringBuilder builder = new StringBuilder();
+        ServerFolder parent = file.getParent();
+        while(parent != null)
+        {
+            builder.insert(0, "/" + parent.getName());
+            if(parent.getParent() != null)
+            {
+                return builder.toString();
+            }
+            parent = parent.getParent();
+        }
+        return builder.toString();
+    }
+}

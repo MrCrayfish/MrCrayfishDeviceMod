@@ -383,7 +383,6 @@ public class Laptop extends GuiScreen implements System
 		}
 
 		app.setLaptopPosition(pos);
-		app.setFileSystem(fileSystem);
 
 		Window<Application> window = new Window<>(app, this);
 		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2);
@@ -431,7 +430,6 @@ public class Laptop extends GuiScreen implements System
 						((SystemApplication) app).setLaptop(null);
 					}
 
-					window.content.setFileSystem(null);
 					window.handleClose();
 					windows[i] = null;
 					return;

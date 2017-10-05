@@ -1,7 +1,9 @@
 package com.mrcrayfish.device.api.io;
 
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.core.io.FileSystem;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
 
@@ -15,6 +17,8 @@ public class Folder extends File
 {
 	private List<File> files = new ArrayList<>();
 
+	private boolean synced = false;
+
 	public Folder(String name)
 	{
 		this(name, false);
@@ -22,49 +26,71 @@ public class Folder extends File
 
 	public Folder(String name, boolean protect)
 	{
+		if(!PATTERN_FILE_NAME.matcher(name).matches())
+			throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[\\w. ]{1,32}$");
+
 		this.name = name;
 		this.protect = protect;
 	}
 
-	public boolean add(File file)
+	public void add(File file)
 	{
-		return add(file, false);
+		add(file, false, null);
 	}
 
-	public boolean add(File file, boolean override)
+	public void add(@Nonnull File file, Callback<NBTTagCompound> callback)
 	{
-		if(file == null)
-			throw new IllegalArgumentException("A null file can not be added to a folder");
+		add(file, false, callback);
+	}
 
-		if(hasFile(file.name))
+	public void add(@Nonnull File file, boolean override, Callback<NBTTagCompound> callback)
+	{
+		if(!valid)
+			throw new IllegalStateException("Folder must be added to the system before you can add files to it");
+
+		FileSystem.sendAction(FileSystem.FileActionFactory.makeNew(this, file, override), (nbt, success) ->
 		{
-			if(!override || getFile(file.name).isProtected())
-				return false;
-			files.remove(getFile(file.name));
-		}
-
-		files.add(file);
-		file.parent = this;
-		return true;
+            if(success)
+			{
+				file.valid = true;
+				file.parent = this;
+				files.add(file);
+			}
+			if(callback != null)
+			{
+				callback.execute(nbt, success);
+			}
+        });
 	}
 
-	public boolean delete(String name)
+	public void delete(String name, Callback callback)
 	{
-		return delete(getFile(name));
+		delete(getFile(name), callback);
 	}
 
-	public boolean delete(File file)
+	public void delete(File file, Callback callback)
 	{
+		if(!valid)
+			throw new IllegalStateException("Folder must be added to the system before you can delete files");
+
 		if(file != null)
 		{
 			if(file.isProtected())
-				return false;
+			{
+				callback.execute(null, false);
+			}
 
-			file.parent = null;
-			files.remove(file);
-			return true;
+			FileSystem.sendAction(FileSystem.FileActionFactory.makeDelete(file), (nbt, success) ->
+			{
+				if(success)
+				{
+					file.valid = false;
+					file.parent = null;
+					files.remove(file);
+				}
+				callback.execute(nbt, success);
+			});
 		}
-		return false;
 	}
 
 	public boolean hasFile(String name)
@@ -94,25 +120,18 @@ public class Folder extends File
 		return files;
 	}
 
-	public List<File> search(Predicate<File> conditions, boolean includeSubFolders)
+	public List<File> search(Predicate<File> conditions)
 	{
 		List<File> found = NonNullList.create();
-		search(found, conditions, includeSubFolders);
+		search(found, conditions);
 		return found;
 	}
 
-	private void search(List<File> results, Predicate<File> conditions, boolean includeSubFolders)
+	private void search(List<File> results, Predicate<File> conditions)
 	{
 		files.stream().forEach(file ->
 		{
-			if(file.isFolder())
-			{
-				if(includeSubFolders)
-				{
-					((Folder) file).search(results, conditions, includeSubFolders);
-				}
-			}
-			else if(conditions.test(file))
+			if(conditions.test(file))
 			{
 				results.add(file);
 			}
@@ -157,14 +176,60 @@ public class Folder extends File
 			NBTTagCompound fileTag = fileList.getCompoundTag(fileName);
 			if(fileTag.hasKey("files"))
 			{
-				folder.add(Folder.fromTag(fileName, fileTag));
+				File file = Folder.fromTag(fileName, fileTag);
+				file.parent = folder;
+				folder.files.add(file);
 			}
 			else
 			{
-				folder.add(File.fromTag(fileName, fileTag));
+				File file = File.fromTag(fileName, fileTag);
+				file.parent = folder;
+				folder.files.add(file);
 			}
 		}
 		return folder;
+	}
+
+	/**
+	 * Do not use! This is strictly for internal use and will not reflect the actual file system.
+	 * @param tagList
+	 */
+	public void syncFiles(NBTTagList tagList)
+	{
+		files.removeIf(f -> !f.isFolder());
+		for(int i = 0; i < tagList.tagCount(); i++)
+		{
+			NBTTagCompound fileTag = tagList.getCompoundTagAt(i);
+			File file = File.fromTag(fileTag.getString("file_name"), fileTag.getCompoundTag("data"));
+			file.valid = true;
+			file.parent = this;
+			files.add(file);
+		}
+		synced = true;
+	}
+
+	public boolean isSynced()
+	{
+		return synced;
+	}
+
+	public void validate()
+	{
+		if(!synced)
+		{
+			valid = true;
+			files.forEach(f ->
+			{
+				if(f.isFolder())
+				{
+					((Folder)f).validate();
+				}
+				else
+				{
+					f.valid = true;
+				}
+			});
+		}
 	}
 
 	@Override

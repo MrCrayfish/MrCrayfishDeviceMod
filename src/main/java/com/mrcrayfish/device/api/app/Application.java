@@ -2,10 +2,14 @@ package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.programs.system.task.TaskGetFiles;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
@@ -13,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -23,7 +28,6 @@ import javax.annotation.Nullable;
 public abstract class Application extends Wrappable
 {
 	protected final AppInfo info = null;
-	private FileSystem fileSystem;
 	private BlockPos laptopPositon;
 
 	private int width, height;
@@ -374,31 +378,21 @@ public abstract class Application extends Wrappable
         return laptopPositon;
     }
 
-    public void setFileSystem(FileSystem fileSystem)
+    public void getApplicationFolder(@Nonnull Callback<Folder> callback)
     {
-        this.fileSystem = fileSystem;
-    }
-
-    public FileSystem getFileSystem()
-    {
-        return fileSystem;
-    }
-
-    @Nullable
-    public Folder getApplicationFolder()
-    {
-        Folder root = fileSystem.getRootFolder();
-        if(root.hasFolder("Application Data"))
+        //TODO fix this
+        /*Task task = new TaskGetFiles(getApplicationFolderPath(), Laptop.getPos(), true);
+        task.setCallback((nbt, success) ->
         {
-            Folder apps = (Folder) root.getFile("Application Data");
-            String id = info.getFormattedId();
-            if(!apps.hasFolder(id))
-            {
-                apps.add(new Folder(id), true);
-            }
-            return (Folder) apps.getFile(id);
-        }
-        return null;
+            Folder folder = success ? Folder.fromTag(nbt.getString("file_name"), nbt) : null;
+            callback.execute(folder, success);
+        });
+        TaskManager.sendTask(task);*/
+    }
+
+    public String getApplicationFolderPath()
+    {
+        return FileSystem.DIR_APPLICATION_DATA + "/" + info.getFormattedId();
     }
 
     /**

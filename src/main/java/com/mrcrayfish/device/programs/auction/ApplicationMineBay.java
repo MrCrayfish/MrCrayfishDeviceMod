@@ -192,15 +192,11 @@ public class ApplicationMineBay extends Application
                     if(item != null)
                     {
                         TaskBuyItem task = new TaskBuyItem(item.getId());
-                        task.setCallback(new Callback()
-                        {
-                            @Override
-                            public void execute(NBTTagCompound nbt, boolean success)
+                        task.setCallback((nbt, success) ->
+						{
+                            if(success)
                             {
-                                if(success)
-                                {
-                                    items.removeItem(index);
-                                }
+                                items.removeItem(index);
                             }
                         });
                         TaskManager.sendTask(task);
@@ -420,19 +416,16 @@ public class ApplicationMineBay extends Application
 				final Dialog.Confirmation dialog = new Dialog.Confirmation();
 				dialog.setMessageText("Are you sure you want to auction this item?");
 				dialog.setPositiveText("Yes");
-				dialog.setPositiveListener((c1, mouseButton1) -> {
+				dialog.setPositiveListener((c1, mouseButton1) ->
+				{
                     int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
                     TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
-                    task.setCallback(new Callback()
-                    {
-                        @Override
-                        public void execute(NBTTagCompound nbt, boolean success)
+                    task.setCallback((nbt, success) ->
+					{
+                        if(success)
                         {
-                            if(success)
-                            {
-                                List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
-                                items.addItem(auctionItems.get(auctionItems.size() - 1));
-                            }
+                            List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
+                            items.addItem(auctionItems.get(auctionItems.size() - 1));
                         }
                     });
                     TaskManager.sendTask(task);
@@ -473,31 +466,23 @@ public class ApplicationMineBay extends Application
 		selectorSeconds.setFormat(format);
 		layoutDuration.addComponent(selectorSeconds);
 
-		BankUtil.getBalance(new Callback()
+		BankUtil.getBalance((nbt, success) ->
 		{
-			@Override
-			public void execute(NBTTagCompound nbt, boolean success)
-			{
-				if(success) 
-				{
-					labelMoney.setText("$" + nbt.getInteger("balance"));
-				}
-			}
-		});
+            if(success)
+            {
+                labelMoney.setText("$" + nbt.getInteger("balance"));
+            }
+        });
 		
 		TaskGetAuctions task = new TaskGetAuctions();
-		task.setCallback(new Callback()
+		task.setCallback((nbt, success) ->
 		{
-			@Override
-			public void execute(NBTTagCompound nbt, boolean success)
-			{
-				items.removeAll();
-				for(AuctionItem item : AuctionManager.INSTANCE.getItems())
-				{
-					items.addItem(item);
-				}
-			}
-		});
+            items.removeAll();
+            for(AuctionItem item : AuctionManager.INSTANCE.getItems())
+            {
+                items.addItem(item);
+            }
+        });
 		TaskManager.sendTask(task);
 	}
 

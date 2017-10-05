@@ -441,7 +441,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	/**
 	 * Sorts the list
 	 */
-	private void sort()
+	public void sort()
 	{
 		if(sorter != null)
 		{

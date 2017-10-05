@@ -174,22 +174,18 @@ public class ApplicationEmail extends Application
 				if (length > 0 && length <= 10)
 				{
 					TaskRegisterEmailAccount taskRegisterAccount = new TaskRegisterEmailAccount(fieldEmail.getText());
-					taskRegisterAccount.setCallback(new Callback()
+					taskRegisterAccount.setCallback((nbt, success) ->
 					{
-						@Override
-						public void execute(NBTTagCompound nbt, boolean success)
-						{
-							if (success)
-							{
-								currentName = fieldEmail.getText();
-								setCurrentLayout(layoutInbox);
-							}
-							else
-							{
-								fieldEmail.setTextColour(Color.RED);
-							}
-						}
-					});
+                        if (success)
+                        {
+                            currentName = fieldEmail.getText();
+                            setCurrentLayout(layoutInbox);
+                        }
+                        else
+                        {
+                            fieldEmail.setTextColour(Color.RED);
+                        }
+                    });
 					TaskManager.sendTask(taskRegisterAccount);
 				}
 			}
@@ -206,18 +202,14 @@ public class ApplicationEmail extends Application
 			public void onInit()
 			{
 				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
-				taskUpdateInbox.setCallback(new Callback()
+				taskUpdateInbox.setCallback((nbt, success) ->
 				{
-					@Override
-					public void execute(NBTTagCompound nbt, boolean success)
-					{
-						listEmails.removeAll();
-						for (Email email : EmailManager.INSTANCE.inbox)
-						{
-							listEmails.addItem(email);
-						}
-					}
-				});
+                    listEmails.removeAll();
+                    for (Email email : EmailManager.INSTANCE.inbox)
+                    {
+                        listEmails.addItem(email);
+                    }
+                });
 				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
@@ -306,15 +298,11 @@ public class ApplicationEmail extends Application
 				if (index != -1)
 				{
 					TaskDeleteEmail taskDeleteEmail = new TaskDeleteEmail(index);
-					taskDeleteEmail.setCallback(new Callback()
+					taskDeleteEmail.setCallback((nbt, success) ->
 					{
-						@Override
-						public void execute(NBTTagCompound nbt, boolean success)
-						{
-							listEmails.removeItem(index);
-							EmailManager.INSTANCE.getInbox().remove(index);
-						}
-					});
+                        listEmails.removeItem(index);
+                        EmailManager.INSTANCE.getInbox().remove(index);
+                    });
 					TaskManager.sendTask(taskDeleteEmail);
 				}
 			}
@@ -329,18 +317,14 @@ public class ApplicationEmail extends Application
 			public void onClick(Component c, int mouseButton)
 			{
 				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
-				taskUpdateInbox.setCallback(new Callback()
+				taskUpdateInbox.setCallback((nbt, success) ->
 				{
-					@Override
-					public void execute(NBTTagCompound nbt, boolean success)
-					{
-						listEmails.removeAll();
-						for (Email email : EmailManager.INSTANCE.inbox)
-						{
-							listEmails.addItem(email);
-						}
-					}
-				});
+                    listEmails.removeAll();
+                    for (Email email : EmailManager.INSTANCE.inbox)
+                    {
+                        listEmails.addItem(email);
+                    }
+                });
 				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
@@ -381,20 +365,16 @@ public class ApplicationEmail extends Application
 
 				Email email = new Email(fieldSubject.getText(), textAreaMessage.getText());
 				TaskSendEmail taskSendEmail = new TaskSendEmail(email, matcher.group(1));
-				taskSendEmail.setCallback(new Callback()
+				taskSendEmail.setCallback((nbt, success) ->
 				{
-					@Override
-					public void execute(NBTTagCompound nbt, boolean success)
-					{
-						if (success)
-						{
-							setCurrentLayout(layoutInbox);
-							textAreaMessage.clear();
-							fieldSubject.clear();
-							fieldRecipient.clear();
-						}
-					}
-				});
+                    if (success)
+                    {
+                        setCurrentLayout(layoutInbox);
+                        textAreaMessage.clear();
+                        fieldSubject.clear();
+                        fieldRecipient.clear();
+                    }
+                });
 				TaskManager.sendTask(taskSendEmail);
 			}
 		});
@@ -458,28 +438,24 @@ public class ApplicationEmail extends Application
 		setCurrentLayout(layoutInit);
 
 		TaskCheckEmailAccount taskCheckAccount = new TaskCheckEmailAccount();
-		taskCheckAccount.setCallback(new Callback()
+		taskCheckAccount.setCallback((nbt, success) ->
 		{
-			@Override
-			public void execute(NBTTagCompound nbt, boolean success)
-			{
-				if (success)
-				{
-					currentName = nbt.getString("Name");
-					listEmails.removeAll();
-					for (Email email : EmailManager.INSTANCE.inbox)
-					{
-						listEmails.addItem(email);
-					}
-					setCurrentLayout(layoutInbox);
-				}
-				else
-				{
-					btnRegisterAccount.setVisible(true);
-					setCurrentLayout(layoutMainMenu);
-				}
-			}
-		});
+            if (success)
+            {
+                currentName = nbt.getString("Name");
+                listEmails.removeAll();
+                for (Email email : EmailManager.INSTANCE.inbox)
+                {
+                    listEmails.addItem(email);
+                }
+                setCurrentLayout(layoutInbox);
+            }
+            else
+            {
+                btnRegisterAccount.setVisible(true);
+                setCurrentLayout(layoutMainMenu);
+            }
+        });
 		TaskManager.sendTask(taskCheckAccount);
 	}
 
