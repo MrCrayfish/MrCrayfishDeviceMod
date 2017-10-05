@@ -17,8 +17,8 @@ import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.Wrappable;
+import com.mrcrayfish.device.core.*;
+import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.programs.system.task.TaskGetFiles;
 import com.mrcrayfish.device.object.AppInfo;
@@ -34,6 +34,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,6 +90,9 @@ public class FileBrowser extends Component
 
     private ComboBox comboBoxDrive;
     private Label labelPath;
+
+    private Layout layoutLoading;
+    private Spinner spinnerLoading;
 
     private Stack<Folder> predecessor = new Stack<>();
     private Folder rootFolder;
@@ -147,7 +151,7 @@ public class FileBrowser extends Component
 
         int btnIndex = 0;
 
-        btnNewFolder = new Button(5, 25 + btnIndex * 20 , ASSETS, 0, 20, 10, 10);
+        btnNewFolder = new Button(5, 25 + btnIndex * 20, ASSETS, 0, 20, 10, 10);
         btnNewFolder.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -298,6 +302,17 @@ public class FileBrowser extends Component
         labelPath = new Label("/", 72, 6);
         layoutMain.addComponent(labelPath);
         layout.addComponent(layoutMain);
+
+        layoutLoading = new Layout(mode.getOffset(), 25, fileList.getWidth(), fileList.getHeight());
+        layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+        {
+            Gui.drawRect(x, y, x + width, y + height, Window.COLOUR_WINDOW_DARK);
+        });
+        layoutLoading.setVisible(false);
+
+        spinnerLoading = new Spinner((layoutLoading.width - 12) / 2, (layoutLoading.height - 12) / 2);
+        layoutLoading.addComponent(spinnerLoading);
+        layout.addComponent(layoutLoading);
     }
 
     @Override
@@ -305,6 +320,7 @@ public class FileBrowser extends Component
     {
         if(!loadedStructure)
         {
+            setLoading(true);
             Task task = new TaskGetStructure(Laptop.getPos());
             task.setCallback((nbt, success) ->
             {
@@ -319,6 +335,7 @@ public class FileBrowser extends Component
                     {
                         pushPredecessors(folder);
                         openFolder(folder, false, null);
+                        return;
                     }
                     else
                     {
@@ -329,6 +346,7 @@ public class FileBrowser extends Component
                 {
                     //TODO create error dialog
                 }
+                setLoading(false);
             });
             TaskManager.sendTask(task);
             loadedStructure = true;
@@ -353,8 +371,7 @@ public class FileBrowser extends Component
 
     private Folder getFolder(String path)
     {
-        if(path == null)
-            throw new NullPointerException("The path can not be null");
+        if(path == null) throw new NullPointerException("The path can not be null");
 
         if(!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
             throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
@@ -380,6 +397,7 @@ public class FileBrowser extends Component
     {
         if(!folder.isSynced())
         {
+            setLoading(true);
             Task task = new TaskGetFiles(folder, Laptop.getPos());
             task.setCallback((nbt, success) ->
             {
@@ -393,6 +411,7 @@ public class FileBrowser extends Component
                 {
                     callback.execute(folder, success);
                 }
+                setLoading(false);
             });
             TaskManager.sendTask(task);
         }
@@ -403,6 +422,7 @@ public class FileBrowser extends Component
             {
                 callback.execute(folder, true);
             }
+            setLoading(false);
         }
     }
 
@@ -456,6 +476,7 @@ public class FileBrowser extends Component
     {
         if(predecessor.size() > 0)
         {
+            setLoading(true);
             Folder folder = predecessor.pop();
             openFolder(folder, false, (folder2, success) ->
             {
@@ -471,6 +492,7 @@ public class FileBrowser extends Component
                 {
                     //TODO error dialog for unknown folder
                 }
+                setLoading(false);
             });
         }
     }
@@ -487,6 +509,7 @@ public class FileBrowser extends Component
 
     public void addFile(File file, Callback<NBTTagCompound> callback)
     {
+        setLoading(true);
         currentFolder.add(file, (nbt, success) ->
         {
             if(success)
@@ -498,6 +521,7 @@ public class FileBrowser extends Component
             {
                 callback.execute(nbt, success);
             }
+            setLoading(false);
         });
     }
 
@@ -556,6 +580,7 @@ public class FileBrowser extends Component
                 wrappable.openDialog(dialog);
                 return;
             }
+            setLoading(true);
             currentFolder.delete(file, (o, success) ->
             {
                 if(success)
@@ -563,6 +588,7 @@ public class FileBrowser extends Component
                     fileList.removeItem(index);
                     FileBrowser.refreshList = true;
                 }
+                setLoading(false);
             });
         }
     }
@@ -579,6 +605,7 @@ public class FileBrowser extends Component
                 wrappable.openDialog(dialog);
                 return;
             }
+            setLoading(true);
             currentFolder.delete(file, (o, success) ->
             {
                 if(success)
@@ -587,6 +614,7 @@ public class FileBrowser extends Component
                     fileList.removeItem(index);
                     FileBrowser.refreshList = true;
                 }
+                setLoading(false);
             });
         }
     }
@@ -639,8 +667,10 @@ public class FileBrowser extends Component
                     {
                         if(clipboardDir != null)
                         {
+                            setLoading(true);
                             clipboardDir.delete(clipboardFile.getName(), (o, s2) ->
                             {
+                                setLoading(false);
                                 if(!s2) return;
                                 clipboardDir = null;
                                 clipboardFile = null;
@@ -657,32 +687,33 @@ public class FileBrowser extends Component
                         {
                             if(s2)
                             {
-                                File file = clipboardFile.copy();
-                                file.rename(s, (o, s3) ->
+                                File file = clipboardFile.copy(s);
+                                setLoading(true);
+                                addFile(file, (nbt2, s4) ->
                                 {
-                                    if(!s3) return;
-                                    addFile(file, (nbt2, s4) ->
+                                    setLoading(false);
+                                    if(s4)
                                     {
-                                        if(s4)
+                                        if(clipboardDir != null)
                                         {
-                                            if(clipboardDir != null)
+                                            setLoading(true);
+                                            clipboardDir.delete(clipboardFile.getName(), (o1, s5) ->
                                             {
-                                                clipboardDir.delete(clipboardFile.getName(), (o1, s5) ->
-                                                {
-                                                    if(!s5) return;
-                                                    clipboardDir = null;
-                                                    clipboardFile = null;
-                                                    btnPaste.setEnabled(false);
-                                                });
-                                            }
+                                                setLoading(false);
+                                                if(!s5) return;
+                                                clipboardDir = null;
+                                                clipboardFile = null;
+                                                btnPaste.setEnabled(false);
+                                            });
                                         }
-                                        else
-                                        {
-                                            TextField textField = dialog.getTextFieldInput();
-                                            textField.setText(s);
-                                            textField.setTextColour(Color.RED);
-                                        }
-                                    });
+                                        dialog.close();
+                                    }
+                                    else
+                                    {
+                                        TextField textField = dialog.getTextFieldInput();
+                                        textField.setText(s);
+                                        textField.setTextColour(Color.RED);
+                                    }
                                 });
                             }
                             return false;
@@ -731,6 +762,48 @@ public class FileBrowser extends Component
         labelPath.setText(path);
     }
 
+    public void setLoading(boolean loading)
+    {
+        layoutLoading.setVisible(loading);
+        if(loading)
+        {
+            disableAllButtons();
+        }
+        else
+        {
+            updateButtons();
+        }
+    }
+
+    private void updateButtons()
+    {
+        boolean hasSelectedFile = fileList.getSelectedIndex() != -1;
+        btnNewFolder.setEnabled(true);
+        btnRename.setEnabled(hasSelectedFile);
+        btnDelete.setEnabled(hasSelectedFile);
+        if(mode == Mode.FULL)
+        {
+            btnCopy.setEnabled(hasSelectedFile);
+            btnCut.setEnabled(hasSelectedFile);
+            btnPaste.setEnabled(clipboardFile != null);
+        }
+        btnPreviousFolder.setEnabled(!isRootFolder());
+    }
+
+    private void disableAllButtons()
+    {
+        btnPreviousFolder.setEnabled(false);
+        btnNewFolder.setEnabled(false);
+        btnRename.setEnabled(false);
+        btnDelete.setEnabled(false);
+        if(mode == Mode.FULL)
+        {
+            btnCopy.setEnabled(false);
+            btnCut.setEnabled(false);
+            btnPaste.setEnabled(false);
+        }
+    }
+
     private void renameSelectedFile()
     {
         File file = fileList.getSelectedItem();
@@ -749,8 +822,15 @@ public class FileBrowser extends Component
             {
                 if(success)
                 {
-                    //fileSystem.addAction(FileSystem.FileActionFactory.makeRename(file, s));
-                    file.rename(s);
+                    setLoading(true);
+                    file.rename(s, (o, success1) ->
+                    {
+                        if(!success1)
+                        {
+                            //TODO display error dialog
+                        }
+                        setLoading(false);
+                    });
                 }
                 return true;
             });

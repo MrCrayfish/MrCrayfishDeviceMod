@@ -156,10 +156,15 @@ public final class Layout extends Component
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 	{
+		if(!this.visible)
+			return;
+
 		if(background != null)
 		{
 			background.render(laptop, mc, x, y, width, height, mouseX, mouseY, windowActive);
 		}
+
+		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		for(Component c : components)
 		{
 			GlStateManager.disableDepth();

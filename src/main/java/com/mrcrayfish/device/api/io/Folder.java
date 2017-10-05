@@ -249,4 +249,16 @@ public class Folder extends File
 		});
 		return folder;
 	}
+
+	@Override
+	public File copy(String newName)
+	{
+		Folder folder = new Folder(newName);
+		files.forEach(f -> {
+			File copy = f.copy();
+			copy.protect = false;
+			folder.add(copy);
+		});
+		return folder;
+	}
 }

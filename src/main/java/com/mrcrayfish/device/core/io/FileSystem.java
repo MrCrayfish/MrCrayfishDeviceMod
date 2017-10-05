@@ -161,7 +161,10 @@ public class FileSystem
 					return folder.delete(action.data.getString("file_name"));
 				case RENAME:
 					ServerFile file = folder.getFile(action.data.getString("file_name"));
-					if(file != null) file.rename(action.data.getString("new_file_name"));
+					if(file != null)
+					{
+						return file.rename(action.data.getString("new_file_name"));
+					}
 					break;
 				case DATA:
 
@@ -237,7 +240,7 @@ public class FileSystem
 		public static FileAction makeRename(File file, String newFileName)
 		{
 			NBTTagCompound vars = new NBTTagCompound();
-			vars.setString("directory", createDir(file));
+			vars.setString("directory", file.getLocation());
 			vars.setString("file_name", file.getName());
 			vars.setString("new_file_name", newFileName);
 			return new FileAction(FileAction.Type.RENAME, vars);
@@ -246,26 +249,10 @@ public class FileSystem
 		public static FileAction makeData(File file, NBTTagCompound data)
 		{
 			NBTTagCompound vars = new NBTTagCompound();
-			vars.setString("directory", file.getPath());
+			vars.setString("directory", file.getLocation());
 			vars.setString("file_name", file.getName());
 			vars.setTag("data", data);
 			return new FileAction(FileAction.Type.DATA, vars);
-		}
-
-		private static String createDir(File file)
-		{
-			if(file.getParent() == null)
-				throw new NullPointerException("File must have a parent to compile the directory");
-
-			StringBuilder builder = new StringBuilder();
-
-			Folder parent = file.getParent();
-			while(parent != null)
-			{
-				builder.insert(0, "/").insert(0, parent.getName());
-				parent = parent.getParent();
-			}
-			return builder.subSequence(1, builder.length()).toString();
 		}
 	}
 

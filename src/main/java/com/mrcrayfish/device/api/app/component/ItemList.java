@@ -211,7 +211,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 		}
 	}
 
-	private int getHeight()
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
 	{
 		int size = getSize();
 		return (renderer != null ? renderer.getHeight() : 13) * size + size + 1;

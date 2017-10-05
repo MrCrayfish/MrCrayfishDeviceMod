@@ -335,4 +335,9 @@ public class File
 	{
 		return new File(name, openingApp, data.copy());
 	}
+
+	public File copy(String newName)
+	{
+		return new File(newName, openingApp, data.copy());
+	}
 }
