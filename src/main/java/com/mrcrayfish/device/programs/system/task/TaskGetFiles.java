@@ -33,7 +33,6 @@ public class TaskGetFiles extends Task
     public TaskGetFiles(Folder folder, BlockPos pos)
     {
         this();
-        System.out.println(folder.getName());
         this.path = folder.getPath();
         this.pos = pos;
     }

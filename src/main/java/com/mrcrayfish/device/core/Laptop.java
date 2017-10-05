@@ -7,11 +7,9 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
-import com.mrcrayfish.device.programs.system.task.TaskUpdateFileSystem;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateSystemData;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -62,7 +60,6 @@ public class Laptop extends GuiScreen implements System
 
 	private NBTTagCompound appData;
 	private NBTTagCompound systemData;
-	private FileSystem fileSystem;
 
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
@@ -71,7 +68,6 @@ public class Laptop extends GuiScreen implements System
 	{
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
-		this.fileSystem = laptop.getFileSystem();
 		this.windows = new Window[5];
 		this.bar = new TaskBar(APPLICATIONS);
 		Laptop.currentWallpaper = systemData.getInteger("CurrentWallpaper");
@@ -115,9 +111,6 @@ public class Laptop extends GuiScreen implements System
         NBTTagCompound systemData = new NBTTagCompound();
         systemData.setInteger("CurrentWallpaper", currentWallpaper);
         TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
-
-        /* Send file system data */
-		TaskManager.sendTask(new TaskUpdateFileSystem(pos, fileSystem.toTag()));
 
 		Laptop.pos = null;
         Laptop.system = null;

@@ -112,7 +112,6 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskAdd.class);
 		TaskManager.registerTask(TaskRemove.class);
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
-		TaskManager.registerTask(TaskUpdateFileSystem.class);
 		TaskManager.registerTask(FileSystem.TaskSendAction.class);
 		TaskManager.registerTask(TaskGetFiles.class);
 		TaskManager.registerTask(TaskGetStructure.class);

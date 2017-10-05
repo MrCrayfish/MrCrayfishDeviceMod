@@ -20,28 +20,19 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	
 	private NBTTagCompound data;
 	private FileSystem fileSystem;
-	
-	public TileEntityLaptop() 
+
+	public TileEntityLaptop()
 	{
 		this.data = new NBTTagCompound();
 	}
-	
-	public NBTTagCompound getAppData() 
-	{
-		return data;
-	}
-	
-	public void setAppData(NBTTagCompound data) 
-	{
-		this.data = data;
-		markDirty();
-		TileEntityUtil.markBlockForUpdate(world, pos);
-	}
-	
+
 	public void openClose()
 	{
 		open = !open;
-		TileEntityUtil.markBlockForUpdate(world, pos);
+		if(open)
+		{
+			TileEntityUtil.markBlockForUpdate(world, pos);
+		}
 	}
 	
 	@Override
@@ -77,28 +68,38 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
+		if(fileSystem != null)
+		{
+			data.setTag("file_system", fileSystem.toTag());
+		}
 		compound.setTag("data", data);
 		return compound;
 	}
-	
+
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
-		this.readFromNBT(pkt.getNbtCompound());
+		NBTTagCompound tag = pkt.getNbtCompound();
+		this.open = tag.getBoolean("open");
+		this.data.setTag("application", tag.getCompoundTag("application"));
+		this.data.setTag("system", tag.getCompoundTag("system"));
 	}
 
 	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		NBTTagCompound tag = super.getUpdateTag();
+		tag.setBoolean("open", this.open);
+		tag.setTag("application", createAndGetTag("application"));
+		tag.setTag("system", createAndGetTag("system"));
+		return tag;
+	}
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
-		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), this.writeToNBT(new NBTTagCompound()));
+		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
 	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag() 
-	{
-		return this.writeToNBT(new NBTTagCompound());
-	}
-	
+
 	@Override
 	public double getMaxRenderDistanceSquared() 
 	{
@@ -126,7 +127,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		if(fileSystem == null)
 		{
-			fileSystem = FileSystem.fromTag(createAndGetTag("file_system"));
+			fileSystem = new FileSystem(this, createAndGetTag("file_system"));
 		}
 		return fileSystem;
 	}
@@ -140,12 +141,6 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public void setSystemData(NBTTagCompound systemData)
 	{
 		data.setTag("system", systemData);
-		markDirty();
-	}
-
-	public void setFileSystemData(NBTTagCompound fileSystemData)
-	{
-		data.setTag("file_system", fileSystemData);
 		markDirty();
 	}
 

@@ -28,14 +28,13 @@ public class FileSystem
 	public static final String DIR_APPLICATION_DATA = DIR_ROOT + "Application Data";
 	public static final String DIR_HOME = DIR_ROOT + "Home";
 
-	private static boolean dirty = false;
-
-	private List<FileAction> actionList = new ArrayList<>();
+	private TileEntity tileEntity;
 	private ServerFolder rootFolder;
 	
-	private FileSystem(NBTTagCompound data)
+	public FileSystem(TileEntity tileEntity, NBTTagCompound data)
 	{
-		if(!data.hasNoTags() && data.hasKey("Root"))
+		this.tileEntity = tileEntity;
+		if(!data.hasNoTags() && data.hasKey("Root", Constants.NBT.TAG_COMPOUND))
 		{
 			rootFolder = ServerFolder.fromTag("Root", data.getCompoundTag("Root"));
 		}
@@ -59,6 +58,7 @@ public class FileSystem
 		{
 			rootFolder.add(createProtectedFolder("Application Data"), false);
 		}
+		tileEntity.markDirty();
 	}
 
 	private ServerFolder createProtectedFolder(String name)
@@ -115,8 +115,8 @@ public class FileSystem
 					ServerFolder newFolder = new ServerFolder(folders[i], false);
 					temp.add(newFolder, false);
 					temp = newFolder;
+					tileEntity.markDirty();
 				}
-
 				prev = temp;
 			}
 			return prev;
@@ -141,10 +141,10 @@ public class FileSystem
 
 	public boolean readAction(FileAction action)
 	{
-		System.out.println(action.data.getString("directory"));
 		ServerFolder folder = getFolder(action.data.getString("directory"), false);
 		if(folder != null)
 		{
+			tileEntity.markDirty();
 			NBTTagCompound data = action.data.getCompoundTag("data");
 			switch(action.type)
 			{
@@ -178,11 +178,6 @@ public class FileSystem
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setTag("Root", rootFolder.toTag());
 		return tag;
-	}
-
-	public static FileSystem fromTag(NBTTagCompound tag)
-	{
-		return tag == null ? new FileSystem(new NBTTagCompound()) : new FileSystem(tag);
 	}
 
 	private static class FileAction

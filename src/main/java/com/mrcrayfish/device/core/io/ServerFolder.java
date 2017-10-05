@@ -83,10 +83,7 @@ public class ServerFolder extends ServerFile
     @Nullable
     public ServerFolder getFolder(String name)
     {
-        return (ServerFolder) files.stream().filter(file -> {
-            System.out.println(file.name + ": " + (file.isFolder()));
-            return file.isFolder() && file.name.equalsIgnoreCase(name);
-        }).findFirst().orElse(null);
+        return (ServerFolder) files.stream().filter(file -> file.isFolder() && file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     public List<ServerFile> getFiles()
