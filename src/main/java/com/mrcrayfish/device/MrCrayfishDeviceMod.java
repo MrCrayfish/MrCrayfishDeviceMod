@@ -12,6 +12,7 @@ import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
+import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.ApplicationBoatRacers;
@@ -70,6 +71,9 @@ public class MrCrayfishDeviceMod
 		/* Block Registering */
 		DeviceBlocks.init();
 		DeviceBlocks.register();
+
+		DeviceItems.init();
+		DeviceItems.register();
 		
 		/* Packet Registering */
 		PacketHandler.init();
