@@ -11,6 +11,7 @@ import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
+import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Callback;
@@ -20,10 +21,11 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.*;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.programs.system.task.TaskGetFiles;
+import com.mrcrayfish.device.core.io.task.TaskGetFileSystem;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
+import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
-import com.mrcrayfish.device.programs.system.task.TaskGetStructure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -88,14 +90,14 @@ public class FileBrowser extends Component
     private Button btnPaste;
     private Button btnDelete;
 
-    private ComboBox comboBoxDrive;
+    private ComboBox.List<Drive> comboBoxDrive;
     private Label labelPath;
 
     private Layout layoutLoading;
     private Spinner spinnerLoading;
 
     private Stack<Folder> predecessor = new Stack<>();
-    private Folder rootFolder;
+    private Drive currentDrive;
     private Folder currentFolder;
     private Folder clipboardDir;
     private File clipboardFile;
@@ -296,7 +298,11 @@ public class FileBrowser extends Component
         });
         layoutMain.addComponent(fileList);
 
-        comboBoxDrive = new ComboBox.List<>(26, 3, 44, new String[]{"Root"});
+        comboBoxDrive = new ComboBox.List<>(26, 3, 44, new Drive[]{});
+        comboBoxDrive.setChangeListener((oldValue, newValue) ->
+        {
+            openDrive(newValue);
+        });
         layoutMain.addComponent(comboBoxDrive);
 
         labelPath = new Label("/", 72, 6);
@@ -321,14 +327,25 @@ public class FileBrowser extends Component
         if(!loadedStructure)
         {
             setLoading(true);
-            Task task = new TaskGetStructure(Laptop.getPos());
+            Task task = new TaskGetFileSystem(Laptop.getPos());
             task.setCallback((nbt, success) ->
             {
                 if(success)
                 {
+                    NBTTagList driveList = nbt.getTagList("drives", Constants.NBT.TAG_COMPOUND);
+                    Drive[] drives = new Drive[driveList.tagCount()];
+                    for(int i = 0; i < driveList.tagCount(); i++)
+                    {
+                        NBTTagCompound driveTag = driveList.getCompoundTagAt(i);
+                        drives[i] = new Drive(driveTag.getString("name"), Drive.Type.fromString(driveTag.getString("type")));
+                    }
+                    comboBoxDrive.setItems(drives);
+
                     NBTTagCompound structureTag = nbt.getCompoundTag("structure");
-                    rootFolder = Folder.fromTag("Root", structureTag);
-                    rootFolder.validate();
+                    Drive drive = comboBoxDrive.getValue();
+                    drive.syncRoot(Folder.fromTag("Root", structureTag));
+                    drive.getRoot().validate();
+                    currentDrive = drive;
 
                     Folder folder = getFolder(initialFolder);
                     if(folder != null)
@@ -371,14 +388,16 @@ public class FileBrowser extends Component
 
     private Folder getFolder(String path)
     {
-        if(path == null) throw new NullPointerException("The path can not be null");
+        if(path == null)
+            throw new NullPointerException("The path can not be null");
 
         if(!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
             throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
 
-        if(path.equals("/")) return rootFolder;
+        if(path.equals("/"))
+            return currentDrive.getRoot();
 
-        Folder prev = rootFolder;
+        Folder prev = currentDrive.getRoot();
         String[] folders = path.split("/");
         if(folders.length > 0 && folders.length <= 10)
         {
@@ -391,6 +410,36 @@ public class FileBrowser extends Component
             return prev;
         }
         return null;
+    }
+
+    private void openDrive(Drive drive)
+    {
+        predecessor.clear();
+        if(drive.isSynced())
+        {
+            openFolder(drive.getRoot(), false, null);
+        }
+        else
+        {
+            setLoading(true);
+            TaskGetStructure task = new TaskGetStructure(drive, Laptop.getPos());
+            task.setCallback((nbt, success) ->
+            {
+                Folder folder = null;
+                if(success)
+                {
+                    folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure"));
+                    drive.syncRoot(folder);
+                    setCurrentFolder(folder, false);
+                }
+                else
+                {
+                    //TODO error dialog
+                }
+                setLoading(false);
+            });
+            TaskManager.sendTask(task);
+        }
     }
 
     private void openFolder(Folder folder, boolean push, Callback<Folder> callback)
@@ -433,6 +482,7 @@ public class FileBrowser extends Component
             predecessor.push(currentFolder);
             btnPreviousFolder.setEnabled(true);
         }
+        currentDrive = folder.getDrive();
         currentFolder = folder;
         fileList.removeAll();
         fileList.setItems(folder.getFiles());

@@ -2,8 +2,9 @@ package com.mrcrayfish.device.api.io;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
@@ -21,6 +22,7 @@ public class File
 		return f1.name.compareTo(f2.name);
 	};
 
+	protected Drive drive;
 	protected Folder parent;
 	protected String name;
 	protected String openingApp;
@@ -107,7 +109,7 @@ public class File
 			return;
 		}
 
-		FileSystem.sendAction(FileSystem.FileActionFactory.makeRename(this, name), (nbt, success) ->
+		FileSystem.sendAction(drive, FileAction.Factory.makeRename(this, name), (nbt, success) ->
 		{
 			if(success)
 			{
@@ -200,7 +202,7 @@ public class File
 			return;
 		}
 
-		FileSystem.sendAction(FileSystem.FileActionFactory.makeData(this, data), (nbt, success) ->
+		FileSystem.sendAction(drive, FileAction.Factory.makeData(this, data), (nbt, success) ->
 		{
 			if(success)
 			{
@@ -231,6 +233,16 @@ public class File
 	public Folder getParent()
 	{
 		return parent;
+	}
+
+	public Drive getDrive()
+	{
+		return drive;
+	}
+
+	public void setDrive(Drive drive)
+	{
+		this.drive = drive;
 	}
 
 	/**

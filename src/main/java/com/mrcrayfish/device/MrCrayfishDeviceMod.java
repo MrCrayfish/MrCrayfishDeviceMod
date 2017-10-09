@@ -3,8 +3,10 @@ package com.mrcrayfish.device;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.programs.system.task.TaskGetFiles;
+import com.mrcrayfish.device.core.io.task.TaskGetFileSystem;
+import com.mrcrayfish.device.core.io.task.TaskGetStructure;
+import com.mrcrayfish.device.core.io.task.TaskSendAction;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
@@ -112,7 +114,8 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskAdd.class);
 		TaskManager.registerTask(TaskRemove.class);
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
-		TaskManager.registerTask(FileSystem.TaskSendAction.class);
+		TaskManager.registerTask(TaskSendAction.class);
+		TaskManager.registerTask(TaskGetFileSystem.class);
 		TaskManager.registerTask(TaskGetFiles.class);
 		TaskManager.registerTask(TaskGetStructure.class);
 

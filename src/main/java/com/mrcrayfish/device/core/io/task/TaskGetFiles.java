@@ -1,10 +1,11 @@
-package com.mrcrayfish.device.programs.system.task;
+package com.mrcrayfish.device.core.io.task;
 
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.ServerFile;
 import com.mrcrayfish.device.core.io.ServerFolder;
+import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  */
 public class TaskGetFiles extends Task
 {
+    private String drive;
     private String path;
     private BlockPos pos;
     private List<ServerFile> files;
@@ -33,6 +35,7 @@ public class TaskGetFiles extends Task
     public TaskGetFiles(Folder folder, BlockPos pos)
     {
         this();
+        this.drive = folder.getDrive().getName();
         this.path = folder.getPath();
         this.pos = pos;
     }
@@ -40,6 +43,7 @@ public class TaskGetFiles extends Task
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
+        nbt.setString("drive", drive);
         nbt.setString("path", path);
         nbt.setLong("pos", pos.toLong());
     }
@@ -52,11 +56,15 @@ public class TaskGetFiles extends Task
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
-            ServerFolder found = fileSystem.getFolder(nbt.getString("path"), false);
-            if(found != null)
+            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(nbt.getString("drive"));
+            if(serverDrive != null)
             {
-                this.files = found.getFiles().stream().filter(f -> !f.isFolder()).collect(Collectors.toList());
-                this.setSuccessful();
+                ServerFolder found = serverDrive.getFolder(nbt.getString("path"));
+                if(found != null)
+                {
+                    this.files = found.getFiles().stream().filter(f -> !f.isFolder()).collect(Collectors.toList());
+                    this.setSuccessful();
+                }
             }
         }
     }

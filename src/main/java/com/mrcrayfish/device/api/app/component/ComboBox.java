@@ -99,13 +99,16 @@ public abstract class ComboBox<T> extends Component
             drawVerticalLine(xPosition, yPosition, yPosition + height - 1, Color.BLACK.getRGB());
             drawRect(xPosition + 1, yPosition + 1, xPosition + xOffset, yPosition + height - 1, Color.DARK_GRAY.getRGB());
 
-            String text = value.toString();
-            int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
-            if(valWidth > (width - height - 8))
+            if(value != null)
             {
-                text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                String text = value.toString();
+                int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+                if(valWidth > (width - height - 8))
+                {
+                    text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                }
+                fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
             }
-            fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
@@ -127,11 +130,8 @@ public abstract class ComboBox<T> extends Component
         return value;
     }
 
-    protected void updateValue(@Nonnull T newValue)
+    protected void updateValue(T newValue)
     {
-        if(newValue == null)
-            throw new IllegalArgumentException("Value must not be null");
-
         if(value != newValue)
         {
             if(changeListener != null)
@@ -208,8 +208,8 @@ public abstract class ComboBox<T> extends Component
             if(items == null)
                 throw new IllegalArgumentException("Cannot set null items");
 
-            if(items.length == 0)
-                throw new IllegalArgumentException("The item array must has at least one value");
+            /*if(items.length == 0)
+                throw new IllegalArgumentException("The item array must has at least one value");*/
 
             this.list.removeAll();
             for(T t : items)

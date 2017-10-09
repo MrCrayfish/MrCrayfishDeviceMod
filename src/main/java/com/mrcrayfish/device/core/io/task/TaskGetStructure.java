@@ -1,8 +1,10 @@
-package com.mrcrayfish.device.programs.system.task;
+package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.ServerFolder;
+import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +17,7 @@ import net.minecraft.world.World;
  */
 public class TaskGetStructure extends Task
 {
+    private String drive;
     private BlockPos pos;
 
     private ServerFolder folder;
@@ -24,15 +27,17 @@ public class TaskGetStructure extends Task
         super("get_folder_structure");
     }
 
-    public TaskGetStructure(BlockPos pos)
+    public TaskGetStructure(Drive drive, BlockPos pos)
     {
         this();
+        this.drive = drive.getName();
         this.pos = pos;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
+        nbt.setString("drive", drive);
         nbt.setLong("pos", pos.toLong());
     }
 
@@ -44,8 +49,12 @@ public class TaskGetStructure extends Task
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
-            folder = fileSystem.getFolderStructure();
-            this.setSuccessful();
+            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(nbt.getString("drive"));
+            if(serverDrive != null)
+            {
+                folder = serverDrive.getDriveStructure();
+                this.setSuccessful();
+            }
         }
     }
 
@@ -54,6 +63,7 @@ public class TaskGetStructure extends Task
     {
         if(folder != null)
         {
+            nbt.setString("file_name", folder.getName());
             nbt.setTag("structure", folder.toTag());
         }
     }

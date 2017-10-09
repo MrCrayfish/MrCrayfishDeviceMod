@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.io;
 
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.action.FileAction;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
@@ -48,7 +49,7 @@ public class Folder extends File
 		if(!valid)
 			throw new IllegalStateException("Folder must be added to the system before you can add files to it");
 
-		FileSystem.sendAction(FileSystem.FileActionFactory.makeNew(this, file, override), (nbt, success) ->
+		FileSystem.sendAction(drive, FileAction.Factory.makeNew(this, file, override), (nbt, success) ->
 		{
             if(success)
 			{
@@ -80,7 +81,7 @@ public class Folder extends File
 				callback.execute(null, false);
 			}
 
-			FileSystem.sendAction(FileSystem.FileActionFactory.makeDelete(file), (nbt, success) ->
+			FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (nbt, success) ->
 			{
 				if(success)
 				{
@@ -236,6 +237,13 @@ public class Folder extends File
 	public void setData(@Nonnull NBTTagCompound data)
 	{
 		throw new DataException("Data can not be set to a folder");
+	}
+
+	@Override
+	public void setDrive(Drive drive)
+	{
+		this.drive = drive;
+		files.forEach(f -> f.setDrive(drive));
 	}
 
 	@Override

@@ -1,64 +1,89 @@
 package com.mrcrayfish.device.core.io;
 
-import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.core.io.drive.InternalDrive;
+import com.mrcrayfish.device.core.io.drive.AbstractDrive;
+import com.mrcrayfish.device.core.io.drive.NetworkDrive;
+import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class FileSystem
 {
+	public static final Pattern PATTERN_DIRECTORY = Pattern.compile("^(/)|(/[a-zA-Z0-9 ]{1,32})*$");
+
 	public static final String DIR_ROOT = "/";
 	public static final String DIR_APPLICATION_DATA = DIR_ROOT + "Application Data";
 	public static final String DIR_HOME = DIR_ROOT + "Home";
 
+	public static final String LAPTOP_DRIVE_NAME = "Root";
+
+	private final Map<String, AbstractDrive> DRIVES = new LinkedHashMap<>();
+
 	private TileEntity tileEntity;
-	private ServerFolder rootFolder;
 	
-	public FileSystem(TileEntity tileEntity, NBTTagCompound data)
+	public FileSystem(TileEntity tileEntity, NBTTagCompound fileSystemTag)
 	{
 		this.tileEntity = tileEntity;
-		if(!data.hasNoTags() && data.hasKey("Root", Constants.NBT.TAG_COMPOUND))
+		load(fileSystemTag);
+	}
+
+	private void load(NBTTagCompound fileSystemTag)
+	{
+		if(fileSystemTag.hasKey("drives", Constants.NBT.TAG_LIST))
 		{
-			rootFolder = ServerFolder.fromTag("Root", data.getCompoundTag("Root"));
+			NBTTagList tagList = fileSystemTag.getTagList("drives", Constants.NBT.TAG_COMPOUND);
+			for(int i = 0; i < tagList.tagCount(); i++)
+			{
+				NBTTagCompound driveTag = tagList.getCompoundTagAt(i);
+				AbstractDrive drive = InternalDrive.fromTag(driveTag);
+				DRIVES.put(driveTag.getString("name"), drive);
+			}
 		}
-		setupDefaultSetup();
+		setupDefault();
 	}
 
 	/**
-	 * Sets up the default folders for the file system.
+	 * Sets up the default folders for the file system if they don't exist.
 	 */
-	private void setupDefaultSetup()
+	private void setupDefault()
 	{
-		if(rootFolder == null)
+		if(!DRIVES.containsKey(FileSystem.LAPTOP_DRIVE_NAME))
 		{
-			rootFolder = createProtectedFolder("Root");
+			DRIVES.put(FileSystem.LAPTOP_DRIVE_NAME, new InternalDrive(FileSystem.LAPTOP_DRIVE_NAME));
+			tileEntity.markDirty();
 		}
-		if(!rootFolder.hasFolder("Home"))
+
+		AbstractDrive drive = DRIVES.get(FileSystem.LAPTOP_DRIVE_NAME);
+		ServerFolder root = drive.getRoot(tileEntity.getWorld());
+
+		if(!root.hasFolder("Home"))
 		{
-			rootFolder.add(createProtectedFolder("Home"), false);
+			root.add(createProtectedFolder("Home"), false);
+			tileEntity.markDirty();
 		}
-		if(!rootFolder.hasFolder("Application Data"))
+
+		if(!root.hasFolder("Application Data"))
 		{
-			rootFolder.add(createProtectedFolder("Application Data"), false);
+			root.add(createProtectedFolder("Application Data"), false);
+			tileEntity.markDirty();
 		}
-		tileEntity.markDirty();
 	}
 
 	private ServerFolder createProtectedFolder(String name)
@@ -76,230 +101,54 @@ public class FileSystem
 		return null;
 	}
 
-
-	public void updateData(NBTTagCompound tag)
-	{
-		rootFolder = ServerFolder.fromTag("Root", tag.getCompoundTag("Root"));
-	}
-
-	public static final Pattern PATTERN_DIRECTORY = Pattern.compile("^(/)|(/[a-zA-Z0-9 ]{1,32})*$");
-
-	/**
-	 * Gets a folder in the file system. To get sub folders, simply use a
-	 * '/' between each folder name. If the folder does not exist, it will
-	 * return null.
-	 *
-	 * @param path the directory of the folder
-	 */
-	@Nullable
-	public ServerFolder getFolder(@Nonnull String path, boolean create)
-	{
-		if(path == null)
-			throw new NullPointerException("The path can not be null");
-
-		if(!PATTERN_DIRECTORY.matcher(path).matches())
-			throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
-
-		if(path.equals("/")) return rootFolder;
-
-		ServerFolder prev = rootFolder;
-		String[] folders = path.split("/");
-		if(folders.length > 0 && folders.length <= 10)
-		{
-			for(int i = 1; i < folders.length; i++)
-			{
-				ServerFolder temp = prev.getFolder(folders[i]);
-				if(temp == null)
-				{
-					if(!create) return null;
-					ServerFolder newFolder = new ServerFolder(folders[i], false);
-					temp.add(newFolder, false);
-					temp = newFolder;
-					tileEntity.markDirty();
-				}
-				prev = temp;
-			}
-			return prev;
-		}
-		return null;
-	}
-
-	public ServerFolder getFolderStructure()
-	{
-		return rootFolder.copyStructure();
-	}
-
-	public static void sendAction(FileAction action, Callback<NBTTagCompound> callback)
+	@SideOnly(Side.CLIENT)
+	public static void sendAction(Drive drive, FileAction action, Callback<NBTTagCompound> callback)
 	{
 		if(Laptop.getPos() != null)
 		{
-			Task task = new TaskSendAction(action, Laptop.getPos());
+			Task task = new TaskSendAction(drive, action, Laptop.getPos());
 			task.setCallback(callback);
 			TaskManager.sendTask(task);
 		}
 	}
 
-	public boolean readAction(FileAction action)
+	public boolean readAction(String drive, FileAction action)
 	{
-		ServerFolder folder = getFolder(action.data.getString("directory"), false);
-		if(folder != null)
-		{
-			tileEntity.markDirty();
-			NBTTagCompound data = action.data.getCompoundTag("data");
-			switch(action.type)
-			{
-				case NEW:
-					if(data.hasKey("files", Constants.NBT.TAG_COMPOUND))
-					{
-						return folder.add(ServerFolder.fromTag(action.data.getString("file_name"), data), action.data.getBoolean("override"));
-					}
-					else
-					{
-						return folder.add(ServerFile.fromTag(action.data.getString("file_name"), data), data.getBoolean("override"));
-					}
-				case DELETE:
-					return folder.delete(action.data.getString("file_name"));
-				case RENAME:
-					ServerFile file = folder.getFile(action.data.getString("file_name"));
-					if(file != null)
-					{
-						return file.rename(action.data.getString("new_file_name"));
-					}
-					break;
-				case DATA:
-
-			}
-		}
 		return false;
+	}
+
+	@Nullable
+	public AbstractDrive getDrive(String name)
+	{
+		return DRIVES.get(name);
+	}
+
+	public List<AbstractDrive> getInternalDrives()
+	{
+		return new ArrayList<>(DRIVES.values());
+	}
+
+	public Map<String, AbstractDrive> getAvailableDrives(World world)
+	{
+		Map<String, AbstractDrive> drives = new HashMap<>();
+		DRIVES.forEach((k, v) -> drives.put(k, v));
+		//TODO add usb
+		//TODO add network drives
+		return drives;
 	}
 
 	public NBTTagCompound toTag()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setTag("Root", rootFolder.toTag());
-		return tag;
+		NBTTagCompound fileSystemTag = new NBTTagCompound();
+		NBTTagList tagList = new NBTTagList();
+		DRIVES.keySet().forEach(driveName -> {
+			NBTTagCompound driveTag = new NBTTagCompound();
+			driveTag.setString("name", driveName);
+			driveTag.setTag("root", DRIVES.get(driveName).toTag());
+		});
+		fileSystemTag.setTag("drives", tagList);
+		return fileSystemTag;
 	}
 
-	private static class FileAction
-	{
-		private Type type;
-		private NBTTagCompound data;
 
-		private FileAction(Type type, NBTTagCompound data)
-		{
-			this.type = type;
-			this.data = data;
-		}
-
-		public NBTTagCompound toTag()
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("type", type.ordinal());
-			tag.setTag("data", data);
-			return tag;
-		}
-
-		public static FileAction fromTag(NBTTagCompound tag)
-		{
-			Type type = Type.values()[tag.getInteger("type")];
-			NBTTagCompound data = tag.getCompoundTag("data");
-			return new FileAction(type, data);
-		}
-
-		public enum Type
-		{
-			NEW, DELETE, RENAME, DATA;
-		}
-	}
-
-	public static class FileActionFactory
-	{
-		public static FileAction makeNew(Folder parent, File file, boolean override)
-		{
-			NBTTagCompound vars = new NBTTagCompound();
-			vars.setString("directory", parent.getPath());
-			vars.setString("file_name", file.getName());
-			vars.setBoolean("override", override);
-			vars.setTag("data", file.toTag());
-			return new FileAction(FileAction.Type.NEW, vars);
-		}
-
-		public static FileAction makeDelete(File file)
-		{
-			NBTTagCompound vars = new NBTTagCompound();
-			vars.setString("directory", file.getLocation());
-			vars.setString("file_name", file.getName());
-			return new FileAction(FileAction.Type.DELETE, vars);
-		}
-
-		public static FileAction makeRename(File file, String newFileName)
-		{
-			NBTTagCompound vars = new NBTTagCompound();
-			vars.setString("directory", file.getLocation());
-			vars.setString("file_name", file.getName());
-			vars.setString("new_file_name", newFileName);
-			return new FileAction(FileAction.Type.RENAME, vars);
-		}
-
-		public static FileAction makeData(File file, NBTTagCompound data)
-		{
-			NBTTagCompound vars = new NBTTagCompound();
-			vars.setString("directory", file.getLocation());
-			vars.setString("file_name", file.getName());
-			vars.setTag("data", data);
-			return new FileAction(FileAction.Type.DATA, vars);
-		}
-	}
-
-	public static class TaskSendAction extends Task
-	{
-		private FileAction action;
-		private BlockPos pos;
-
-		private TaskSendAction()
-		{
-			super("send_action");
-		}
-
-		public TaskSendAction(FileAction action, BlockPos pos)
-		{
-			this();
-			this.action = action;
-			this.pos = pos;
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt)
-		{
-			nbt.setTag("action", action.toTag());
-			nbt.setLong("pos", pos.toLong());
-		}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			FileAction action = FileAction.fromTag(nbt.getCompoundTag("action"));
-			TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("pos")));
-			if(tileEntity instanceof TileEntityLaptop)
-			{
-				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-				if(laptop.getFileSystem().readAction(action))
-				{
-					this.setSuccessful();
-				}
-			}
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt)
-		{
-
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt)
-		{
-
-		}
-	}
 }
