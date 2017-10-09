@@ -112,9 +112,10 @@ public class FileSystem
 		}
 	}
 
-	public boolean readAction(String drive, FileAction action)
+	public boolean readAction(String driveName, FileAction action, World world)
 	{
-		return false;
+		AbstractDrive drive = getAvailableDrives(world).get(driveName);
+		return drive != null && drive.handleFileAction(action, world);
 	}
 
 	@Nullable
@@ -132,6 +133,7 @@ public class FileSystem
 	{
 		Map<String, AbstractDrive> drives = new HashMap<>();
 		DRIVES.forEach((k, v) -> drives.put(k, v));
+		drives.put("Test", new InternalDrive("Test"));
 		//TODO add usb
 		//TODO add network drives
 		return drives;

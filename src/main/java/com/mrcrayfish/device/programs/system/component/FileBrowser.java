@@ -99,6 +99,8 @@ public class FileBrowser extends Component
     private Stack<Folder> predecessor = new Stack<>();
     private Drive currentDrive;
     private Folder currentFolder;
+
+    private Drive clipboardDrive;
     private Folder clipboardDir;
     private File clipboardFile;
 
@@ -699,6 +701,7 @@ public class FileBrowser extends Component
                 wrappable.openDialog(dialog);
                 return;
             }
+            clipboardDrive = comboBoxDrive.getValue();
             clipboardDir = currentFolder;
             clipboardFile = file;
             btnPaste.setEnabled(true);
@@ -711,6 +714,7 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
+                //TODO marge cut and paste to one task
                 addFile(clipboardFile.copy(), (nbt, success) ->
                 {
                     if(success)

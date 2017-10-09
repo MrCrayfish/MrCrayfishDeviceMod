@@ -48,7 +48,7 @@ public class TaskSendAction extends Task
         if(tileEntity instanceof TileEntityLaptop)
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-            if(laptop.getFileSystem().readAction(nbt.getString("drive"), action))
+            if(laptop.getFileSystem().readAction(nbt.getString("drive"), action, world))
             {
                 this.setSuccessful();
             }

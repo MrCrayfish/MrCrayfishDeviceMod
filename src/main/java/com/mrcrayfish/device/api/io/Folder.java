@@ -53,6 +53,7 @@ public class Folder extends File
 		{
             if(success)
 			{
+				file.drive = drive;
 				file.valid = true;
 				file.parent = this;
 				files.add(file);
@@ -85,6 +86,7 @@ public class Folder extends File
 			{
 				if(success)
 				{
+					file.drive = null;
 					file.valid = false;
 					file.parent = null;
 					files.remove(file);
