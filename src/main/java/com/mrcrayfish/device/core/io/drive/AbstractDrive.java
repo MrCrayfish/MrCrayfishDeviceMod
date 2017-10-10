@@ -40,7 +40,7 @@ public abstract class AbstractDrive
         return root;
     }
 
-    public boolean handleFileAction(FileAction action, World world)
+    public FileSystem.Response handleFileAction(FileAction action, World world)
     {
         NBTTagCompound actionData = action.getData();
         ServerFolder folder = getFolder(actionData.getString("directory"));
@@ -71,7 +71,7 @@ public abstract class AbstractDrive
 
             }
         }
-        return false;
+        return FileSystem.createResponse(FileSystem.Status.DRIVE_MISSING, "Invalid directory");
     }
 
     public abstract NBTTagCompound toTag();

@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.core.io;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.api.io.DataException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
@@ -11,6 +10,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.mrcrayfish.device.core.io.FileSystem.Status;
 
 /**
  * Author: MrCrayfish
@@ -30,38 +31,41 @@ public class ServerFolder extends ServerFile
         this.protect = protect;
     }
 
-    public boolean add(ServerFile file, boolean override)
+    public FileSystem.Response add(ServerFile file, boolean override)
     {
         if(file == null)
-            throw new IllegalArgumentException("A null file can not be added to a ServerFolder");
+            return FileSystem.createResponse(Status.FILE_ILLEGAL, "Illegal file");
 
         if(hasFile(file.name))
         {
-            if(!override || getFile(file.name).isProtected()) return false;
+            if(!override)
+                return FileSystem.createResponse(Status.FILE_EXISTS, "A file with that name already exists");
+            if(getFile(file.name).isProtected())
+                return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Unable to override protected files");
             files.remove(getFile(file.name));
         }
 
         files.add(file);
         file.parent = this;
-        return true;
+        return FileSystem.createSuccessResponse();
     }
 
-    public boolean delete(String name)
+    public FileSystem.Response delete(String name)
     {
         return delete(getFile(name));
     }
 
-    public boolean delete(ServerFile file)
+    public FileSystem.Response delete(ServerFile file)
     {
-        if(file != null)
-        {
-            if(file.isProtected()) return false;
+        if(file == null)
+            FileSystem.createResponse(Status.FILE_ILLEGAL, "Illegal file");
 
-            file.parent = null;
-            files.remove(file);
-            return true;
-        }
-        return false;
+        if(file.isProtected())
+            return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Cannot delete protected files");;
+
+        file.parent = null;
+        files.remove(file);
+        return FileSystem.createSuccessResponse();
     }
 
     public boolean hasFile(String name)
@@ -165,9 +169,9 @@ public class ServerFolder extends ServerFile
     }
 
     @Override
-    public void setData(@Nonnull NBTTagCompound data)
+    public FileSystem.Response setData(@Nonnull NBTTagCompound data)
     {
-        throw new DataException("Data can not be set to a ServerFolder");
+        return FileSystem.createResponse(Status.FILE_INVALID_DATA, "Data can not be set to a folder");
     }
 
     @Override

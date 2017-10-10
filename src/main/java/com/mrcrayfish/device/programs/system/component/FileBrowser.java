@@ -449,7 +449,7 @@ public class FileBrowser extends Component
         if(!folder.isSynced())
         {
             setLoading(true);
-            Task task = new TaskGetFiles(folder, Laptop.getPos());
+            Task task = new TaskGetFiles(folder, Laptop.getPos()); //TODO convert to file system
             task.setCallback((nbt, success) ->
             {
                 if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
@@ -559,19 +559,19 @@ public class FileBrowser extends Component
         addFile(file, null);
     }
 
-    public void addFile(File file, Callback<NBTTagCompound> callback)
+    public void addFile(File file, Callback<FileSystem.Response> callback)
     {
         setLoading(true);
-        currentFolder.add(file, (nbt, success) ->
+        currentFolder.add(file, (response, success) ->
         {
-            if(success)
+            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
             {
                 fileList.addItem(file);
                 FileBrowser.refreshList = true;
             }
             if(callback != null)
             {
-                callback.execute(nbt, success);
+                callback.execute(response, success);
             }
             setLoading(false);
         });
@@ -633,7 +633,7 @@ public class FileBrowser extends Component
                 return;
             }
             setLoading(true);
-            currentFolder.delete(file, (o, success) ->
+            currentFolder.delete(file, (response, success) ->
             {
                 if(success)
                 {
@@ -715,9 +715,9 @@ public class FileBrowser extends Component
             if(canPasteHere())
             {
                 //TODO marge cut and paste to one task
-                addFile(clipboardFile.copy(), (nbt, success) ->
+                addFile(clipboardFile.copy(), (response, success) ->
                 {
-                    if(success)
+                    if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
                     {
                         if(clipboardDir != null)
                         {
@@ -732,7 +732,7 @@ public class FileBrowser extends Component
                             });
                         }
                     }
-                    else
+                    else if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
                     {
                         Dialog.Input dialog = new Dialog.Input("A file with the same name already exists in this directory. Please choose a new name");
                         dialog.setPositiveText("Rename");
@@ -743,7 +743,7 @@ public class FileBrowser extends Component
                             {
                                 File file = clipboardFile.copy(s);
                                 setLoading(true);
-                                addFile(file, (nbt2, s4) ->
+                                addFile(file, (response1, s4) ->
                                 {
                                     setLoading(false);
                                     if(s4)
@@ -751,7 +751,7 @@ public class FileBrowser extends Component
                                         if(clipboardDir != null)
                                         {
                                             setLoading(true);
-                                            clipboardDir.delete(clipboardFile.getName(), (o1, s5) ->
+                                            clipboardDir.delete(clipboardFile.getName(), (response2, s5) ->
                                             {
                                                 setLoading(false);
                                                 if(!s5) return;
@@ -882,6 +882,7 @@ public class FileBrowser extends Component
                         if(!success1)
                         {
                             //TODO display error dialog
+                            createErrorDialog("Unable to rename file");
                         }
                         setLoading(false);
                     });
@@ -892,6 +893,13 @@ public class FileBrowser extends Component
             dialog.setInputText(file.getName());
             wrappable.openDialog(dialog);
         }
+    }
+
+    private void createErrorDialog(String message)
+    {
+        Dialog.Message dialog = new Dialog.Message(message);
+        dialog.setTitle("Error");
+        wrappable.openDialog(dialog);
     }
 
     public void setItemClickListener(ItemClickListener<File> itemClickListener)

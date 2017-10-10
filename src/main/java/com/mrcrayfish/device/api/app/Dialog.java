@@ -645,9 +645,9 @@ public abstract class Dialog extends Wrappable
 						}
 
 						File file = new File(textFieldFileName.getText(), app, fileData.copy());
-						browser.addFile(file, (nbt, success) ->
+						browser.addFile(file, (response, success) ->
 						{
-							if(!success)
+							if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
 							{
 								Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
 								dialog.setPositiveText("Override");

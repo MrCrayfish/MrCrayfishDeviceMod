@@ -95,21 +95,21 @@ public class File
 	 *
 	 * @param name the new file name
 	 */
-	public void rename(@Nonnull String name, Callback callback)
+	public void rename(@Nonnull String name, Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
 
-		if(this.protect || name.isEmpty())
+		if(name.isEmpty())
 		{
 			if(callback != null)
 			{
-				callback.execute(new NBTTagCompound(), false);
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EMPTY_NAME, "Unable to rename file with that name"), true);
 			}
 			return;
 		}
 
-		FileSystem.sendAction(drive, FileAction.Factory.makeRename(this, name), (nbt, success) ->
+		FileSystem.sendAction(drive, FileAction.Factory.makeRename(this, name), (response, success) ->
 		{
 			if(success)
 			{
@@ -117,7 +117,7 @@ public class File
 			}
 			if(callback != null)
 			{
-				callback.execute(new NBTTagCompound(), false);
+				callback.execute(response, false);
 			}
         });
 	}

@@ -2,6 +2,8 @@ package com.mrcrayfish.device.core.io.task;
 
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,17 +21,19 @@ public class TaskSendAction extends Task
     private FileAction action;
     private BlockPos pos;
 
+    private FileSystem.Response response;
+
     private TaskSendAction()
     {
         super("send_action");
     }
 
-    public TaskSendAction(Drive drive, FileAction action, BlockPos pos)
+    public TaskSendAction(Drive drive, FileAction action)
     {
         this();
         this.drive = drive.getName();
         this.action = action;
-        this.pos = pos;
+        this.pos = Laptop.getPos();
     }
 
     @Override
@@ -48,17 +52,15 @@ public class TaskSendAction extends Task
         if(tileEntity instanceof TileEntityLaptop)
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-            if(laptop.getFileSystem().readAction(nbt.getString("drive"), action, world))
-            {
-                this.setSuccessful();
-            }
+            response = laptop.getFileSystem().readAction(nbt.getString("drive"), action, world);
+            this.setSuccessful();
         }
     }
 
     @Override
     public void prepareResponse(NBTTagCompound nbt)
     {
-
+        nbt.setTag("response", response.toTag());
     }
 
     @Override

@@ -6,9 +6,8 @@ import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.action.FileAction;
-import com.mrcrayfish.device.core.io.drive.InternalDrive;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
-import com.mrcrayfish.device.core.io.drive.NetworkDrive;
+import com.mrcrayfish.device.core.io.drive.InternalDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -102,20 +101,30 @@ public class FileSystem
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void sendAction(Drive drive, FileAction action, Callback<NBTTagCompound> callback)
+	public static void sendAction(Drive drive, FileAction action, @Nullable Callback<Response> callback)
 	{
 		if(Laptop.getPos() != null)
 		{
-			Task task = new TaskSendAction(drive, action, Laptop.getPos());
-			task.setCallback(callback);
+			Task task = new TaskSendAction(drive, action);
+			task.setCallback((nbt, success) ->
+			{
+				if(callback != null)
+				{
+					callback.execute(Response.fromTag(nbt), success);
+				}
+            });
 			TaskManager.sendTask(task);
 		}
 	}
 
-	public boolean readAction(String driveName, FileAction action, World world)
+	public Response readAction(String driveName, FileAction action, World world)
 	{
 		AbstractDrive drive = getAvailableDrives(world).get(driveName);
-		return drive != null && drive.handleFileAction(action, world);
+		if(drive != null)
+		{
+			return drive.handleFileAction(action, world);
+		}
+		return createResponse(Status.DRIVE_MISSING, "Drive unavailable or missing");
 	}
 
 	@Nullable
@@ -152,5 +161,66 @@ public class FileSystem
 		return fileSystemTag;
 	}
 
+	public static Response createSuccessResponse()
+	{
+		return new Response(Status.SUCCESSFUL);
+	}
 
+	public static Response createResponse(int status, String message)
+	{
+		return new Response(status, message);
+	}
+
+	public static class Response
+	{
+		private final int status;
+		private String message = "";
+
+		private Response(int status)
+		{
+			this.status = status;
+		}
+
+		private Response(int status, String message)
+		{
+			this.status = status;
+			this.message = message;
+		}
+
+		public int getStatus()
+		{
+			return status;
+		}
+
+		public String getMessage()
+		{
+			return message;
+		}
+
+		public NBTTagCompound toTag()
+		{
+			NBTTagCompound responseTag = new NBTTagCompound();
+			responseTag.setInteger("status", status);
+			responseTag.setString("message", message);
+			return responseTag;
+		}
+
+		public static Response fromTag(NBTTagCompound responseTag)
+		{
+			return new Response(responseTag.getInteger("status"), responseTag.getString("message"));
+		}
+	}
+
+	public static class Status
+	{
+		public static final int SUCCESSFUL = 0;
+		public static final int FAILED = 1;
+		public static final int FILE_ILLEGAL = 1;
+		public static final int FILE_IS_PROTECTED = 1;
+		public static final int FILE_EXISTS = 1;
+		public static final int FILE_INVALID_DATA = 1;
+		public static final int FILE_EMPTY_NAME = 1;
+		public static final int DRIVE_MISSING = 1;
+		public static final int DRIVE_NETWORK_MISSING = 1;
+	}
 }

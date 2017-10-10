@@ -39,17 +39,17 @@ public class Folder extends File
 		add(file, false, null);
 	}
 
-	public void add(@Nonnull File file, Callback<NBTTagCompound> callback)
+	public void add(@Nonnull File file, Callback<FileSystem.Response> callback)
 	{
 		add(file, false, callback);
 	}
 
-	public void add(@Nonnull File file, boolean override, Callback<NBTTagCompound> callback)
+	public void add(@Nonnull File file, boolean override, Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("Folder must be added to the system before you can add files to it");
 
-		FileSystem.sendAction(drive, FileAction.Factory.makeNew(this, file, override), (nbt, success) ->
+		FileSystem.sendAction(drive, FileAction.Factory.makeNew(this, file, override), (response, success) ->
 		{
             if(success)
 			{
@@ -60,29 +60,34 @@ public class Folder extends File
 			}
 			if(callback != null)
 			{
-				callback.execute(nbt, success);
+				callback.execute(response, success);
 			}
         });
 	}
 
-	public void delete(String name, Callback callback)
+	public void delete(String name)
+	{
+		delete(name, null);
+	}
+
+	public void delete(String name, @Nullable Callback<FileSystem.Response> callback)
 	{
 		delete(getFile(name), callback);
 	}
 
-	public void delete(File file, Callback callback)
+	public void delete(File file)
+	{
+		delete(file, null);
+	}
+
+	public void delete(File file, Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("Folder must be added to the system before you can delete files");
 
 		if(file != null)
 		{
-			if(file.isProtected())
-			{
-				callback.execute(null, false);
-			}
-
-			FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (nbt, success) ->
+			FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (response, success) ->
 			{
 				if(success)
 				{
@@ -91,7 +96,10 @@ public class Folder extends File
 					file.parent = null;
 					files.remove(file);
 				}
-				callback.execute(nbt, success);
+				if(callback != null)
+				{
+					callback.execute(response, success);
+				}
 			});
 		}
 	}

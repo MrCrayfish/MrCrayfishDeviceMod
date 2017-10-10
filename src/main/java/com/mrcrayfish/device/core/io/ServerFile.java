@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.core.io;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.io.Folder;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
@@ -56,12 +55,12 @@ public class ServerFile
         return name;
     }
 
-    public boolean rename(String name)
+    public FileSystem.Response rename(String name)
     {
         if(this.protect)
-            return false;
+            return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot rename a protected file");
         this.name = name;
-        return true;
+        return FileSystem.createSuccessResponse();
     }
 
     @Nullable
@@ -70,11 +69,12 @@ public class ServerFile
         return openingApp;
     }
 
-    public void setData(@Nonnull NBTTagCompound data)
+    public FileSystem.Response setData(@Nonnull NBTTagCompound data)
     {
         if(this.protect)
-            return;
+            return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot set data on a protected file");
         this.data = data;
+        return FileSystem.createSuccessResponse();
     }
 
     @Nullable
@@ -104,16 +104,13 @@ public class ServerFile
         return openingApp != null && openingApp.equals(app.getInfo().getFormattedId());
     }
 
-    public boolean delete()
+    public FileSystem.Response delete()
     {
         if(this.protect)
-            return false;
+            return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot delete a protected file");
         if(parent != null)
-        {
-            parent.delete(this);
-            return true;
-        }
-        return false;
+            return parent.delete(this);
+        return FileSystem.createResponse(FileSystem.Status.FILE_ILLEGAL, "Invalid file");
     }
 
     public NBTTagCompound toTag()

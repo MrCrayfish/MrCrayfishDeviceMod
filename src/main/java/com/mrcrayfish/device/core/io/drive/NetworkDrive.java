@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core.io.drive;
 
+import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.ServerFolder;
 import com.mrcrayfish.device.core.io.action.FileAction;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,20 +38,20 @@ public final class NetworkDrive extends AbstractDrive
     }
 
     @Override
-    public boolean handleFileAction(FileAction action, World world)
+    public FileSystem.Response handleFileAction(FileAction action, World world)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof Interface)
         {
             Interface impl = (Interface) tileEntity;
             AbstractDrive drive = impl.getDrive();
-            if(drive.handleFileAction(action, world))
+            if(drive.handleFileAction(action, world).getStatus() == FileSystem.Status.SUCCESSFUL)
             {
                 tileEntity.markDirty();
-                return true;
+                return FileSystem.createSuccessResponse();
             }
         }
-        return false;
+        return FileSystem.createResponse(FileSystem.Status.DRIVE_NETWORK_MISSING, "The network drive could not be found");
     }
 
     @Override
