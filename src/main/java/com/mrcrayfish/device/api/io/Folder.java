@@ -28,7 +28,7 @@ public class Folder extends File
 	public Folder(String name, boolean protect)
 	{
 		if(!PATTERN_FILE_NAME.matcher(name).matches())
-			throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[\\w. ]{1,32}$");
+			throw new IllegalArgumentException("Invalid file name '" + name + "'. The name must match the regular expression: ^[\\w. ]{1,32}$");
 
 		this.name = name;
 		this.protect = protect;

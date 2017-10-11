@@ -427,10 +427,9 @@ public class FileBrowser extends Component
             TaskGetStructure task = new TaskGetStructure(drive, Laptop.getPos());
             task.setCallback((nbt, success) ->
             {
-                Folder folder = null;
                 if(success)
                 {
-                    folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure"));
+                    Folder folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure"));
                     drive.syncRoot(folder);
                     setCurrentFolder(folder, false);
                 }

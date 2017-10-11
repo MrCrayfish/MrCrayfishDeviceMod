@@ -25,7 +25,7 @@ public final class InternalDrive extends AbstractDrive
             NBTTagCompound folderTag = driveTag.getCompoundTag("root");
             drive.root = ServerFolder.fromTag(folderTag.getString("file_name"), folderTag.getCompoundTag("data"));
         }
-        return null;
+        return drive;
     }
 
     @Override

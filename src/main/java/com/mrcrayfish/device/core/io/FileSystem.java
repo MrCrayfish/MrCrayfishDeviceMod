@@ -7,8 +7,10 @@ import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
+import com.mrcrayfish.device.core.io.drive.ExternalDrive;
 import com.mrcrayfish.device.core.io.drive.InternalDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -30,10 +32,10 @@ public class FileSystem
 	public static final String DIR_ROOT = "/";
 	public static final String DIR_APPLICATION_DATA = DIR_ROOT + "Application Data";
 	public static final String DIR_HOME = DIR_ROOT + "Home";
-
 	public static final String LAPTOP_DRIVE_NAME = "Root";
 
 	private final Map<String, AbstractDrive> DRIVES = new LinkedHashMap<>();
+	private AbstractDrive attachedDrive = null; //USB
 
 	private TileEntity tileEntity;
 	
@@ -51,10 +53,16 @@ public class FileSystem
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
 				NBTTagCompound driveTag = tagList.getCompoundTagAt(i);
-				AbstractDrive drive = InternalDrive.fromTag(driveTag);
+				AbstractDrive drive = InternalDrive.fromTag(driveTag.getCompoundTag("drive"));
 				DRIVES.put(driveTag.getString("name"), drive);
 			}
 		}
+
+		if(fileSystemTag.hasKey("external_drive", Constants.NBT.TAG_COMPOUND))
+		{
+			attachedDrive = ExternalDrive.fromTag(fileSystemTag.getCompoundTag("external_drive"));
+		}
+
 		setupDefault();
 	}
 
@@ -122,7 +130,12 @@ public class FileSystem
 		AbstractDrive drive = getAvailableDrives(world).get(driveName);
 		if(drive != null)
 		{
-			return drive.handleFileAction(action, world);
+			Response response = drive.handleFileAction(action, world);
+			if(response.getStatus() == Status.SUCCESSFUL)
+			{
+				tileEntity.markDirty();
+			}
+			return response;
 		}
 		return createResponse(Status.DRIVE_MISSING, "Drive unavailable or missing");
 	}
@@ -141,9 +154,11 @@ public class FileSystem
 	public Map<String, AbstractDrive> getAvailableDrives(World world)
 	{
 		Map<String, AbstractDrive> drives = new HashMap<>();
+		//Internal
 		DRIVES.forEach((k, v) -> drives.put(k, v));
-		drives.put("Test", new InternalDrive("Test"));
-		//TODO add usb
+		//External
+		if(attachedDrive != null)
+			drives.put(attachedDrive.getName(), attachedDrive);
 		//TODO add network drives
 		return drives;
 	}
@@ -151,14 +166,53 @@ public class FileSystem
 	public NBTTagCompound toTag()
 	{
 		NBTTagCompound fileSystemTag = new NBTTagCompound();
+
 		NBTTagList tagList = new NBTTagList();
-		DRIVES.keySet().forEach(driveName -> {
+		DRIVES.forEach((k, v) -> {
 			NBTTagCompound driveTag = new NBTTagCompound();
-			driveTag.setString("name", driveName);
-			driveTag.setTag("root", DRIVES.get(driveName).toTag());
+			driveTag.setString("name", k);
+			driveTag.setTag("drive", v.toTag());
+			tagList.appendTag(driveTag);
 		});
 		fileSystemTag.setTag("drives", tagList);
+
+		if(attachedDrive != null)
+		{
+			fileSystemTag.setTag("external_drive", attachedDrive.toTag());
+		}
 		return fileSystemTag;
+	}
+
+	public boolean setAttachedDrive(ItemStack flashDrive)
+	{
+		if(attachedDrive == null)
+		{
+			NBTTagCompound flashDriveTag = getExternalDriveTag(flashDrive);
+			attachedDrive = ExternalDrive.fromTag(flashDriveTag.getCompoundTag("drive"));
+			return true;
+		}
+		return false;
+	}
+
+	public AbstractDrive getAttachedDrive()
+	{
+		return attachedDrive;
+	}
+
+	private NBTTagCompound getExternalDriveTag(ItemStack stack)
+	{
+		NBTTagCompound tagCompound = stack.getTagCompound();
+		if(tagCompound == null)
+		{
+			NBTTagCompound flashDriveTag = new NBTTagCompound();
+			flashDriveTag.setTag("drive", new ExternalDrive(stack.getDisplayName()).toTag());
+			stack.setTagCompound(flashDriveTag);
+		}
+		else if(!tagCompound.hasKey("drive", Constants.NBT.TAG_COMPOUND))
+		{
+			tagCompound.setTag("drive", new ExternalDrive(stack.getDisplayName()).toTag());
+		}
+		return tagCompound;
 	}
 
 	public static Response createSuccessResponse()

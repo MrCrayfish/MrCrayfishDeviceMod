@@ -117,7 +117,7 @@ public class File
 			}
 			if(callback != null)
 			{
-				callback.execute(response, false);
+				callback.execute(response, success);
 			}
         });
 	}

@@ -3,23 +3,36 @@ package com.mrcrayfish.device.tileentity;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.util.TileEntityUtil;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityLaptop extends TileEntity implements ITickable
 {
-	public float rotation = 0;
-	public float prevRotation = 0;
 	public boolean open = false;
 	
 	private NBTTagCompound data;
 	private FileSystem fileSystem;
+
+	@SideOnly(Side.CLIENT)
+	public float rotation = 0;
+
+	@SideOnly(Side.CLIENT)
+	public float prevRotation = 0;
+
+	@SideOnly(Side.CLIENT)
+	private boolean hasExternalDrive = false;
 
 	public TileEntityLaptop()
 	{
@@ -38,19 +51,22 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	@Override
 	public void update() 
 	{
-		prevRotation = rotation;
-		if(!open)
+		if(world.isRemote)
 		{
-			if(rotation > 0)
+			prevRotation = rotation;
+			if(!open)
 			{
-				rotation -= 10F;
+				if(rotation > 0)
+				{
+					rotation -= 10F;
+				}
 			}
-		}
-		else
-		{
-			if(rotation < 110)
+			else
 			{
-				rotation += 10F;
+				if(rotation < 110)
+				{
+					rotation += 10F;
+				}
 			}
 		}
 	}
@@ -61,6 +77,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.readFromNBT(compound);
 		this.open = compound.getBoolean("open");
 		this.data = compound.getCompoundTag("data");
+		this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
 	}
 	
 	@Override
@@ -68,11 +85,8 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
-		if(fileSystem != null)
-		{
-			data.setTag("file_system", fileSystem.toTag());
-		}
 		compound.setTag("data", data);
+		compound.setTag("file_system", fileSystem.toTag());
 		return compound;
 	}
 
@@ -83,17 +97,20 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		this.open = tag.getBoolean("open");
 		this.data.setTag("application", tag.getCompoundTag("application"));
 		this.data.setTag("system", tag.getCompoundTag("system"));
+		this.hasExternalDrive = tag.getBoolean("has_external_drive");
 	}
 
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
-		NBTTagCompound tag = super.getUpdateTag();
+		NBTTagCompound tag = new NBTTagCompound();
 		tag.setBoolean("open", this.open);
 		tag.setTag("application", createAndGetTag("application"));
 		tag.setTag("system", createAndGetTag("system"));
+		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
 		return tag;
 	}
+
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
@@ -152,5 +169,10 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 			markDirty();
 		}
 		return data.getCompoundTag(name);
+	}
+
+	public boolean isExternalDriveAttached()
+	{
+		return hasExternalDrive;
 	}
 }
