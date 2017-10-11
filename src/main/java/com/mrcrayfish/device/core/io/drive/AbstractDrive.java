@@ -35,6 +35,11 @@ public abstract class AbstractDrive
         return name;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public ServerFolder getRoot(World world)
     {
         return root;

@@ -153,9 +153,9 @@ public class FileSystem
 
 	public Map<String, AbstractDrive> getAvailableDrives(World world)
 	{
-		Map<String, AbstractDrive> drives = new HashMap<>();
+		Map<String, AbstractDrive> drives = new LinkedHashMap<>();
 		//Internal
-		DRIVES.forEach((k, v) -> drives.put(k, v));
+		DRIVES.forEach(drives::put);
 		//External
 		if(attachedDrive != null)
 			drives.put(attachedDrive.getName(), attachedDrive);
@@ -188,8 +188,13 @@ public class FileSystem
 		if(attachedDrive == null)
 		{
 			NBTTagCompound flashDriveTag = getExternalDriveTag(flashDrive);
-			attachedDrive = ExternalDrive.fromTag(flashDriveTag.getCompoundTag("drive"));
-			return true;
+			AbstractDrive drive = ExternalDrive.fromTag(flashDriveTag.getCompoundTag("drive"));
+			if(drive != null)
+			{
+				drive.setName(flashDrive.getDisplayName());
+				attachedDrive = drive;
+				return true;
+			}
 		}
 		return false;
 	}
