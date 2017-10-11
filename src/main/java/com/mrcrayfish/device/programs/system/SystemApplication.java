@@ -24,10 +24,4 @@ public abstract class SystemApplication extends Application
     {
         return laptop;
     }
-
-    @Override
-    public void onClose()
-    {
-        laptop = null;
-    }
 }
