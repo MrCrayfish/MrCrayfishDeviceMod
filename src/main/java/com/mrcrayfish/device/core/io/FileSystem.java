@@ -204,9 +204,9 @@ public class FileSystem
 		NBTTagCompound tagCompound = stack.getTagCompound();
 		if(tagCompound == null)
 		{
-			NBTTagCompound flashDriveTag = new NBTTagCompound();
-			flashDriveTag.setTag("drive", new ExternalDrive(stack.getDisplayName()).toTag());
-			stack.setTagCompound(flashDriveTag);
+			tagCompound = new NBTTagCompound();
+			tagCompound.setTag("drive", new ExternalDrive(stack.getDisplayName()).toTag());
+			stack.setTagCompound(tagCompound);
 		}
 		else if(!tagCompound.hasKey("drive", Constants.NBT.TAG_COMPOUND))
 		{
