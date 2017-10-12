@@ -1,17 +1,23 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
+import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -377,14 +383,46 @@ public abstract class Application extends Wrappable
 
     public void getApplicationFolder(@Nonnull Callback<Folder> callback)
     {
-        //TODO fix this
-        /*Task task = new TaskGetFiles(getApplicationFolderPath(), Laptop.getPos(), true);
+        //TODO change around later to be better (only one request)
+        Drive drive = new Drive(FileSystem.LAPTOP_DRIVE_NAME,  Drive.Type.INTERNAL);
+        Task task = new TaskGetStructure(drive, Laptop.getPos());
         task.setCallback((nbt, success) ->
         {
-            Folder folder = success ? Folder.fromTag(nbt.getString("file_name"), nbt) : null;
-            callback.execute(folder, success);
+            if(success)
+            {
+                drive.syncRoot(Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure")));
+                Folder applicationData = drive.getRoot().getFolder("Application Data");
+                if(applicationData != null)
+                {
+                    if(applicationData.hasFolder(info.getFormattedId()))
+                    {
+                        Folder applicationFolder = applicationData.getFolder(info.getFormattedId());
+                        Task taskFiles = new TaskGetFiles(applicationFolder, Laptop.getPos());
+                        taskFiles.setCallback((nbt1, success1) ->
+                        {
+                            if(success)
+                            {
+                                applicationFolder.syncFiles(nbt1.getTagList("files", Constants.NBT.TAG_COMPOUND));
+                            }
+                            callback.execute(applicationFolder, success);
+                        });
+                        TaskManager.sendTask(taskFiles);
+                    }
+                    else
+                    {
+                        Folder applicationFolder = new Folder(info.getFormattedId());
+                        applicationData.add(applicationFolder, (response, success1) ->
+                        {
+                            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+                            {
+                                callback.execute(applicationFolder, success);
+                            }
+                        });
+                    }
+                }
+            }
         });
-        TaskManager.sendTask(task);*/
+        TaskManager.sendTask(task);
     }
 
     public String getApplicationFolderPath()
