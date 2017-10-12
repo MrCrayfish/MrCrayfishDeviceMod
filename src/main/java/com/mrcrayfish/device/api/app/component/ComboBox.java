@@ -55,7 +55,7 @@ public abstract class ComboBox<T> extends Component
     @Override
     public void init(Layout layout)
     {
-        this.layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB()));
+        //this.layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB()));
     }
 
     @Override
@@ -182,8 +182,16 @@ public abstract class ComboBox<T> extends Component
         public List(int left, int top, int width, T[] items)
         {
             super(left, top, width);
-            this.list = new ItemList<>(0, 0, width, 6, false);
-            this.layout = new Layout(width, getListHeight(list));
+            this.list = new ItemList<>(0, 0, width + 50, 6, false);
+            this.layout = new Layout(width + 50, getListHeight(list));
+            this.setItems(items);
+        }
+
+        public List(int left, int top, int comboBoxWidth, int listWidth, T[] items)
+        {
+            super(left, top, comboBoxWidth);
+            this.list = new ItemList<>(0, 0, listWidth, 6, false);
+            this.layout = new Layout(listWidth, getListHeight(list));
             this.setItems(items);
         }
 
@@ -229,7 +237,6 @@ public abstract class ComboBox<T> extends Component
         public void setListItemRenderer(ListItemRenderer<T> renderer)
         {
             this.list.setListItemRenderer(renderer);
-            this.layout.width = getListWidth(list);
             this.layout.height = getListHeight(list);
         }
 

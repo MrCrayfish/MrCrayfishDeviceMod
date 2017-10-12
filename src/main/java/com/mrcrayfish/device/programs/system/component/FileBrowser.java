@@ -29,6 +29,7 @@ import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -57,18 +58,18 @@ public class FileBrowser extends Component
         @Override
         public void render(File file, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
         {
-            gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
+            Gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
 
             GlStateManager.color(1.0F, 1.0F, 1.0F);
             Minecraft.getMinecraft().getTextureManager().bindTexture(ASSETS);
             if(file.isFolder())
             {
-                RenderUtil.drawRectWithTexture(x + 2, y + 2, 0, 0, 16, 14, 16, 14);
+                RenderUtil.drawRectWithTexture(x + 3, y + 2, 0, 0, 14, 14, 14, 14);
             }
             else
             {
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
-                if(info != null) RenderUtil.drawApplicationIcon(info, x + 2, y + 2);
+                if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
             String text = (file.isProtected() ? TextFormatting.AQUA : TextFormatting.RESET) + file.getName();
             gui.drawString(Minecraft.getMinecraft().fontRendererObj, text, x + 22, y + 5, Color.WHITE.getRGB());
@@ -300,10 +301,28 @@ public class FileBrowser extends Component
         });
         layoutMain.addComponent(fileList);
 
-        comboBoxDrive = new ComboBox.List<>(26, 3, 44, new Drive[]{});
+        comboBoxDrive = new ComboBox.List<>(26, 3, 44, 100, new Drive[]{});
         comboBoxDrive.setChangeListener((oldValue, newValue) ->
         {
             openDrive(newValue);
+        });
+        comboBoxDrive.setListItemRenderer(new ListItemRenderer<Drive>(12)
+        {
+            @Override
+            public void render(Drive drive, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+            {
+                drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
+                mc.getTextureManager().bindTexture(ASSETS);
+                GlStateManager.color(1.0F, 1.0F, 1.0F);
+                RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
+
+                String text = drive.getName();
+                if(mc.fontRendererObj.getStringWidth(text) > 87)
+                {
+                    text = mc.fontRendererObj.trimStringToWidth(drive.getName(), 78) + "...";
+                }
+                mc.fontRendererObj.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
+            }
         });
         layoutMain.addComponent(comboBoxDrive);
 

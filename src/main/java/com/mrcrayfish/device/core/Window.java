@@ -3,6 +3,7 @@ package com.mrcrayfish.device.core;
 import java.awt.Color;
 import java.util.List;
 
+import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
 
 import com.mrcrayfish.device.api.app.Application;
@@ -117,7 +118,7 @@ public class Window<T extends Wrappable>
         
 		if(dialogWindow != null)
 		{
-			gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
+			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
 			dialogWindow.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
 		}
 	}

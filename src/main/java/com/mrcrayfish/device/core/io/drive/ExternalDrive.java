@@ -19,7 +19,7 @@ public final class ExternalDrive extends AbstractDrive
     @Nullable
     public static AbstractDrive fromTag(NBTTagCompound driveTag)
     {
-        AbstractDrive drive = new InternalDrive(driveTag.getString("name"));
+        AbstractDrive drive = new ExternalDrive(driveTag.getString("name"));
         if(driveTag.hasKey("root", Constants.NBT.TAG_COMPOUND))
         {
             NBTTagCompound folderTag = driveTag.getCompoundTag("root");
