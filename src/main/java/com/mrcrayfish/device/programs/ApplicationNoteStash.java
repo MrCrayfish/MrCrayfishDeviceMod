@@ -5,8 +5,6 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.io.Folder;
-import com.mrcrayfish.device.api.task.Callback;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
@@ -20,7 +18,7 @@ public class ApplicationNoteStash extends Application
 
 	/* Main */
 	private Layout layoutMain;
-	private ItemList<File> notes;
+	private ItemList<Note> notes;
 	private Button btnNew;
 	private Button btnView;
 	private Button btnDelete;
@@ -54,7 +52,10 @@ public class ApplicationNoteStash extends Application
 			notes.getItems().clear();
 			getApplicationFolder((folder, success) ->
 			{
-				folder.search(file -> file.isForApplication(this)).stream().forEach(file -> notes.addItem(file));
+				folder.search(file -> file.isForApplication(this)).stream().forEach(file ->
+				{
+					notes.addItem(Note.fromTag(file.getData()));
+				});
             });
 		});
 
@@ -76,9 +77,9 @@ public class ApplicationNoteStash extends Application
 		{
             if(notes.getSelectedIndex() != -1)
             {
-                NBTTagCompound data = notes.getSelectedItem().getData();
-                noteTitle.setText(data.getString("title"));
-                noteContent.setText(data.getString("content"));
+                Note note = notes.getSelectedItem();
+                noteTitle.setText(note.getTitle());
+                noteContent.setText(note.getContent());
                 setCurrentLayout(layoutViewNote);
             }
         });
@@ -90,7 +91,8 @@ public class ApplicationNoteStash extends Application
 		{
             if(notes.getSelectedIndex() != -1)
             {
-            	notes.getSelectedItem().delete();
+            	//TODO fix deleting
+            	//notes.getSelectedItem().delete();
                 notes.removeItem(notes.getSelectedIndex());
                 btnView.setEnabled(false);
                 btnDelete.setEnabled(false);
@@ -176,5 +178,38 @@ public class ApplicationNoteStash extends Application
 		noteContent.setText(data.getString("content"));
 		setCurrentLayout(layoutViewNote);
 		return true;
+	}
+
+	private static class Note
+	{
+		private String title;
+		private String content;
+
+		public Note(String title, String content)
+		{
+			this.title = title;
+			this.content = content;
+		}
+
+		public String getTitle()
+		{
+			return title;
+		}
+
+		public String getContent()
+		{
+			return content;
+		}
+
+		@Override
+		public String toString()
+		{
+			return title;
+		}
+
+		public static Note fromTag(NBTTagCompound noteTag)
+		{
+			return new Note(noteTag.getString("title"), noteTag.getString("content"));
+		}
 	}
 }

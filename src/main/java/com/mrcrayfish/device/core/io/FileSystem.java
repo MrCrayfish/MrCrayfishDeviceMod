@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class FileSystem
 {
-	public static final Pattern PATTERN_DIRECTORY = Pattern.compile("^(/)|(/[a-zA-Z0-9 ]{1,32})*$");
+	public static final Pattern PATTERN_DIRECTORY = Pattern.compile("^(/)|(/[\\w. ]{1,32})*$");
 
 	public static final String DIR_ROOT = "/";
 	public static final String DIR_APPLICATION_DATA = DIR_ROOT + "Application Data";

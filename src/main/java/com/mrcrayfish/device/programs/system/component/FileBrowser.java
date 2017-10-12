@@ -407,6 +407,7 @@ public class FileBrowser extends Component
         //TODO if synced structure, handle differently
     }
 
+    //TODO move into drive
     private Folder getFolder(String path)
     {
         if(path == null)
