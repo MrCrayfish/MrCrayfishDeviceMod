@@ -1,12 +1,11 @@
 package com.mrcrayfish.device.core;
 
-import com.mrcrayfish.device.api.app.Layout;
-
+import com.mrcrayfish.device.api.app.Dialog;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
 
-public interface Wrappable
+public abstract class Wrappable
 {
+	private Window window;
 
 	/**
 	 * The default initialization method. Clears any components in the default
@@ -14,13 +13,13 @@ public interface Wrappable
 	 * are using the default layout, make sure you call it using
 	 * <code>super.init()</code>
 	 */
-	void init();
+	public abstract void init();
 
 	/**
 	 * When the games ticks. Note if you override, make sure you call this super
 	 * method.
 	 */
-	void onTick();
+	public abstract void onTick();
 
 	/**
 	 * The main render loop. Note if you override, make sure you call this super
@@ -43,7 +42,7 @@ public interface Wrappable
 	 * @param partialTicks
 	 *            time passed since tick
 	 */
-	void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks);
+	public abstract void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks);
 
 	/**
 	 * Called when a key is typed from your keyboard. Note if you override, make
@@ -54,7 +53,7 @@ public interface Wrappable
 	 * @param code
 	 *            the typed character code
 	 */
-	void handleKeyTyped(char character, int code);
+	public abstract void handleKeyTyped(char character, int code);
 
 	/**
 	 * Called when a key is released from your keyboard.
@@ -64,7 +63,7 @@ public interface Wrappable
 	 * @param code
 	 *            the released character code
 	 */
-	void handleKeyReleased(char character, int code);
+	public abstract void handleKeyReleased(char character, int code);
 
 	/**
 	 * Called when you press a mouse button.
@@ -76,7 +75,7 @@ public interface Wrappable
 	 * @param mouseButton
 	 *            the clicked mouse button
 	 */
-	void handleMouseClick(int mouseX, int mouseY, int mouseButton);
+	public abstract void handleMouseClick(int mouseX, int mouseY, int mouseButton);
 
 	/**
 	 * Called when you drag the mouse with a button pressed down.
@@ -88,7 +87,7 @@ public interface Wrappable
 	 * @param mouseButton
 	 *            the pressed mouse button
 	 */
-	void handleMouseDrag(int mouseX, int mouseY, int mouseButton);
+	public abstract void handleMouseDrag(int mouseX, int mouseY, int mouseButton);
 
 	/**
 	 * Called when you release the currently pressed mouse button.
@@ -100,7 +99,7 @@ public interface Wrappable
 	 * @param mouseButton
 	 *            the button that was released
 	 */
-	void handleMouseRelease(int mouseX, int mouseY, int mouseButton);
+	public abstract void handleMouseRelease(int mouseX, int mouseY, int mouseButton);
 
 	/**
 	 * Called when you scroll the wheel on your mouse.
@@ -112,21 +111,21 @@ public interface Wrappable
 	 * @param direction
 	 *            the direction of the scroll. true is up, false is down
 	 */
-	void handleMouseScroll(int mouseX, int mouseY, boolean direction);
+	public abstract void handleMouseScroll(int mouseX, int mouseY, boolean direction);
 
 	/**
 	 * Gets the text in the title bar.
 	 * 
 	 * @return The display name
 	 */
-	String getTitle();
+	public abstract String getWindowTitle();
 
 	/**
 	 * Gets the width of the content (application/dialog) including the border.
-	 * 
+	 *
 	 * @return the height
 	 */
-	int getWidth();
+	public abstract int getWidth();
 
 	/**
 	 * Gets the height of the content (application/dialog) including the title
@@ -134,24 +133,24 @@ public interface Wrappable
 	 * 
 	 * @return the height
 	 */
-	int getHeight();
+	public abstract int getHeight();
 
 	/**
 	 * Marks the content's layout for updating
 	 */
-	void markForLayoutUpdate();
+	public abstract void markForLayoutUpdate();
 
 	/**
 	 * Gets if this content's layout is currently pending a update
 	 * 
 	 * @return if pending layout update
 	 */
-	boolean isPendingLayoutUpdate();
+	public abstract boolean isPendingLayoutUpdate();
 
 	/**
 	 * Clears the pending layout update for this content
 	 */
-	void clearPendingLayout();
+	public abstract void clearPendingLayout();
 
 	/**
 	 * Updates the components of this content
@@ -161,17 +160,38 @@ public interface Wrappable
 	 * @param y
 	 *            the starting rendering y position (top)
 	 */
-	void updateComponents(int x, int y);
+	public abstract void updateComponents(int x, int y);
 
 	/**
 	 * Called when this content is closed
 	 */
-	void onClose();
+	public void onClose() {}
 
 	/**
-	 * Set the window instance for this wrappable
+	 * Sets the Window instance. Used by the core.
 	 *
-	 * @param window the window which wraps this wrappable
+	 * @param window
 	 */
-	void setWindow(Window window);
+	public final void setWindow(Window window)
+	{
+		if (window == null)
+			throw new IllegalArgumentException("You can't set a null window instance");
+		this.window = window;
+	}
+
+	/**
+	 * Gets the Window this Application is wrapped in.
+	 *
+	 * @return the window
+	 */
+	public final Window getWindow()
+	{
+		return window;
+	}
+
+	public final void openDialog(Dialog dialog)
+	{
+		window.openDialog(dialog);
+	}
+
 }

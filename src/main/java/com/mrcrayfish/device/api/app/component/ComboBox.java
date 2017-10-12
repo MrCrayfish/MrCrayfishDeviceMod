@@ -55,7 +55,7 @@ public abstract class ComboBox<T> extends Component
     @Override
     public void init(Layout layout)
     {
-        this.layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB()));
+        //this.layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> Gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB()));
     }
 
     @Override
@@ -99,13 +99,16 @@ public abstract class ComboBox<T> extends Component
             drawVerticalLine(xPosition, yPosition, yPosition + height - 1, Color.BLACK.getRGB());
             drawRect(xPosition + 1, yPosition + 1, xPosition + xOffset, yPosition + height - 1, Color.DARK_GRAY.getRGB());
 
-            String text = value.toString();
-            int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
-            if(valWidth > (width - height - 8))
+            if(value != null)
             {
-                text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                String text = value.toString();
+                int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+                if(valWidth > (width - height - 8))
+                {
+                    text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                }
+                fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
             }
-            fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
@@ -127,14 +130,11 @@ public abstract class ComboBox<T> extends Component
         return value;
     }
 
-    protected void updateValue(@Nonnull T newValue)
+    protected void updateValue(T newValue)
     {
-        if(newValue == null)
-            throw new IllegalArgumentException("Value must not be null");
-
         if(value != newValue)
         {
-            if(changeListener != null)
+            if(value != null && changeListener != null)
             {
                 changeListener.onChange(value, newValue);
             }
@@ -182,8 +182,16 @@ public abstract class ComboBox<T> extends Component
         public List(int left, int top, int width, T[] items)
         {
             super(left, top, width);
-            this.list = new ItemList<>(0, 0, width, 6, false);
-            this.layout = new Layout(width, getListHeight(list));
+            this.list = new ItemList<>(0, 0, width + 50, 6, false);
+            this.layout = new Layout(width + 50, getListHeight(list));
+            this.setItems(items);
+        }
+
+        public List(int left, int top, int comboBoxWidth, int listWidth, T[] items)
+        {
+            super(left, top, comboBoxWidth);
+            this.list = new ItemList<>(0, 0, listWidth, 6, false);
+            this.layout = new Layout(listWidth, getListHeight(list));
             this.setItems(items);
         }
 
@@ -208,8 +216,8 @@ public abstract class ComboBox<T> extends Component
             if(items == null)
                 throw new IllegalArgumentException("Cannot set null items");
 
-            if(items.length == 0)
-                throw new IllegalArgumentException("The item array must has at least one value");
+            /*if(items.length == 0)
+                throw new IllegalArgumentException("The item array must has at least one value");*/
 
             this.list.removeAll();
             for(T t : items)
@@ -229,7 +237,6 @@ public abstract class ComboBox<T> extends Component
         public void setListItemRenderer(ListItemRenderer<T> renderer)
         {
             this.list.setListItemRenderer(renderer);
-            this.layout.width = getListWidth(list);
             this.layout.height = getListHeight(list);
         }
 

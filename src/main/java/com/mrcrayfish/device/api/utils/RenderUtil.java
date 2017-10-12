@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.utils;
 
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -81,6 +82,7 @@ public class RenderUtil
 
 	public static void drawApplicationIcon(AppInfo info, double x, double y)
 	{
+		Minecraft.getMinecraft().getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
 		drawRectWithTexture(x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
 	}
 	

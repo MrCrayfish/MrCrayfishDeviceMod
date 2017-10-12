@@ -237,20 +237,16 @@ public class ApplicationBank extends Application
 				}
 				
 				final int amount = Integer.parseInt(amountField.getText());
-				deposit(amount, new Callback()
+				deposit(amount, (nbt, success) ->
 				{
-					@Override
-					public void execute(NBTTagCompound nbt, boolean success)
-					{
-						if(success)
-						{
-							updateEmeraldCount(-amount);
-							int balance = nbt.getInteger("balance");
-							labelAmount.setText("$" + balance);
-							amountField.setText("0");
-						}
-					}
-				});
+                    if(success)
+                    {
+                        updateEmeraldCount(-amount);
+                        int balance = nbt.getInteger("balance");
+                        labelAmount.setText("$" + balance);
+                        amountField.setText("0");
+                    }
+                });
 			}
 		});
 		layoutMain.addComponent(buttonDeposit);
@@ -266,20 +262,16 @@ public class ApplicationBank extends Application
 				}
 				
 				final int amount = Integer.parseInt(amountField.getText());
-				withdraw(Integer.parseInt(amountField.getText()), new Callback()
+				withdraw(Integer.parseInt(amountField.getText()), (nbt, success) ->
 				{
-					@Override
-					public void execute(NBTTagCompound nbt, boolean success)
-					{
-						if(success)
-						{
-							updateEmeraldCount(amount);
-							int balance = nbt.getInteger("balance");
-							labelAmount.setText("$" + balance);
-							amountField.setText("0");
-						}
-					}
-				});
+                    if(success)
+                    {
+                        updateEmeraldCount(amount);
+                        int balance = nbt.getInteger("balance");
+                        labelAmount.setText("$" + balance);
+                        amountField.setText("0");
+                    }
+                });
 			}
 		});
 		layoutMain.addComponent(buttonWithdraw);
@@ -292,18 +284,14 @@ public class ApplicationBank extends Application
 		labelInventory.setShadow(false);
 		layoutMain.addComponent(labelInventory);
 
-		BankUtil.getBalance(new Callback()
+		BankUtil.getBalance((nbt, success) ->
 		{
-			@Override
-			public void execute(NBTTagCompound nbt, boolean success)
-			{
-				if(success)
-				{
-					int balance = nbt.getInteger("balance");
-					labelAmount.setText("$" + balance);
-				}
-			}
-		});
+            if(success)
+            {
+                int balance = nbt.getInteger("balance");
+                labelAmount.setText("$" + balance);
+            }
+        });
 	}
 	
 	public void addNumberClickListener(Button btn, final TextField field, final int number) 
@@ -327,12 +315,12 @@ public class ApplicationBank extends Application
 		labelEmeraldAmount.setText("x " + emeraldAmount);
 	}
 
-	private void deposit(int amount, Callback callback) 
+	private void deposit(int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskDeposit(amount).setCallback(callback));
 	}
 	
-	private void withdraw(int amount, Callback callback) 
+	private void withdraw(int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskWithdraw(amount).setCallback(callback));
 	}

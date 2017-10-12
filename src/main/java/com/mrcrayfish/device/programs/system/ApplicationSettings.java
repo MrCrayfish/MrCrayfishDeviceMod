@@ -47,7 +47,7 @@ public class ApplicationSettings extends Application
 	{
 		super.render(laptop, mc, mouseX, mouseY, active);
 		laptop.drawString(mc.fontRendererObj, "Wallpaper", x + 5, y + 5, Color.WHITE.getRGB());
-		laptop.drawCenteredString(mc.fontRendererObj, Integer.toString(Laptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
+		laptop.drawCenteredString(mc.fontRendererObj, Integer.getFormattedId(Laptop.currentWallpaper + 1), x + 28, y + 18, Color.WHITE.getRGB());
 	}*/
 
 	@Override

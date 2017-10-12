@@ -1,5 +1,8 @@
 package com.mrcrayfish.device.core;
 
+import java.awt.Color;
+import java.util.List;
+
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
@@ -11,15 +14,14 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.Collections;
-import java.util.List;
 
 class TaskBar
 {
@@ -29,7 +31,7 @@ class TaskBar
 	private static Application app_store = new ApplicationAppStore(); 
 	
 	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
-	static final int BAR_HEIGHT = 18;
+	public static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;
 	private Button btnRight;
@@ -91,18 +93,15 @@ class TaskBar
 
 		for(int i = 0; i < APPS_DISPLAYED && i < applications.size(); i++)
 		{
-			Application app = applications.get(i + offset);
-			AppInfo info = app.getInfo();
-			mc.getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
+			AppInfo info = applications.get(i + offset).getInfo();
 			RenderUtil.drawApplicationIcon(info, x + 18 + i * 16, y + 2);
-
-			if(gui.isAppRunning(app.getInfo().getId()))
+			if(gui.isApplicationRunning(info.getFormattedId()))
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
 				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
-		
+
 		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);

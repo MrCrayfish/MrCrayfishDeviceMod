@@ -3,11 +3,16 @@ package com.mrcrayfish.device;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.io.task.TaskGetFileSystem;
+import com.mrcrayfish.device.core.io.task.TaskGetStructure;
+import com.mrcrayfish.device.core.io.task.TaskSendAction;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceCrafting;
+import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.ApplicationBoatRacers;
@@ -21,10 +26,8 @@ import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
-import com.mrcrayfish.device.programs.system.task.TaskAdd;
-import com.mrcrayfish.device.programs.system.task.TaskGetBalance;
-import com.mrcrayfish.device.programs.system.task.TaskPay;
-import com.mrcrayfish.device.programs.system.task.TaskRemove;
+import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
+import com.mrcrayfish.device.programs.system.task.*;
 import com.mrcrayfish.device.proxy.IProxyInterface;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.launchwrapper.Launch;
@@ -68,6 +71,9 @@ public class MrCrayfishDeviceMod
 		/* Block Registering */
 		DeviceBlocks.init();
 		DeviceBlocks.register();
+
+		DeviceItems.init();
+		DeviceItems.register();
 		
 		/* Packet Registering */
 		PacketHandler.init();
@@ -86,14 +92,11 @@ public class MrCrayfishDeviceMod
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
-		if(!DEVELOPER_MODE)
-		{
-			MinecraftForge.EVENT_BUS.register(new EmailEvents());
-		}
+		MinecraftForge.EVENT_BUS.register(new EmailEvents());
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
 
 		registerApplications();
-		
+
 		proxy.init();
 	}
 	
@@ -107,12 +110,18 @@ public class MrCrayfishDeviceMod
 	{
 		// Applications (Both)
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), ApplicationFileBrowser.class);
 
 		// Tasks (Both)
 		TaskManager.registerTask(TaskGetBalance.class);
 		TaskManager.registerTask(TaskPay.class);
 		TaskManager.registerTask(TaskAdd.class);
 		TaskManager.registerTask(TaskRemove.class);
+		TaskManager.registerTask(TaskUpdateApplicationData.class);
+		TaskManager.registerTask(TaskSendAction.class);
+		TaskManager.registerTask(TaskGetFileSystem.class);
+		TaskManager.registerTask(TaskGetFiles.class);
+		TaskManager.registerTask(TaskGetStructure.class);
 
 		if(!DEVELOPER_MODE)
 		{

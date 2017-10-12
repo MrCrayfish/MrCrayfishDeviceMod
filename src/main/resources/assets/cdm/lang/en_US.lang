@@ -3,3 +3,6 @@ tile.laptop.name=Laptop
 
 app.bank.name=Bank
 app.example.name=UI Components
+app.cdm.file_browser.name=File Browser
+
+item.flash_drive.name=Flash Drive

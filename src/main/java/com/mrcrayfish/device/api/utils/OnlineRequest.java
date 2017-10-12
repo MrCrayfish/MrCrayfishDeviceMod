@@ -29,7 +29,7 @@ public class OnlineRequest
 
 	private Thread thread;
 	private boolean running = true;
-	
+
 	private OnlineRequest() 
 	{
 		this.requests = new ConcurrentLinkedQueue<>();

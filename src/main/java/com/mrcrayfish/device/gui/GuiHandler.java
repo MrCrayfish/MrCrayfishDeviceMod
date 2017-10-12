@@ -26,7 +26,7 @@ public class GuiHandler implements IGuiHandler
 			if(tileEntity instanceof TileEntityLaptop)
 			{
 				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-				return new Laptop(laptop.getAppData(), x, y, z);
+				return new Laptop(laptop);
 			}
 		}
 		return null;
