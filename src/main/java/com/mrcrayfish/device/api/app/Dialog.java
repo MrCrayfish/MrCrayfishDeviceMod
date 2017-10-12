@@ -641,10 +641,8 @@ public abstract class Dialog extends Wrappable
 						}
 
 						File file = new File(textFieldFileName.getText(), app, fileData.copy());
-						System.out.println(file.getOpeningApp());
 						browser.addFile(file, (response, success) ->
 						{
-							System.out.println("2:"+file.getOpeningApp());
 							if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
 							{
 								Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
@@ -653,7 +651,6 @@ public abstract class Dialog extends Wrappable
 								{
 									browser.removeFile(file.getName());
 									browser.addFile(file);
-									System.out.println(file.getOpeningApp());
 									dialog.close();
 
 									//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic

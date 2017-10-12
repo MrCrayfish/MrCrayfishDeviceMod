@@ -134,7 +134,7 @@ public abstract class ComboBox<T> extends Component
     {
         if(value != newValue)
         {
-            if(changeListener != null)
+            if(value != null && changeListener != null)
             {
                 changeListener.onChange(value, newValue);
             }

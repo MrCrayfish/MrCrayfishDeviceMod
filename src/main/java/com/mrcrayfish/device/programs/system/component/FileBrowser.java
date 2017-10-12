@@ -68,7 +68,6 @@ public class FileBrowser extends Component
             }
             else
             {
-                System.out.println(file.getOpeningApp());
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
@@ -447,17 +446,17 @@ public class FileBrowser extends Component
             TaskGetStructure task = new TaskGetStructure(drive, Laptop.getPos());
             task.setCallback((nbt, success) ->
             {
+                setLoading(false);
                 if(success)
                 {
                     Folder folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure"));
                     drive.syncRoot(folder);
-                    setCurrentFolder(folder, false);
+                    openFolder(drive.getRoot(), false, null);
                 }
                 else
                 {
                     //TODO error dialog
                 }
-                setLoading(false);
             });
             TaskManager.sendTask(task);
         }

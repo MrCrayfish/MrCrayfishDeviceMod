@@ -10,6 +10,7 @@ import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import com.mrcrayfish.device.core.io.drive.ExternalDrive;
 import com.mrcrayfish.device.core.io.drive.InternalDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
+import com.mrcrayfish.device.init.DeviceItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -202,6 +203,20 @@ public class FileSystem
 	public AbstractDrive getAttachedDrive()
 	{
 		return attachedDrive;
+	}
+
+	@Nullable
+	public ItemStack removeAttachedDrive()
+	{
+		if(attachedDrive != null)
+		{
+			ItemStack stack = new ItemStack(DeviceItems.flash_drive);
+			stack.setStackDisplayName(attachedDrive.getName());
+			stack.getTagCompound().setTag("drive", attachedDrive.toTag());
+			attachedDrive = null;
+			return stack;
+		}
+		return null;
 	}
 
 	private NBTTagCompound getExternalDriveTag(ItemStack stack)
