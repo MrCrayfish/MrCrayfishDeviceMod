@@ -68,6 +68,7 @@ public class FileBrowser extends Component
             }
             else
             {
+                System.out.println(file.getOpeningApp());
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
@@ -135,7 +136,7 @@ public class FileBrowser extends Component
     @Override
     public void init(Layout layout)
     {
-        layoutMain = new Layout(225, mode.getHeight());
+        layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
             Gui.drawRect(x, y, x + width, y + 20, Color.GRAY.getRGB());
@@ -927,17 +928,24 @@ public class FileBrowser extends Component
 
     public enum Mode
     {
-        FULL(145, 26, 6), BASIC(100, 26, 4);
+        FULL(225, 145, 26, 6), BASIC(210, 100, 26, 4);
 
+        private final int width;
         private final int height;
         private final int offset;
         private final int visibleItems;
 
-        Mode(int height, int offset, int visibleItems)
+        Mode(int width, int height, int offset, int visibleItems)
         {
+            this.width = width;
             this.height = height;
             this.offset = offset;
             this.visibleItems = visibleItems;
+        }
+
+        public int getWidth()
+        {
+            return width;
         }
 
         public int getHeight()

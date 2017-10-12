@@ -384,13 +384,8 @@ public abstract class Dialog extends Wrappable
 
 			super.init();
 
-			defaultLayout.setBackground(new Background()
-			{
-				@Override
-				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-				{
-					gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
-				}
+			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
+				Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 			});
 
 			if(messageText != null)
@@ -511,12 +506,12 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 
-			main = new Layout(225, 125);
-			this.setLayout(main);
+			main = new Layout(210, 124);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.openFolder(FileSystem.DIR_HOME);
-			browser.setItemClickListener((file, index, mouseButton) -> {
+			browser.setItemClickListener((file, index, mouseButton) ->
+			{
 				if(mouseButton == 0)
 				{
 					if(!file.isFolder())
@@ -528,7 +523,7 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 28, getHeight() - 20, positiveWidth + 10, 15);
+			buttonPositive = new Button(positiveText, 172, 105, positiveWidth + 10, 15);
 			buttonPositive.setEnabled(false);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
@@ -549,9 +544,11 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 28, getHeight() - 20, negativeWidth + 10, 15);
+			buttonNegative = new Button(negativeText, 125, 105, negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);
+
+			this.setLayout(main);
 		}
 
 		/**
@@ -622,15 +619,14 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 
-			main = new Layout(225, 143);
-			this.setLayout(main);
+			main = new Layout(210, 142);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.openFolder(path);
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 28, getHeight() - 20, positiveWidth + 10, 15);
+			buttonPositive = new Button(positiveText, 172, 123, positiveWidth + 10, 15);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
 				if(mouseButton == 0)
@@ -645,8 +641,10 @@ public abstract class Dialog extends Wrappable
 						}
 
 						File file = new File(textFieldFileName.getText(), app, fileData.copy());
+						System.out.println(file.getOpeningApp());
 						browser.addFile(file, (response, success) ->
 						{
+							System.out.println("2:"+file.getOpeningApp());
 							if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
 							{
 								Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
@@ -655,6 +653,7 @@ public abstract class Dialog extends Wrappable
 								{
 									browser.removeFile(file.getName());
 									browser.addFile(file);
+									System.out.println(file.getOpeningApp());
 									dialog.close();
 
 									//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
@@ -681,13 +680,15 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 28, getHeight() - 20, negativeWidth + 10, 15);
+			buttonNegative = new Button(negativeText, 126, 123, negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
-			textFieldFileName = new TextField(26, 105, 181);
+			textFieldFileName = new TextField(26, 105, 180);
 			textFieldFileName.setFocused(true);
 			main.addComponent(textFieldFileName);
+
+			this.setLayout(main);
 		}
 
 		/**

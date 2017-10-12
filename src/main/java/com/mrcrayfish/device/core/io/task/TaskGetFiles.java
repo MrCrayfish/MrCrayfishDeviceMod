@@ -78,7 +78,7 @@ public class TaskGetFiles extends Task
             this.files.forEach(f -> {
                 NBTTagCompound fileTag = new NBTTagCompound();
                 fileTag.setString("file_name", f.getName());
-                fileTag.setTag("data", f.getData());
+                fileTag.setTag("data", f.toTag());
                 list.appendTag(fileTag);
             });
             nbt.setTag("files", list);

@@ -71,8 +71,6 @@ public class ApplicationManager
 	@Nullable
 	public static AppInfo getApplication(String appId)
 	{
-		String[] s = appId.split("\\.");
-		if(s.length != 2) return null;
-		return APP_INFO.get(new ResourceLocation(s[0], s[1]));
+		return APP_INFO.get(new ResourceLocation(appId.replace(".", ":")));
 	}
 }

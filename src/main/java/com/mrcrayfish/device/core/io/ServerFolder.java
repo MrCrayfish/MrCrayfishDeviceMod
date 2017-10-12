@@ -145,14 +145,14 @@ public class ServerFolder extends ServerFile
         return folderTag;
     }
 
-    public static ServerFolder fromTag(String name, NBTTagCompound ServerFolderTag)
+    public static ServerFolder fromTag(String name, NBTTagCompound folderTag)
     {
         ServerFolder folder = new ServerFolder(name);
 
-        if(ServerFolderTag.hasKey("protected", Constants.NBT.TAG_BYTE))
-            folder.protect = ServerFolderTag.getBoolean("protected");
+        if(folderTag.hasKey("protected", Constants.NBT.TAG_BYTE))
+            folder.protect = folderTag.getBoolean("protected");
 
-        NBTTagCompound fileList = ServerFolderTag.getCompoundTag("files");
+        NBTTagCompound fileList = folderTag.getCompoundTag("files");
         for(String fileName : fileList.getKeySet())
         {
             NBTTagCompound fileTag = fileList.getCompoundTag(fileName);
