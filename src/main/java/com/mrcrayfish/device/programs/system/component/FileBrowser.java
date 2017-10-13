@@ -76,6 +76,8 @@ public class FileBrowser extends Component
         }
     };
 
+    public static Drive mainDrive;
+
     public static boolean refreshList = false;
 
     private final Wrappable wrappable;
@@ -349,25 +351,30 @@ public class FileBrowser extends Component
         if(!loadedStructure)
         {
             setLoading(true);
-            Task task = new TaskGetFileSystem(Laptop.getPos());
+            Task task = new TaskGetFileSystem(Laptop.getPos(), mainDrive == null);
             task.setCallback((nbt, success) ->
             {
                 if(success)
                 {
-                    NBTTagList driveList = nbt.getTagList("drives", Constants.NBT.TAG_COMPOUND);
-                    Drive[] drives = new Drive[driveList.tagCount()];
+                    if(mainDrive == null)
+                    {
+                        NBTTagCompound structureTag = nbt.getCompoundTag("structure");
+                        Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
+                        drive.syncRoot(Folder.fromTag("Root", structureTag));
+                        drive.getRoot().validate();
+                        mainDrive = drive;
+                    }
+                    currentDrive = mainDrive;
+
+                    NBTTagList driveList = nbt.getTagList("available_drives", Constants.NBT.TAG_COMPOUND);
+                    Drive[] drives = new Drive[driveList.tagCount() + 1];
+                    drives[0] = mainDrive;
                     for(int i = 0; i < driveList.tagCount(); i++)
                     {
                         NBTTagCompound driveTag = driveList.getCompoundTagAt(i);
-                        drives[i] = new Drive(driveTag);
+                        drives[i + 1] = new Drive(driveTag);
                     }
                     comboBoxDrive.setItems(drives);
-
-                    NBTTagCompound structureTag = nbt.getCompoundTag("structure");
-                    Drive drive = comboBoxDrive.getValue();
-                    drive.syncRoot(Folder.fromTag("Root", structureTag));
-                    drive.getRoot().validate();
-                    currentDrive = drive;
 
                     Folder folder = currentDrive.getFolder(initialFolder);
                     if(folder != null)

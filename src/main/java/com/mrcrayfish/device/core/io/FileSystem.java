@@ -127,7 +127,7 @@ public class FileSystem
 	public Response readAction(String driveUuid, FileAction action, World world)
 	{
 		UUID uuid = UUID.fromString(driveUuid);
-		AbstractDrive drive = getAvailableDrives(world).get(uuid);
+		AbstractDrive drive = getAvailableDrives(world, true).get(uuid);
 		if(drive != null)
 		{
 			Response response = drive.handleFileAction(action, world);
@@ -145,16 +145,18 @@ public class FileSystem
 		return mainDrive;
 	}
 
-	public Map<UUID, AbstractDrive> getAvailableDrives(World world)
+	public Map<UUID, AbstractDrive> getAvailableDrives(World world, boolean includeMain)
 	{
 		Map<UUID, AbstractDrive> drives = new LinkedHashMap<>();
-		//Main
-		drives.put(mainDrive.getUUID(), mainDrive);
-		//Additional
+
+		if(includeMain)
+			drives.put(mainDrive.getUUID(), mainDrive);
+
 		additionalDrives.forEach(drives::put);
-		//External
+
 		if(attachedDrive != null)
 			drives.put(attachedDrive.getUUID(), attachedDrive);
+
 		//TODO add network drives
 		return drives;
 	}

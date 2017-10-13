@@ -59,7 +59,7 @@ public class TaskGetFiles extends Task
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
             UUID uuid = UUID.fromString(nbt.getString("uuid"));
-            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(uuid);
+            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world, true).get(uuid);
             if(serverDrive != null)
             {
                 ServerFolder found = serverDrive.getFolder(nbt.getString("path"));

@@ -20,6 +20,7 @@ import java.util.UUID;
 public class TaskGetFileSystem extends Task
 {
     private BlockPos pos;
+    private boolean includeMain;
 
     private AbstractDrive mainDrive;
     private Map<UUID, AbstractDrive> availableDrives;
@@ -29,16 +30,18 @@ public class TaskGetFileSystem extends Task
         super("get_file_system");
     }
 
-    public TaskGetFileSystem(BlockPos pos)
+    public TaskGetFileSystem(BlockPos pos, boolean includeMain)
     {
         this();
         this.pos = pos;
+        this.includeMain = includeMain;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
         nbt.setLong("pos", pos.toLong());
+        nbt.setBoolean("include_main", includeMain);
     }
 
     @Override
@@ -49,8 +52,11 @@ public class TaskGetFileSystem extends Task
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
-            mainDrive = fileSystem.getMainDrive();
-            availableDrives = fileSystem.getAvailableDrives(world);
+            if(nbt.getBoolean("include_main"))
+            {
+                mainDrive = fileSystem.getMainDrive();
+            }
+            availableDrives = fileSystem.getAvailableDrives(world, false);
             this.setSuccessful();
         }
     }
@@ -60,6 +66,16 @@ public class TaskGetFileSystem extends Task
     {
         if(this.isSucessful())
         {
+            if(mainDrive != null)
+            {
+                NBTTagCompound mainDriveTag = new NBTTagCompound();
+                mainDriveTag.setString("name", mainDrive.getName());
+                mainDriveTag.setString("uuid", mainDrive.getUUID().toString());
+                mainDriveTag.setString("type", mainDrive.getType().toString());
+                nbt.setTag("main_drive", mainDriveTag);
+                nbt.setTag("structure", mainDrive.getDriveStructure().toTag());
+            }
+
             NBTTagList driveList = new NBTTagList();
             availableDrives.forEach((k, v) -> {
                 NBTTagCompound driveTag = new NBTTagCompound();
@@ -68,8 +84,7 @@ public class TaskGetFileSystem extends Task
                 driveTag.setString("type", v.getType().toString());
                 driveList.appendTag(driveTag);
             });
-            nbt.setTag("drives", driveList);
-            nbt.setTag("structure", mainDrive.getDriveStructure().toTag());
+            nbt.setTag("available_drives", driveList);
         }
     }
 

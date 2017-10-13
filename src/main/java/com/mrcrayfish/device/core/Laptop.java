@@ -114,6 +114,8 @@ public class Laptop extends GuiScreen implements System
 
 		Laptop.pos = null;
         Laptop.system = null;
+
+        FileBrowser.mainDrive = null;
     }
 	
 	@Override
