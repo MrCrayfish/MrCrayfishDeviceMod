@@ -212,6 +212,7 @@ public class Folder extends File
 		{
 			NBTTagCompound fileTag = tagList.getCompoundTagAt(i);
 			File file = File.fromTag(fileTag.getString("file_name"), fileTag.getCompoundTag("data"));
+			file.drive = drive;
 			file.valid = true;
 			file.parent = this;
 			files.add(file);
