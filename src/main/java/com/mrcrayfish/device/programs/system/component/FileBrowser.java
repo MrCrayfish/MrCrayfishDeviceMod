@@ -49,8 +49,9 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
-    private static final Color ITEM_BACKGROUND = new Color(215, 217, 224);
-    private static final Color ITEM_SELECTED = new Color(221, 208, 208);
+    private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
+    private static final Color ITEM_SELECTED = new Color(200, 176, 174);
+    private static final Color PROTECTED_FILE = new Color(155, 237, 242);
 
     private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18)
     {
@@ -70,8 +71,8 @@ public class FileBrowser extends Component
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
-            String text = (file.isProtected() ? TextFormatting.AQUA : TextFormatting.RESET) + file.getName();
-            gui.drawString(Minecraft.getMinecraft().fontRendererObj, text, x + 22, y + 5, Color.WHITE.getRGB());
+            Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
+            gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
         }
     };
 
