@@ -188,21 +188,12 @@ public class File
 	 * @param data
 	 * @param callback
 	 */
-	public void setData(@Nonnull NBTTagCompound data, Callback callback)
+	public void setData(@Nonnull NBTTagCompound data, Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
 
-		if(this.protect)
-		{
-			if(callback != null)
-			{
-				callback.execute(new NBTTagCompound(), false);
-			}
-			return;
-		}
-
-		FileSystem.sendAction(drive, FileAction.Factory.makeData(this, data), (nbt, success) ->
+		FileSystem.sendAction(drive, FileAction.Factory.makeData(this, data), (response, success) ->
 		{
 			if(success)
 			{
@@ -210,7 +201,7 @@ public class File
 			}
 			if(callback != null)
 			{
-				callback.execute(nbt, success);
+				callback.execute(response, success);
 			}
         });
 	}

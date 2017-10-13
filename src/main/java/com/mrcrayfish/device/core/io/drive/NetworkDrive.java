@@ -8,6 +8,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -19,8 +21,10 @@ public final class NetworkDrive extends AbstractDrive
     {
         super(name);
         this.pos = pos;
+        this.root = null;
     }
 
+    @Nullable
     @Override
     public ServerFolder getRoot(World world)
     {
@@ -52,6 +56,13 @@ public final class NetworkDrive extends AbstractDrive
             }
         }
         return FileSystem.createResponse(FileSystem.Status.DRIVE_NETWORK_MISSING, "The network drive could not be found");
+    }
+
+    @Nullable
+    @Override
+    public ServerFolder getFolder(String path)
+    {
+        return null;
     }
 
     @Override

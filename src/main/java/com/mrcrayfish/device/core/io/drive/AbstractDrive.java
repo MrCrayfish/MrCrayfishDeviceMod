@@ -4,15 +4,14 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.ServerFile;
 import com.mrcrayfish.device.core.io.ServerFolder;
 import com.mrcrayfish.device.core.io.action.FileAction;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -20,15 +19,17 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class AbstractDrive
 {
     protected String name;
+    protected UUID uuid;
     protected ServerFolder root;
+
+    AbstractDrive() {}
 
     AbstractDrive(String name)
     {
         this.name = name;
+        this.uuid = UUID.randomUUID();
         this.root = createProtectedFolder("Root");
     }
-
-    AbstractDrive() {}
 
     public String getName()
     {
@@ -38,6 +39,11 @@ public abstract class AbstractDrive
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public UUID getUUID()
+    {
+        return uuid;
     }
 
     public ServerFolder getRoot(World world)
@@ -91,7 +97,7 @@ public abstract class AbstractDrive
      * @param path the directory of the folder
      */
     @Nullable
-    public final ServerFolder getFolder(String path)
+    public ServerFolder getFolder(String path)
     {
         if(path == null)
             throw new IllegalArgumentException("The path can not be null");

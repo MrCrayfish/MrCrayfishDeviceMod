@@ -244,9 +244,15 @@ public class Folder extends File
 	}
 
 	@Override
-	public void setData(@Nonnull NBTTagCompound data)
+	public void setData(@Nonnull NBTTagCompound data) {}
+
+	@Override
+	public void setData(@Nonnull NBTTagCompound data, Callback<FileSystem.Response> callback)
 	{
-		throw new DataException("Data can not be set to a folder");
+		if(callback != null)
+		{
+			callback.execute(FileSystem.createResponse(FileSystem.Status.FAILED, "Can not set data of a folder"), false);
+		}
 	}
 
 	@Override

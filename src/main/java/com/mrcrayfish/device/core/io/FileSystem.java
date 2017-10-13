@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.core.io;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
@@ -35,19 +37,26 @@ public class FileSystem
 	public static final String DIR_HOME = DIR_ROOT + "Home";
 	public static final String LAPTOP_DRIVE_NAME = "Root";
 
-	private final Map<String, AbstractDrive> DRIVES = new LinkedHashMap<>();
-	private AbstractDrive attachedDrive = null; //USB
+	private AbstractDrive mainDrive = null;
+	private Map<UUID, AbstractDrive> additionalDrives = new HashMap<>();
+	private AbstractDrive attachedDrive = null;
 
 	private TileEntity tileEntity;
 	
 	public FileSystem(TileEntity tileEntity, NBTTagCompound fileSystemTag)
 	{
 		this.tileEntity = tileEntity;
+
 		load(fileSystemTag);
 	}
 
 	private void load(NBTTagCompound fileSystemTag)
 	{
+		if(fileSystemTag.hasKey("main_drive", Constants.NBT.TAG_COMPOUND))
+		{
+			mainDrive = InternalDrive.fromTag(fileSystemTag.getCompoundTag("main_drive"));
+		}
+
 		if(fileSystemTag.hasKey("drives", Constants.NBT.TAG_LIST))
 		{
 			NBTTagList tagList = fileSystemTag.getTagList("drives", Constants.NBT.TAG_COMPOUND);
@@ -55,7 +64,7 @@ public class FileSystem
 			{
 				NBTTagCompound driveTag = tagList.getCompoundTagAt(i);
 				AbstractDrive drive = InternalDrive.fromTag(driveTag.getCompoundTag("drive"));
-				DRIVES.put(driveTag.getString("name"), drive);
+				additionalDrives.put(drive.getUUID(), drive);
 			}
 		}
 
@@ -72,24 +81,13 @@ public class FileSystem
 	 */
 	private void setupDefault()
 	{
-		if(!DRIVES.containsKey(FileSystem.LAPTOP_DRIVE_NAME))
+		if(mainDrive == null)
 		{
-			DRIVES.put(FileSystem.LAPTOP_DRIVE_NAME, new InternalDrive(FileSystem.LAPTOP_DRIVE_NAME));
-			tileEntity.markDirty();
-		}
-
-		AbstractDrive drive = DRIVES.get(FileSystem.LAPTOP_DRIVE_NAME);
-		ServerFolder root = drive.getRoot(tileEntity.getWorld());
-
-		if(!root.hasFolder("Home"))
-		{
+			AbstractDrive drive = new InternalDrive(LAPTOP_DRIVE_NAME);
+			ServerFolder root = drive.getRoot(tileEntity.getWorld());
 			root.add(createProtectedFolder("Home"), false);
-			tileEntity.markDirty();
-		}
-
-		if(!root.hasFolder("Application Data"))
-		{
 			root.add(createProtectedFolder("Application Data"), false);
+			mainDrive = drive;
 			tileEntity.markDirty();
 		}
 	}
@@ -126,9 +124,10 @@ public class FileSystem
 		}
 	}
 
-	public Response readAction(String driveName, FileAction action, World world)
+	public Response readAction(String driveUuid, FileAction action, World world)
 	{
-		AbstractDrive drive = getAvailableDrives(world).get(driveName);
+		UUID uuid = UUID.fromString(driveUuid);
+		AbstractDrive drive = getAvailableDrives(world).get(uuid);
 		if(drive != null)
 		{
 			Response response = drive.handleFileAction(action, world);
@@ -141,47 +140,23 @@ public class FileSystem
 		return createResponse(Status.DRIVE_MISSING, "Drive unavailable or missing");
 	}
 
-	@Nullable
-	public AbstractDrive getDrive(String name)
+	public AbstractDrive getMainDrive()
 	{
-		return DRIVES.get(name);
+		return mainDrive;
 	}
 
-	public List<AbstractDrive> getInternalDrives()
+	public Map<UUID, AbstractDrive> getAvailableDrives(World world)
 	{
-		return new ArrayList<>(DRIVES.values());
-	}
-
-	public Map<String, AbstractDrive> getAvailableDrives(World world)
-	{
-		Map<String, AbstractDrive> drives = new LinkedHashMap<>();
-		//Internal
-		DRIVES.forEach(drives::put);
+		Map<UUID, AbstractDrive> drives = new LinkedHashMap<>();
+		//Main
+		drives.put(mainDrive.getUUID(), mainDrive);
+		//Additional
+		additionalDrives.forEach(drives::put);
 		//External
 		if(attachedDrive != null)
-			drives.put(attachedDrive.getName(), attachedDrive);
+			drives.put(attachedDrive.getUUID(), attachedDrive);
 		//TODO add network drives
 		return drives;
-	}
-
-	public NBTTagCompound toTag()
-	{
-		NBTTagCompound fileSystemTag = new NBTTagCompound();
-
-		NBTTagList tagList = new NBTTagList();
-		DRIVES.forEach((k, v) -> {
-			NBTTagCompound driveTag = new NBTTagCompound();
-			driveTag.setString("name", k);
-			driveTag.setTag("drive", v.toTag());
-			tagList.appendTag(driveTag);
-		});
-		fileSystemTag.setTag("drives", tagList);
-
-		if(attachedDrive != null)
-		{
-			fileSystemTag.setTag("external_drive", attachedDrive.toTag());
-		}
-		return fileSystemTag;
 	}
 
 	public boolean setAttachedDrive(ItemStack flashDrive)
@@ -233,6 +208,23 @@ public class FileSystem
 			tagCompound.setTag("drive", new ExternalDrive(stack.getDisplayName()).toTag());
 		}
 		return tagCompound;
+	}
+
+	public NBTTagCompound toTag()
+	{
+		NBTTagCompound fileSystemTag = new NBTTagCompound();
+
+		if(mainDrive != null)
+			fileSystemTag.setTag("main_drive", mainDrive.toTag());
+
+		NBTTagList tagList = new NBTTagList();
+		additionalDrives.forEach((k, v) -> tagList.appendTag(v.toTag()));
+		fileSystemTag.setTag("drives", tagList);
+
+		if(attachedDrive != null)
+			fileSystemTag.setTag("external_drive", attachedDrive.toTag());
+
+		return fileSystemTag;
 	}
 
 	public static Response createSuccessResponse()

@@ -17,7 +17,7 @@ import net.minecraft.world.World;
  */
 public class TaskSendAction extends Task
 {
-    private String drive;
+    private String uuid;
     private FileAction action;
     private BlockPos pos;
 
@@ -31,7 +31,7 @@ public class TaskSendAction extends Task
     public TaskSendAction(Drive drive, FileAction action)
     {
         this();
-        this.drive = drive.getName();
+        this.uuid = drive.getUUID().toString();
         this.action = action;
         this.pos = Laptop.getPos();
     }
@@ -39,7 +39,7 @@ public class TaskSendAction extends Task
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
-        nbt.setString("drive", drive);
+        nbt.setString("uuid", uuid);
         nbt.setTag("action", action.toTag());
         nbt.setLong("pos", pos.toLong());
     }
@@ -52,7 +52,7 @@ public class TaskSendAction extends Task
         if(tileEntity instanceof TileEntityLaptop)
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-            response = laptop.getFileSystem().readAction(nbt.getString("drive"), action, world);
+            response = laptop.getFileSystem().readAction(nbt.getString("uuid"), action, world);
             this.setSuccessful();
         }
     }

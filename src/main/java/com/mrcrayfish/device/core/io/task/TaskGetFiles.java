@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -22,9 +23,10 @@ import java.util.stream.Collectors;
  */
 public class TaskGetFiles extends Task
 {
-    private String drive;
+    private String uuid;
     private String path;
     private BlockPos pos;
+
     private List<ServerFile> files;
 
     private TaskGetFiles()
@@ -35,7 +37,7 @@ public class TaskGetFiles extends Task
     public TaskGetFiles(Folder folder, BlockPos pos)
     {
         this();
-        this.drive = folder.getDrive().getName();
+        this.uuid = folder.getDrive().getUUID().toString();
         this.path = folder.getPath();
         this.pos = pos;
     }
@@ -43,7 +45,7 @@ public class TaskGetFiles extends Task
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
-        nbt.setString("drive", drive);
+        nbt.setString("uuid", uuid);
         nbt.setString("path", path);
         nbt.setLong("pos", pos.toLong());
     }
@@ -56,7 +58,8 @@ public class TaskGetFiles extends Task
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
-            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(nbt.getString("drive"));
+            UUID uuid = UUID.fromString(nbt.getString("uuid"));
+            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(uuid);
             if(serverDrive != null)
             {
                 ServerFolder found = serverDrive.getFolder(nbt.getString("path"));
