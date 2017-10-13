@@ -424,7 +424,7 @@ public abstract class Application extends Wrappable
      */
     public boolean handleFile(File file)
     {
-        return true;
+        return false;
     }
 
 	/**
