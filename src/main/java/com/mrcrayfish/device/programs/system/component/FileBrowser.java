@@ -21,7 +21,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.*;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.task.TaskGetFileSystem;
+import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.object.AppInfo;
@@ -29,7 +29,6 @@ import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -76,7 +75,7 @@ public class FileBrowser extends Component
         }
     };
 
-    public static Drive mainDrive;
+    public static Drive mainDrive; //TODO hide visibility from developers
 
     public static boolean refreshList = false;
 
@@ -351,7 +350,7 @@ public class FileBrowser extends Component
         if(!loadedStructure)
         {
             setLoading(true);
-            Task task = new TaskGetFileSystem(Laptop.getPos(), mainDrive == null);
+            Task task = new TaskSetupFileBrowser(Laptop.getPos(), mainDrive == null);
             task.setCallback((nbt, success) ->
             {
                 if(success)
@@ -360,7 +359,7 @@ public class FileBrowser extends Component
                     {
                         NBTTagCompound structureTag = nbt.getCompoundTag("structure");
                         Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
-                        drive.syncRoot(Folder.fromTag("Root", structureTag));
+                        drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                         drive.getRoot().validate();
                         mainDrive = drive;
                     }

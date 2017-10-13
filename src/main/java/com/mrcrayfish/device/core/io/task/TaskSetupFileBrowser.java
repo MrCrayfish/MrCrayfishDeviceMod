@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class TaskGetFileSystem extends Task
+public class TaskSetupFileBrowser extends Task
 {
     private BlockPos pos;
     private boolean includeMain;
@@ -25,12 +25,12 @@ public class TaskGetFileSystem extends Task
     private AbstractDrive mainDrive;
     private Map<UUID, AbstractDrive> availableDrives;
 
-    private TaskGetFileSystem()
+    private TaskSetupFileBrowser()
     {
         super("get_file_system");
     }
 
-    public TaskGetFileSystem(BlockPos pos, boolean includeMain)
+    public TaskSetupFileBrowser(BlockPos pos, boolean includeMain)
     {
         this();
         this.pos = pos;

@@ -1,17 +1,25 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
+import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -375,17 +383,7 @@ public abstract class Application extends Wrappable
         return laptopPositon;
     }
 
-    public void getApplicationFolder(@Nonnull Callback<Folder> callback)
-    {
-        //TODO fix this
-        /*Task task = new TaskGetFiles(getApplicationFolderPath(), Laptop.getPos(), true);
-        task.setCallback((nbt, success) ->
-        {
-            Folder folder = success ? Folder.fromTag(nbt.getString("file_name"), nbt) : null;
-            callback.execute(folder, success);
-        });
-        TaskManager.sendTask(task);*/
-    }
+
 
     public String getApplicationFolderPath()
     {
