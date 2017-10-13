@@ -283,7 +283,8 @@ public class FileBrowser extends Component
                                 laptop.open(targetApp);
                                 if(!targetApp.handleFile(file))
                                 {
-                                    targetApp.openDialog(new Dialog.Message("Unable to open file"));
+                                    laptop.close(targetApp);
+                                    wrappable.openDialog(new Dialog.Message("Unable to open file"));
                                 }
                             }
                         }
@@ -358,7 +359,7 @@ public class FileBrowser extends Component
                     for(int i = 0; i < driveList.tagCount(); i++)
                     {
                         NBTTagCompound driveTag = driveList.getCompoundTagAt(i);
-                        drives[i] = new Drive(driveTag.getString("name"), Drive.Type.fromString(driveTag.getString("type")));
+                        drives[i] = new Drive(driveTag);
                     }
                     comboBoxDrive.setItems(drives);
 
@@ -368,7 +369,7 @@ public class FileBrowser extends Component
                     drive.getRoot().validate();
                     currentDrive = drive;
 
-                    Folder folder = getFolder(initialFolder);
+                    Folder folder = currentDrive.getFolder(initialFolder);
                     if(folder != null)
                     {
                         pushPredecessors(folder);
@@ -405,33 +406,6 @@ public class FileBrowser extends Component
     {
         this.initialFolder = directory;
         //TODO if synced structure, handle differently
-    }
-
-    //TODO move into drive
-    private Folder getFolder(String path)
-    {
-        if(path == null)
-            throw new NullPointerException("The path can not be null");
-
-        if(!FileSystem.PATTERN_DIRECTORY.matcher(path).matches())
-            throw new IllegalArgumentException("The path \"" + path + "\" does not follow the correct format");
-
-        if(path.equals("/"))
-            return currentDrive.getRoot();
-
-        Folder prev = currentDrive.getRoot();
-        String[] folders = path.split("/");
-        if(folders.length > 0 && folders.length <= 10)
-        {
-            for(int i = 1; i < folders.length; i++)
-            {
-                Folder temp = prev.getFolder(folders[i]);
-                if(temp == null) return null;
-                prev = temp;
-            }
-            return prev;
-        }
-        return null;
     }
 
     private void openDrive(Drive drive)
