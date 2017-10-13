@@ -1,8 +1,9 @@
 itemGroup.cdmTabDevice=MrCrayfish's Device Mod
+
 tile.laptop.name=Laptop
+
+item.flash_drive.name=Flash Drive
 
 app.bank.name=Bank
 app.example.name=UI Components
 app.cdm.file_browser.name=File Browser
-
-item.flash_drive.name=Flash Drive

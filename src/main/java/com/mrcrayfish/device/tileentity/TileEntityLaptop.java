@@ -42,10 +42,8 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public void openClose()
 	{
 		open = !open;
-		if(open)
-		{
-			TileEntityUtil.markBlockForUpdate(world, pos);
-		}
+		markDirty();
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 	
 	@Override
@@ -77,7 +75,16 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.readFromNBT(compound);
 		this.open = compound.getBoolean("open");
 		this.data = compound.getCompoundTag("data");
-		this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
+
+		if(compound.hasKey("file_system"))
+		{
+			this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
+		}
+
+		if(compound.hasKey("has_external_drive"))
+		{
+			this.hasExternalDrive = compound.getBoolean("has_external_drive");
+		}
 	}
 	
 	@Override
@@ -94,6 +101,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
 		NBTTagCompound tag = pkt.getNbtCompound();
+		super.readFromNBT(tag);
 		this.open = tag.getBoolean("open");
 		this.data.setTag("application", tag.getCompoundTag("application"));
 		this.data.setTag("system", tag.getCompoundTag("system"));
@@ -103,7 +111,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		NBTTagCompound tag = super.getUpdateTag();
 		tag.setBoolean("open", this.open);
 		tag.setTag("application", createAndGetTag("application"));
 		tag.setTag("system", createAndGetTag("system"));
@@ -114,7 +122,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
-		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
+		return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
 	}
 
 	@Override
