@@ -12,12 +12,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.UUID;
+
 /**
  * Author: MrCrayfish
  */
 public class TaskGetStructure extends Task
 {
-    private String drive;
+    private String uuid;
     private BlockPos pos;
 
     private ServerFolder folder;
@@ -30,14 +32,14 @@ public class TaskGetStructure extends Task
     public TaskGetStructure(Drive drive, BlockPos pos)
     {
         this();
-        this.drive = drive.getName();
+        this.uuid = drive.getUUID().toString();
         this.pos = pos;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
-        nbt.setString("drive", drive);
+        nbt.setString("uuid", uuid);
         nbt.setLong("pos", pos.toLong());
     }
 
@@ -49,7 +51,8 @@ public class TaskGetStructure extends Task
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
-            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(nbt.getString("drive"));
+            UUID uuid = UUID.fromString(nbt.getString("uuid"));
+            AbstractDrive serverDrive = fileSystem.getAvailableDrives(world).get(uuid);
             if(serverDrive != null)
             {
                 folder = serverDrive.getDriveStructure();

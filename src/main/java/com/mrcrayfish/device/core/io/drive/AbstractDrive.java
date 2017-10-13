@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core.io.drive;
 
+import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.ServerFile;
 import com.mrcrayfish.device.core.io.ServerFolder;
@@ -13,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -20,11 +22,13 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class AbstractDrive
 {
     protected String name;
+    protected UUID uuid;
     protected ServerFolder root;
 
     AbstractDrive(String name)
     {
         this.name = name;
+        this.uuid = UUID.randomUUID();
         this.root = createProtectedFolder("Root");
     }
 
@@ -38,6 +42,11 @@ public abstract class AbstractDrive
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public UUID getUUID()
+    {
+        return uuid;
     }
 
     public ServerFolder getRoot(World world)

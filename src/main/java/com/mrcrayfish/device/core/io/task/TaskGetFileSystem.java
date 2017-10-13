@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -20,7 +21,8 @@ public class TaskGetFileSystem extends Task
 {
     private BlockPos pos;
 
-    private Map<String, AbstractDrive> drives;
+    private AbstractDrive mainDrive;
+    private Map<UUID, AbstractDrive> availableDrives;
 
     private TaskGetFileSystem()
     {
@@ -47,11 +49,9 @@ public class TaskGetFileSystem extends Task
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
-            drives = fileSystem.getAvailableDrives(world);
-            if(drives.containsKey(FileSystem.LAPTOP_DRIVE_NAME))
-            {
-                this.setSuccessful();
-            }
+            mainDrive = fileSystem.getMainDrive();
+            availableDrives = fileSystem.getAvailableDrives(world);
+            this.setSuccessful();
         }
     }
 
@@ -61,16 +61,15 @@ public class TaskGetFileSystem extends Task
         if(this.isSucessful())
         {
             NBTTagList driveList = new NBTTagList();
-            drives.forEach((k, v) -> {
+            availableDrives.forEach((k, v) -> {
                 NBTTagCompound driveTag = new NBTTagCompound();
                 driveTag.setString("name", v.getName());
+                driveTag.setString("uuid", v.getUUID().toString());
                 driveTag.setString("type", v.getType().toString());
                 driveList.appendTag(driveTag);
             });
             nbt.setTag("drives", driveList);
-
-            AbstractDrive rootDrive = drives.get(FileSystem.LAPTOP_DRIVE_NAME);
-            nbt.setTag("structure", rootDrive.getDriveStructure().toTag());
+            nbt.setTag("structure", mainDrive.getDriveStructure().toTag());
         }
     }
 
