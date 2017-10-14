@@ -218,8 +218,7 @@ public class FileSystem
 
 	public static void getApplicationFolder(Application app, Callback<Folder> callback)
 	{
-		//TODO fix this
-		if(FileBrowser.mainDrive == null)
+		if(Laptop.getMainDrive() == null)
 		{
 			Task task = new TaskGetMainDrive(Laptop.getPos());
 			task.setCallback((nbt, success) ->
@@ -243,7 +242,7 @@ public class FileSystem
 
 	private static void setupApplicationFolder(Application app, Callback<Folder> callback)
 	{
-		Folder folder = FileBrowser.mainDrive.getFolder(FileSystem.DIR_APPLICATION_DATA);
+		Folder folder = Laptop.getMainDrive().getFolder(FileSystem.DIR_APPLICATION_DATA);
 		if(folder != null)
 		{
 			if(folder.hasFolder(app.getInfo().getFormattedId()))

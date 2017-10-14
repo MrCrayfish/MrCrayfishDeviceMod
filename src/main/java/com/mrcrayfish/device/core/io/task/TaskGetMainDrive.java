@@ -80,9 +80,9 @@ public class TaskGetMainDrive extends Task
                 drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                 drive.getRoot().validate();
 
-                if(FileBrowser.mainDrive == null)
+                if(Laptop.getMainDrive() == null)
                 {
-                    FileBrowser.mainDrive = drive;
+                    Laptop.setMainDrive(drive);
                 }
             }
         }

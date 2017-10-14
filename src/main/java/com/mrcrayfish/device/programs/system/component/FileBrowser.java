@@ -76,8 +76,6 @@ public class FileBrowser extends Component
         }
     };
 
-    public static Drive mainDrive; //TODO hide visibility from developers
-
     public static boolean refreshList = false;
 
     private final Wrappable wrappable;
@@ -351,24 +349,23 @@ public class FileBrowser extends Component
         if(!loadedStructure)
         {
             setLoading(true);
-            Task task = new TaskSetupFileBrowser(Laptop.getPos(), mainDrive == null);
+            Task task = new TaskSetupFileBrowser(Laptop.getPos(), Laptop.getMainDrive() == null);
             task.setCallback((nbt, success) ->
             {
                 if(success)
                 {
-                    if(mainDrive == null)
+                    if(Laptop.getMainDrive() == null)
                     {
                         NBTTagCompound structureTag = nbt.getCompoundTag("structure");
                         Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
                         drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
                         drive.getRoot().validate();
-                        mainDrive = drive;
+                        Laptop.setMainDrive(drive);
                     }
-                    currentDrive = mainDrive;
 
                     NBTTagList driveList = nbt.getTagList("available_drives", Constants.NBT.TAG_COMPOUND);
                     Drive[] drives = new Drive[driveList.tagCount() + 1];
-                    drives[0] = mainDrive;
+                    drives[0] = currentDrive = Laptop.getMainDrive();
                     for(int i = 0; i < driveList.tagCount(); i++)
                     {
                         NBTTagCompound driveTag = driveList.getCompoundTagAt(i);
