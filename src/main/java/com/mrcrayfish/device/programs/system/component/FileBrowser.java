@@ -49,6 +49,7 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
+    private static final Color HEADER_BACKGROUND = new Color(114, 120, 138);
     private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
     private static final Color ITEM_SELECTED = new Color(200, 176, 174);
     private static final Color PROTECTED_FILE = new Color(155, 237, 242);
@@ -138,7 +139,7 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Color.GRAY.getRGB());
+            Gui.drawRect(x, y, x + width, y + 20, HEADER_BACKGROUND.getRGB());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
