@@ -11,8 +11,11 @@ import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import com.mrcrayfish.device.core.io.drive.ExternalDrive;
 import com.mrcrayfish.device.core.io.drive.InternalDrive;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
+import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import com.mrcrayfish.device.init.DeviceItems;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,6 +25,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -127,7 +131,7 @@ public class FileSystem
 	public Response readAction(String driveUuid, FileAction action, World world)
 	{
 		UUID uuid = UUID.fromString(driveUuid);
-		AbstractDrive drive = getAvailableDrives(world).get(uuid);
+		AbstractDrive drive = getAvailableDrives(world, true).get(uuid);
 		if(drive != null)
 		{
 			Response response = drive.handleFileAction(action, world);
@@ -145,16 +149,18 @@ public class FileSystem
 		return mainDrive;
 	}
 
-	public Map<UUID, AbstractDrive> getAvailableDrives(World world)
+	public Map<UUID, AbstractDrive> getAvailableDrives(World world, boolean includeMain)
 	{
 		Map<UUID, AbstractDrive> drives = new LinkedHashMap<>();
-		//Main
-		drives.put(mainDrive.getUUID(), mainDrive);
-		//Additional
+
+		if(includeMain)
+			drives.put(mainDrive.getUUID(), mainDrive);
+
 		additionalDrives.forEach(drives::put);
-		//External
+
 		if(attachedDrive != null)
 			drives.put(attachedDrive.getUUID(), attachedDrive);
+
 		//TODO add network drives
 		return drives;
 	}
@@ -208,6 +214,76 @@ public class FileSystem
 			tagCompound.setTag("drive", new ExternalDrive(stack.getDisplayName()).toTag());
 		}
 		return tagCompound;
+	}
+
+	public static void getApplicationFolder(Application app, Callback<Folder> callback)
+	{
+		if(Laptop.getMainDrive() == null)
+		{
+			Task task = new TaskGetMainDrive(Laptop.getPos());
+			task.setCallback((nbt, success) ->
+			{
+				if(success)
+				{
+					setupApplicationFolder(app, callback);
+				}
+				else
+				{
+					//TODO error dialog
+				}
+			});
+			TaskManager.sendTask(task);
+		}
+		else
+		{
+			setupApplicationFolder(app, callback);
+		}
+	}
+
+	private static void setupApplicationFolder(Application app, Callback<Folder> callback)
+	{
+		Folder folder = Laptop.getMainDrive().getFolder(FileSystem.DIR_APPLICATION_DATA);
+		if(folder != null)
+		{
+			if(folder.hasFolder(app.getInfo().getFormattedId()))
+			{
+				Folder appFolder = folder.getFolder(app.getInfo().getFormattedId());
+				if(appFolder.isSynced())
+				{
+					callback.execute(appFolder, true);
+				}
+				else
+				{
+					Task task = new TaskGetFiles(appFolder, Laptop.getPos());
+					task.setCallback((nbt, success) ->
+					{
+						if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
+						{
+							NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
+							appFolder.syncFiles(files);
+						}
+						else
+						{
+							//TODO error dialog
+						}
+						callback.execute(appFolder, success);
+					});
+					TaskManager.sendTask(task);
+				}
+			}
+			else
+			{
+				Folder appFolder = new Folder(app.getInfo().getFormattedId());
+				folder.add(appFolder, (response, success) ->
+				{
+					callback.execute(appFolder, response.getStatus() == FileSystem.Status.SUCCESSFUL);
+				});
+			}
+		}
+		else
+		{
+			//TODO error dialog
+		}
 	}
 
 	public NBTTagCompound toTag()

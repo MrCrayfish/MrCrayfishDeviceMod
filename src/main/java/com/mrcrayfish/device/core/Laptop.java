@@ -5,6 +5,7 @@ import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.programs.system.SystemApplication;
@@ -53,6 +54,7 @@ public class Laptop extends GuiScreen implements System
 
 	private static System system;
 	private static BlockPos pos;
+	private static Drive mainDrive;
 
 	private TaskBar bar;
 	private Window[] windows;
@@ -114,6 +116,7 @@ public class Laptop extends GuiScreen implements System
 
 		Laptop.pos = null;
         Laptop.system = null;
+		Laptop.mainDrive = null;
     }
 	
 	@Override
@@ -545,6 +548,20 @@ public class Laptop extends GuiScreen implements System
 	public static System getSystem()
 	{
 		return system;
+	}
+
+	public static void setMainDrive(Drive mainDrive)
+	{
+		if(Laptop.mainDrive == null)
+		{
+			Laptop.mainDrive = mainDrive;
+		}
+	}
+
+	@Nullable
+	public static Drive getMainDrive()
+	{
+		return mainDrive;
 	}
 
 	@Override

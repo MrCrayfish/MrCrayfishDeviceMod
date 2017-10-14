@@ -1,35 +1,35 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * Author: MrCrayfish
  */
-public class TaskGetFileSystem extends Task
+public class TaskGetMainDrive extends Task
 {
     private BlockPos pos;
 
     private AbstractDrive mainDrive;
-    private Map<UUID, AbstractDrive> availableDrives;
 
-    private TaskGetFileSystem()
+    private TaskGetMainDrive()
     {
-        super("get_file_system");
+        super("get_main_drive");
     }
 
-    public TaskGetFileSystem(BlockPos pos)
+    public TaskGetMainDrive(BlockPos pos)
     {
         this();
         this.pos = pos;
@@ -50,7 +50,6 @@ public class TaskGetFileSystem extends Task
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
             FileSystem fileSystem = laptop.getFileSystem();
             mainDrive = fileSystem.getMainDrive();
-            availableDrives = fileSystem.getAvailableDrives(world);
             this.setSuccessful();
         }
     }
@@ -60,15 +59,11 @@ public class TaskGetFileSystem extends Task
     {
         if(this.isSucessful())
         {
-            NBTTagList driveList = new NBTTagList();
-            availableDrives.forEach((k, v) -> {
-                NBTTagCompound driveTag = new NBTTagCompound();
-                driveTag.setString("name", v.getName());
-                driveTag.setString("uuid", v.getUUID().toString());
-                driveTag.setString("type", v.getType().toString());
-                driveList.appendTag(driveTag);
-            });
-            nbt.setTag("drives", driveList);
+            NBTTagCompound mainDriveTag = new NBTTagCompound();
+            mainDriveTag.setString("name", mainDrive.getName());
+            mainDriveTag.setString("uuid", mainDrive.getUUID().toString());
+            mainDriveTag.setString("type", mainDrive.getType().toString());
+            nbt.setTag("main_drive", mainDriveTag);
             nbt.setTag("structure", mainDrive.getDriveStructure().toTag());
         }
     }
@@ -76,6 +71,20 @@ public class TaskGetFileSystem extends Task
     @Override
     public void processResponse(NBTTagCompound nbt)
     {
+        if(this.isSucessful())
+        {
+            if(Minecraft.getMinecraft().currentScreen instanceof Laptop)
+            {
+                NBTTagCompound structureTag = nbt.getCompoundTag("structure");
+                Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
+                drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
+                drive.getRoot().validate();
 
+                if(Laptop.getMainDrive() == null)
+                {
+                    Laptop.setMainDrive(drive);
+                }
+            }
+        }
     }
 }

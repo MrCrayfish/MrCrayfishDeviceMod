@@ -79,7 +79,12 @@ public abstract class AbstractDrive
                     }
                     break;
                 case DATA:
-
+                    file = folder.getFile(actionData.getString("file_name"));
+                    if(file != null)
+                    {
+                        return file.setData(actionData.getCompoundTag("data"));
+                    }
+                    break;
             }
         }
         return FileSystem.createResponse(FileSystem.Status.DRIVE_MISSING, "Invalid directory");

@@ -5,6 +5,7 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.core.io.FileSystem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
@@ -50,12 +51,18 @@ public class ApplicationNoteStash extends Application
 		layoutMain.setInitListener(() ->
 		{
 			notes.getItems().clear();
-			getApplicationFolder((folder, success) ->
+			FileSystem.getApplicationFolder(this, (folder, success) ->
 			{
-				folder.search(file -> file.isForApplication(this)).stream().forEach(file ->
+				if(success)
 				{
-					notes.addItem(Note.fromTag(file.getData()));
-				});
+					folder.search(file -> file.isForApplication(this)).forEach(file -> {
+						notes.addItem(Note.fromTag(file.getData()));
+					});
+				}
+				else
+				{
+					//TODO error dialog
+				}
             });
 		});
 

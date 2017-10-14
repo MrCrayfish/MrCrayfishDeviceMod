@@ -21,7 +21,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.*;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.task.TaskGetFileSystem;
+import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.object.AppInfo;
@@ -29,7 +29,6 @@ import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -50,8 +49,10 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
-    private static final Color ITEM_BACKGROUND = new Color(215, 217, 224);
-    private static final Color ITEM_SELECTED = new Color(221, 208, 208);
+    private static final Color HEADER_BACKGROUND = new Color(114, 120, 138);
+    private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
+    private static final Color ITEM_SELECTED = new Color(200, 176, 174);
+    private static final Color PROTECTED_FILE = new Color(155, 237, 242);
 
     private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18)
     {
@@ -71,8 +72,8 @@ public class FileBrowser extends Component
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
-            String text = (file.isProtected() ? TextFormatting.AQUA : TextFormatting.RESET) + file.getName();
-            gui.drawString(Minecraft.getMinecraft().fontRendererObj, text, x + 22, y + 5, Color.WHITE.getRGB());
+            Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
+            gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
         }
     };
 
@@ -138,7 +139,7 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Color.GRAY.getRGB());
+            Gui.drawRect(x, y, x + width, y + 20, HEADER_BACKGROUND.getRGB());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
@@ -349,25 +350,29 @@ public class FileBrowser extends Component
         if(!loadedStructure)
         {
             setLoading(true);
-            Task task = new TaskGetFileSystem(Laptop.getPos());
+            Task task = new TaskSetupFileBrowser(Laptop.getPos(), Laptop.getMainDrive() == null);
             task.setCallback((nbt, success) ->
             {
                 if(success)
                 {
-                    NBTTagList driveList = nbt.getTagList("drives", Constants.NBT.TAG_COMPOUND);
-                    Drive[] drives = new Drive[driveList.tagCount()];
+                    if(Laptop.getMainDrive() == null)
+                    {
+                        NBTTagCompound structureTag = nbt.getCompoundTag("structure");
+                        Drive drive = new Drive(nbt.getCompoundTag("main_drive"));
+                        drive.syncRoot(Folder.fromTag(FileSystem.LAPTOP_DRIVE_NAME, structureTag));
+                        drive.getRoot().validate();
+                        Laptop.setMainDrive(drive);
+                    }
+
+                    NBTTagList driveList = nbt.getTagList("available_drives", Constants.NBT.TAG_COMPOUND);
+                    Drive[] drives = new Drive[driveList.tagCount() + 1];
+                    drives[0] = currentDrive = Laptop.getMainDrive();
                     for(int i = 0; i < driveList.tagCount(); i++)
                     {
                         NBTTagCompound driveTag = driveList.getCompoundTagAt(i);
-                        drives[i] = new Drive(driveTag);
+                        drives[i + 1] = new Drive(driveTag);
                     }
                     comboBoxDrive.setItems(drives);
-
-                    NBTTagCompound structureTag = nbt.getCompoundTag("structure");
-                    Drive drive = comboBoxDrive.getValue();
-                    drive.syncRoot(Folder.fromTag("Root", structureTag));
-                    drive.getRoot().validate();
-                    currentDrive = drive;
 
                     Folder folder = currentDrive.getFolder(initialFolder);
                     if(folder != null)
