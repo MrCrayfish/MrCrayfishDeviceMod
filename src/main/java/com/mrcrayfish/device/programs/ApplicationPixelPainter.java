@@ -268,7 +268,6 @@ public class ApplicationPixelPainter extends Application
 					//TODO error dialog
 				}
 			}
-			listPictures.removeItem(listPictures.getSelectedIndex());
 		});
 		layoutLoadPicture.addComponent(btnDeleteSavedPicture);
 

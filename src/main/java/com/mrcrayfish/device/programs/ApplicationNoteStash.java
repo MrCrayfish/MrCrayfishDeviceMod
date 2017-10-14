@@ -55,8 +55,9 @@ public class ApplicationNoteStash extends Application
 			{
 				if(success)
 				{
-					folder.search(file -> file.isForApplication(this)).forEach(file -> {
-						notes.addItem(Note.fromTag(file.getData()));
+					folder.search(file -> file.isForApplication(this)).forEach(file ->
+					{
+						notes.addItem(Note.fromFile(file));
 					});
 				}
 				else
@@ -98,12 +99,31 @@ public class ApplicationNoteStash extends Application
 		{
             if(notes.getSelectedIndex() != -1)
             {
-            	//TODO fix deleting
-            	//notes.getSelectedItem().delete();
-                notes.removeItem(notes.getSelectedIndex());
-                btnView.setEnabled(false);
-                btnDelete.setEnabled(false);
-                markDirty();
+				if(notes.getSelectedIndex() != -1)
+				{
+					Note note = notes.getSelectedItem();
+					File file = note.getSource();
+					if(file != null)
+					{
+						file.delete((o, success) ->
+						{
+							if(success)
+							{
+								notes.removeItem(notes.getSelectedIndex());
+								btnView.setEnabled(false);
+								btnDelete.setEnabled(false);
+							}
+							else
+							{
+								//TODO error dialog
+							}
+						});
+					}
+					else
+					{
+						//TODO error dialog
+					}
+				}
             }
         });
 		layoutMain.addComponent(btnDelete);
@@ -175,6 +195,13 @@ public class ApplicationNoteStash extends Application
 	public void save(NBTTagCompound tagCompound) {}
 
 	@Override
+	public void onClose()
+	{
+		super.onClose();
+		notes.removeAll();
+	}
+
+	@Override
 	public boolean handleFile(File file)
 	{
 		if(!PREDICATE_FILE_NOTE.test(file))
@@ -189,6 +216,7 @@ public class ApplicationNoteStash extends Application
 
 	private static class Note
 	{
+		private File source;
 		private String title;
 		private String content;
 
@@ -196,6 +224,11 @@ public class ApplicationNoteStash extends Application
 		{
 			this.title = title;
 			this.content = content;
+		}
+
+		public File getSource()
+		{
+			return source;
 		}
 
 		public String getTitle()
@@ -214,9 +247,11 @@ public class ApplicationNoteStash extends Application
 			return title;
 		}
 
-		public static Note fromTag(NBTTagCompound noteTag)
+		public static Note fromFile(File file)
 		{
-			return new Note(noteTag.getString("title"), noteTag.getString("content"));
+			Note note = new Note(file.getData().getString("title"), file.getData().getString("content"));
+			note.source = file;
+			return note;
 		}
 	}
 }
