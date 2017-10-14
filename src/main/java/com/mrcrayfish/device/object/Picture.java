@@ -1,11 +1,13 @@
 package com.mrcrayfish.device.object;
 
+import com.mrcrayfish.device.api.io.File;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
 public class Picture 
 {
+	private File source;
 	private String name;
 	private String author;
 	public int[][] pixels;
@@ -19,7 +21,12 @@ public class Picture
 		this.size = size;
 	}
 
-	public String getName() 
+	public File getSource()
+	{
+		return source;
+	}
+
+	public String getName()
 	{
 		return name;
 	}
@@ -85,18 +92,17 @@ public class Picture
 		tagCompound.setTag("Pixels", pixelList);
 	}
 	
-	public static Picture readFromNBT(NBTTagCompound tagCompound)
+	public static Picture fromFile(File file)
 	{
-		NBTTagList pixelList = (NBTTagList) tagCompound.getTag("Pixels");
+		NBTTagList pixelList = (NBTTagList) file.getData().getTag("Pixels");
 		Size size = Size.getFromSize(pixelList.tagCount());
-		Picture picture = new Picture(tagCompound.getString("Name"), tagCompound.getString("Author"), size);
-		
+		Picture picture = new Picture(file.getData().getString("Name"), file.getData().getString("Author"), size);
+		picture.source = file;
 		picture.pixels = new int[size.width][size.height];
 		for(int i = 0; i < pixelList.tagCount(); i++)
 		{
 			picture.pixels[i] = pixelList.getIntArrayAt(i);
 		}
-		
 		return picture;
 	}
 	
