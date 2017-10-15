@@ -70,7 +70,7 @@ public class FileBrowser extends Component
             else
             {
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
-                if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
+                RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
             Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
             gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
