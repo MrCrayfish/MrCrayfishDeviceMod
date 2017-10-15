@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.utils;
 
+import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -62,6 +63,25 @@ public class RenderUtil
 		buffer.pos(x + width, y, 0).tex(1, 0).endVertex();
 		buffer.pos(x, y, 0).tex(0, 0).endVertex();
 		tessellator.draw();
+	}
+
+	public static void drawRectWithTexture(double x, double y, float u, float v, int width, int height, float textureWidth, float textureHeight, int sourceWidth, int sourceHeight)
+	{
+		float scaleWidth = 1.0F / sourceWidth;
+		float scaleHeight = 1.0F / sourceHeight;
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer buffer = tessellator.getBuffer();
+		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buffer.pos(x, y + height, 0).tex((double)(u * scaleWidth), (double)(v + textureHeight) * scaleHeight).endVertex();
+		buffer.pos(x + width, y + height, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v + textureHeight) * scaleHeight).endVertex();
+		buffer.pos(x + width, y, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v * scaleHeight)).endVertex();
+		buffer.pos(x, y, 0).tex((double)(u * scaleWidth), (double)(v * scaleHeight)).endVertex();
+		tessellator.draw();
+	}
+
+	public static void drawApplicationIcon(AppInfo info, double x, double y)
+	{
+		drawRectWithTexture(x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
 	}
 	
 	public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)

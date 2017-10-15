@@ -1,15 +1,6 @@
 package com.mrcrayfish.device.core;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import org.lwjgl.opengl.GL11;
-
-import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.component.Button;
@@ -17,16 +8,20 @@ import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
-import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
-public class TaskBar
+import java.awt.*;
+import java.util.Collections;
+import java.util.List;
+
+class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 	
@@ -34,12 +29,19 @@ public class TaskBar
 	private static Application app_store = new ApplicationAppStore(); 
 	
 	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
-	public static final int BAR_HEIGHT = 18;
+	static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;
 	private Button btnRight;
 	
 	private int offset = 0;
+
+	private List<Application> applications;
+
+	public TaskBar(List<Application> applications)
+	{
+		this.applications = applications;
+	}
 
 	public void init(int posX, int posY)
 	{
@@ -65,7 +67,7 @@ public class TaskBar
 			@Override
 			public void onClick(Component c, int mouseButton)
 			{
-				if(offset + APPS_DISPLAYED < ApplicationManager.getApps().size())
+				if(offset + APPS_DISPLAYED < applications.size())
 				{
 					offset++;
 				}
@@ -87,26 +89,19 @@ public class TaskBar
 		btnLeft.render(gui, mc, btnLeft.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
 		btnRight.render(gui, mc, btnRight.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
 
-		for(int i = 0; i < APPS_DISPLAYED && i < ApplicationManager.getApps().size(); i++)
+		for(int i = 0; i < APPS_DISPLAYED && i < applications.size(); i++)
 		{
-			Application app = ApplicationManager.getApps().get(i + offset);
-			if(app.getIcon() != null)
-			{
-				mc.getTextureManager().bindTexture(app.getIcon().getResource());
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, app.getIcon().getU(), app.getIcon().getV(), 14, 14);
-			}
-			else
+			Application app = applications.get(i + offset);
+			AppInfo info = app.getInfo();
+			mc.getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
+			RenderUtil.drawApplicationIcon(info, x + 18 + i * 16, y + 2);
+
+			if(gui.isAppRunning(app.getInfo().getId()))
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
-				gui.drawTexturedModalRect(x + 18 + i * 16, y + 2, 0, 30, 14, 14);
-			}
-			
-			if(gui.isAppRunning(app.getID()))
-			{
 				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
-		
 		
 		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
@@ -119,23 +114,23 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 316, y + 1, x + 330, y + 16))
 		{
 			gui.drawTexturedModalRect(x + 315, y + 1, 35, 0, 16, 16);
-			gui.drawHoveringText(Collections.singletonList(settings.getDisplayName()), mouseX, mouseY);
+			gui.drawHoveringText(Collections.singletonList(settings.getInfo().getName()), mouseX, mouseY);
 		}
 		
 		if(isMouseInside(mouseX, mouseY, x + 300, y + 1, x + 314, y + 16))
 		{
 			gui.drawTexturedModalRect(x + 299, y + 1, 35, 0, 16, 16);
-			gui.drawHoveringText(Collections.singletonList(app_store.getDisplayName()), mouseX, mouseY);
+			gui.drawHoveringText(Collections.singletonList(app_store.getInfo().getName()), mouseX, mouseY);
 		}
 		
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex < offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
+			if(appIndex < offset + APPS_DISPLAYED && appIndex < applications.size())
 			{
 				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
-				gui.drawHoveringText(Collections.singletonList(ApplicationManager.getApps().get(appIndex).getDisplayName()), mouseX, mouseY);
+				gui.drawHoveringText(Collections.singletonList(applications.get(appIndex).getInfo().getName()), mouseX, mouseY);
 			}
 		}
 		
@@ -163,9 +158,9 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex <= offset + APPS_DISPLAYED && appIndex < ApplicationManager.getApps().size())
+			if(appIndex <= offset + APPS_DISPLAYED && appIndex < applications.size())
 			{
-				laptop.open(ApplicationManager.getApps().get(appIndex));
+				laptop.open(applications.get(appIndex));
 				return;
 			}
 		}

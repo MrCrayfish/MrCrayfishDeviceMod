@@ -20,14 +20,12 @@ public class ApplicationTest extends Application
 {
 	public ApplicationTest()
 	{
-		super(Reference.MOD_ID + "TestApp", "Test App");
+		//super(Reference.MOD_ID + "TestApp", "Test App");
 	}
 	
 	@Override
 	public void init()
 	{
-		super.init();
-		
 		Layout one = new Layout(100, 100);
 		one.setBackground(new Background()
 		{
