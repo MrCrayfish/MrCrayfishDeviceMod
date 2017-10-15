@@ -271,7 +271,7 @@ public class FileBrowser extends Component
                             }
                         });
                     }
-                    else if(wrappable instanceof SystemApplication)
+                    else if(mode == Mode.FULL && wrappable instanceof SystemApplication)
                     {
                         SystemApplication systemApp = (SystemApplication) wrappable;
                         Laptop laptop = systemApp.getLaptop();
