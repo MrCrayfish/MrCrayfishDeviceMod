@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.io;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
@@ -57,6 +58,7 @@ public class Folder extends File
 				file.valid = true;
 				file.parent = this;
 				files.add(file);
+				FileBrowser.refreshList = true;
 			}
 			if(callback != null)
 			{
@@ -95,6 +97,7 @@ public class Folder extends File
 					file.valid = false;
 					file.parent = null;
 					files.remove(file);
+					FileBrowser.refreshList = true;
 				}
 				if(callback != null)
 				{
