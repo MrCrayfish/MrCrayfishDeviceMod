@@ -285,8 +285,13 @@ public class FileBrowser extends Component
                                 if(!targetApp.handleFile(file))
                                 {
                                     laptop.close(targetApp);
-                                    wrappable.openDialog(new Dialog.Message("Unable to open file"));
+                                    laptop.open(systemApp);
+                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
+                            }
+                            else
+                            {
+                                createErrorDialog("The application designed for this file does not exist or is not installed.");
                             }
                         }
                     }
