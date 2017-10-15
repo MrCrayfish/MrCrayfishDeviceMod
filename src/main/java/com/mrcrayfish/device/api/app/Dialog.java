@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.function.Predicate;
 
 public abstract class Dialog extends Wrappable
 {
@@ -494,6 +495,7 @@ public abstract class Dialog extends Wrappable
 		private Button buttonNegative;
 
 		private ResponseHandler<File> responseListener;
+		private Predicate<File> filter;
 
 		public OpenFile(Application app)
 		{
@@ -510,6 +512,7 @@ public abstract class Dialog extends Wrappable
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.openFolder(FileSystem.DIR_HOME);
+			browser.setFilter(file -> file.isFolder() || (filter != null && filter.test(file)));
 			browser.setItemClickListener((file, index, mouseButton) ->
 			{
 				if(mouseButton == 0)
@@ -587,6 +590,11 @@ public abstract class Dialog extends Wrappable
 		{
 			this.responseListener = responseListener;
 		}
+
+		public void setFilter(Predicate<File> filter)
+		{
+			this.filter = filter;
+		}
 	}
 
 	public static class SaveFile extends Dialog
@@ -605,6 +613,7 @@ public abstract class Dialog extends Wrappable
 		private Button buttonNegative;
 
 		public ResponseHandler<File> responseHandler;
+		private Predicate<File> filter;
 
 		private String path = FileSystem.DIR_HOME;
 
@@ -631,6 +640,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(210, 142);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
+			browser.setFilter(file -> file.isFolder() || (filter != null && filter.test(file)));
 			browser.openFolder(path);
 			main.addComponent(browser);
 
@@ -742,6 +752,11 @@ public abstract class Dialog extends Wrappable
 		public void setResponseHandler(ResponseHandler<File> responseHandler)
 		{
 			this.responseHandler = responseHandler;
+		}
+
+		public void setFilter(Predicate<File> filter)
+		{
+			this.filter = filter;
 		}
 
 		public void setFolder(String path)

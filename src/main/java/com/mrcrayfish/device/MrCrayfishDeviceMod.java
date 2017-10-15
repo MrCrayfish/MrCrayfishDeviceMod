@@ -12,10 +12,7 @@ import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
-import com.mrcrayfish.device.programs.ApplicationBoatRacers;
-import com.mrcrayfish.device.programs.ApplicationExample;
-import com.mrcrayfish.device.programs.ApplicationNoteStash;
-import com.mrcrayfish.device.programs.ApplicationPixelPainter;
+import com.mrcrayfish.device.programs.*;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
@@ -153,6 +150,7 @@ public class MrCrayfishDeviceMod
 		{
 			// Applications (Developers)
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 
 			// Wallpapers (Developers)
 			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
