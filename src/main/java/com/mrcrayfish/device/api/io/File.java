@@ -4,7 +4,6 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
-import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
@@ -33,6 +32,7 @@ public class File
 	protected File() {}
 
 	/**
+	 * The standard constructor for a file
 	 *
 	 * @param name
 	 * @param app
@@ -44,6 +44,9 @@ public class File
 	}
 
 	/**
+	 * The alternate constructor for a file. This second constructor allows the specification of
+	 * an application identifier. This allows the creation of files for different applications. You
+	 * should know the format of the target file if you are using this constructor
 	 *
 	 * @param name
 	 * @param openingAppId
@@ -56,9 +59,6 @@ public class File
 
 	private File(String name, String openingAppId, NBTTagCompound data, boolean protect)
 	{
-		if(!PATTERN_FILE_NAME.matcher(name).matches())
-			throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[\\w. ]{1,32}$");
-
 		this.name = name;
 		this.openingApp = openingAppId;
 		this.data = data;
@@ -83,7 +83,7 @@ public class File
 	 *
 	 * @param name the new file name
 	 */
-	public void rename(@Nonnull String name)
+	public void rename(String name)
 	{
 		rename(name, null);
 	}
@@ -95,16 +95,25 @@ public class File
 	 *
 	 * @param name the new file name
 	 */
-	public void rename(@Nonnull String name, Callback<FileSystem.Response> callback)
+	public void rename(String name, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
 
-		if(name.isEmpty())
+		if(protect)
 		{
 			if(callback != null)
 			{
-				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EMPTY_NAME, "Unable to rename file with that name"), true);
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot rename a protected file"), false);
+			}
+			return;
+		}
+
+		if(!PATTERN_FILE_NAME.matcher(name).matches())
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name"), true);
 			}
 			return;
 		}
@@ -122,6 +131,13 @@ public class File
         });
 	}
 
+	/**
+	 * Gets the path of this file. The path is the set of all the folders needed to traverse in
+	 * order to find the folder this file is contained within and appends the file's name at the
+	 * end. This is different to {@link #getLocation()} which does not append the file's name.
+	 *
+	 * @return the path of the file
+	 */
 	public String getPath()
 	{
 		if(parent == null)
@@ -140,8 +156,11 @@ public class File
 	}
 
 	/**
+	 * Gets the location of this file. The location is the set of folders needed to traverse in
+	 * order to find the folder this file is contained within. This is different to
+	 * {@link #getPath()} and does not include the file name on the end.
 	 *
-	 * @return
+	 * @return the location of the file
 	 */
 	public String getLocation()
 	{
@@ -161,8 +180,9 @@ public class File
 	}
 
 	/**
+	 * Gets the application this file can be open with.
 	 *
-	 * @return
+	 * @return the application identifier
 	 */
 	@Nullable
 	public String getOpeningApp() 
@@ -175,7 +195,7 @@ public class File
 	 *
 	 * @param data
 	 */
-	public void setData(@Nonnull NBTTagCompound data)
+	public void setData(NBTTagCompound data)
 	{
 		setData(data, null);
 	}
@@ -188,10 +208,28 @@ public class File
 	 * @param data
 	 * @param callback
 	 */
-	public void setData(@Nonnull NBTTagCompound data, Callback<FileSystem.Response> callback)
+	public void setData(NBTTagCompound data, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
+
+		if(protect)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot set data on a protected file"), false);
+			}
+			return;
+		}
+
+		if(data == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID_DATA, "Invalid data"), false);
+			}
+			return;
+		}
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeData(this, data), (response, success) ->
 		{
@@ -207,8 +245,10 @@ public class File
 	}
 
 	/**
+	 * Gets the data of this file. The data you receive is a copied version. If you want to update
+	 * it, use {@link #setData(NBTTagCompound, Callback)} to do so.
 	 *
-	 * @return
+	 * @return the file's data
 	 */
 	@Nullable
 	public NBTTagCompound getData() 
@@ -217,8 +257,9 @@ public class File
 	}
 
 	/**
+	 * Gets the {@link Folder} this file is contained in.
 	 *
-	 * @return
+	 * @return the parent of this file
 	 */
 	@Nullable
 	public Folder getParent()
@@ -226,19 +267,30 @@ public class File
 		return parent;
 	}
 
+	/**
+	 * Gets the drive this file belongs to.
+	 *
+	 * @return the drive this file is contained in
+	 */
 	public Drive getDrive()
 	{
 		return drive;
 	}
 
-	public void setDrive(Drive drive)
+	/**
+	 * Sets the drive for this file.
+	 *
+	 * @param drive the drive this file is contained in
+	 */
+	void setDrive(Drive drive)
 	{
 		this.drive = drive;
 	}
 
 	/**
+	 * Gets the protected flag of this file.
 	 *
-	 * @return
+	 * @return the protected flag
 	 */
 	public boolean isProtected()
 	{
@@ -246,8 +298,9 @@ public class File
 	}
 
 	/**
+	 * Gets whether this file is actually folder
 	 *
-	 * @return
+	 * @return is this file is a folder
 	 */
 	public boolean isFolder()
 	{
@@ -255,9 +308,12 @@ public class File
 	}
 
 	/**
+	 * Determines if this file is for the specified application. This helps identify files that are
+	 * designed for the specified application. Useful in filtering out files in a list.
 	 *
-	 * @param app
-	 * @return
+	 * @param app the application to test against
+	 *
+	 * @return if this file is for the application
 	 */
 	public boolean isForApplication(Application app)
 	{
@@ -265,7 +321,8 @@ public class File
 	}
 
 	/**
-	 *
+	 * Deletes this file from the folder its contained in. This method does not specify a callback,
+	 * so any errors occurred will not be reported.
 	 */
 	public void delete()
 	{
@@ -273,10 +330,12 @@ public class File
 	}
 
 	/**
+	 * Deletes this file from the folder its contained in. This method allows the specification of a
+	 * callback and will tell if deleted successfully or not.
 	 *
-	 * @param callback
+	 * @param callback the callback
 	 */
-	public void delete(Callback callback)
+	public void delete(@Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
@@ -285,7 +344,7 @@ public class File
 		{
 			if(callback != null)
 			{
-				callback.execute(new NBTTagCompound(), false);
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot delete a protected file"), false);
 			}
 			return;
 		}
@@ -297,7 +356,8 @@ public class File
 	}
 
 	/**
-	 *
+	 * Converts this file into a tag compound. Due to how the file system works, this tag does not
+	 * include the name of the file.
 	 * @return
 	 */
 	public NBTTagCompound toTag() 
@@ -309,9 +369,10 @@ public class File
 	}
 
 	/**
+	 * Converts a tag compound to a file instance.
 	 *
-	 * @param name
-	 * @param tag
+	 * @param name the name of the file
+	 * @param tag the tag compound from {@link #toTag()}
 	 * @return
 	 */
 	public static File fromTag(String name, NBTTagCompound tag)

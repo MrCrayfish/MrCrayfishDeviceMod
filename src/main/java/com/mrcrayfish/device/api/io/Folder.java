@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.io;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
@@ -27,9 +28,6 @@ public class Folder extends File
 
 	public Folder(String name, boolean protect)
 	{
-		if(!PATTERN_FILE_NAME.matcher(name).matches())
-			throw new IllegalArgumentException("Invalid file name '" + name + "'. The name must match the regular expression: ^[\\w. ]{1,32}$");
-
 		this.name = name;
 		this.protect = protect;
 	}
@@ -39,15 +37,53 @@ public class Folder extends File
 		add(file, false, null);
 	}
 
-	public void add(@Nonnull File file, Callback<FileSystem.Response> callback)
+	public void add(File file, @Nullable Callback<FileSystem.Response> callback)
 	{
 		add(file, false, callback);
 	}
 
-	public void add(@Nonnull File file, boolean override, Callback<FileSystem.Response> callback)
+	public void add(File file, boolean override, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("Folder must be added to the system before you can add files to it");
+
+		if(file == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal file"), false);
+			}
+			return;
+		}
+
+		if(!PATTERN_FILE_NAME.matcher(file.name).matches())
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name"), true);
+			}
+			return;
+		}
+
+		if(hasFile(file.name))
+		{
+			if(!override)
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EXISTS, "A file with that name already exists"), true);
+				}
+				return;
+			}
+			else if(getFile(file.name).isProtected())
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Unable to override protected files"), true);
+				}
+				return;
+			}
+		}
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeNew(this, file, override), (response, success) ->
 		{
@@ -57,6 +93,7 @@ public class Folder extends File
 				file.valid = true;
 				file.parent = this;
 				files.add(file);
+				FileBrowser.refreshList = true;
 			}
 			if(callback != null)
 			{
@@ -80,28 +117,53 @@ public class Folder extends File
 		delete(file, null);
 	}
 
-	public void delete(File file, Callback<FileSystem.Response> callback)
+	public void delete(File file, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("Folder must be added to the system before you can delete files");
 
-		if(file != null)
+		if(file == null)
 		{
-			FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (response, success) ->
+			if(callback != null)
 			{
-				if(success)
-				{
-					file.drive = null;
-					file.valid = false;
-					file.parent = null;
-					files.remove(file);
-				}
-				if(callback != null)
-				{
-					callback.execute(response, success);
-				}
-			});
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal file"), false);
+			}
+			return;
 		}
+
+		if(!files.contains(file))
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "The file does not exist in this folder"), false);
+			}
+			return;
+		}
+
+		if(file.isProtected())
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot delete protected files"), false);
+			}
+			return;
+		}
+
+		FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (response, success) ->
+        {
+            if(success)
+            {
+                file.drive = null;
+                file.valid = false;
+                file.parent = null;
+                files.remove(file);
+                FileBrowser.refreshList = true;
+            }
+            if(callback != null)
+            {
+                callback.execute(response, success);
+            }
+        });
 	}
 
 	public boolean hasFile(String name)
@@ -257,7 +319,7 @@ public class Folder extends File
 	}
 
 	@Override
-	public void setDrive(Drive drive)
+	void setDrive(Drive drive)
 	{
 		this.drive = drive;
 		files.forEach(f -> f.setDrive(drive));

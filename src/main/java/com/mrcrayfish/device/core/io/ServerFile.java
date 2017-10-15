@@ -41,9 +41,6 @@ public class ServerFile
 
     private ServerFile(String name, String openingAppId, NBTTagCompound data, boolean protect)
     {
-        if(!PATTERN_FILE_NAME.matcher(name).matches())
-            throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[a-zA-Z0-9_ ]{1,32}$");
-
         this.name = name;
         this.openingApp = openingAppId;
         this.data = data;
@@ -59,6 +56,10 @@ public class ServerFile
     {
         if(this.protect)
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot rename a protected file");
+
+        if(!PATTERN_FILE_NAME.matcher(name).matches())
+            return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name");
+
         this.name = name;
         return FileSystem.createSuccessResponse();
     }
@@ -69,10 +70,14 @@ public class ServerFile
         return openingApp;
     }
 
-    public FileSystem.Response setData(@Nonnull NBTTagCompound data)
+    public FileSystem.Response setData(NBTTagCompound data)
     {
         if(this.protect)
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot set data on a protected file");
+
+        if(data == null)
+            return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_DATA, "Invalid data");
+
         this.data = data;
         return FileSystem.createSuccessResponse();
     }
@@ -108,9 +113,11 @@ public class ServerFile
     {
         if(this.protect)
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot delete a protected file");
+
         if(parent != null)
             return parent.delete(this);
-        return FileSystem.createResponse(FileSystem.Status.FILE_ILLEGAL, "Invalid file");
+
+        return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Invalid file");
     }
 
     public NBTTagCompound toTag()

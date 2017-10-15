@@ -70,7 +70,7 @@ public class FileBrowser extends Component
             else
             {
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
-                if(info != null) RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
+                RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
             Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
             gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
@@ -271,7 +271,7 @@ public class FileBrowser extends Component
                             }
                         });
                     }
-                    else if(wrappable instanceof SystemApplication)
+                    else if(mode == Mode.FULL && wrappable instanceof SystemApplication)
                     {
                         SystemApplication systemApp = (SystemApplication) wrappable;
                         Laptop laptop = systemApp.getLaptop();
@@ -285,8 +285,13 @@ public class FileBrowser extends Component
                                 if(!targetApp.handleFile(file))
                                 {
                                     laptop.close(targetApp);
-                                    wrappable.openDialog(new Dialog.Message("Unable to open file"));
+                                    laptop.open(systemApp);
+                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
+                            }
+                            else
+                            {
+                                createErrorDialog("The application designed for this file does not exist or is not installed.");
                             }
                         }
                     }
@@ -875,17 +880,20 @@ public class FileBrowser extends Component
                 if(success)
                 {
                     setLoading(true);
-                    file.rename(s, (o, success1) ->
+                    file.rename(s, (response, success1) ->
                     {
-                        if(!success1)
+                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
                         {
-                            //TODO display error dialog
-                            createErrorDialog("Unable to rename file");
+                            dialog.close();
+                        }
+                        else
+                        {
+                            createErrorDialog(response.getMessage());
                         }
                         setLoading(false);
                     });
                 }
-                return true;
+                return false;
             });
             dialog.setTitle("Rename " + (file instanceof Folder ? "Folder" : "File"));
             dialog.setInputText(file.getName());

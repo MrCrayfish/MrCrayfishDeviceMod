@@ -34,7 +34,10 @@ public class ServerFolder extends ServerFile
     public FileSystem.Response add(ServerFile file, boolean override)
     {
         if(file == null)
-            return FileSystem.createResponse(Status.FILE_ILLEGAL, "Illegal file");
+            return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
+
+        if(!PATTERN_FILE_NAME.matcher(file.getName()).matches())
+            return FileSystem.createResponse(Status.FILE_INVALID_NAME, "Invalid file name");
 
         if(hasFile(file.name))
         {
@@ -58,10 +61,13 @@ public class ServerFolder extends ServerFile
     public FileSystem.Response delete(ServerFile file)
     {
         if(file == null)
-            FileSystem.createResponse(Status.FILE_ILLEGAL, "Illegal file");
+            return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
+
+        if(!files.contains(file))
+            return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "The file does not exist in this folder");
 
         if(file.isProtected())
-            return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Cannot delete protected files");;
+            return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Cannot delete protected files");
 
         file.parent = null;
         files.remove(file);
@@ -200,7 +206,7 @@ public class ServerFolder extends ServerFile
         return folder;
     }
 
-    public void print(int startingDepth)
+    /*public void print(int startingDepth)
     {
         String indent = "";
         for(int i = 0; i < startingDepth; i++)
@@ -219,5 +225,5 @@ public class ServerFolder extends ServerFile
                 MrCrayfishDeviceMod.getLogger().info(indent + "  ⌊ " + file.name);
             }
         }
-    }
+    }*/
 }
