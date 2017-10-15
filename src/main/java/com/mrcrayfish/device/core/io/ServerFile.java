@@ -110,7 +110,7 @@ public class ServerFile
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot delete a protected file");
         if(parent != null)
             return parent.delete(this);
-        return FileSystem.createResponse(FileSystem.Status.FILE_ILLEGAL, "Invalid file");
+        return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Invalid file");
     }
 
     public NBTTagCompound toTag()

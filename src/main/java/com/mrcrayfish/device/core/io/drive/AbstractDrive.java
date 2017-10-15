@@ -87,7 +87,7 @@ public abstract class AbstractDrive
                     break;
             }
         }
-        return FileSystem.createResponse(FileSystem.Status.DRIVE_MISSING, "Invalid directory");
+        return FileSystem.createResponse(FileSystem.Status.DRIVE_UNAVAILABLE, "Invalid directory");
     }
 
     public abstract NBTTagCompound toTag();

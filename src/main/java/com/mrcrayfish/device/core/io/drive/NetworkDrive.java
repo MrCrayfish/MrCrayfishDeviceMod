@@ -55,7 +55,7 @@ public final class NetworkDrive extends AbstractDrive
                 return FileSystem.createSuccessResponse();
             }
         }
-        return FileSystem.createResponse(FileSystem.Status.DRIVE_NETWORK_MISSING, "The network drive could not be found");
+        return FileSystem.createResponse(FileSystem.Status.DRIVE_UNAVAILABLE, "The network drive could not be found");
     }
 
     @Nullable

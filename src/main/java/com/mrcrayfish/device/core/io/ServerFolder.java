@@ -34,7 +34,7 @@ public class ServerFolder extends ServerFile
     public FileSystem.Response add(ServerFile file, boolean override)
     {
         if(file == null)
-            return FileSystem.createResponse(Status.FILE_ILLEGAL, "Illegal file");
+            return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
 
         if(hasFile(file.name))
         {
@@ -58,7 +58,7 @@ public class ServerFolder extends ServerFile
     public FileSystem.Response delete(ServerFile file)
     {
         if(file == null)
-            FileSystem.createResponse(Status.FILE_ILLEGAL, "Illegal file");
+            FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
 
         if(file.isProtected())
             return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Cannot delete protected files");;
