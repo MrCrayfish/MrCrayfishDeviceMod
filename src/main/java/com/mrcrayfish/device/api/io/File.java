@@ -254,7 +254,7 @@ public class File
 		return drive;
 	}
 
-	public void setDrive(Drive drive)
+	void setDrive(Drive drive)
 	{
 		this.drive = drive;
 	}

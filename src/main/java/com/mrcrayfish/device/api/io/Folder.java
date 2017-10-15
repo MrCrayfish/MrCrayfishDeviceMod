@@ -319,7 +319,7 @@ public class Folder extends File
 	}
 
 	@Override
-	public void setDrive(Drive drive)
+	void setDrive(Drive drive)
 	{
 		this.drive = drive;
 		files.forEach(f -> f.setDrive(drive));
