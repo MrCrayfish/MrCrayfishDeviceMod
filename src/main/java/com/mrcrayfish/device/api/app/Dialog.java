@@ -592,7 +592,8 @@ public abstract class Dialog extends Wrappable
 	public static class SaveFile extends Dialog
 	{
 		private final Application app;
-		private final NBTTagCompound fileData;
+		private String name;
+		private NBTTagCompound data;
 
 		private String positiveText = "Save";
 		private String negativeText = "Cancel";
@@ -607,10 +608,18 @@ public abstract class Dialog extends Wrappable
 
 		private String path = FileSystem.DIR_HOME;
 
-		public SaveFile(Application app, NBTTagCompound fileData)
+		public SaveFile(Application app, NBTTagCompound data)
 		{
 			this.app = app;
-			this.fileData = fileData;
+			this.data = data;
+			this.setTitle("Save File");
+		}
+
+		public SaveFile(Application app, File file)
+		{
+			this.app = app;
+			this.name = file.getName();
+			this.data = file.toTag();
 			this.setTitle("Save File");
 		}
 
@@ -640,7 +649,16 @@ public abstract class Dialog extends Wrappable
 							return;
 						}
 
-						File file = new File(textFieldFileName.getText(), app, fileData.copy());
+						File file;
+						if(name != null)
+						{
+							file = File.fromTag(textFieldFileName.getText(), data);
+						}
+						else
+						{
+							file = new File(textFieldFileName.getText(), app, data.copy());
+						}
+
 						browser.addFile(file, (response, success) ->
 						{
 							if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
@@ -683,6 +701,7 @@ public abstract class Dialog extends Wrappable
 
 			textFieldFileName = new TextField(26, 105, 180);
 			textFieldFileName.setFocused(true);
+			if(name != null) textFieldFileName.setText(name);
 			main.addComponent(textFieldFileName);
 
 			this.setLayout(main);
