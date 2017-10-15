@@ -880,17 +880,20 @@ public class FileBrowser extends Component
                 if(success)
                 {
                     setLoading(true);
-                    file.rename(s, (o, success1) ->
+                    file.rename(s, (response, success1) ->
                     {
-                        if(!success1)
+                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
                         {
-                            //TODO display error dialog
-                            createErrorDialog("Unable to rename file");
+                            dialog.close();
+                        }
+                        else
+                        {
+                            createErrorDialog(response.getMessage());
                         }
                         setLoading(false);
                     });
                 }
-                return true;
+                return false;
             });
             dialog.setTitle("Rename " + (file instanceof Folder ? "Folder" : "File"));
             dialog.setInputText(file.getName());
