@@ -276,7 +276,7 @@ public class File
 	 *
 	 * @param callback
 	 */
-	public void delete(Callback callback)
+	public void delete(@Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
@@ -285,7 +285,7 @@ public class File
 		{
 			if(callback != null)
 			{
-				callback.execute(new NBTTagCompound(), false);
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot delete a protected file"), false);
 			}
 			return;
 		}
