@@ -36,7 +36,7 @@ public class ServerFolder extends ServerFile
         if(file == null)
             return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
 
-        if(PATTERN_FILE_NAME.matcher(file.getName()).matches())
+        if(!PATTERN_FILE_NAME.matcher(file.getName()).matches())
             return FileSystem.createResponse(Status.FILE_INVALID_NAME, "Invalid file name");
 
         if(hasFile(file.name))
@@ -206,7 +206,7 @@ public class ServerFolder extends ServerFile
         return folder;
     }
 
-    public void print(int startingDepth)
+    /*public void print(int startingDepth)
     {
         String indent = "";
         for(int i = 0; i < startingDepth; i++)
@@ -225,5 +225,5 @@ public class ServerFolder extends ServerFile
                 MrCrayfishDeviceMod.getLogger().info(indent + "  ⌊ " + file.name);
             }
         }
-    }
+    }*/
 }

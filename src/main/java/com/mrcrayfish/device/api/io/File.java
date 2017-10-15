@@ -105,7 +105,7 @@ public class File
 			return;
 		}
 
-		if(PATTERN_FILE_NAME.matcher(name).matches())
+		if(!PATTERN_FILE_NAME.matcher(name).matches())
 		{
 			if(callback != null)
 			{
