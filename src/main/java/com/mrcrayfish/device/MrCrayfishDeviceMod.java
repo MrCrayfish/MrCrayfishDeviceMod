@@ -150,7 +150,6 @@ public class MrCrayfishDeviceMod
 		{
 			// Applications (Developers)
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 
 			// Wallpapers (Developers)
 			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
