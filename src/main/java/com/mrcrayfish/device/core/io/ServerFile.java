@@ -59,6 +59,10 @@ public class ServerFile
     {
         if(this.protect)
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot rename a protected file");
+
+        if(PATTERN_FILE_NAME.matcher(name).matches())
+            return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name");
+
         this.name = name;
         return FileSystem.createSuccessResponse();
     }
@@ -69,10 +73,14 @@ public class ServerFile
         return openingApp;
     }
 
-    public FileSystem.Response setData(@Nonnull NBTTagCompound data)
+    public FileSystem.Response setData(NBTTagCompound data)
     {
         if(this.protect)
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot set data on a protected file");
+
+        if(data == null)
+            return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_DATA, "Invalid data");
+
         this.data = data;
         return FileSystem.createSuccessResponse();
     }

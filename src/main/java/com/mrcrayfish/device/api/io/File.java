@@ -4,7 +4,6 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
-import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
@@ -56,9 +55,6 @@ public class File
 
 	private File(String name, String openingAppId, NBTTagCompound data, boolean protect)
 	{
-		if(!PATTERN_FILE_NAME.matcher(name).matches())
-			throw new IllegalArgumentException("Invalid file name. The name must match the regular expression: ^[\\w. ]{1,32}$");
-
 		this.name = name;
 		this.openingApp = openingAppId;
 		this.data = data;
@@ -83,7 +79,7 @@ public class File
 	 *
 	 * @param name the new file name
 	 */
-	public void rename(@Nonnull String name)
+	public void rename(String name)
 	{
 		rename(name, null);
 	}
@@ -95,16 +91,25 @@ public class File
 	 *
 	 * @param name the new file name
 	 */
-	public void rename(@Nonnull String name, Callback<FileSystem.Response> callback)
+	public void rename(String name, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
 
-		if(name.isEmpty())
+		if(protect)
 		{
 			if(callback != null)
 			{
-				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EMPTY_NAME, "Unable to rename file with that name"), true);
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot rename a protected file"), false);
+			}
+			return;
+		}
+
+		if(PATTERN_FILE_NAME.matcher(name).matches())
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name"), true);
 			}
 			return;
 		}
@@ -175,7 +180,7 @@ public class File
 	 *
 	 * @param data
 	 */
-	public void setData(@Nonnull NBTTagCompound data)
+	public void setData(NBTTagCompound data)
 	{
 		setData(data, null);
 	}
@@ -188,10 +193,28 @@ public class File
 	 * @param data
 	 * @param callback
 	 */
-	public void setData(@Nonnull NBTTagCompound data, Callback<FileSystem.Response> callback)
+	public void setData(NBTTagCompound data, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
 			throw new IllegalStateException("File must be added to the system before you can rename it");
+
+		if(protect)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot set data on a protected file"), false);
+			}
+			return;
+		}
+
+		if(data == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID_DATA, "Invalid data"), false);
+			}
+			return;
+		}
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeData(this, data), (response, success) ->
 		{

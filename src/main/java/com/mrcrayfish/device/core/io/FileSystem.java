@@ -360,8 +360,8 @@ public class FileSystem
 		public static final int FILE_INVALID = 2;
 		public static final int FILE_IS_PROTECTED = 3;
 		public static final int FILE_EXISTS = 4;
-		public static final int FILE_INVALID_DATA = 5;
-		public static final int FILE_EMPTY_NAME = 6;
+		public static final int FILE_INVALID_NAME = 5;
+		public static final int FILE_INVALID_DATA = 6;
 		public static final int DRIVE_UNAVAILABLE = 7;
 	}
 }
