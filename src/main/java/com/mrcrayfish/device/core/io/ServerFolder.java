@@ -25,7 +25,7 @@ public class ServerFolder extends ServerFile
         this(name, false);
     }
 
-    public ServerFolder(String name, boolean protect)
+    private ServerFolder(String name, boolean protect)
     {
         this.name = name;
         this.protect = protect;
