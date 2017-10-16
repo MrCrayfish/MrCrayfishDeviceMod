@@ -36,7 +36,7 @@ public class ServerFolder extends ServerFile
         if(file == null)
             return FileSystem.createResponse(Status.FILE_INVALID, "Illegal file");
 
-        if(!PATTERN_FILE_NAME.matcher(file.getName()).matches())
+        if(!FileSystem.PATTERN_FILE_NAME.matcher(file.getName()).matches())
             return FileSystem.createResponse(Status.FILE_INVALID_NAME, "Invalid file name");
 
         if(hasFile(file.name))

@@ -14,11 +14,6 @@ import java.util.regex.Pattern;
 public class File
 {
 	/**
-	 * The pattern for file names
-	 */
-	public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[\\w. ]{1,32}$");
-
-	/**
 	 * Comparator to sort the file list by alphabetical order. Folders are brought to the top.
 	 */
 	public static final Comparator<File> SORT_BY_NAME = (f1, f2) ->
@@ -116,7 +111,7 @@ public class File
 			return;
 		}
 
-		if(!PATTERN_FILE_NAME.matcher(name).matches())
+		if(!FileSystem.PATTERN_FILE_NAME.matcher(name).matches())
 		{
 			if(callback != null)
 			{

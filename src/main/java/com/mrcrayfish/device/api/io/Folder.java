@@ -90,7 +90,7 @@ public class Folder extends File
 			return;
 		}
 
-		if(!PATTERN_FILE_NAME.matcher(file.name).matches())
+		if(!FileSystem.PATTERN_FILE_NAME.matcher(file.name).matches())
 		{
 			if(callback != null)
 			{

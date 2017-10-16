@@ -652,7 +652,7 @@ public abstract class Dialog extends Wrappable
 				{
 					if(!textFieldFileName.getText().isEmpty())
 					{
-						if(!File.PATTERN_FILE_NAME.matcher(textFieldFileName.getText()).matches())
+						if(!FileSystem.PATTERN_FILE_NAME.matcher(textFieldFileName.getText()).matches())
 						{
 							Dialog.Message dialog = new Dialog.Message("File name may only contain letters, numbers, underscores and spaces.");
 							app.openDialog(dialog);
