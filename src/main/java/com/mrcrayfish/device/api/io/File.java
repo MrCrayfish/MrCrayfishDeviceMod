@@ -13,9 +13,16 @@ import java.util.regex.Pattern;
 
 public class File
 {
+	/**
+	 * The pattern for file names
+	 */
 	public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[\\w. ]{1,32}$");
 
-	public static final Comparator<File> SORT_BY_NAME = (f1, f2) -> {
+	/**
+	 * Comparator to sort the file list by alphabetical order. Folders are brought to the top.
+	 */
+	public static final Comparator<File> SORT_BY_NAME = (f1, f2) ->
+	{
 		if(f1.isFolder() && !f2.isFolder()) return -1;
 		if(!f1.isFolder() && f2.isFolder()) return 1;
 		return f1.name.compareTo(f2.name);
@@ -357,8 +364,9 @@ public class File
 
 	/**
 	 * Converts this file into a tag compound. Due to how the file system works, this tag does not
-	 * include the name of the file.
-	 * @return
+	 * include the name of the file and will have to be set manually for any storage.
+	 *
+	 * @return the file tag
 	 */
 	public NBTTagCompound toTag() 
 	{
@@ -373,7 +381,7 @@ public class File
 	 *
 	 * @param name the name of the file
 	 * @param tag the tag compound from {@link #toTag()}
-	 * @return
+	 * @return a file instance
 	 */
 	public static File fromTag(String name, NBTTagCompound tag)
 	{
@@ -392,14 +400,23 @@ public class File
 	}
 
 	/**
+	 * Returns a copy of this file. The copied file is considered invalid and changes to it can not
+	 * be made until it is added into the file system.
 	 *
-	 * @return
+	 * @return copy of this file
 	 */
 	public File copy()
 	{
 		return new File(name, openingApp, data.copy());
 	}
 
+	/**
+	 * Returns a copy of this file with a different name. The copied file is considered invalid and
+	 * changes to it can not be made until it is added into the file system.
+	 *
+	 * @param newName the new name for the file
+	 * @return copy of this file
+	 */
 	public File copy(String newName)
 	{
 		return new File(newName, openingApp, data.copy());

@@ -21,27 +21,61 @@ public class Folder extends File
 
 	private boolean synced = false;
 
+	/**
+	 * The default constructor for a folder
+	 *
+	 * @param name the name for the folder
+	 */
 	public Folder(String name)
 	{
 		this(name, false);
 	}
 
-	public Folder(String name, boolean protect)
+	private Folder(String name, boolean protect)
 	{
 		this.name = name;
 		this.protect = protect;
 	}
 
+	/**
+	 * Adds a file to the folder. The folder must be in the file system before you can add files to
+	 * it. If the file with the same name exists, it will not overridden. This method does not
+	 * verify if the file was added successfully. See {@link #add(File, Callback)} to determine if
+	 * it was successful or not.
+	 *
+	 * @param file the file to add
+	 */
 	public void add(File file)
 	{
 		add(file, false, null);
 	}
 
+	/**
+	 * Adds a file to the folder. The folder must be in the file system before you can add files to
+	 * it. If the file with the same name exists, it will not overridden. This method allows the
+	 * specification of a {@link Callback}, and will return a
+	 * {@link com.mrcrayfish.device.core.io.FileSystem.Response} indicating if the file was
+	 * successfully added to the folder or an error occurred.
+	 *
+	 * @param file the file to add
+	 * @param callback the response callback
+	 */
 	public void add(File file, @Nullable Callback<FileSystem.Response> callback)
 	{
 		add(file, false, callback);
 	}
 
+	/**
+	 * Adds a file to the folder. The folder must be in the file system before you can add files to
+	 * it. If the file with the same name exists, it can be overridden by passing true to the
+	 * override parameter. This method also allows the specification of a {@link Callback}, and will
+	 * return a {@link com.mrcrayfish.device.core.io.FileSystem.Response} indicating if the file was
+	 * successfully added to the folder or an error occurred.
+	 *
+	 * @param file the file to add
+	 * @param override if should override existing file
+	 * @param callback the response callback
+	 */
 	public void add(File file, boolean override, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
@@ -102,21 +136,56 @@ public class Folder extends File
         });
 	}
 
+	/**
+	 * Deletes the specified file name from the folder. The folder must be in the file system before
+	 * you can delete files from it. If the file is not found, it will just fail silently. This
+	 * method does not return a response if the file was deleted successfully. See
+	 * {@link #delete(String, Callback)} (File, Callback)} to determine if it was successful or not.
+	 *
+	 * @param name the file name
+	 */
 	public void delete(String name)
 	{
 		delete(name, null);
 	}
 
+	/**
+	 * Deletes the specified file name from the folder. The folder must be in the file system before
+	 * you can delete files from it. This method also allows the specification of a {@link Callback}
+	 * , and will return a {@link com.mrcrayfish.device.core.io.FileSystem.Response} indicating if
+	 * the file was successfully deleted from the folder or an error occurred.
+	 *
+	 * @param name
+	 * @param callback
+	 */
 	public void delete(String name, @Nullable Callback<FileSystem.Response> callback)
 	{
 		delete(getFile(name), callback);
 	}
 
+	/**
+	 * Delete the specified file from the folder. The folder must be in the file system before
+	 * you can delete files from it. If the file is not in this folder, it will just fail silently.
+	 * This method does not return a response if the file was deleted successfully. See
+	 * {@link #delete(String, Callback)} (File, Callback)} to determine if it was successful or not.
+	 *
+	 * @param file a file in this folder
+	 */
 	public void delete(File file)
 	{
 		delete(file, null);
 	}
 
+	/**
+	 * Delete the specified file from the folder. The folder must be in the file system before
+	 * you can delete files from it. The file must be in this folder, otherwise it will fail. This
+	 * method also allows the specification of a {@link Callback}, and will return a
+	 * {@link com.mrcrayfish.device.core.io.FileSystem.Response} indicating if the file was
+	 * successfully deleted from the folder or an error occurred.
+	 *
+	 * @param file a file in this folder
+	 * @param callback the response callback
+	 */
 	public void delete(File file, @Nullable Callback<FileSystem.Response> callback)
 	{
 		if(!valid)
@@ -166,33 +235,72 @@ public class Folder extends File
         });
 	}
 
+	/**
+	 * Checks if the folder contains a file for the specified name.
+	 *
+	 * @param name the name of the file to find
+	 * @return if the file exists
+	 */
 	public boolean hasFile(String name)
 	{
 		return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
 	}
 
+	/**
+	 * Gets a file from this folder for the specified name. If the file is not found, it will return
+	 * null.
+	 *
+	 * @param name the name of the file to get
+	 * @return the found file
+	 */
 	@Nullable
 	public File getFile(String name)
 	{
 		return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
+	/**
+	 * Checks if the folder contains a folder for the specified name.
+	 *
+	 * @param name the name of the folder to find
+	 * @return if the folder exists
+	 */
 	public boolean hasFolder(String name)
 	{
 		return files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
 	}
 
+	/**
+	 * Gets a folder from this folder for the specified name. If the folder is not found, it will
+	 * return null.
+	 *
+	 * @param name the name of the folder to get
+	 * @return the found folder
+	 */
 	@Nullable
 	public Folder getFolder(String name)
 	{
 		return (Folder) files.stream().filter(file -> file.isFolder() && file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
+	/**
+	 * Gets all the files in the folder.
+	 *
+	 * @return a list of files
+	 */
 	public List<File> getFiles()
 	{
 		return files;
 	}
 
+	/**
+	 * Allows you to search this folder for files using a specified predicate. This only searches
+	 * the folder itself and does not include any sub-folders. Once found, it will a list of all the
+	 * files that matched the predicate.
+	 *
+	 * @param conditions the conditions of the file
+	 * @return a list of found files
+	 */
 	public List<File> search(Predicate<File> conditions)
 	{
 		List<File> found = NonNullList.create();
@@ -211,17 +319,105 @@ public class Folder extends File
 		});
 	}
 
-	public void setFiles(List<File> files)
-	{
-		this.files = files;
-	}
-
+	/**
+	 * Gets whether this file is actually folder
+	 *
+	 * @return is this file is a folder
+	 */
 	@Override
 	public boolean isFolder()
 	{
 		return true;
 	}
 
+	/**
+	 * Sets the data for this file. This does not work on folders and will fail silently.
+	 * @param data the data to set
+	 */
+	@Override
+	public void setData(@Nonnull NBTTagCompound data) {}
+
+	/**
+	 * Sets the data for this file. This does not work on folders and will fail silently. A callback
+	 * can be specified but will be a guaranteed fail for folders.
+	 *
+	 * @param data the data to set
+	 * @param callback the response callback
+	 */
+	@Override
+	public void setData(@Nonnull NBTTagCompound data, Callback<FileSystem.Response> callback)
+	{
+		if(callback != null)
+		{
+			callback.execute(FileSystem.createResponse(FileSystem.Status.FAILED, "Can not set data of a folder"), false);
+		}
+	}
+
+	@Override
+	void setDrive(Drive drive)
+	{
+		this.drive = drive;
+		files.forEach(f -> f.setDrive(drive));
+	}
+
+	/**
+	 * Do not use! Syncs files from the file system
+	 *
+	 * @param tagList
+	 */
+	public void syncFiles(NBTTagList tagList)
+	{
+		files.removeIf(f -> !f.isFolder());
+		for(int i = 0; i < tagList.tagCount(); i++)
+		{
+			NBTTagCompound fileTag = tagList.getCompoundTagAt(i);
+			File file = File.fromTag(fileTag.getString("file_name"), fileTag.getCompoundTag("data"));
+			file.drive = drive;
+			file.valid = true;
+			file.parent = this;
+			files.add(file);
+		}
+		synced = true;
+	}
+
+	/**
+	 * Do not use! Used for checking if folder is synced with file system
+	 *
+	 * @return is folder synced
+	 */
+	public boolean isSynced()
+	{
+		return synced;
+	}
+
+	/**
+	 * Do not use! Used for validating files against file system
+	 */
+	public void validate()
+	{
+		if(!synced)
+		{
+			valid = true;
+			files.forEach(f ->
+			{
+				if(f.isFolder())
+				{
+					((Folder)f).validate();
+				}
+				else
+				{
+					f.valid = true;
+				}
+			});
+		}
+	}
+
+	/**
+	 * Converts this folder into a tag compound. Due to how the file system works, this tag does not
+	 * include the name of the folder and will have to be set manually for any storage.
+	 *
+	 * @return the folder tag
+	 */
 	@Override
 	public NBTTagCompound toTag()
 	{
@@ -236,6 +432,13 @@ public class Folder extends File
 		return folderTag;
 	}
 
+	/**
+	 * Converts a tag compound to a folder instance.
+	 *
+	 * @param name the name of the folder
+	 * @param folderTag the tag compound from {@link #toTag()}
+	 * @return a folder instance
+	 */
 	public static Folder fromTag(String name, NBTTagCompound folderTag)
 	{
 		Folder folder = new Folder(name);
@@ -264,67 +467,11 @@ public class Folder extends File
 	}
 
 	/**
-	 * Do not use! This is strictly for internal use and will not reflect the actual file system.
-	 * @param tagList
+	 * Returns a copy of this folder. The copied folder is considered invalid and changes to it can
+	 * not be made until it is added into the file system.
+	 *
+	 * @return copy of this folder
 	 */
-	public void syncFiles(NBTTagList tagList)
-	{
-		files.removeIf(f -> !f.isFolder());
-		for(int i = 0; i < tagList.tagCount(); i++)
-		{
-			NBTTagCompound fileTag = tagList.getCompoundTagAt(i);
-			File file = File.fromTag(fileTag.getString("file_name"), fileTag.getCompoundTag("data"));
-			file.drive = drive;
-			file.valid = true;
-			file.parent = this;
-			files.add(file);
-		}
-		synced = true;
-	}
-
-	public boolean isSynced()
-	{
-		return synced;
-	}
-
-	public void validate()
-	{
-		if(!synced)
-		{
-			valid = true;
-			files.forEach(f ->
-			{
-				if(f.isFolder())
-				{
-					((Folder)f).validate();
-				}
-				else
-				{
-					f.valid = true;
-				}
-			});
-		}
-	}
-
-	@Override
-	public void setData(@Nonnull NBTTagCompound data) {}
-
-	@Override
-	public void setData(@Nonnull NBTTagCompound data, Callback<FileSystem.Response> callback)
-	{
-		if(callback != null)
-		{
-			callback.execute(FileSystem.createResponse(FileSystem.Status.FAILED, "Can not set data of a folder"), false);
-		}
-	}
-
-	@Override
-	void setDrive(Drive drive)
-	{
-		this.drive = drive;
-		files.forEach(f -> f.setDrive(drive));
-	}
-
 	@Override
 	public File copy()
 	{
@@ -332,11 +479,18 @@ public class Folder extends File
 		files.forEach(f -> {
 			File copy = f.copy();
 			copy.protect = false;
-			folder.add(copy);
+			folder.files.add(copy);
 		});
 		return folder;
 	}
 
+	/**
+	 * Returns a copy of this folder with a different name. The copied folder is considered invalid
+	 * and changes to it can not be made until it is added into the file system.
+	 *
+	 * @param newName the new name for the folder
+	 * @return copy of this folder
+	 */
 	@Override
 	public File copy(String newName)
 	{
@@ -344,7 +498,7 @@ public class Folder extends File
 		files.forEach(f -> {
 			File copy = f.copy();
 			copy.protect = false;
-			folder.add(copy);
+			folder.files.add(copy);
 		});
 		return folder;
 	}
