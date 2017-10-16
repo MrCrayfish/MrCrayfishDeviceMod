@@ -512,7 +512,7 @@ public abstract class Dialog extends Wrappable
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.openFolder(FileSystem.DIR_HOME);
-			browser.setFilter(file -> file.isFolder() || (filter != null && filter.test(file)));
+			browser.setFilter(file -> filter == null || filter.test(file) || file.isFolder());
 			browser.setItemClickListener((file, index, mouseButton) ->
 			{
 				if(mouseButton == 0)
@@ -640,7 +640,7 @@ public abstract class Dialog extends Wrappable
 			main = new Layout(210, 142);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
-			browser.setFilter(file -> file.isFolder() || (filter != null && filter.test(file)));
+			browser.setFilter(file -> filter == null || filter.test(file) || file.isFolder());
 			browser.openFolder(path);
 			main.addComponent(browser);
 
