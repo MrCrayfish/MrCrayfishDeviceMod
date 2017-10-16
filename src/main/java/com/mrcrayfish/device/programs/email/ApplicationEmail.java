@@ -533,7 +533,7 @@ public class ApplicationEmail extends Application
 		{
             if(mouseButton == 0 && attachedFile != null)
             {
-            	Dialog.SaveFile dialog = new Dialog.SaveFile(this, attachedFile.getData());
+            	Dialog.SaveFile dialog = new Dialog.SaveFile(this, attachedFile);
             	openDialog(dialog);
 			}
         });
