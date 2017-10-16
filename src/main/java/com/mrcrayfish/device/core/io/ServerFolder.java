@@ -48,7 +48,6 @@ public class ServerFolder extends ServerFile
             files.remove(getFile(file.name));
         }
 
-        revision++;
         files.add(file);
         file.parent = this;
         return FileSystem.createSuccessResponse();
@@ -70,7 +69,6 @@ public class ServerFolder extends ServerFile
         if(file.isProtected())
             return FileSystem.createResponse(Status.FILE_IS_PROTECTED, "Cannot delete protected files");
 
-        revision++;
         file.parent = null;
         files.remove(file);
         return FileSystem.createSuccessResponse();
@@ -143,21 +141,19 @@ public class ServerFolder extends ServerFile
     public NBTTagCompound toTag()
     {
         NBTTagCompound folderTag = new NBTTagCompound();
-        folderTag.setInteger("revision", revision);
-
-        if(protect)
-            folderTag.setBoolean("protected", true);
 
         NBTTagCompound fileList = new NBTTagCompound();
         files.stream().forEach(file -> fileList.setTag(file.getName(), file.toTag()));
         folderTag.setTag("files", fileList);
+
+        if(protect) folderTag.setBoolean("protected", true);
+
         return folderTag;
     }
 
     public static ServerFolder fromTag(String name, NBTTagCompound folderTag)
     {
         ServerFolder folder = new ServerFolder(name);
-        folder.revision = folderTag.getInteger("revision");
 
         if(folderTag.hasKey("protected", Constants.NBT.TAG_BYTE))
             folder.protect = folderTag.getBoolean("protected");
@@ -168,11 +164,11 @@ public class ServerFolder extends ServerFile
             NBTTagCompound fileTag = fileList.getCompoundTag(fileName);
             if(fileTag.hasKey("files"))
             {
-                folder.files.add(ServerFolder.fromTag(fileName, fileTag));
+                folder.add(ServerFolder.fromTag(fileName, fileTag), false);
             }
             else
             {
-                folder.files.add(ServerFile.fromTag(fileName, fileTag));
+                folder.add(ServerFile.fromTag(fileName, fileTag), false);
             }
         }
         return folder;
@@ -200,12 +196,11 @@ public class ServerFolder extends ServerFile
     public ServerFolder copyStructure()
     {
         ServerFolder folder = new ServerFolder(name, protect);
-        folder.revision = revision;
         files.forEach(f ->
         {
             if(f.isFolder())
             {
-                folder.files.add(((ServerFolder)f).copyStructure());
+                folder.add(((ServerFolder)f).copyStructure(), false);
             }
         });
         return folder;

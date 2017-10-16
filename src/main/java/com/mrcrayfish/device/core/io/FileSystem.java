@@ -121,7 +121,7 @@ public class FileSystem
 			{
 				if(callback != null)
 				{
-					callback.execute(Response.fromTag(nbt.getCompoundTag("response")), success);
+					callback.execute(Response.fromTag(nbt), success);
 				}
             });
 			TaskManager.sendTask(task);
@@ -357,12 +357,11 @@ public class FileSystem
 	{
 		public static final int FAILED = 0;
 		public static final int SUCCESSFUL = 1;
-		public static final int FILE_DESYNCED = 2;
-		public static final int FILE_INVALID = 3;
-		public static final int FILE_IS_PROTECTED = 4;
-		public static final int FILE_EXISTS = 5;
-		public static final int FILE_INVALID_NAME = 6;
-		public static final int FILE_INVALID_DATA = 7;
-		public static final int DRIVE_UNAVAILABLE = 8;
+		public static final int FILE_INVALID = 2;
+		public static final int FILE_IS_PROTECTED = 3;
+		public static final int FILE_EXISTS = 4;
+		public static final int FILE_INVALID_NAME = 5;
+		public static final int FILE_INVALID_DATA = 6;
+		public static final int DRIVE_UNAVAILABLE = 7;
 	}
 }
