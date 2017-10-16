@@ -35,6 +35,7 @@ public class File
 	protected NBTTagCompound data;
 	protected boolean protect = false;
 	protected boolean valid = false;
+	protected int revision = 0;
 
 	protected File() {}
 
@@ -127,8 +128,9 @@ public class File
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeRename(this, name), (response, success) ->
 		{
-			if(success)
+			if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
 			{
+				revision++;
 				this.name = name;
 			}
 			if(callback != null)
@@ -242,6 +244,7 @@ public class File
 		{
 			if(success)
 			{
+				revision++;
 				this.data = data.copy();
 			}
 			if(callback != null)
@@ -373,6 +376,7 @@ public class File
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("openingApp", openingApp);
 		tag.setTag("data", data);
+		tag.setInteger("revision", revision);
 		return tag;
 	}
 
@@ -385,18 +389,9 @@ public class File
 	 */
 	public static File fromTag(String name, NBTTagCompound tag)
 	{
-		return new File(name, tag.getString("openingApp"), tag.getCompoundTag("data"));
-	}
-	
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null)
-			return false;
-		if(!(obj instanceof File))
-			return false;
-		File file = (File) obj;
-		return parent == file.parent && name.equalsIgnoreCase(file.name);
+		File file = new File(name, tag.getString("openingApp"), tag.getCompoundTag("data"));
+		file.revision = tag.getInteger("revision");
+		return file;
 	}
 
 	/**
@@ -421,4 +416,26 @@ public class File
 	{
 		return new File(newName, openingApp, data.copy());
 	}
+
+	/**
+	 * Gets the revision of this file.
+	 *
+	 * @return the current revision
+	 */
+	public int getRevision()
+	{
+		return revision;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj == null)
+			return false;
+		if(!(obj instanceof File))
+			return false;
+		File file = (File) obj;
+		return parent == file.parent && name.equalsIgnoreCase(file.name);
+	}
+
 }

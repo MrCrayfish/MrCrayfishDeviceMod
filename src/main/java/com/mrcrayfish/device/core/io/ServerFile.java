@@ -26,6 +26,7 @@ public class ServerFile
     protected String openingApp;
     protected NBTTagCompound data;
     protected boolean protect = false;
+    protected int revision = 0;
 
     protected ServerFile() {}
 
@@ -60,6 +61,7 @@ public class ServerFile
         if(!PATTERN_FILE_NAME.matcher(name).matches())
             return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name");
 
+        revision++;
         this.name = name;
         return FileSystem.createSuccessResponse();
     }
@@ -78,6 +80,7 @@ public class ServerFile
         if(data == null)
             return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_DATA, "Invalid data");
 
+        revision++;
         this.data = data;
         return FileSystem.createSuccessResponse();
     }
@@ -125,12 +128,25 @@ public class ServerFile
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("openingApp", openingApp);
         tag.setTag("data", data);
+        tag.setInteger("revision", revision);
         return tag;
     }
 
     public static ServerFile fromTag(String name, NBTTagCompound tag)
     {
-        return new ServerFile(name, tag.getString("openingApp"), tag.getCompoundTag("data"));
+        ServerFile file = new ServerFile(name, tag.getString("openingApp"), tag.getCompoundTag("data"));
+        file.revision = tag.getInteger("revision");
+        return file;
+    }
+
+    public ServerFile copy()
+    {
+        return new ServerFile(name, openingApp, data.copy());
+    }
+
+    public int getRevision()
+    {
+        return revision;
     }
 
     @Override
@@ -141,10 +157,5 @@ public class ServerFile
         if(!(obj instanceof ServerFile))
             return false;
         return ((ServerFile) obj).name.equalsIgnoreCase(name);
-    }
-
-    public ServerFile copy()
-    {
-        return new ServerFile(name, openingApp, data.copy());
     }
 }

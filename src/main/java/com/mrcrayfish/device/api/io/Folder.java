@@ -123,6 +123,7 @@ public class Folder extends File
 		{
             if(success)
 			{
+				revision++;
 				file.drive = drive;
 				file.valid = true;
 				file.parent = this;
@@ -222,6 +223,7 @@ public class Folder extends File
         {
             if(success)
             {
+            	revision++;
                 file.drive = null;
                 file.valid = false;
                 file.parent = null;
@@ -422,13 +424,14 @@ public class Folder extends File
 	public NBTTagCompound toTag()
 	{
 		NBTTagCompound folderTag = new NBTTagCompound();
+		folderTag.setInteger("revision", revision);
+
+		if(protect)
+			folderTag.setBoolean("protected", true);
 
 		NBTTagCompound fileList = new NBTTagCompound();
 		files.stream().forEach(file -> fileList.setTag(file.getName(), file.toTag()));
 		folderTag.setTag("files", fileList);
-
-		if(protect) folderTag.setBoolean("protected", true);
-
 		return folderTag;
 	}
 
@@ -442,6 +445,7 @@ public class Folder extends File
 	public static Folder fromTag(String name, NBTTagCompound folderTag)
 	{
 		Folder folder = new Folder(name);
+		folder.revision = folderTag.getInteger("revision");
 
 		if(folderTag.hasKey("protected", Constants.NBT.TAG_BYTE))
 			folder.protect = folderTag.getBoolean("protected");
