@@ -18,12 +18,13 @@ import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.*;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
+import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
+import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
@@ -36,11 +37,12 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
-import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by Casey on 20-Jun-17.
@@ -112,6 +114,8 @@ public class FileBrowser extends Component
     private long lastClick = 0;
 
     private ItemClickListener<File> itemClickListener;
+
+    private Predicate<File> filter;
 
     /**
      * The default constructor for a component. For your component to
@@ -415,7 +419,6 @@ public class FileBrowser extends Component
     public void openFolder(String directory)
     {
         this.initialFolder = directory;
-        //TODO if synced structure, handle differently
     }
 
     private void openDrive(Drive drive)
@@ -490,7 +493,14 @@ public class FileBrowser extends Component
         currentDrive = folder.getDrive();
         currentFolder = folder;
         fileList.removeAll();
-        fileList.setItems(folder.getFiles());
+
+        List<File> files = folder.getFiles();
+        if(filter != null)
+        {
+            files = files.stream().filter(filter).collect(Collectors.toList());
+        }
+        fileList.setItems(files);
+
         updatePath();
     }
 
@@ -906,6 +916,11 @@ public class FileBrowser extends Component
         Dialog.Message dialog = new Dialog.Message(message);
         dialog.setTitle("Error");
         wrappable.openDialog(dialog);
+    }
+
+    public void setFilter(Predicate<File> filter)
+    {
+        this.filter = filter;
     }
 
     public void setItemClickListener(ItemClickListener<File> itemClickListener)

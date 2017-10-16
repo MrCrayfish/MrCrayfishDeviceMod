@@ -54,6 +54,7 @@ public class FileAction
         {
             NBTTagCompound vars = new NBTTagCompound();
             vars.setString("directory", parent.getPath());
+            vars.setInteger("directory_revision", parent.getRevision());
             vars.setString("file_name", file.getName());
             vars.setBoolean("override", override);
             vars.setTag("data", file.toTag());
@@ -64,6 +65,7 @@ public class FileAction
         {
             NBTTagCompound vars = new NBTTagCompound();
             vars.setString("directory", file.getLocation());
+            vars.setInteger("directory_revision", file.getParent().getRevision());
             vars.setString("file_name", file.getName());
             return new FileAction(FileAction.Type.DELETE, vars);
         }
@@ -72,8 +74,10 @@ public class FileAction
         {
             NBTTagCompound vars = new NBTTagCompound();
             vars.setString("directory", file.getLocation());
+            vars.setInteger("directory_revision", file.getParent().getRevision());
             vars.setString("file_name", file.getName());
             vars.setString("new_file_name", newFileName);
+            vars.setInteger("revision", file.getRevision());
             return new FileAction(FileAction.Type.RENAME, vars);
         }
 
@@ -81,7 +85,9 @@ public class FileAction
         {
             NBTTagCompound vars = new NBTTagCompound();
             vars.setString("directory", file.getLocation());
+            vars.setInteger("directory_revision", file.getParent().getRevision());
             vars.setString("file_name", file.getName());
+            vars.setInteger("revision", file.getRevision());
             vars.setTag("data", data);
             return new FileAction(FileAction.Type.DATA, vars);
         }

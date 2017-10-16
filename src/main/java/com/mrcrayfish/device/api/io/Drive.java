@@ -25,26 +25,52 @@ public class Drive
         this.type = Type.fromString(driveTag.getString("type"));
     }
 
+    /**
+     * Gets the name of the Drive.
+     *
+     * @return the drive name
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * Gets the UUID of the Drive.
+     *
+     * @return the drive uuid
+     */
     public UUID getUUID()
     {
         return uuid;
     }
 
+    /**
+     * Gets the {@link Type} of the Drive. This is either internal, external or network. Used for
+     * determining the icon.
+     *
+     * @return the drive type
+     */
     public Type getType()
     {
         return type;
     }
 
+    /**
+     * Gets the root {@link Folder} of this Drive
+     *
+     * @return
+     */
     public Folder getRoot()
     {
         return root;
     }
 
+    /**
+     * Do not use! Sync the drive structure to a folder
+     *
+     * @param root the root folder of this drive
+     */
     public void syncRoot(Folder root)
     {
         if(!synced)
@@ -56,6 +82,11 @@ public class Drive
         }
     }
 
+    /**
+     * Do not use! Checks if the drive structure is synced
+     *
+     * @return is drive structure synced
+     */
     public boolean isSynced()
     {
         return synced;
