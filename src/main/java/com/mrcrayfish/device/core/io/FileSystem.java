@@ -122,7 +122,7 @@ public class FileSystem
 			{
 				if(callback != null)
 				{
-					callback.execute(Response.fromTag(nbt), success);
+					callback.execute(Response.fromTag(nbt.getCompoundTag("response")), success);
 				}
             });
 			TaskManager.sendTask(task);
@@ -135,7 +135,7 @@ public class FileSystem
 		AbstractDrive drive = getAvailableDrives(world, true).get(uuid);
 		if(drive != null)
 		{
-			Response response = drive.handleFileAction(action, world);
+			Response response = drive.handleFileAction(this, action, world);
 			if(response.getStatus() == Status.SUCCESSFUL)
 			{
 				tileEntity.markDirty();

@@ -4,6 +4,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
@@ -355,6 +356,147 @@ public class File
 		{
 			parent.delete(this, callback);
 		}
+	}
+
+	public void copyTo(Folder destination, boolean override, @Nullable Callback<FileSystem.Response> callback)
+	{
+		if(destination == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal folder"), false);
+			}
+			return;
+		}
+
+		if(!destination.valid || destination.drive == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Destination folder is invalid"), false);
+			}
+			return;
+		}
+
+		if(!valid || drive == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Source file is invalid"), false);
+			}
+			return;
+		}
+
+		if(destination.hasFile(name))
+		{
+			if(!override)
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EXISTS, "A file with that name already exists"), false);
+				}
+				return;
+			}
+			else if(destination.getFile(name).isProtected())
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Unable to override protected files"), false);
+				}
+				return;
+			}
+		}
+
+		FileSystem.sendAction(drive, FileAction.Factory.makeCopyCut(this, destination, override, false), (response, success) ->
+		{
+			if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+			{
+				if(override)
+				{
+					destination.files.remove(destination.getFile(name));
+				}
+				File file = copy();
+				file.valid = true;
+				file.parent = destination;
+				file.setDrive(destination.drive);
+				destination.files.add(file);
+				FileBrowser.refreshList = true;
+			}
+			if(callback != null)
+			{
+				callback.execute(response, success);
+			}
+		});
+	}
+
+	public void moveTo(Folder destination, boolean override, @Nullable Callback<FileSystem.Response> callback)
+	{
+		if(destination == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal folder"), false);
+			}
+			return;
+		}
+
+		if(!destination.valid || destination.drive == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Destination folder is invalid"), false);
+			}
+			return;
+		}
+
+		if(!valid || drive == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Source file is invalid"), false);
+			}
+			return;
+		}
+
+		if(destination.hasFile(name))
+		{
+			if(!override)
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EXISTS, "A file with that name already exists"), false);
+				}
+				return;
+			}
+			else if(destination.getFile(name).isProtected())
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Unable to override protected files"), false);
+				}
+				return;
+			}
+		}
+
+		FileSystem.sendAction(drive, FileAction.Factory.makeCopyCut(this, destination, override, true), (response, success) ->
+		{
+			if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+			{
+				if(override)
+				{
+					destination.files.remove(destination.getFile(name));
+				}
+				parent.files.remove(this);
+				setDrive(destination.drive);
+				parent = destination;
+				destination.files.add(this);
+				FileBrowser.refreshList = true;
+			}
+			if(callback != null)
+			{
+				callback.execute(response, success);
+			}
+		});
 	}
 
 	/**

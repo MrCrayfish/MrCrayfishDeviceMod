@@ -45,7 +45,7 @@ public class FileAction
 
     public enum Type
     {
-        NEW, DELETE, RENAME, DATA;
+        NEW, DELETE, RENAME, DATA, COPY_CUT
     }
 
     public static class Factory
@@ -57,7 +57,7 @@ public class FileAction
             vars.setString("file_name", file.getName());
             vars.setBoolean("override", override);
             vars.setTag("data", file.toTag());
-            return new FileAction(FileAction.Type.NEW, vars);
+            return new FileAction(Type.NEW, vars);
         }
 
         public static FileAction makeDelete(File file)
@@ -65,7 +65,7 @@ public class FileAction
             NBTTagCompound vars = new NBTTagCompound();
             vars.setString("directory", file.getLocation());
             vars.setString("file_name", file.getName());
-            return new FileAction(FileAction.Type.DELETE, vars);
+            return new FileAction(Type.DELETE, vars);
         }
 
         public static FileAction makeRename(File file, String newFileName)
@@ -74,7 +74,7 @@ public class FileAction
             vars.setString("directory", file.getLocation());
             vars.setString("file_name", file.getName());
             vars.setString("new_file_name", newFileName);
-            return new FileAction(FileAction.Type.RENAME, vars);
+            return new FileAction(Type.RENAME, vars);
         }
 
         public static FileAction makeData(File file, NBTTagCompound data)
@@ -83,7 +83,19 @@ public class FileAction
             vars.setString("directory", file.getLocation());
             vars.setString("file_name", file.getName());
             vars.setTag("data", data);
-            return new FileAction(FileAction.Type.DATA, vars);
+            return new FileAction(Type.DATA, vars);
+        }
+
+        public static FileAction makeCopyCut(File source, Folder destination, boolean override, boolean cut)
+        {
+            NBTTagCompound vars = new NBTTagCompound();
+            vars.setString("directory", source.getLocation());
+            vars.setString("file_name", source.getName());
+            vars.setString("destination_drive", destination.getDrive().getUUID().toString());
+            vars.setString("destination_folder", destination.getPath());
+            vars.setBoolean("override", override);
+            vars.setBoolean("cut", cut);
+            return new FileAction(Type.COPY_CUT, vars);
         }
     }
 }

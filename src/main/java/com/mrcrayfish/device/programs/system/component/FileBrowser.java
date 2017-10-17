@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.Drive;
@@ -22,6 +23,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
@@ -727,67 +729,87 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
-                //TODO marge cut and paste to one task
-                addFile(clipboardFile.copy(), (response, success) ->
+                setLoading(true);
+                if(clipboardDir != null)
                 {
-                    if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+                    clipboardFile.moveTo(currentFolder, false, (response, success) ->
                     {
-                        if(clipboardDir != null)
+                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
                         {
-                            setLoading(true);
-                            clipboardDir.delete(clipboardFile.getName(), (o, s2) ->
-                            {
-                                setLoading(false);
-                                if(!s2) return;
-                                clipboardDir = null;
-                                clipboardFile = null;
-                                btnPaste.setEnabled(false);
-                            });
+                            resetClipboard();
                         }
-                    }
-                    else if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
-                    {
-                        Dialog.Input dialog = new Dialog.Input("A file with the same name already exists in this directory. Please choose a new name");
-                        dialog.setPositiveText("Rename");
-                        dialog.setInputText(clipboardFile.getName());
-                        dialog.setResponseHandler((s2, s) ->
+                        else if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
                         {
-                            if(s2)
+                            Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
+                            dialog.setPositiveText("Override");
+                            dialog.setPositiveListener((c, mouseButton) ->
                             {
-                                File file = clipboardFile.copy(s);
-                                setLoading(true);
-                                addFile(file, (response1, s4) ->
+                                if(mouseButton == 0)
                                 {
-                                    setLoading(false);
-                                    if(s4)
+                                    setLoading(true);
+                                    clipboardFile.moveTo(currentFolder, true, (response2, success2) ->
                                     {
-                                        if(clipboardDir != null)
+                                        if(response2.getStatus() == FileSystem.Status.SUCCESSFUL)
                                         {
-                                            setLoading(true);
-                                            clipboardDir.delete(clipboardFile.getName(), (response2, s5) ->
-                                            {
-                                                setLoading(false);
-                                                if(!s5) return;
-                                                clipboardDir = null;
-                                                clipboardFile = null;
-                                                btnPaste.setEnabled(false);
-                                            });
+                                            resetClipboard();
                                         }
-                                        dialog.close();
-                                    }
-                                    else
+                                        else
+                                        {
+                                            createErrorDialog(response2.getMessage());
+                                        }
+                                        setLoading(false);
+                                    });
+                                }
+                            });
+                            wrappable.openDialog(dialog);
+                        }
+                        else
+                        {
+                            createErrorDialog(response.getMessage());
+                        }
+                        setLoading(false);
+                    });
+                }
+                else
+                {
+                    clipboardFile.copyTo(currentFolder, false, (response, success) ->
+                    {
+                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+                        {
+                            resetClipboard();
+                        }
+                        else if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
+                        {
+                            Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
+                            dialog.setPositiveText("Override");
+                            dialog.setPositiveListener((c, mouseButton) ->
+                            {
+                                if(mouseButton == 0)
+                                {
+                                    setLoading(true);
+                                    clipboardFile.copyTo(currentFolder, true, (response2, success2) ->
                                     {
-                                        TextField textField = dialog.getTextFieldInput();
-                                        textField.setText(s);
-                                        textField.setTextColour(Color.RED);
-                                    }
-                                });
-                            }
-                            return false;
-                        });
-                        wrappable.openDialog(dialog);
-                    }
-                });
+                                        if(response2.getStatus() == FileSystem.Status.SUCCESSFUL)
+                                        {
+                                            resetClipboard();
+                                        }
+                                        else
+                                        {
+                                            createErrorDialog(response2.getMessage());
+                                        }
+                                        setLoading(false);
+                                    });
+                                }
+                            });
+                            wrappable.openDialog(dialog);
+                        }
+                        else
+                        {
+                            createErrorDialog(response.getMessage());
+                        }
+                        setLoading(false);
+                    });
+                }
             }
             else
             {
@@ -795,6 +817,28 @@ public class FileBrowser extends Component
                 wrappable.openDialog(dialog);
             }
         }
+    }
+
+    private void resetClipboard()
+    {
+        if(clipboardDir != null)
+        {
+            clipboardDir.refresh();
+            clipboardDir = null;
+            clipboardFile = null;
+            btnPaste.setEnabled(false);
+        }
+        currentFolder.refresh();
+        openFolder(currentFolder, false, (folder, success1) ->
+        {
+            if(mode == Mode.FULL)
+            {
+                btnRename.setEnabled(false);
+                btnCopy.setEnabled(false);
+                btnCut.setEnabled(false);
+                btnDelete.setEnabled(false);
+            }
+        });
     }
 
     private boolean canPasteHere()

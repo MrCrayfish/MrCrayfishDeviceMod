@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 public class Folder extends File
 {
-	private List<File> files = new ArrayList<>();
+	protected List<File> files = new ArrayList<>();
 
 	private boolean synced = false;
 
@@ -123,7 +123,7 @@ public class Folder extends File
 		{
             if(success)
 			{
-				file.drive = drive;
+				file.setDrive(drive);
 				file.valid = true;
 				file.parent = this;
 				files.add(file);
@@ -233,6 +233,58 @@ public class Folder extends File
                 callback.execute(response, success);
             }
         });
+	}
+
+	public void copyInto(File file, boolean override, boolean cut, @Nullable Callback<FileSystem.Response> callback)
+	{
+		if(file == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal file"), false);
+			}
+			return;
+		}
+
+		if(!file.valid || file.drive == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Source file is invalid"), false);
+			}
+			return;
+		}
+
+		if(hasFile(file.name))
+		{
+			if(!override)
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EXISTS, "A file with that name already exists"), true);
+				}
+				return;
+			}
+			else if(getFile(file.name).isProtected())
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Unable to override protected files"), true);
+				}
+				return;
+			}
+		}
+
+		FileSystem.sendAction(file.drive, FileAction.Factory.makeCopyCut(file, this, false, cut), (response, success) ->
+		{
+			if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+			{
+				if(file.isFolder())
+				{
+					((Folder)file).copy();
+				}
+			}
+		});
 	}
 
 	/**
@@ -388,6 +440,11 @@ public class Folder extends File
 	public boolean isSynced()
 	{
 		return synced;
+	}
+
+	public void refresh()
+	{
+		synced = false;
 	}
 
 	/**

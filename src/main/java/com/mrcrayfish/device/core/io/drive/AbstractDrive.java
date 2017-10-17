@@ -51,7 +51,7 @@ public abstract class AbstractDrive
         return root;
     }
 
-    public FileSystem.Response handleFileAction(FileAction action, World world)
+    public FileSystem.Response handleFileAction(FileSystem fileSystem, FileAction action, World world)
     {
         NBTTagCompound actionData = action.getData();
         ServerFolder folder = getFolder(actionData.getString("directory"));
@@ -83,6 +83,31 @@ public abstract class AbstractDrive
                     if(file != null)
                     {
                         return file.setData(actionData.getCompoundTag("data"));
+                    }
+                    break;
+                case COPY_CUT:
+                    file = folder.getFile(actionData.getString("file_name"));
+                    if(file != null)
+                    {
+                        UUID uuid = UUID.fromString(actionData.getString("destination_drive"));
+                        AbstractDrive drive = fileSystem.getAvailableDrives(world, true).get(uuid);
+                        if(drive != null)
+                        {
+                            ServerFolder destination = drive.getFolder(actionData.getString("destination_folder"));
+                            if(destination != null)
+                            {
+                                FileSystem.Response response = destination.add(file.copy(), actionData.getBoolean("override"));
+                                if(response.getStatus() != FileSystem.Status.SUCCESSFUL)
+                                {
+                                    return response;
+                                }
+                                if(actionData.getBoolean("cut"))
+                                {
+                                    return file.delete();
+                                }
+                                return FileSystem.createSuccessResponse();
+                            }
+                        }
                     }
                     break;
             }
