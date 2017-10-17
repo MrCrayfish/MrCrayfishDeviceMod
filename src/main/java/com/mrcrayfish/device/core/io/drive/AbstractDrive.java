@@ -57,10 +57,6 @@ public abstract class AbstractDrive
         ServerFolder folder = getFolder(actionData.getString("directory"));
         if(folder != null)
         {
-            if(folder.getRevision() != actionData.getInteger("directory_revision"))
-            {
-                return FileSystem.createResponse(FileSystem.Status.FILE_DESYNCED, "Parent folder out of sync. Please refresh");
-            }
             NBTTagCompound data = actionData.getCompoundTag("data");
             switch(action.getType())
             {
@@ -79,10 +75,6 @@ public abstract class AbstractDrive
                     ServerFile file = folder.getFile(actionData.getString("file_name"));
                     if(file != null)
                     {
-                        if(file.getRevision() != actionData.getInteger("revision"))
-                        {
-                            return FileSystem.createResponse(FileSystem.Status.FILE_DESYNCED, "File out of sync. Please refresh!");
-                        }
                         return file.rename(actionData.getString("new_file_name"));
                     }
                     break;
@@ -90,10 +82,6 @@ public abstract class AbstractDrive
                     file = folder.getFile(actionData.getString("file_name"));
                     if(file != null)
                     {
-                        if(file.getRevision() != actionData.getInteger("revision"))
-                        {
-                            return FileSystem.createResponse(FileSystem.Status.FILE_DESYNCED, "File out of sync. Please refresh!");
-                        }
                         return file.setData(actionData.getCompoundTag("data"));
                     }
                     break;
