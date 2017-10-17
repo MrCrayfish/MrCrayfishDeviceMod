@@ -729,86 +729,22 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
-                setLoading(true);
-                if(clipboardDir != null)
+                if(currentFolder.hasFile(clipboardFile.getName()))
                 {
-                    clipboardFile.moveTo(currentFolder, false, (response, success) ->
+                    Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
+                    dialog.setPositiveText("Override");
+                    dialog.setPositiveListener((c, mouseButton) ->
                     {
-                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+                        if(mouseButton == 0)
                         {
-                            resetClipboard();
+                            handleCopyCut(true);
                         }
-                        else if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
-                        {
-                            Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
-                            dialog.setPositiveText("Override");
-                            dialog.setPositiveListener((c, mouseButton) ->
-                            {
-                                if(mouseButton == 0)
-                                {
-                                    setLoading(true);
-                                    clipboardFile.moveTo(currentFolder, true, (response2, success2) ->
-                                    {
-                                        if(response2.getStatus() == FileSystem.Status.SUCCESSFUL)
-                                        {
-                                            resetClipboard();
-                                        }
-                                        else
-                                        {
-                                            createErrorDialog(response2.getMessage());
-                                        }
-                                        setLoading(false);
-                                    });
-                                }
-                            });
-                            wrappable.openDialog(dialog);
-                        }
-                        else
-                        {
-                            createErrorDialog(response.getMessage());
-                        }
-                        setLoading(false);
                     });
+                    wrappable.openDialog(dialog);
                 }
                 else
                 {
-                    clipboardFile.copyTo(currentFolder, false, (response, success) ->
-                    {
-                        if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                        {
-                            resetClipboard();
-                        }
-                        else if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
-                        {
-                            Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
-                            dialog.setPositiveText("Override");
-                            dialog.setPositiveListener((c, mouseButton) ->
-                            {
-                                if(mouseButton == 0)
-                                {
-                                    setLoading(true);
-                                    clipboardFile.copyTo(currentFolder, true, (response2, success2) ->
-                                    {
-                                        if(response2.getStatus() == FileSystem.Status.SUCCESSFUL)
-                                        {
-                                            resetClipboard();
-                                        }
-                                        else
-                                        {
-                                            createErrorDialog(response2.getMessage());
-                                        }
-                                        setLoading(false);
-                                    });
-                                }
-                            });
-                            wrappable.openDialog(dialog);
-                        }
-                        else
-                        {
-                            createErrorDialog(response.getMessage());
-                        }
-                        setLoading(false);
-                    });
+                    handleCopyCut(false);
                 }
             }
             else
@@ -816,6 +752,42 @@ public class FileBrowser extends Component
                 Dialog.Message dialog = new Dialog.Message("You cannot paste a copied folder inside itself");
                 wrappable.openDialog(dialog);
             }
+        }
+    }
+
+    private void handleCopyCut(boolean override)
+    {
+        if(clipboardDir != null)
+        {
+            setLoading(true);
+            clipboardFile.moveTo(currentFolder, override, (response, success) ->
+            {
+                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+                {
+                    resetClipboard();
+                }
+                else
+                {
+                    createErrorDialog(response.getMessage());
+                }
+                setLoading(false);
+            });
+        }
+        else
+        {
+            setLoading(true);
+            clipboardFile.copyTo(currentFolder, override, (response, success) ->
+            {
+                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+                {
+                    resetClipboard();
+                }
+                else
+                {
+                    createErrorDialog(response.getMessage());
+                }
+                setLoading(false);
+            });
         }
     }
 
