@@ -76,11 +76,8 @@ public class ApplicationEmail extends Application
 
 	/* New Email Layout */
 	private Layout layoutNewEmail;
-	private Label labelTo;
 	private TextField fieldRecipient;
-	private Label labelSubject;
 	private TextField fieldSubject;
-	private Label labelMessage;
 	private TextArea textAreaMessage;
 	private Button btnSendEmail;
 	private Button btnCancelEmail;
@@ -361,35 +358,29 @@ public class ApplicationEmail extends Application
 		
 		/* New Email Layout */
 		
-		layoutNewEmail = new Layout(255, 148);
+		layoutNewEmail = new Layout(231, 148);
 		layoutNewEmail.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 		{
 			if(attachedFile != null)
 			{
 				AppInfo info = ApplicationManager.getApplication(attachedFile.getOpeningApp());
-				RenderUtil.drawApplicationIcon(info, x + 70, y + 130);
+				RenderUtil.drawApplicationIcon(info, x + 46, y + 130);
 			}
         });
 
-		labelTo = new Label("To", 5, 8);
-		layoutNewEmail.addComponent(labelTo);
-
-		fieldRecipient = new TextField(50, 5, 200);
+		fieldRecipient = new TextField(26, 5, 200);
+		fieldRecipient.setPlaceholder("To");
 		layoutNewEmail.addComponent(fieldRecipient);
 
-		labelSubject = new Label("Subject", 5, 26);
-		layoutNewEmail.addComponent(labelSubject);
-
-		fieldSubject = new TextField(50, 23, 200);
+		fieldSubject = new TextField(26, 23, 200);
+		fieldSubject.setPlaceholder("Subject");
 		layoutNewEmail.addComponent(fieldSubject);
 
-		labelMessage = new Label("Message", 5, 44);
-		layoutNewEmail.addComponent(labelMessage);
-
-		textAreaMessage = new TextArea(50, 41, 200, 85);
+		textAreaMessage = new TextArea(26, 41, 200, 85);
+		textAreaMessage.setPlaceholder("Message");
 		layoutNewEmail.addComponent(textAreaMessage);
 
-		btnSendEmail = new Button(6, 60, ENDER_MAIL_ICONS, 50, 0, 10, 10);
+		btnSendEmail = new Button(5, 5, ENDER_MAIL_ICONS, 50, 0, 10, 10);
 		btnSendEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -416,7 +407,7 @@ public class ApplicationEmail extends Application
 		btnSendEmail.setToolTip("Send", "Send email to recipient");
 		layoutNewEmail.addComponent(btnSendEmail);
 
-		btnCancelEmail = new Button(28, 60, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		btnCancelEmail = new Button(5, 25, ENDER_MAIL_ICONS, 40, 0, 10, 10);
 		btnCancelEmail.setClickListener(new ClickListener()
 		{
 			@Override
@@ -431,7 +422,7 @@ public class ApplicationEmail extends Application
 		btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
 		layoutNewEmail.addComponent(btnCancelEmail);
 
-		btnAttachedFile = new Button(50, 129, ENDER_MAIL_ICONS, 70, 0, 10, 10);
+		btnAttachedFile = new Button(26, 129, ENDER_MAIL_ICONS, 70, 0, 10, 10);
 		btnAttachedFile.setToolTip("Attach File", "Select a file from computer to attach to this email");
 		btnAttachedFile.setClickListener((c, mouseButton) ->
 		{
@@ -461,7 +452,7 @@ public class ApplicationEmail extends Application
         });
 		layoutNewEmail.addComponent(btnAttachedFile);
 
-		btnRemoveAttachedFile = new Button(50, 129, ENDER_MAIL_ICONS, 40, 0, 10, 10);
+		btnRemoveAttachedFile = new Button(26, 129, ENDER_MAIL_ICONS, 40, 0, 10, 10);
 		btnRemoveAttachedFile.setToolTip("Remove Attachment", "Delete the attached file from this email");
 		btnRemoveAttachedFile.setVisible(false);
 		btnRemoveAttachedFile.setClickListener((c, mouseButton) ->
@@ -478,7 +469,7 @@ public class ApplicationEmail extends Application
         });
 		layoutNewEmail.addComponent(btnRemoveAttachedFile);
 
-		labelAttachedFile = new Label("No file attached", 70, 133);
+		labelAttachedFile = new Label("No file attached", 46, 133);
 		layoutNewEmail.addComponent(labelAttachedFile);
 		
 		
