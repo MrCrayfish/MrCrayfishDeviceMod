@@ -399,6 +399,7 @@ public class ApplicationEmail extends Application
                         textAreaMessage.clear();
                         fieldSubject.clear();
                         fieldRecipient.clear();
+						resetAttachedFile();
                     }
                 });
 				TaskManager.sendTask(taskSendEmail);
@@ -417,6 +418,7 @@ public class ApplicationEmail extends Application
 				textAreaMessage.clear();
 				fieldSubject.clear();
 				fieldRecipient.clear();
+				resetAttachedFile();
 			}
 		});
 		btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
@@ -459,12 +461,7 @@ public class ApplicationEmail extends Application
 		{
             if(mouseButton == 0)
 			{
-				attachedFile = null;
-				labelAttachedFile.setText("No file attached");
-				labelAttachedFile.left -= 16;
-				labelAttachedFile.xPosition -= 16;
-				btnRemoveAttachedFile.setVisible(false);
-				btnAttachedFile.setVisible(true);
+				resetAttachedFile();
 			}
         });
 		layoutNewEmail.addComponent(btnRemoveAttachedFile);
@@ -557,6 +554,19 @@ public class ApplicationEmail extends Application
             }
         });
 		TaskManager.sendTask(taskCheckAccount);
+	}
+
+	private void resetAttachedFile()
+	{
+		if(attachedFile != null)
+		{
+			labelAttachedFile.setText("No file attached");
+			labelAttachedFile.left -= 16;
+			labelAttachedFile.xPosition -= 16;
+			btnRemoveAttachedFile.setVisible(false);
+			btnAttachedFile.setVisible(true);
+			attachedFile = null;
+		}
 	}
 
 	@Override
