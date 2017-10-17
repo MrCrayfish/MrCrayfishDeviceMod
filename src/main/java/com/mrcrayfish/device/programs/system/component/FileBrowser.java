@@ -749,7 +749,7 @@ public class FileBrowser extends Component
             }
             else
             {
-                Dialog.Message dialog = new Dialog.Message("You cannot paste a copied folder inside itself");
+                Dialog.Message dialog = new Dialog.Message("Destination folder can't be a subfolder");
                 wrappable.openDialog(dialog);
             }
         }

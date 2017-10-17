@@ -65,10 +65,7 @@ public abstract class AbstractDrive
                     {
                         return folder.add(ServerFolder.fromTag(actionData.getString("file_name"), data), actionData.getBoolean("override"));
                     }
-                    else
-                    {
-                        return folder.add(ServerFile.fromTag(actionData.getString("file_name"), data), data.getBoolean("override"));
-                    }
+                    return folder.add(ServerFile.fromTag(actionData.getString("file_name"), data), data.getBoolean("override"));
                 case DELETE:
                     return folder.delete(actionData.getString("file_name"));
                 case RENAME:
@@ -77,14 +74,14 @@ public abstract class AbstractDrive
                     {
                         return file.rename(actionData.getString("new_file_name"));
                     }
-                    break;
+                    return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "File not found on server. Please refresh!");
                 case DATA:
                     file = folder.getFile(actionData.getString("file_name"));
                     if(file != null)
                     {
                         return file.setData(actionData.getCompoundTag("data"));
                     }
-                    break;
+                    return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "File not found on server. Please refresh!");
                 case COPY_CUT:
                     file = folder.getFile(actionData.getString("file_name"));
                     if(file != null)
@@ -96,6 +93,16 @@ public abstract class AbstractDrive
                             ServerFolder destination = drive.getFolder(actionData.getString("destination_folder"));
                             if(destination != null)
                             {
+                                ServerFolder temp = destination;
+                                while(true)
+                                {
+                                    if(temp == null)
+                                        break;
+                                    if(temp == file)
+                                        return FileSystem.createResponse(FileSystem.Status.FAILED, "Destination folder can't be a subfolder");
+                                    temp = temp.getParent();
+                                }
+
                                 FileSystem.Response response = destination.add(file.copy(), actionData.getBoolean("override"));
                                 if(response.getStatus() != FileSystem.Status.SUCCESSFUL)
                                 {
@@ -107,9 +114,11 @@ public abstract class AbstractDrive
                                 }
                                 return FileSystem.createSuccessResponse();
                             }
+                            return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Destination folder not found on server. Please refresh!");
                         }
+                        return FileSystem.createResponse(FileSystem.Status.DRIVE_UNAVAILABLE, "Drive unavailable. Please refresh!");
                     }
-                    break;
+                    return FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "File not found on server. Please refresh!");
             }
         }
         return FileSystem.createResponse(FileSystem.Status.DRIVE_UNAVAILABLE, "Invalid directory");
