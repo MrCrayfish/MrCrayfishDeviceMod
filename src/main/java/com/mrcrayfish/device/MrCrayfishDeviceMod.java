@@ -50,7 +50,7 @@ public class MrCrayfishDeviceMod
 
 	private static Logger logger;
 
-	public static final boolean DEVELOPER_MODE = false;
+	public static final boolean DEVELOPER_MODE = true;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) throws LaunchException {
