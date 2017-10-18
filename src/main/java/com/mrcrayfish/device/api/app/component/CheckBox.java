@@ -2,9 +2,11 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
 
@@ -61,11 +63,20 @@ public class CheckBox extends Component implements RadioGroup.Item
 	{
 		if (this.visible)
         {
-			drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, borderColour);
-			drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, backgroundColour);
-			if(checked)
+        	if(group == null)
 			{
-				drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, checkedColour);
+				drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, borderColour);
+				drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, backgroundColour);
+				if(checked)
+				{
+					drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, checkedColour);
+				}
+			}
+			else
+			{
+				GlStateManager.color(1.0F, 1.0F, 1.0F);
+				mc.getTextureManager().bindTexture(COMPONENTS_GUI);
+				drawTexturedModalRect(xPosition, yPosition, checked ? 10 : 0, 60, 10, 10);
 			}
 			drawString(mc.fontRendererObj, name, xPosition + 12, yPosition + 1, textColour);
         }

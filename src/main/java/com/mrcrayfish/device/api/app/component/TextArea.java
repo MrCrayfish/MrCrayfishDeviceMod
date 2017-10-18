@@ -17,6 +17,7 @@ public class TextArea extends Component
 	protected FontRenderer fontRendererObj;
 	
 	protected String text = "";
+	protected String placeholder = null;
 	protected int width, height;
 	protected int maxLines;
 	protected int padding = 2;
@@ -25,6 +26,7 @@ public class TextArea extends Component
 	protected boolean editable = true;
 	
 	/* Personalisation */
+	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
 	protected int textColour = Color.WHITE.getRGB();
 	protected int backgroundColour = Color.DARK_GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
@@ -60,6 +62,13 @@ public class TextArea extends Component
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
 			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
+
+			if(!isFocused && placeholder != null && text.isEmpty())
+			{
+				GlStateManager.enableBlend();
+				mc.fontRendererObj.drawSplitString(placeholder, x + padding + 1, y + padding + 2, width - padding * 2 - 2, placeholderColour);
+			}
+
 			String text = this.text;
 			if (this.updateCount / 6 % 2 == 0)
 	        {
@@ -156,7 +165,12 @@ public class TextArea extends Component
 	{
 		return text;
 	}
-	
+
+	public void setPlaceholder(String placeholder)
+	{
+		this.placeholder = placeholder;
+	}
+
 	/**
 	 * Sets this text area focused. Makes it available for typing.
 	 * 
