@@ -26,10 +26,7 @@ import java.util.Collections;
 class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
-	
-	private static Application settings = new ApplicationSettings(); 
-	private static Application app_store = new ApplicationAppStore(); 
-	
+
 	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
 	public static final int BAR_HEIGHT = 18;
 	
@@ -109,19 +106,7 @@ class TaskBar
 		/* Settings App */
 		gui.drawTexturedModalRect(x + 316, y + 2, 14, 30, 14, 14);
 		gui.drawTexturedModalRect(x + 300, y + 2, 28, 30, 14, 14);
-		
-		if(isMouseInside(mouseX, mouseY, x + 316, y + 1, x + 330, y + 16))
-		{
-			gui.drawTexturedModalRect(x + 315, y + 1, 35, 0, 16, 16);
-			gui.drawHoveringText(Collections.singletonList(settings.getInfo().getName()), mouseX, mouseY);
-		}
-		
-		if(isMouseInside(mouseX, mouseY, x + 300, y + 1, x + 314, y + 16))
-		{
-			gui.drawTexturedModalRect(x + 299, y + 1, 35, 0, 16, 16);
-			gui.drawHoveringText(Collections.singletonList(app_store.getInfo().getName()), mouseX, mouseY);
-		}
-		
+
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
@@ -141,19 +126,7 @@ class TaskBar
 	{
 		btnLeft.handleMouseClick(mouseX, mouseY, mouseButton);
 		btnRight.handleMouseClick(mouseX, mouseY, mouseButton);
-		
-		if(isMouseInside(mouseX, mouseY, x + 315, y + 1, x + 331, y + 16))
-		{
-			laptop.open(settings);
-			return;
-		}
-		
-		if(isMouseInside(mouseX, mouseY, x + 299, y + 1, x + 315, y + 16))
-		{
-			laptop.open(app_store);
-			return;
-		}
-		
+
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
