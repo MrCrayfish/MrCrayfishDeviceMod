@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.app.component;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.listener.ChangeListener;
+import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -29,6 +30,7 @@ public abstract class ComboBox<T> extends Component
 
     protected Layout layout;
 
+    protected ItemRenderer<T> itemRenderer;
     protected ChangeListener<T> changeListener;
 
     public ComboBox(int left, int top)
@@ -40,6 +42,13 @@ public abstract class ComboBox<T> extends Component
     {
         super(left, top);
         this.width = width;
+    }
+
+    public ComboBox(int left, int top, int width, int height)
+    {
+        super(left, top);
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -99,13 +108,20 @@ public abstract class ComboBox<T> extends Component
             drawVerticalLine(xPosition, yPosition, yPosition + height - 1, Color.BLACK.getRGB());
             drawRect(xPosition + 1, yPosition + 1, xPosition + xOffset, yPosition + height - 1, Color.DARK_GRAY.getRGB());
 
-            String text = value.toString();
-            int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
-            if(valWidth > (width - height - 8))
+            if(itemRenderer != null)
             {
-                text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                itemRenderer.render(value, laptop, mc, x + 1, y + 1, xOffset - 1, height - 2);
             }
-            fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
+            else
+            {
+                String text = value.toString();
+                int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+                if(valWidth > (width - height - 8))
+                {
+                    text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                }
+                fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
+            }
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
@@ -161,9 +177,19 @@ public abstract class ComboBox<T> extends Component
         return i;
     }
 
+    public void setItemRenderer(ItemRenderer<T> itemRenderer)
+    {
+        this.itemRenderer = itemRenderer;
+    }
+
     public void setChangeListener(ChangeListener<T> changeListener)
     {
         this.changeListener = changeListener;
+    }
+
+    public void closeContext()
+    {
+        Laptop.getSystem().closeContext();
     }
 
     public static class List<T> extends ComboBox<T>
@@ -247,16 +273,16 @@ public abstract class ComboBox<T> extends Component
 
     public static class Custom<T> extends ComboBox<T>
     {
-        public Custom(int left, int top)
+        public Custom(int left, int top, int width, int contextWidth, int contextHeight)
         {
             super(left, top);
-            this.layout = new Layout(width, 100);
+            this.width = width;
+            this.layout = new Layout.Context(contextWidth, contextHeight);
         }
 
-        public Custom(int left, int top, Layout layout)
+        public Layout.Context getLayout()
         {
-            super(left, top);
-            this.layout = layout;
+            return (Layout.Context) layout;
         }
 
         public void setValue(@Nonnull T newVal)

@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
  * 
  * @author MrCrayfish
  */
-public final class Layout extends Component
+public class Layout extends Component
 {
 	/**
 	 * The list of components in the layout
@@ -325,4 +326,31 @@ public final class Layout extends Component
 		void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive);
 	}
 
+	public static class Context extends Layout
+	{
+		private boolean borderVisible = true;
+
+		public Context(int width, int height)
+		{
+			super(width, height);
+		}
+
+		@Override
+		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
+		{
+			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
+			if(borderVisible)
+			{
+				drawHorizontalLine(x, x + width - 1, y, Color.BLACK.getRGB());
+				drawHorizontalLine(x, x + width - 1, y + height - 1, Color.BLACK.getRGB());
+				drawVerticalLine(x, y, y + height - 1, Color.BLACK.getRGB());
+				drawVerticalLine(x + width - 1, y, y + height - 1, Color.BLACK.getRGB());
+			}
+		}
+
+		public void setBorderVisible(boolean visible)
+		{
+			this.borderVisible = visible;
+		}
+	}
 }
