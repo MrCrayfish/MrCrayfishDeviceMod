@@ -4,6 +4,8 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.init.DeviceBlocks;
+import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
@@ -24,11 +26,15 @@ public class ClientProxy implements IProxyInterface
     @Override
     public void preInit()
     {
+        DeviceBlocks.registerRenders();
+        DeviceItems.registerRenders();
     }
 
     @Override
     public void init()
     {
+
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
     }
 

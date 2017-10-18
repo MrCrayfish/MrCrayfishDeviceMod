@@ -16,6 +16,14 @@ import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.util.NonNullList;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class ItemList<E> extends Component implements Iterable<E>
@@ -29,7 +37,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected boolean resized = false;
 	protected boolean initialized = false;
 
-	protected List<E> items = new ArrayList<>();
+	protected List<E> items = NonNullList.create();
 	protected ListItemRenderer<E> renderer = null;
 	protected ItemClickListener<E> itemClickListener = null;
 	
@@ -39,7 +47,9 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected int textColour = Color.WHITE.getRGB();
 	protected int backgroundColour = Color.GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
-	
+
+	private Comparator<E> sorter = null;
+
 	/**
 	 * Default constructor for the item list. Should be noted that the
 	 * height is determined by how many visible items there are.
@@ -127,7 +137,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 					{
 						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
 						drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, Color.LIGHT_GRAY.getRGB());
+						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, Color.DARK_GRAY.getRGB());
 					}
 				}
 			}
@@ -138,7 +148,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 			{
 				if(renderer != null)
 				{
-					renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 1, renderer.getHeight(), (i + offset) == selected);
+					renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 2, renderer.getHeight(), (i + offset) == selected);
 					drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColour);
 				}
 				else
@@ -170,10 +180,10 @@ public class ItemList<E> extends Component implements Iterable<E>
 			{
 				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + 1, yPosition + (i * height) + i, xPosition + width - 1, yPosition + (i * height) + i + height))
 				{
-					this.selected = i + offset;
+					if(mouseButton == 0) this.selected = i + offset;
 					if(itemClickListener != null)
 					{
-						itemClickListener.onClick(items.get(selected), selected, mouseButton);
+						itemClickListener.onClick(items.get(i + offset), i + offset, mouseButton);
 					}
 				}
 			}
@@ -201,7 +211,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 		}
 	}
 
-	private int getHeight()
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
 	{
 		int size = getSize();
 		return (renderer != null ? renderer.getHeight() : 13) * size + size + 1;
@@ -278,14 +293,26 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * 
 	 * @param e the item
 	 */
-	public void addItem(E e)
+	public void addItem(@Nonnull E e)
 	{
-		if(e != null)
-		{
-			items.add(e);
-			if(initialized)
-				updateComponent();
-		}
+		if(e == null)
+			throw new IllegalArgumentException("A null object cannot be added to an ItemList");
+		items.add(e);
+		sort();
+		if(initialized)
+			updateComponent();
+	}
+
+	/**
+	 * Appends an item to the list
+	 *
+	 * @param newItems the items
+	 */
+	public void setItems(List<E> newItems)
+	{
+		items.clear();
+		items.addAll(newItems);
+		sort();
 	}
 	
 	/**
@@ -293,16 +320,18 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * 
 	 * @param index the index to remove
 	 */
-	public void removeItem(int index)
+	public E removeItem(int index)
 	{
 		if(index >= 0 && index < items.size())
 		{
-			items.remove(index);
+			E e = items.remove(index);
 			if(index == selected)
 				selected = -1;
 			if(initialized)
 				updateComponent();
+			return e;
 		}
+		return null;
 	}
 	
 	/**
@@ -403,6 +432,28 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		this.borderColour = color.getRGB();
 	}
+
+	/**
+	 * Sets the sorter for this item list and updates straight away
+	 * @param sorter the comparator to sort the list by
+	 */
+	public void sortBy(Comparator<E> sorter)
+	{
+		this.sorter = sorter;
+		sort();
+	}
+
+	/**
+	 * Sorts the list
+	 */
+	public void sort()
+	{
+		if(sorter != null)
+		{
+			Collections.sort(items, sorter);
+		}
+	}
+
 
 	@Override
 	public Iterator<E> iterator() 

@@ -10,6 +10,8 @@ import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import javax.annotation.Nullable;
+
 public class ApplicationManager
 {
 	private static final Map<ResourceLocation, AppInfo> APP_INFO = new HashMap<>();
@@ -64,5 +66,11 @@ public class ApplicationManager
 	public static Collection<AppInfo> getAvailableApps()
 	{
 		return APP_INFO.values();
+	}
+
+	@Nullable
+	public static AppInfo getApplication(String appId)
+	{
+		return APP_INFO.get(new ResourceLocation(appId.replace(".", ":")));
 	}
 }

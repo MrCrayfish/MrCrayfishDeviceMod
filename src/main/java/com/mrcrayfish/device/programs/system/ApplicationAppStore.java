@@ -79,7 +79,7 @@ public class ApplicationAppStore extends Application
 				else
 					gui.drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
 				e.renderIcon(mc, x + 3, y + 3);
-				gui.drawString(mc.fontRendererObj, e.toString(), x + 20, y + 6, Color.WHITE.getRGB());
+				gui.drawString(mc.fontRendererObj, e.getFormattedId(), x + 20, y + 6, Color.WHITE.getRGB());
 				
 			}
 		});
