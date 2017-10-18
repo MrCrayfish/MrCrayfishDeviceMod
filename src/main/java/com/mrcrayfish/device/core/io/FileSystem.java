@@ -230,7 +230,7 @@ public class FileSystem
 				}
 				else
 				{
-					//TODO error dialog
+					callback.execute(null, false);
 				}
 			});
 			TaskManager.sendTask(task);
@@ -262,12 +262,12 @@ public class FileSystem
 						{
 							NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
 							appFolder.syncFiles(files);
+							callback.execute(appFolder, true);
 						}
 						else
 						{
-							//TODO error dialog
+							callback.execute(null, false);
 						}
-						callback.execute(appFolder, success);
 					});
 					TaskManager.sendTask(task);
 				}
@@ -277,13 +277,20 @@ public class FileSystem
 				Folder appFolder = new Folder(app.getInfo().getFormattedId());
 				folder.add(appFolder, (response, success) ->
 				{
-					callback.execute(appFolder, response.getStatus() == FileSystem.Status.SUCCESSFUL);
+					if(response != null && response.getStatus() == Status.SUCCESSFUL)
+					{
+						callback.execute(appFolder, true);
+					}
+					else
+					{
+						callback.execute(null, false);
+					}
 				});
 			}
 		}
 		else
 		{
-			//TODO error dialog
+			callback.execute(null, false);
 		}
 	}
 

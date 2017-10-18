@@ -38,6 +38,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -389,17 +390,33 @@ public class FileBrowser extends Component
                     if(folder != null)
                     {
                         pushPredecessors(folder);
-                        openFolder(folder, false, null);
+                        openFolder(folder, false, (folder1, success1) ->
+                        {
+                            if(!success1)
+                            {
+                                createErrorDialog("A critical error occurred while initializing.");
+                            }
+                        });
                         return;
                     }
                     else
                     {
-                        //TODO create error dialog, merge with below
+                        openFolder(currentDrive.getRoot(), false, (folder12, success12) ->
+                        {
+                            if(success)
+                            {
+                                createErrorDialog("Unable to open directory '" + initialFolder + "'");
+                            }
+                            else
+                            {
+                                createErrorDialog("A critical error occurred while initializing.");
+                            }
+                        });
                     }
                 }
                 else
                 {
-                    //TODO create error dialog
+                    createErrorDialog("A critical error occurred while initializing.");
                 }
                 setLoading(false);
             });
@@ -428,7 +445,13 @@ public class FileBrowser extends Component
         predecessor.clear();
         if(drive.isSynced())
         {
-            openFolder(drive.getRoot(), false, null);
+            openFolder(drive.getRoot(), false, (folder, success) ->
+            {
+                if(!success)
+                {
+                    createErrorDialog("Unable to open drive '" + drive.getName() + "'");
+                }
+            });
         }
         else
         {
@@ -441,11 +464,17 @@ public class FileBrowser extends Component
                 {
                     Folder folder = Folder.fromTag(nbt.getString("file_name"), nbt.getCompoundTag("structure"));
                     drive.syncRoot(folder);
-                    openFolder(drive.getRoot(), false, null);
+                    openFolder(drive.getRoot(), false, (folder1, success1) ->
+                    {
+                        if(!success1)
+                        {
+                            createErrorDialog("Unable to open drive '" + drive.getName() + "'");
+                        }
+                    });
                 }
                 else
                 {
-                    //TODO error dialog
+                    createErrorDialog("Unable to retrieve drive structure for '" + drive.getName() + "'");
                 }
             });
             TaskManager.sendTask(task);
@@ -557,7 +586,7 @@ public class FileBrowser extends Component
                 }
                 else
                 {
-                    //TODO error dialog for unknown folder
+                    createErrorDialog("Unable to open previous folder");
                 }
                 setLoading(false);
             });
@@ -801,7 +830,7 @@ public class FileBrowser extends Component
             btnPaste.setEnabled(false);
         }
         currentFolder.refresh();
-        openFolder(currentFolder, false, (folder, success1) ->
+        openFolder(currentFolder, false, (folder, success) ->
         {
             if(mode == Mode.FULL)
             {
