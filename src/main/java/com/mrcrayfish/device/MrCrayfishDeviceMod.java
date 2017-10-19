@@ -37,6 +37,10 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Original mod by <a href="https://www.youtube.com/user/MrCrayfishMinecraft">MrCrayfish</a>, 1.10 backport by <a href="https://www.youtube.com/channel/UCUVk3BQ1l2ncfIZaSMLUNVA">Dbrown55</a>.
+ */
+
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
 public class MrCrayfishDeviceMod 
 {
@@ -50,15 +54,10 @@ public class MrCrayfishDeviceMod
 
 	private static Logger logger;
 
-	public static final boolean DEVELOPER_MODE = true;
+	public static final boolean DEVELOPER_MODE = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) throws LaunchException {
-
-		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
-		{
-			throw new LaunchException();
-		}
 
 		logger = event.getModLog();
 

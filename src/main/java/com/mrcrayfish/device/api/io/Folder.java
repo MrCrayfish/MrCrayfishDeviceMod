@@ -1,19 +1,20 @@
 package com.mrcrayfish.device.api.io;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
 
 public class Folder extends File
 {
@@ -355,7 +356,7 @@ public class Folder extends File
 	 */
 	public List<File> search(Predicate<File> conditions)
 	{
-		List<File> found = NonNullList.create();
+		List<File> found = new ArrayList<File>();
 		search(found, conditions);
 		return found;
 	}

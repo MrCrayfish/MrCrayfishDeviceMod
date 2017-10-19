@@ -47,7 +47,7 @@ public class TaskBuyItem extends Task
 			if(buyer.pay(seller, price))
 			{
 				item.setSold();
-				world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, item.getStack().copy()));
+				world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, item.getStack().copy()));
 				this.setSuccessful();
 			}
 		}
