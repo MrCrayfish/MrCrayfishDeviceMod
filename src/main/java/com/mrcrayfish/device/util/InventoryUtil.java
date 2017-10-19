@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.util;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -14,7 +15,7 @@ public class InventoryUtil
 			ItemStack stack = player.inventory.getStackInSlot(i);
 			if(stack != null && stack.getItem() == item)
 			{
-				amount += stack.getCount();
+				amount += stack.stackSize;
 			}
 		}
 		return amount;
@@ -27,7 +28,7 @@ public class InventoryUtil
 		{
 			if(stack != null && stack.getItem() == item)
 			{
-				count += stack.getCount();
+				count += stack.stackSize;
 			}
 		}
 		return amount <= count;
@@ -42,20 +43,24 @@ public class InventoryUtil
 				ItemStack stack = player.inventory.getStackInSlot(i);
 				if(stack != null && stack.getItem() == item)
 				{
-					if(amount - stack.getCount() < 0)
+					if(amount - stack.stackSize < 0)
 					{
-						stack.shrink(amount);
+						stack.stackSize -= amount;
 						return true;
 					}
 					else
 					{
-						amount -= stack.getCount();
-						player.inventory.mainInventory.set(i, ItemStack.EMPTY);
+						amount -= stack.stackSize;
+						player.inventory.setInventorySlotContents(i, null);
 						if(amount == 0) return true;
 					}
 				}
 			}
 		}
 		return false;
+	}
+	
+	public static boolean isStackEmpty(ItemStack stack) {
+		return stack == null || stack.getItem() == null || stack.getItem() == Item.getItemFromBlock(Blocks.AIR) || stack.stackSize == 0 || stack.getItemDamage() < -32768 || stack.getItemDamage() > 65535;
 	}
 }

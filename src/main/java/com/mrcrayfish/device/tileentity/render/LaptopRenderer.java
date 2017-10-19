@@ -24,7 +24,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 {
 	private Minecraft mc = Minecraft.getMinecraft();
 
-	private EntityItem entityItem = new EntityItem(Minecraft.getMinecraft().world, 0D, 0D, 0D);
+	private EntityItem entityItem = new EntityItem(Minecraft.getMinecraft().theWorld, 0D, 0D, 0D);
 	
 	@Override
 	public void renderTileEntityAt(TileEntityLaptop te, double x, double y, double z, float partialTicks, int destroyStage) 

@@ -33,7 +33,7 @@ public class MessageRequest implements IMessage, IMessageHandler<MessageRequest,
 	@Override
 	public IMessage onMessage(MessageRequest message, MessageContext ctx) 
 	{
-		message.request.processRequest(message.nbt, ctx.getServerHandler().playerEntity.world, ctx.getServerHandler().playerEntity);
+		message.request.processRequest(message.nbt, ctx.getServerHandler().playerEntity.worldObj, ctx.getServerHandler().playerEntity);
 		return new MessageResponse(message.id, message.request);
 	}
 

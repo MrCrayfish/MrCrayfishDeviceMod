@@ -19,6 +19,7 @@ import com.mrcrayfish.device.programs.auction.object.AuctionItem;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
 import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
+import com.mrcrayfish.device.util.InventoryUtil;
 import com.mrcrayfish.device.util.TimeUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -109,7 +110,7 @@ public class ApplicationMineBay extends Application
 
 		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
 		btnViewItem.setClickListener((c, mouseButton) -> {
-			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
+			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().thePlayer.getUniqueID());
 			task.setCallback((nbt, success) -> {
                 items.removeAll();
                 for(AuctionItem item : AuctionManager.INSTANCE.getItems()) {
@@ -232,12 +233,12 @@ public class ApplicationMineBay extends Application
 			{
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
-					ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(!stack.isEmpty())
+					ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					if(!InventoryUtil.isStackEmpty(stack))
 					{
 						buttonAddNext.setEnabled(true);
-						selectorAmount.setMax(stack.getCount());
-						selectorAmount.setNumber(stack.getCount());
+						selectorAmount.setMax(stack.stackSize);
+						selectorAmount.setNumber(stack.stackSize);
 					}
 					else
 					{
@@ -300,8 +301,8 @@ public class ApplicationMineBay extends Application
 				
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
-					ItemStack stack = mc.player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(!stack.isEmpty())
+					ItemStack stack = mc.thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					if(!InventoryUtil.isStackEmpty(stack))
 					{
 						GlStateManager.pushMatrix();
 						{

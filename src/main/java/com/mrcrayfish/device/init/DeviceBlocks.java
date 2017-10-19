@@ -22,24 +22,12 @@ public class DeviceBlocks
 	
 	public static void register()
 	{
-		registerBlock(laptop);
-	}
-	
-	public static void registerBlock(Block block)
-	{
-		GameRegistry.register(block);
-		ItemBlock item = new ItemBlock(block);
-		item.setRegistryName(block.getRegistryName());
-		GameRegistry.register(item);
+		GameRegistry.register(laptop);
 	}
 	
 	public static void registerRenders() 
 	{
-		registerRender(laptop);
+		//registerRender(laptop);
 	}
 	
-	private static void registerRender(Block blockIn)
-	{
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockIn), 0, new ModelResourceLocation(Reference.MOD_ID + ":" + blockIn.getUnlocalizedName().substring(5), "inventory"));
-	}
 }

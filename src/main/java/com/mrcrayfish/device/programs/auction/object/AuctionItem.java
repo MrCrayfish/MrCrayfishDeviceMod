@@ -89,7 +89,7 @@ public class AuctionItem
 	{
 		UUID id = UUID.fromString(tag.getString("id"));
 		NBTTagCompound item = tag.getCompoundTag("item");
-		ItemStack stack = new ItemStack(item);
+		ItemStack stack = ItemStack.loadItemStackFromNBT(item);
 		int price = tag.getInteger("price");
 		long timeLeft = tag.getLong("time");
 		UUID sellerId = UUID.fromString(tag.getString("seller"));

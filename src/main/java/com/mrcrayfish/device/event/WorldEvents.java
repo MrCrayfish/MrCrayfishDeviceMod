@@ -22,11 +22,11 @@ public class WorldEvents {
 			Style style = new Style();
 			style.setClickEvent(new ClickEvent(Action.OPEN_URL, "https://www.patreon.com/mrcrayfish"));
 			style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.AQUA + "Open MrCrayfish's Patreon")));
-			event.getEntity().sendMessage(new TextComponentString(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "MrCrayfish's Device Mod:"));
-			event.getEntity().sendMessage(new TextComponentString("You are using a development version of the Device Mod."));
-			event.getEntity().sendMessage(new TextComponentString("Please be aware that not all features are finished"));
-			event.getEntity().sendMessage(new TextComponentString("and may be completely changed in a future update!"));
-			event.getEntity().sendMessage(new TextComponentString(TextFormatting.GOLD.toString() + TextFormatting.BOLD.toString() + "> Support MrCrayfish On Patreon <").setStyle(style));
+			event.getEntity().addChatMessage(new TextComponentString(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "MrCrayfish's Device Mod:"));
+			event.getEntity().addChatMessage(new TextComponentString("You are using a development version of the Device Mod."));
+			event.getEntity().addChatMessage(new TextComponentString("Please be aware that not all features are finished"));
+			event.getEntity().addChatMessage(new TextComponentString("and may be completely changed in a future update!"));
+			event.getEntity().addChatMessage(new TextComponentString(TextFormatting.GOLD.toString() + TextFormatting.BOLD.toString() + "> Support MrCrayfish On Patreon <").setStyle(style));
 		}
 	}
 	

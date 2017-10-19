@@ -3,18 +3,13 @@ package com.mrcrayfish.device.tileentity;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.util.TileEntityUtil;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,6 +28,8 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 
 	@SideOnly(Side.CLIENT)
 	private boolean hasExternalDrive = false;
+	
+	private EnumDyeColor color = EnumDyeColor.WHITE;
 
 	public TileEntityLaptop()
 	{
@@ -43,13 +40,21 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		open = !open;
 		markDirty();
-		TileEntityUtil.markBlockForUpdate(world, pos);
+		TileEntityUtil.markBlockForUpdate(worldObj, pos);
+	}
+	
+	public void setColor(EnumDyeColor color) {
+		this.color = color;
+	}
+	
+	public EnumDyeColor getColor() {
+		return this.color;
 	}
 	
 	@Override
 	public void update() 
 	{
-		if(world.isRemote)
+		if(worldObj.isRemote)
 		{
 			prevRotation = rotation;
 			if(!open)
@@ -85,6 +90,10 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		{
 			this.hasExternalDrive = compound.getBoolean("has_external_drive");
 		}
+		
+		if(compound.hasKey("color")) {
+			this.color = EnumDyeColor.byMetadata(compound.getInteger("color"));
+		}
 	}
 	
 	@Override
@@ -93,7 +102,10 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
 		compound.setTag("data", data);
-		compound.setTag("file_system", fileSystem.toTag());
+		if(fileSystem != null) {
+			compound.setTag("file_system", fileSystem.toTag());
+		}
+		compound.setInteger("color", this.color.getMetadata());
 		return compound;
 	}
 
