@@ -26,7 +26,7 @@ public class ApplicationManager
 	 * @param identifier the
 	 * @param clazz
 	 */
-	public static void registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
+	public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{
 		if("minecraft".equals(identifier.getResourceDomain()))
 		{
@@ -50,6 +50,8 @@ public class ApplicationManager
 			modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
 			field.set(application, info);
+			
+			return application;
 		}
 		catch(InstantiationException | IllegalAccessException | NoSuchFieldException e)
 		{
