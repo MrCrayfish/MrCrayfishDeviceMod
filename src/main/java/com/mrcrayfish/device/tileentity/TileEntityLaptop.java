@@ -26,13 +26,13 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	private FileSystem fileSystem;
 
 	@SideOnly(Side.CLIENT)
-	public float rotation = 0;
+	public float rotation;
 
 	@SideOnly(Side.CLIENT)
-	public float prevRotation = 0;
+	public float prevRotation;
 
 	@SideOnly(Side.CLIENT)
-	private boolean hasExternalDrive = false;
+	private boolean hasExternalDrive;
 
 	public TileEntityLaptop()
 	{

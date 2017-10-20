@@ -60,7 +60,7 @@ public class MrCrayfishDeviceMod
 
 		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
 		{
-			throw new LaunchException();
+			//throw new LaunchException();
 		}
 
 		logger = event.getModLog();
@@ -130,14 +130,6 @@ public class MrCrayfishDeviceMod
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
-			// Wallpapers (Normal)
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_4.png"));
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
-
 			// Tasks (Normal)
 			TaskManager.registerTask(TaskUpdateInbox.class);
 			TaskManager.registerTask(TaskSendEmail.class);
@@ -153,9 +145,6 @@ public class MrCrayfishDeviceMod
 		{
 			// Applications (Developers)
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
-
-			// Wallpapers (Developers)
-			Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
 		}
 	}
 

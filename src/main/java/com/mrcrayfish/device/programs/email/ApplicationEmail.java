@@ -604,11 +604,10 @@ public class ApplicationEmail extends Application
 
 	public static class EmailManager
 	{
-
 		public static final EmailManager INSTANCE = new EmailManager();
 
 		@SideOnly(Side.CLIENT)
-		private List<Email> inbox = new ArrayList<Email>();
+		private List<Email> inbox;
 
 		private Map<UUID, String> uuidToName = new HashMap<UUID, String>();
 		private Map<String, List<Email>> uuidToInbox = new HashMap<String, List<Email>>();
@@ -626,6 +625,10 @@ public class ApplicationEmail extends Application
 		@SideOnly(Side.CLIENT)
 		public List<Email> getInbox()
 		{
+			if(inbox == null)
+			{
+				inbox = new ArrayList<>();
+			}
 			return inbox;
 		}
 
