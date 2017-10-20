@@ -12,7 +12,10 @@ import com.mrcrayfish.device.init.DeviceCrafting;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.network.PacketHandler;
-import com.mrcrayfish.device.programs.*;
+import com.mrcrayfish.device.programs.ApplicationBoatRacers;
+import com.mrcrayfish.device.programs.ApplicationExample;
+import com.mrcrayfish.device.programs.ApplicationNoteStash;
+import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
@@ -22,7 +25,7 @@ import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
 import com.mrcrayfish.device.programs.system.task.*;
-import com.mrcrayfish.device.proxy.IProxyInterface;
+import com.mrcrayfish.device.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
@@ -43,8 +46,8 @@ public class MrCrayfishDeviceMod
 	@Instance(Reference.MOD_ID)
 	public static MrCrayfishDeviceMod instance;
 	
-	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
-	public static IProxyInterface proxy;
+	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
+	public static CommonProxy proxy;
 	
 	public static CreativeTabs tabDevice = new DeviceTab("cdmTabDevice");
 

@@ -1,14 +1,10 @@
 package com.mrcrayfish.device.proxy;
 
-public class ServerProxy implements IProxyInterface
+public class CommonProxy
 {
-	@Override
 	public void preInit() {}
 
-	@Override
 	public void init() {}
 
-	@Override
 	public void postInit() {}
-
 }

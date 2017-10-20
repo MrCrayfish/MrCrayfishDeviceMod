@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ClientProxy implements IProxyInterface
+public class ClientProxy extends CommonProxy
 {
     @Override
     public void preInit()
@@ -33,8 +33,6 @@ public class ClientProxy implements IProxyInterface
     @Override
     public void init()
     {
-
-
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
     }
 
