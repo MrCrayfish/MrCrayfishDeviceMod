@@ -85,7 +85,7 @@ public class ApplicationPixelPainter extends Application
 		labelLogo = new Label("Pixel Painter", 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnNewPicture = new Button("New", 5, 50, 90, 20);
+		btnNewPicture = new Button(5, 50, 90, 20, "New");
 		btnNewPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -96,7 +96,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutMainMenu.addComponent(btnNewPicture);
 
-		btnLoadPicture = new Button("Load", 5, 75, 90, 20);
+		btnLoadPicture = new Button(5, 75, 90, 20, "Load");
 		btnLoadPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -138,7 +138,7 @@ public class ApplicationPixelPainter extends Application
 		checkBox32x.setRadioGroup(sizeGroup);
 		layoutNewPicture.addComponent(checkBox32x);
 
-		btnCreatePicture = new Button("Create", 110, 40, 65, 20);
+		btnCreatePicture = new Button(110, 40, 65, 20, "Create");
 		btnCreatePicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -158,7 +158,7 @@ public class ApplicationPixelPainter extends Application
 		listPictures = new ItemList<Picture>(5, 5, 100, 5);
 		layoutLoadPicture.addComponent(listPictures);
 
-		btnLoadSavedPicture = new Button("Load", 124, 5, 50, 20);
+		btnLoadSavedPicture = new Button(124, 5, 50, 20, "Load");
 		btnLoadSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -173,7 +173,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutLoadPicture.addComponent(btnLoadSavedPicture);
 
-		btnDeleteSavedPicture = new Button("Delete", 124, 30, 50, 20);
+		btnDeleteSavedPicture = new Button(124, 30, 50, 20, "Delete");
 		btnDeleteSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -184,7 +184,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutLoadPicture.addComponent(btnDeleteSavedPicture);
 
-		btnBackSavedPicture = new Button("Back", 124, 55, 50, 20);
+		btnBackSavedPicture = new Button(124, 55, 50, 20, "Back");
 		btnBackSavedPicture.setClickListener(new ClickListener()
 		{
 			@Override

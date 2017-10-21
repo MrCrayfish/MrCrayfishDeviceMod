@@ -138,7 +138,7 @@ public class ApplicationEmail extends Application
 		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnRegisterAccount = new Button("Register", 5, 50, 90, 20);
+		btnRegisterAccount = new Button(5, 50, 90, 20, "Register");
 		btnRegisterAccount.setClickListener(new ClickListener()
 		{
 			@Override
@@ -164,7 +164,7 @@ public class ApplicationEmail extends Application
 		labelDomain = new Label("@endermail.com", 88, 18);
 		layoutRegisterAccount.addComponent(labelDomain);
 
-		btnRegister = new Button("Register", 5, 35, 157, 20);
+		btnRegister = new Button(5, 35, 157, 20, "Register");
 		btnRegister.setClickListener(new ClickListener()
 		{
 			@Override
