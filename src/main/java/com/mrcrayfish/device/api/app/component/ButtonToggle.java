@@ -20,7 +20,7 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 	 */
 	public ButtonToggle(String text, int left, int top, int width, int height) 
 	{
-		super(text, left, top, width, height);
+		super(left, top, width, height, text);
 	}
 	
 	/**

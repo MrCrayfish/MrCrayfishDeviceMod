@@ -208,7 +208,7 @@ public abstract class Dialog extends Wrappable
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
-			buttonPositive = new Button("Close", getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, 36, 15, "Close");
 			buttonPositive.setClickListener(new ClickListener()
 			{
 				@Override
@@ -274,7 +274,7 @@ public abstract class Dialog extends Wrappable
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
-			buttonPositive = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonPositive = new Button(getWidth() - 35, getHeight() - 20, 30, 15, positiveText);
 			buttonPositive.setClickListener(new ClickListener()
 			{
 				@Override
@@ -289,7 +289,7 @@ public abstract class Dialog extends Wrappable
 			});
 			this.addComponent(buttonPositive);
 			
-			buttonNegative = new Button(negativeText, getWidth() - 70, getHeight() - 20, 30, 15);
+			buttonNegative = new Button(getWidth() - 70, getHeight() - 20, 30, 15, negativeText);
 			buttonNegative.setClickListener(new ClickListener()
 			{
 				@Override

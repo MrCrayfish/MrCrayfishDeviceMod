@@ -1,13 +1,16 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icon;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -22,12 +25,8 @@ public class Button extends Component
 	protected String text, toolTip, toolTipTitle;
 	protected boolean hovered;
 	protected int width, height;
-	
-	protected boolean hasIcon = false;
-	protected ResourceLocation icon = null;
-	protected int iconU, iconV;
-	protected int iconWidth, iconHeight;
-	
+
+	protected ItemRenderer<Object> itemRenderer = null;
 	protected ClickListener clickListener = null;
 	
 	/**
@@ -39,16 +38,33 @@ public class Button extends Component
 	 * @param width width of the button
 	 * @param height height of the button
 	 */
-	public Button(String text, int left, int top, int width, int height) 
+	public Button(int left, int top, int width, int height, String text)
 	{
 		super(left, top);
-		
+
 		if(width < 5 || height < 5)
 			throw new IllegalArgumentException("Width and height must be more than or equal to 5");
-		
+
 		this.text = text;
 		this.width = width;
 		this.height = height;
+		this.itemRenderer = new ItemRenderer<Object>()
+		{
+			@Override
+			public void render(Object o, Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				int colour = 14737632;
+				if (!Button.this.enabled)
+				{
+					colour = 10526880;
+				}
+				else if (Button.this.hovered)
+				{
+					colour = 16777120;
+				}
+				drawCenteredString(mc.fontRendererObj, Button.this.text, x + width / 2, y + (height - 8) / 2, colour);
+			}
+		};
 	}
 	
 	/**
@@ -65,13 +81,16 @@ public class Button extends Component
 	 */
 	public Button(int left, int top, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
 	{
-		this("", left, top, iconWidth + 6, iconHeight + 6);
-		this.hasIcon = true;
-		this.icon = icon;
-		this.iconU = iconU;
-		this.iconV = iconV;
-		this.iconWidth = iconWidth;
-		this.iconHeight = iconHeight;
+		this(left, top, iconWidth + 6, iconHeight + 6, "");
+		this.itemRenderer = new ItemRenderer<Object>()
+		{
+			@Override
+			public void render(Object o, Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				mc.getTextureManager().bindTexture(icon);
+				drawTexturedModalRect(xPosition + 3 + (width - iconWidth - 6) / 2, yPosition + 3 + (height - iconHeight - 6) / 2, iconU, iconV, iconWidth, iconHeight);
+			}
+		};
 	}
 	
 	/**
@@ -90,13 +109,31 @@ public class Button extends Component
 	 */
 	public Button(int left, int top, int width, int height, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
 	{
-		this("", left, top, Math.max(width, iconWidth + 6), Math.max(height, iconHeight + 6));
-		this.hasIcon = true;
-		this.icon = icon;
-		this.iconU = iconU;
-		this.iconV = iconV;
-		this.iconWidth = iconWidth;
-		this.iconHeight = iconHeight;
+		this(left, top, Math.max(width, iconWidth + 6), Math.max(height, iconHeight + 6), "");
+		this.itemRenderer = new ItemRenderer<Object>()
+		{
+			@Override
+			public void render(Object o, Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				mc.getTextureManager().bindTexture(icon);
+				drawTexturedModalRect(xPosition + 3 + (width - iconWidth - 6) / 2, yPosition + 3 + (height - iconHeight - 6) / 2, iconU, iconV, iconWidth, iconHeight);
+			}
+		};
+	}
+
+	public Button(int left, int top, Icon icon)
+	{
+		super(left, top);
+		this.width = 16;
+		this.height = 16;
+		this.itemRenderer = new ItemRenderer<Object>()
+		{
+			@Override
+			public void render(Object o, Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				icon.draw(mc, x + 2, y + 2);
+			}
+		};
 	}
 
 	@Override
@@ -129,27 +166,11 @@ public class Button extends Component
             RenderUtil.drawRectWithTexture(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
             
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            
-            int j = 14737632;
 
-            if (!this.enabled)
-            {
-                j = 10526880;
-            }
-            else if (this.hovered)
-            {
-                j = 16777120;
-            }
-            
-            if(hasIcon)
-            {
-            	mc.getTextureManager().bindTexture(icon);
-            	this.drawTexturedModalRect(xPosition + 3 + (width - iconWidth - 6) / 2, yPosition + 3 + (height - iconHeight - 6) / 2, iconU, iconV, iconWidth, iconHeight);
-            }
-            else
-            {
-            	this.drawCenteredString(fontrenderer, this.text, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
-            }
+            if(itemRenderer != null)
+			{
+				itemRenderer.render(null, laptop, mc, xPosition + 1, yPosition + 1, width - 2, height - 2);
+			}
         }
 	}
 	

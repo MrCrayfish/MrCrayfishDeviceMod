@@ -37,7 +37,7 @@ public class ApplicationExample extends Application
 		label = new Label("Label", 5, 5);
 		super.addComponent(label);
 		
-		button = new Button("Button", 5, 18, 63, 20);
+		button = new Button(5, 18, 63, 20, "Button");
 		super.addComponent(button);
 		
 		leftButton = new ButtonArrow(5, 43, ButtonArrow.Type.LEFT);

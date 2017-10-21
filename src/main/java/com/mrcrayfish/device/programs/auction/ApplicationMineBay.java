@@ -103,11 +103,11 @@ public class ApplicationMineBay extends Application
 			}
 		});
 		
-		Button btnAddItem = new Button("Add Item", 70, 5, 60, 15);
+		Button btnAddItem = new Button(70, 5, 60, 15, "Add Item");
 		btnAddItem.setClickListener((c, mouseButton) -> setCurrentLayout(layoutSelectItem));
 		super.addComponent(btnAddItem);
 
-		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
+		Button btnViewItem = new Button(135, 5, 80, 15, "Your Auctions");
 		btnViewItem.setClickListener((c, mouseButton) -> {
 			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
 			task.setCallback((nbt, success) -> {
@@ -176,7 +176,7 @@ public class ApplicationMineBay extends Application
 		});
 		super.addComponent(items);
 		
-		Button btnBuy = new Button("Buy", 100, 127, 50, 15);
+		Button btnBuy = new Button(100, 127, 50, 15, "Buy");
 		btnBuy.setClickListener(new ClickListener()
 		{
 			@Override

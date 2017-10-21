@@ -18,7 +18,7 @@ public class ButtonArrow extends Button
 	 */
 	public ButtonArrow(int left, int top, Type type) 
 	{
-		super("", left, top, 12, 12);
+		super(left, top, 12, 12, "");
 		this.type = type;
 	}
 	
