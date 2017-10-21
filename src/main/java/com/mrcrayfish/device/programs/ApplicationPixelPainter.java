@@ -97,7 +97,7 @@ public class ApplicationPixelPainter extends Application
 		labelLogo = new Label("Pixel Painter", 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnNewPicture = new Button("New", 5, 50, 90, 20);
+		btnNewPicture = new Button(5, 50, 90, 20, "New");
 		btnNewPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -108,7 +108,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutMainMenu.addComponent(btnNewPicture);
 
-		btnLoadPicture = new Button("Load", 5, 75, 90, 20);
+		btnLoadPicture = new Button(5, 75, 90, 20, "Load");
 		btnLoadPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -150,7 +150,7 @@ public class ApplicationPixelPainter extends Application
 		checkBox32x.setRadioGroup(sizeGroup);
 		layoutNewPicture.addComponent(checkBox32x);
 
-		btnCreatePicture = new Button("Create", 110, 40, 65, 20);
+		btnCreatePicture = new Button(110, 40, 65, 20, "Create");
 		btnCreatePicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -203,7 +203,7 @@ public class ApplicationPixelPainter extends Application
         });
 		layoutLoadPicture.addComponent(listPictures);
 
-		btnLoadSavedPicture = new Button("Load", 110, 5, 50, 20);
+		btnLoadSavedPicture = new Button(110, 5, 50, 20, "Load");
 		btnLoadSavedPicture.setEnabled(false);
 		btnLoadSavedPicture.setClickListener((c, mouseButton) ->
 		{
@@ -215,7 +215,7 @@ public class ApplicationPixelPainter extends Application
         });
 		layoutLoadPicture.addComponent(btnLoadSavedPicture);
 
-		btnBrowseSavedPicture = new Button("Browse", 110, 30, 50, 20);
+		btnBrowseSavedPicture = new Button(110, 30, 50, 20, "Browse");
 		btnBrowseSavedPicture.setClickListener((c, mouseButton) ->
 		{
 			Dialog.OpenFile dialog = new Dialog.OpenFile(this);
@@ -239,7 +239,7 @@ public class ApplicationPixelPainter extends Application
         });
 		layoutLoadPicture.addComponent(btnBrowseSavedPicture);
 
-		btnDeleteSavedPicture = new Button("Delete", 110, 55, 50, 20);
+		btnDeleteSavedPicture = new Button(110, 55, 50, 20, "Delete");
 		btnDeleteSavedPicture.setEnabled(false);
 		btnDeleteSavedPicture.setClickListener((c, mouseButton) ->
 		{
@@ -271,7 +271,7 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutLoadPicture.addComponent(btnDeleteSavedPicture);
 
-		btnBackSavedPicture = new Button("Back", 110, 80, 50, 20);
+		btnBackSavedPicture = new Button(110, 80, 50, 20, "Back");
 		btnBackSavedPicture.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMainMenu));
 		layoutLoadPicture.addComponent(btnBackSavedPicture);
 

@@ -401,7 +401,7 @@ public abstract class Dialog extends Wrappable
 			this.addComponent(textFieldInput);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 15, getHeight() - 20, positiveWidth + 10, 15);
+			buttonPositive = new Button(getWidth() - positiveWidth - 15, getHeight() - 20, positiveWidth + 10, 15, positiveText);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
                 if(!textFieldInput.getText().isEmpty())
@@ -417,7 +417,7 @@ public abstract class Dialog extends Wrappable
 			this.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeWidth + 10, 15);
+			buttonNegative = new Button(getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeWidth + 10, 15, negativeText);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			this.addComponent(buttonNegative);
 		}
@@ -526,7 +526,7 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, 172, 105, positiveWidth + 10, 15);
+			buttonPositive = new Button(172, 105, positiveWidth + 10, 15, positiveText);
 			buttonPositive.setEnabled(false);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
@@ -547,7 +547,7 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, 125, 105, negativeWidth + 10, 15);
+			buttonNegative = new Button(125, 105, negativeWidth + 10, 15, negativeText);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
@@ -645,7 +645,7 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, 172, 123, positiveWidth + 10, 15);
+			buttonPositive = new Button(172, 123, positiveWidth + 10, 15, positiveText);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
 				if(mouseButton == 0)
@@ -705,7 +705,7 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, 126, 123, negativeWidth + 10, 15);
+			buttonNegative = new Button(126, 123, negativeWidth + 10, 15, negativeText);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
