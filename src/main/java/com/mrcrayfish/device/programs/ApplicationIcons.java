@@ -15,10 +15,12 @@ public class ApplicationIcons extends Application
     {
         for(Icon icon : Icon.values())
         {
-            int posX = (icon.ordinal() % 10) * 16;
-            int posY = (icon.ordinal() / 10) * 16;
-            //Button button = new Button(5, + posX, 5 + posY, icon);
+            int posX = (icon.ordinal() % 10) * 18;
+            int posY = (icon.ordinal() / 10) * 18;
 
+            Button button = new Button(5 + posX, 5 + posY, icon);
+            button.setToolTip("Icon", icon.name());
+            super.addComponent(button);
         }
     }
 
