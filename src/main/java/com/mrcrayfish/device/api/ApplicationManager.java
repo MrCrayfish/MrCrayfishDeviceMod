@@ -27,13 +27,16 @@ public class ApplicationManager
 	 * @param identifier the
 	 * @param clazz
 	 */
-	public static void registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
+	@Nullable
+	public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{
 		Application application = MrCrayfishDeviceMod.proxy.registerApplication(identifier, clazz);
 		if(application != null)
 		{
 			APP_INFO.put(identifier, application.getInfo());
+			return application;
 		}
+		return null;
 	}
 
 	/**
