@@ -1,6 +1,7 @@
 package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.task.*;
@@ -21,6 +22,7 @@ import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
+import com.mrcrayfish.device.programs.system.ApplicationSettings;
 import com.mrcrayfish.device.programs.system.task.*;
 import com.mrcrayfish.device.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
@@ -57,7 +59,7 @@ public class MrCrayfishDeviceMod
 
 		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
 		{
-			//throw new LaunchException();
+			throw new LaunchException();
 		}
 
 		logger = event.getModLog();
@@ -103,37 +105,44 @@ public class MrCrayfishDeviceMod
 	private void registerApplications()
 	{
 		// Applications (Both)
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), ApplicationSettings.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), ApplicationFileBrowser.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
 
-		// Tasks (Both)
+		// Core
+		TaskManager.registerTask(TaskUpdateApplicationData.class);
+
+		//Bank
 		TaskManager.registerTask(TaskGetBalance.class);
 		TaskManager.registerTask(TaskPay.class);
 		TaskManager.registerTask(TaskAdd.class);
 		TaskManager.registerTask(TaskRemove.class);
-		TaskManager.registerTask(TaskUpdateApplicationData.class);
+
+		//File Browser
 		TaskManager.registerTask(TaskSendAction.class);
 		TaskManager.registerTask(TaskSetupFileBrowser.class);
 		TaskManager.registerTask(TaskGetFiles.class);
 		TaskManager.registerTask(TaskGetStructure.class);
 		TaskManager.registerTask(TaskGetMainDrive.class);
 
+		//Ender Mail
+		TaskManager.registerTask(TaskUpdateInbox.class);
+		TaskManager.registerTask(TaskSendEmail.class);
+		TaskManager.registerTask(TaskCheckEmailAccount.class);
+		TaskManager.registerTask(TaskRegisterEmailAccount.class);
+		TaskManager.registerTask(TaskDeleteEmail.class);
+		TaskManager.registerTask(TaskViewEmail.class);
+
 		if(!DEVELOPER_MODE)
 		{
 			// Applications (Normal)
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
 			// Tasks (Normal)
-			TaskManager.registerTask(TaskUpdateInbox.class);
-			TaskManager.registerTask(TaskSendEmail.class);
-			TaskManager.registerTask(TaskCheckEmailAccount.class);
-			TaskManager.registerTask(TaskRegisterEmailAccount.class);
-			TaskManager.registerTask(TaskDeleteEmail.class);
-			TaskManager.registerTask(TaskViewEmail.class);
 			TaskManager.registerTask(TaskAddAuction.class);
 			TaskManager.registerTask(TaskGetAuctions.class);
 			TaskManager.registerTask(TaskBuyItem.class);

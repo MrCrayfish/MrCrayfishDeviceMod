@@ -4,26 +4,37 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ButtonArrow;
+import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.Settings;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ApplicationSettings extends Application
+public class ApplicationSettings extends SystemApplication
 {
 	private Button btnWallpaperNext;
 	private Button btnWallpaperPrev;
 	
 	public ApplicationSettings() 
 	{
-		//super("settings", "Settings");
-		this.setDefaultWidth(80);
+		this.setDefaultWidth(100);
 		this.setDefaultHeight(40);
 	}
 
 	@Override
 	public void init() 
 	{
-		btnWallpaperNext = new ButtonArrow(40, 16, ButtonArrow.Type.RIGHT);
+		CheckBox checkBox = new CheckBox("Show All Apps", 5, 5);
+		checkBox.setSelected(Settings.isShowAllApps());
+		checkBox.setClickListener((c, mouseButton) ->
+		{
+			Settings.setShowAllApps(checkBox.isSelected());
+			Laptop laptop = getLaptop();
+			laptop.getTaskBar().setupApplications(laptop.getApplications());
+        });
+		super.addComponent(checkBox);
+
+		/*btnWallpaperNext = new ButtonArrow(40, 16, ButtonArrow.Type.RIGHT);
 		btnWallpaperNext.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -31,7 +42,7 @@ public class ApplicationSettings extends Application
 			}
 		});
 		super.addComponent(btnWallpaperNext);
-		
+
 		btnWallpaperPrev = new ButtonArrow(5, 16, ButtonArrow.Type.LEFT);
 		btnWallpaperPrev.setClickListener(new ClickListener() {
 			@Override
@@ -39,7 +50,7 @@ public class ApplicationSettings extends Application
 				Laptop.prevWallpaper();
 			}
 		});
-		super.addComponent(btnWallpaperPrev);
+		super.addComponent(btnWallpaperPrev);*/
 	}
 
 	/*@Override

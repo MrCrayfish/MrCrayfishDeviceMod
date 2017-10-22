@@ -57,6 +57,7 @@ public class Laptop extends GuiScreen implements System
 	private static BlockPos pos;
 	private static Drive mainDrive;
 
+	private Settings settings;
 	private TaskBar bar;
 	private Window[] windows;
 	private Layout context = null;
@@ -72,6 +73,7 @@ public class Laptop extends GuiScreen implements System
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
 		this.windows = new Window[5];
+		this.settings = Settings.fromTag(systemData.getCompoundTag("settings"));
 		this.bar = new TaskBar(APPLICATIONS);
 		Laptop.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
@@ -563,6 +565,21 @@ public class Laptop extends GuiScreen implements System
 	public static Drive getMainDrive()
 	{
 		return mainDrive;
+	}
+
+	public List<Application> getApplications()
+	{
+		return APPLICATIONS;
+	}
+
+	public TaskBar getTaskBar()
+	{
+		return bar;
+	}
+
+	public Settings getSettings()
+	{
+		return settings;
 	}
 
 	@Override

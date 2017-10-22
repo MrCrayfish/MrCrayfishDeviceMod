@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 
 import java.awt.*;
 
-public class ApplicationBank extends Application
+public class ApplicationBank extends SystemApplication
 {
 	private static boolean registered = false;
 	
