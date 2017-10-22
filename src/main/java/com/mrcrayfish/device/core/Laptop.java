@@ -369,6 +369,14 @@ public class Laptop extends GuiScreen implements System
 
 	public void open(Application app)
 	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+			{
+				return;
+			}
+		}
+
 		for(int i = 0; i < windows.length; i++)
 		{
 			Window<Application> window = windows[i];
