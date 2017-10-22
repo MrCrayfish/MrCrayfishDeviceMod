@@ -59,7 +59,9 @@ public enum Icon
     STAR_OFF,
     STAR_HALF,
     STAR_ON,
-    CHAT;
+    CHAT,
+    EJECT,
+    CLOCK;
 
     public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
