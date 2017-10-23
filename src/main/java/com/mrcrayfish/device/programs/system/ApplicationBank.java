@@ -33,13 +33,11 @@ import java.awt.*;
 
 public class ApplicationBank extends SystemApplication
 {
-	private static boolean registered = false;
-	
 	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
 	private static final ResourceLocation BANK_ASSETS = new ResourceLocation("cdm:textures/gui/bank.png");
 	private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
     private static final ModelVillager villagerModel = new ModelVillager(0.0F);
-	
+
 	private Layout layoutStart;
 	private Label labelTeller;
 	private Text textWelcome;
@@ -72,7 +70,6 @@ public class ApplicationBank extends SystemApplication
 	public ApplicationBank()
 	{
 		//super(Reference.MOD_ID + "Bank", "The Emerald Bank");
-		this.registerTasks();
 	}
 	
 	@Override
@@ -323,16 +320,6 @@ public class ApplicationBank extends SystemApplication
 	private void withdraw(int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskWithdraw(amount).setCallback(callback));
-	}
-	
-	public void registerTasks()
-	{
-		if(!registered)
-		{
-			TaskManager.registerTask(TaskDeposit.class);
-			TaskManager.registerTask(TaskWithdraw.class);
-			registered = true;
-		}
 	}
 
 	@Override

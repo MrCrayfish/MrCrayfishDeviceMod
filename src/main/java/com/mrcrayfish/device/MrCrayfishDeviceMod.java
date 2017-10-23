@@ -116,6 +116,8 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
 
 		//Bank
+		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);
+		TaskManager.registerTask(ApplicationBank.TaskWithdraw.class);
 		TaskManager.registerTask(TaskGetBalance.class);
 		TaskManager.registerTask(TaskPay.class);
 		TaskManager.registerTask(TaskAdd.class);
