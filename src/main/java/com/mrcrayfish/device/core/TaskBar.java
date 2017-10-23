@@ -52,13 +52,21 @@ public class TaskBar
 			{
 				return true;
 			}
-			if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+			if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+			{
+				if(MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+				{
+					if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+					{
+						return Settings.isShowAllApps();
+					}
+					return true;
+				}
+				return false;
+			}
+			else if(MrCrayfishDeviceMod.DEVELOPER_MODE)
 			{
 				return Settings.isShowAllApps();
-			}
-			else if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-			{
-				return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo());
 			}
 			return true;
 		}).collect(Collectors.toList());
