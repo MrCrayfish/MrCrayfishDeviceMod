@@ -10,6 +10,12 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class ApplicationIcons extends Application
 {
+    public ApplicationIcons()
+    {
+        this.setDefaultWidth(188);
+        this.setDefaultHeight(150);
+    }
+
     @Override
     public void init()
     {
