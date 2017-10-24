@@ -61,7 +61,16 @@ public enum Icon
     STAR_ON,
     CHAT,
     EJECT,
-    CLOCK;
+    CLOCK,
+    SHOPPING_CART,
+    BATTERY_FULL,
+    BATTERY_HALF,
+    BATTERY_LOW,
+    BATTERY_EMPTY,
+    POWER_ON,
+    POWER_OFF,
+    EARTH,
+    SHOP;
 
     public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
