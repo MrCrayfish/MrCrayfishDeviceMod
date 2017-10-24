@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.utils;
 
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -8,6 +9,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 public class RenderUtil
 {
@@ -79,9 +82,17 @@ public class RenderUtil
 		tessellator.draw();
 	}
 
-	public static void drawApplicationIcon(AppInfo info, double x, double y)
+	public static void drawApplicationIcon(@Nullable AppInfo info, double x, double y)
 	{
-		drawRectWithTexture(x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
+		Minecraft.getMinecraft().getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
+		if(info != null)
+		{
+			drawRectWithTexture(x, y, info.getIconU(), info.getIconV(), 14, 14, 14, 14, 224, 224);
+		}
+		else
+		{
+			drawRectWithTexture(x, y, 0, 0, 14, 14, 14, 14, 224, 224);
+		}
 	}
 	
 	public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)

@@ -2,13 +2,15 @@ package com.mrcrayfish.device.api.task;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
+
 /**
  * A simple interface to handle processing responses by {@link com.mrcrayfish.device.api.task.Task}. 
  * Callbacks are necessary for the updating of any UI component.
  *
  * @author MrCrayfish
  */
-public interface Callback {
+public interface Callback<T> {
 	
 	/**
 	 * Executes the callback. You should perform any changes to
@@ -16,8 +18,8 @@ public interface Callback {
 	 * as {@link com.mrcrayfish.device.api.task.Task#processResponse(NBTTagCompound)}'s
 	 * tag does.
 	 * 
-	 * @param nbt the response data
+	 * @param t the response object
 	 * @param success if the {@link com.mrcrayfish.device.api.task.Task} performed it's intended action correctly.
 	 */
-	void execute(NBTTagCompound nbt, boolean success);
+	void execute(@Nullable T t, boolean success);
 }

@@ -1,17 +1,22 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.app.listener.ItemClickListener;
-import com.mrcrayfish.device.object.Note;
+import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.core.io.FileSystem;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
-public class ApplicationNoteStash extends Application 
+import java.util.function.Predicate;
+
+public class ApplicationNoteStash extends Application
 {
+	private static final Predicate<File> PREDICATE_FILE_NOTE = file -> !file.isFolder()
+			&& file.getData().hasKey("title", Constants.NBT.TAG_STRING)
+			&& file.getData().hasKey("content", Constants.NBT.TAG_STRING);
+
 	/* Main */
 	private Layout layoutMain;
 	private ItemList<Note> notes;
@@ -43,56 +48,84 @@ public class ApplicationNoteStash extends Application
 		/* Main */
 		
 		layoutMain = new Layout(180, 80);
-		
-		notes = new ItemList<Note>(5, 5, 100, 5);
-		notes.setItemClickListener(new ItemClickListener() {
-			@Override
-			public void onClick(Object e, int index, int mouseButton){
-				btnView.setEnabled(true);
-				btnDelete.setEnabled(true);
-			}
+		layoutMain.setInitListener(() ->
+		{
+			notes.getItems().clear();
+			FileSystem.getApplicationFolder(this, (folder, success) ->
+			{
+				if(success)
+				{
+					folder.search(file -> file.isForApplication(this)).forEach(file ->
+					{
+						notes.addItem(Note.fromFile(file));
+					});
+				}
+				else
+				{
+					//TODO error dialog
+				}
+            });
 		});
+
+		notes = new ItemList<>(5, 5, 100, 5);
+		notes.setItemClickListener((e, index, mouseButton) ->
+		{
+            btnView.setEnabled(true);
+            btnDelete.setEnabled(true);
+        });
 		layoutMain.addComponent(notes);
 		
 		btnNew = new Button(124, 5, 50, 20, "New");
-		btnNew.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				setCurrentLayout(layoutAddNote);
-			}
-		});
+		btnNew.setClickListener((c, mouseButton) -> setCurrentLayout(layoutAddNote));
 		layoutMain.addComponent(btnNew);
 		
 		btnView = new Button(124, 30, 50, 20, "View");
 		btnView.setEnabled(false);
-		btnView.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				if(notes.getSelectedIndex() != -1)
-				{
-					Note note = notes.getSelectedItem();
-					noteTitle.setText(note.title);
-					noteContent.setText(note.content);
-					setCurrentLayout(layoutViewNote);
-				}
-			}
-		});
+		btnView.setClickListener((c, mouseButton) ->
+		{
+            if(notes.getSelectedIndex() != -1)
+            {
+                Note note = notes.getSelectedItem();
+                noteTitle.setText(note.getTitle());
+                noteContent.setText(note.getContent());
+                setCurrentLayout(layoutViewNote);
+            }
+        });
 		layoutMain.addComponent(btnView);
 		
 		btnDelete = new Button(124, 55, 50, 20, "Delete");
 		btnDelete.setEnabled(false);
-		btnDelete.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
+		btnDelete.setClickListener((c, mouseButton) ->
+		{
+            if(notes.getSelectedIndex() != -1)
+            {
 				if(notes.getSelectedIndex() != -1)
 				{
-					notes.removeItem(notes.getSelectedIndex());
-					btnView.setEnabled(false);
-					btnDelete.setEnabled(false);
-					markDirty();
+					Note note = notes.getSelectedItem();
+					File file = note.getSource();
+					if(file != null)
+					{
+						file.delete((o, success) ->
+						{
+							if(success)
+							{
+								notes.removeItem(notes.getSelectedIndex());
+								btnView.setEnabled(false);
+								btnDelete.setEnabled(false);
+							}
+							else
+							{
+								//TODO error dialog
+							}
+						});
+					}
+					else
+					{
+						//TODO error dialog
+					}
 				}
-			}
-		});
+            }
+        });
 		layoutMain.addComponent(btnDelete);
 		
 		
@@ -109,27 +142,32 @@ public class ApplicationNoteStash extends Application
 		layoutAddNote.addComponent(textArea);
 		
 		btnSave = new Button(124, 5, 50, 20, "Save");
-		btnSave.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				notes.addItem(new Note(title.getText(), textArea.getText()));
-				title.clear();
-				textArea.clear();
-				markDirty();
-				setCurrentLayout(layoutMain);
-			}
-		});
+		btnSave.setClickListener((c, mouseButton) ->
+		{
+            NBTTagCompound data = new NBTTagCompound();
+            data.setString("title", title.getText());
+            data.setString("content", textArea.getText());
+
+            Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationNoteStash.this, data);
+            dialog.setFolder(getApplicationFolderPath());
+            dialog.setResponseHandler((success, file) ->
+			{
+                title.clear();
+                textArea.clear();
+                setCurrentLayout(layoutMain);
+                return true;
+            });
+            openDialog(dialog);
+        });
 		layoutAddNote.addComponent(btnSave);
 		
 		btnCancel = new Button(124, 30, 50, 20, "Cancel");
-		btnCancel.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				title.clear();
-				textArea.clear();
-				setCurrentLayout(layoutMain);
-			}
-		});
+		btnCancel.setClickListener((c, mouseButton) ->
+		{
+            title.clear();
+            textArea.clear();
+            setCurrentLayout(layoutMain);
+        });
 		layoutAddNote.addComponent(btnCancel);
 		
 		
@@ -144,45 +182,76 @@ public class ApplicationNoteStash extends Application
 		layoutViewNote.addComponent(noteContent);
 		
 		btnBack = new Button(124, 5, 50, 20, "Back");
-		btnBack.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				setCurrentLayout(layoutMain);
-			}
-		});
+		btnBack.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMain));
 		layoutViewNote.addComponent(btnBack);
 		
 		setCurrentLayout(layoutMain);
 	}
 
 	@Override
-	public void load(NBTTagCompound tagCompound)
+	public void load(NBTTagCompound tagCompound) {}
+
+	@Override
+	public void save(NBTTagCompound tagCompound) {}
+
+	@Override
+	public void onClose()
 	{
-		notes.getItems().clear();
-		
-		if(tagCompound.hasKey("Notes"))
-		{
-			NBTTagList noteList = (NBTTagList) tagCompound.getTag("Notes");
-			for(int i = 0; i < noteList.tagCount(); i++)
-			{
-				Note note = Note.readFromNBT(noteList.getCompoundTagAt(i));
-				notes.addItem(note);
-			}
-		}
+		super.onClose();
+		notes.removeAll();
 	}
 
 	@Override
-	public void save(NBTTagCompound tagCompound)
+	public boolean handleFile(File file)
 	{
-		NBTTagList noteList = new NBTTagList();
-		for(int i = 0; i < notes.getItems().size(); i++)
+		if(!PREDICATE_FILE_NOTE.test(file))
+			return false;
+
+		NBTTagCompound data = file.getData();
+		noteTitle.setText(data.getString("title"));
+		noteContent.setText(data.getString("content"));
+		setCurrentLayout(layoutViewNote);
+		return true;
+	}
+
+	private static class Note
+	{
+		private File source;
+		private String title;
+		private String content;
+
+		public Note(String title, String content)
 		{
-			Note note = notes.getItems().get(i);
-			NBTTagCompound noteTag = new NBTTagCompound();
-			noteTag.setString("Title", note.title);
-			noteTag.setString("Content", note.content);
-			noteList.appendTag(noteTag);
+			this.title = title;
+			this.content = content;
 		}
-		tagCompound.setTag("Notes", noteList);
+
+		public File getSource()
+		{
+			return source;
+		}
+
+		public String getTitle()
+		{
+			return title;
+		}
+
+		public String getContent()
+		{
+			return content;
+		}
+
+		@Override
+		public String toString()
+		{
+			return title;
+		}
+
+		public static Note fromFile(File file)
+		{
+			Note note = new Note(file.getData().getString("title"), file.getData().getString("content"));
+			note.source = file;
+			return note;
+		}
 	}
 }

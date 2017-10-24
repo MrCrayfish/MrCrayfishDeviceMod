@@ -183,44 +183,28 @@ public class ApplicationMineBay extends Application
 			public void onClick(Component c, int mouseButton)
 			{
 				final Dialog.Confirmation dialog = new Dialog.Confirmation();
-				dialog.setPositiveButton("Buy", new ClickListener()
-				{
-					@Override
-					public void onClick(Component c, int mouseButton)
-					{
-						final int index = items.getSelectedIndex();
-						if(index == -1) return;
-						
-						AuctionItem item = items.getItem(index);
-						if(item != null)
+				dialog.setPositiveText("Buy");
+				dialog.setPositiveListener((c13, mouseButton13) -> {
+                    final int index = items.getSelectedIndex();
+                    if(index == -1) return;
+
+                    AuctionItem item = items.getItem(index);
+                    if(item != null)
+                    {
+                        TaskBuyItem task = new TaskBuyItem(item.getId());
+                        task.setCallback((nbt, success) ->
 						{
-							TaskBuyItem task = new TaskBuyItem(item.getId());
-							task.setCallback(new Callback()
-							{
-								@Override
-								public void execute(NBTTagCompound nbt, boolean success)
-								{
-									if(success)
-									{
-										items.removeItem(index);
-									}
-								}
-							});
-							TaskManager.sendTask(task);
-						}
-						
-						dialog.close();
-					}
-				});
-				dialog.setNegativeButton("Cancel", new ClickListener()
-				{
-					@Override
-					public void onClick(Component c, int mouseButton)
-					{
-						dialog.close();
-					}
-				});
-				openDialog(dialog);
+                            if(success)
+                            {
+                                items.removeItem(index);
+                            }
+                        });
+                        TaskManager.sendTask(task);
+                    }
+                });
+				dialog.setNegativeText("Cancel");
+				dialog.setNegativeListener((c12, mouseButton12) -> dialog.close());
+				ApplicationMineBay.this.openDialog(dialog);
 			}
 		});
 		super.addComponent(btnBuy);
@@ -431,30 +415,23 @@ public class ApplicationMineBay extends Application
 			{
 				final Dialog.Confirmation dialog = new Dialog.Confirmation();
 				dialog.setMessageText("Are you sure you want to auction this item?");
-				dialog.setPositiveButton("Yes", new ClickListener()
+				dialog.setPositiveText("Yes");
+				dialog.setPositiveListener((c1, mouseButton1) ->
 				{
-					@Override
-					public void onClick(Component c, int mouseButton)
+                    int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
+                    TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
+                    task.setCallback((nbt, success) ->
 					{
-						int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
-						TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
-						task.setCallback(new Callback()
-						{
-							@Override
-							public void execute(NBTTagCompound nbt, boolean success)
-							{
-								if(success)
-								{
-									List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
-									items.addItem(auctionItems.get(auctionItems.size() - 1));
-								}
-							}
-						});
-						TaskManager.sendTask(task);
-						dialog.close();
-						restoreDefaultLayout();
-					}
-				});
+                        if(success)
+                        {
+                            List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
+                            items.addItem(auctionItems.get(auctionItems.size() - 1));
+                        }
+                    });
+                    TaskManager.sendTask(task);
+                    dialog.close();
+                    restoreDefaultLayout();
+                });
 				openDialog(dialog);
 			}
 		});
@@ -489,31 +466,23 @@ public class ApplicationMineBay extends Application
 		selectorSeconds.setFormat(format);
 		layoutDuration.addComponent(selectorSeconds);
 
-		BankUtil.getBalance(new Callback()
+		BankUtil.getBalance((nbt, success) ->
 		{
-			@Override
-			public void execute(NBTTagCompound nbt, boolean success)
-			{
-				if(success) 
-				{
-					labelMoney.setText("$" + nbt.getInteger("balance"));
-				}
-			}
-		});
+            if(success)
+            {
+                labelMoney.setText("$" + nbt.getInteger("balance"));
+            }
+        });
 		
 		TaskGetAuctions task = new TaskGetAuctions();
-		task.setCallback(new Callback()
+		task.setCallback((nbt, success) ->
 		{
-			@Override
-			public void execute(NBTTagCompound nbt, boolean success)
-			{
-				items.removeAll();
-				for(AuctionItem item : AuctionManager.INSTANCE.getItems())
-				{
-					items.addItem(item);
-				}
-			}
-		});
+            items.removeAll();
+            for(AuctionItem item : AuctionManager.INSTANCE.getItems())
+            {
+                items.addItem(item);
+            }
+        });
 		TaskManager.sendTask(task);
 	}
 

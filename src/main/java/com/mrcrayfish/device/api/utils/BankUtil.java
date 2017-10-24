@@ -41,7 +41,7 @@ public class BankUtil
 	 * 
 	 * @param callback he callback object to processing the response
 	 */
-	public static void getBalance(Callback callback)
+	public static void getBalance(Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskGetBalance().setCallback(callback));
 	}
@@ -55,7 +55,7 @@ public class BankUtil
 	 * @param amount the amount to pay 
 	 * @param callback the callback object to processing the response
 	 */
-	public static void pay(String uuid, int amount, Callback callback)
+	public static void pay(String uuid, int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskPay().setCallback(callback));
 	}
@@ -67,7 +67,7 @@ public class BankUtil
 	 * 
 	 * @param callback he callback object to processing the response
 	 */
-	public static void add(int amount, Callback callback)
+	public static void add(int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskAdd(amount).setCallback(callback));
 	}
@@ -79,7 +79,7 @@ public class BankUtil
 	 * 
 	 * @param callback he callback object to processing the response
 	 */
-	public static void remove(int amount, Callback callback)
+	public static void remove(int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskRemove(amount).setCallback(callback));
 	}

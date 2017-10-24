@@ -44,13 +44,6 @@ public abstract class ComboBox<T> extends Component
         this.width = width;
     }
 
-    public ComboBox(int left, int top, int width, int height)
-    {
-        super(left, top);
-        this.width = width;
-        this.height = height;
-    }
-
     @Override
     public void handleTick()
     {
@@ -112,7 +105,7 @@ public abstract class ComboBox<T> extends Component
             {
                 itemRenderer.render(value, laptop, mc, x + 1, y + 1, xOffset - 1, height - 2);
             }
-            else
+            else if(value != null)
             {
                 String text = value.toString();
                 int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
@@ -143,14 +136,11 @@ public abstract class ComboBox<T> extends Component
         return value;
     }
 
-    protected void updateValue(@Nonnull T newValue)
+    protected void updateValue(T newValue)
     {
-        if(newValue == null)
-            throw new IllegalArgumentException("Value must not be null");
-
-        if(value != newValue)
+        if(newValue != null && value != newValue)
         {
-            if(changeListener != null)
+            if(value != null && changeListener != null)
             {
                 changeListener.onChange(value, newValue);
             }
@@ -208,8 +198,16 @@ public abstract class ComboBox<T> extends Component
         public List(int left, int top, int width, T[] items)
         {
             super(left, top, width);
-            this.list = new ItemList<>(0, 0, width, 6, false);
-            this.layout = new Layout(width, getListHeight(list));
+            this.list = new ItemList<>(0, 0, width + 50, 6, false);
+            this.layout = new Layout(width + 50, getListHeight(list));
+            this.setItems(items);
+        }
+
+        public List(int left, int top, int comboBoxWidth, int listWidth, T[] items)
+        {
+            super(left, top, comboBoxWidth);
+            this.list = new ItemList<>(0, 0, listWidth, 6, false);
+            this.layout = new Layout(listWidth, getListHeight(list));
             this.setItems(items);
         }
 
@@ -229,13 +227,10 @@ public abstract class ComboBox<T> extends Component
             this.layout.addComponent(list);
         }
 
-        public void setItems(@Nonnull T[] items)
+        public void setItems(T[] items)
         {
             if(items == null)
                 throw new IllegalArgumentException("Cannot set null items");
-
-            if(items.length == 0)
-                throw new IllegalArgumentException("The item array must has at least one value");
 
             this.list.removeAll();
             for(T t : items)
@@ -255,7 +250,6 @@ public abstract class ComboBox<T> extends Component
         public void setListItemRenderer(ListItemRenderer<T> renderer)
         {
             this.list.setListItemRenderer(renderer);
-            this.layout.width = getListWidth(list);
             this.layout.height = getListHeight(list);
         }
 
