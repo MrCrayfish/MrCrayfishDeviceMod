@@ -123,7 +123,8 @@ public class ApplicationBank extends SystemApplication
 		textWelcome = new Text(TextFormatting.BLACK + "Hello " + Minecraft.getMinecraft().player.getName() + ", welcome to The Emerald Bank! How can I help you?", 62, 25, 125);
 		layoutStart.addComponent(textWelcome);
 		
-		btnDepositWithdraw = new Button(54, 74, 76, 20, "View Account");
+		btnDepositWithdraw = new Button(54, 74, "View Account");
+		btnDepositWithdraw.setSize(76, 20);
 		btnDepositWithdraw.setClickListener(new ClickListener() {
 			@Override
 			public void onClick(Component c, int mouseButton) {
@@ -133,7 +134,8 @@ public class ApplicationBank extends SystemApplication
 		btnDepositWithdraw.setToolTip("View Account", "Shows your balance");
 		layoutStart.addComponent(btnDepositWithdraw);
 		
-		btnTransfer = new Button(133, 74, 58, 20, "Transfer");
+		btnTransfer = new Button(133, 74, "Transfer");
+		btnTransfer.setSize(58, 20);
 		btnTransfer.setToolTip("Transfer", "Withdraw and deposit emeralds");
 		btnTransfer.setClickListener(new ClickListener() {
 			@Override
@@ -174,48 +176,24 @@ public class ApplicationBank extends SystemApplication
 		amountField.setText("0");
 		amountField.setEditable(false);
 		layoutMain.addComponent(amountField);
+
+		for(int i = 0; i < 9; i++)
+		{
+			int posX = 5 + (i % 3) * 19;
+			int posY = 65 + (i / 3) * 19;
+			Button button = new Button(posX, posY, Integer.toString(i + 1));
+			button.setSize(16, 16);
+			addNumberClickListener(button, amountField, i + 1);
+			layoutMain.addComponent(button);
+		}
 		
-		btnOne = new Button(5, 103, 16, 16, "1");
-		addNumberClickListener(btnOne, amountField, 1);
-		layoutMain.addComponent(btnOne);
-		
-		btnTwo = new Button(24, 103, 16, 16, "2");
-		addNumberClickListener(btnTwo, amountField, 2);
-		layoutMain.addComponent(btnTwo);
-		
-		btnThree = new Button(43, 103, 16, 16, "3");
-		addNumberClickListener(btnThree, amountField, 3);
-		layoutMain.addComponent(btnThree);
-		
-		btnFour = new Button(5, 84, 16, 16, "4");
-		addNumberClickListener(btnFour, amountField, 4);
-		layoutMain.addComponent(btnFour);
-		
-		btnFive = new Button(24, 84, 16, 16, "5");
-		addNumberClickListener(btnFive, amountField, 5);
-		layoutMain.addComponent(btnFive);
-		
-		btnSix = new Button(43, 84, 16, 16, "6");
-		addNumberClickListener(btnSix, amountField, 6);
-		layoutMain.addComponent(btnSix);
-		
-		btnSeven = new Button(5, 65, 16, 16, "7");
-		addNumberClickListener(btnSeven, amountField, 7);
-		layoutMain.addComponent(btnSeven);
-		
-		btnEight = new Button(24, 65, 16, 16, "8");
-		addNumberClickListener(btnEight, amountField, 8);
-		layoutMain.addComponent(btnEight);
-		
-		btnNine = new Button(43, 65, 16, 16, "9");
-		addNumberClickListener(btnNine, amountField, 9);
-		layoutMain.addComponent(btnNine);
-		
-		btnZero = new Button(5, 122, 16, 16, "0");
+		btnZero = new Button(5, 122, "0");
+		btnZero.setSize(16, 16);
 		addNumberClickListener(btnZero, amountField, 0);
 		layoutMain.addComponent(btnZero);
 		
-		btnClear = new Button(24, 122, 35, 16, "Clr");
+		btnClear = new Button(24, 122, "Clr");
+		btnClear.setSize(35, 16);
 		btnClear.setClickListener(new ClickListener()
 		{
 			@Override
@@ -226,7 +204,8 @@ public class ApplicationBank extends SystemApplication
 		});
 		layoutMain.addComponent(btnClear);
 		
-		buttonDeposit = new Button(62, 65, 53, 16, "Deposit");
+		buttonDeposit = new Button(62, 65, "Deposit");
+		buttonDeposit.setSize(53, 16);
 		buttonDeposit.setClickListener(new ClickListener()
 		{
 			@Override
@@ -251,7 +230,8 @@ public class ApplicationBank extends SystemApplication
 		});
 		layoutMain.addComponent(buttonDeposit);
 		
-		buttonWithdraw = new Button(62, 84, 53, 16, "Withdraw");
+		buttonWithdraw = new Button(62, 84, "Withdraw");
+		buttonWithdraw.setSize(53, 16);
 		buttonWithdraw.setClickListener(new ClickListener()
 		{
 			@Override
