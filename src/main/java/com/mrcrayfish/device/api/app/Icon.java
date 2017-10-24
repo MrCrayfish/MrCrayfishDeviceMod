@@ -31,7 +31,6 @@ public enum Icon
     EDIT,
     SEARCH,
     RELOAD,
-    HOME,
     CHEESE,
     CHEVRON_RIGHT,
     CHEVRON_DOWN,
@@ -70,7 +69,15 @@ public enum Icon
     POWER_ON,
     POWER_OFF,
     EARTH,
-    SHOP;
+    PICTURE,
+    SHOP,
+    HOME,
+    COMPUTER,
+    PRINTER,
+    GAME_CONTROLLER,
+    PROFILE,
+    COMMUNITY,
+    CONTACTS;
 
     public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
