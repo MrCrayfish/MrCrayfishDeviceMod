@@ -77,7 +77,16 @@ public enum Icon
     GAME_CONTROLLER,
     PROFILE,
     COMMUNITY,
-    CONTACTS;
+    SHARE,
+    THUMBS_UP_OFF,
+    THUMBS_UP_ON,
+    THUMBS_DOWN_OFF,
+    THUMBS_DOWN_ON,
+    CONTACTS,
+    BOOKMARK_OFF,
+    BOOKMARK_ON,
+    UNDO,
+    REDO;
 
     public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
