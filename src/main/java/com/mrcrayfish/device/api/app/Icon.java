@@ -76,11 +76,12 @@ public enum Icon
     CAMERA,
     HEADPHONES,
     TELEVISION,
-    SMARTPHONE,
+    SMART_PHONE,
     USB,
     INTERNAL_DRIVE,
     EXTERNAL_DRIVE,
     NETWORK_DRIVE,
+    DATABASE,
     CD,
     BATTERY_FULL,
     BATTERY_HALF,
@@ -100,7 +101,16 @@ public enum Icon
     BOOKMARK_ON,
     UNDO,
     REDO,
-    WRENCH;
+    WRENCH,
+    FORBIDDEN,
+    MUSIC,
+    EYE_DROPPER,
+    DOTS_VERTICAL,
+    DOTS_HORIZONTAL,
+    EXPAND,
+    SHRINK,
+    SORT,
+    FONT;
 
     public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
