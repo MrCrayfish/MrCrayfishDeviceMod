@@ -44,7 +44,8 @@ public class NumberSelector extends Component
 	@Override
 	public void init(Layout layout)
 	{
-		btnUp = new Button(left, top, width, 11, COMPONENTS_GUI, 111, 12, 8, 5);
+		btnUp = new Button(left, top, COMPONENTS_GUI, 111, 12, 8, 5);
+		btnUp.setSize(width, 11);
 		btnUp.setClickListener((c, mouseButton) ->
 		{
             if(current < max)
@@ -61,7 +62,8 @@ public class NumberSelector extends Component
 		display.setText(format.format(current));
 		layout.addComponent(display);
 		
-		btnDown = new Button(left, top + 24, width, 11, COMPONENTS_GUI, 119, 12, 8, 5);
+		btnDown = new Button(left, top + 24, COMPONENTS_GUI, 119, 12, 8, 5);
+		btnDown.setSize(width, 11);
 		btnDown.setClickListener((c, mouseButton) ->
 		{
             if(current > min)
