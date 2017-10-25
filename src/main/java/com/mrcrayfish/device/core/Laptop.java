@@ -180,6 +180,15 @@ public class Laptop extends GuiScreen implements System
 		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
 		RenderUtil.drawRectWithTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 256, 144);
 
+		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
+		{
+			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+		else
+		{
+			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
@@ -196,15 +205,6 @@ public class Laptop extends GuiScreen implements System
 		if(context != null)
 		{
 			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
-		}
-
-		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
-		{
-			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-		}
-		else
-		{
-			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
