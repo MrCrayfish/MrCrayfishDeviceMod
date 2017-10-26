@@ -26,13 +26,13 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	private FileSystem fileSystem;
 
 	@SideOnly(Side.CLIENT)
-	public float rotation = 0;
+	public float rotation;
 
 	@SideOnly(Side.CLIENT)
-	public float prevRotation = 0;
+	public float prevRotation;
 
 	@SideOnly(Side.CLIENT)
-	private boolean hasExternalDrive = false;
+	private boolean hasExternalDrive;
 
 	public TileEntityLaptop()
 	{
@@ -93,7 +93,10 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
 		compound.setTag("data", data);
-		compound.setTag("file_system", fileSystem.toTag());
+		if(fileSystem != null)
+		{
+			compound.setTag("file_system", fileSystem.toTag());
+		}
 		return compound;
 	}
 

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageRequest;
@@ -34,8 +35,8 @@ public final class TaskManager
 		{
 			Constructor<? extends Task> constructor = clazz.getDeclaredConstructor();
 			constructor.setAccessible(true);
-			Task task = (Task) constructor.newInstance();
-			System.out.println("Registering task '" + task.getName() + "'");
+			Task task = constructor.newInstance();
+			MrCrayfishDeviceMod.getLogger().info("Registering task '" + task.getName() + "'");
 			get().registeredRequests.put(task.getName(), task);
 		} 
 		catch (InstantiationException e) 

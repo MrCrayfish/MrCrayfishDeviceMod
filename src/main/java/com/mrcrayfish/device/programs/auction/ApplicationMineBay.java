@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.programs.auction;
 
-import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
@@ -11,7 +10,6 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -103,11 +101,13 @@ public class ApplicationMineBay extends Application
 			}
 		});
 		
-		Button btnAddItem = new Button("Add Item", 70, 5, 60, 15);
+		Button btnAddItem = new Button(70, 5, "Add Item");
+		btnAddItem.setSize(60, 15);
 		btnAddItem.setClickListener((c, mouseButton) -> setCurrentLayout(layoutSelectItem));
 		super.addComponent(btnAddItem);
 
-		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
+		Button btnViewItem = new Button(135, 5, "Your Auctions");
+		btnViewItem.setSize(80, 15);
 		btnViewItem.setClickListener((c, mouseButton) -> {
 			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
 			task.setCallback((nbt, success) -> {
@@ -176,7 +176,8 @@ public class ApplicationMineBay extends Application
 		});
 		super.addComponent(items);
 		
-		Button btnBuy = new Button("Buy", 100, 127, 50, 15);
+		Button btnBuy = new Button(100, 127, "Buy");
+		btnBuy.setSize(50, 15);
 		btnBuy.setClickListener(new ClickListener()
 		{
 			@Override

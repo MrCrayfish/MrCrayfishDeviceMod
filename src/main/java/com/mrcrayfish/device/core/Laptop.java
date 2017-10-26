@@ -57,6 +57,7 @@ public class Laptop extends GuiScreen implements System
 	private static BlockPos pos;
 	private static Drive mainDrive;
 
+	private Settings settings;
 	private TaskBar bar;
 	private Window[] windows;
 	private Layout context = null;
@@ -72,6 +73,7 @@ public class Laptop extends GuiScreen implements System
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
 		this.windows = new Window[5];
+		this.settings = Settings.fromTag(systemData.getCompoundTag("settings"));
 		this.bar = new TaskBar(APPLICATIONS);
 		Laptop.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
@@ -178,6 +180,15 @@ public class Laptop extends GuiScreen implements System
 		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
 		RenderUtil.drawRectWithTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 256, 144);
 
+		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
+		{
+			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+		else
+		{
+			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+		}
+
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
@@ -194,15 +205,6 @@ public class Laptop extends GuiScreen implements System
 		if(context != null)
 		{
 			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
-		}
-
-		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
-		{
-			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
-		}
-		else
-		{
-			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
@@ -367,6 +369,14 @@ public class Laptop extends GuiScreen implements System
 
 	public void open(Application app)
 	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+			{
+				return;
+			}
+		}
+
 		for(int i = 0; i < windows.length; i++)
 		{
 			Window<Application> window = windows[i];
@@ -563,6 +573,21 @@ public class Laptop extends GuiScreen implements System
 	public static Drive getMainDrive()
 	{
 		return mainDrive;
+	}
+
+	public List<Application> getApplications()
+	{
+		return APPLICATIONS;
+	}
+
+	public TaskBar getTaskBar()
+	{
+		return bar;
+	}
+
+	public Settings getSettings()
+	{
+		return settings;
 	}
 
 	@Override

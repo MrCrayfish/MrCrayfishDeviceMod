@@ -161,6 +161,13 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	{
 		return new BlockStateContainer(this, FACING, TYPE);
 	}
+
+	@Override
+	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
+	{
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+		return tileentity != null && tileentity.receiveClientEvent(id, param);
+	}
 	
 	public static enum Type implements IStringSerializable 
 	{

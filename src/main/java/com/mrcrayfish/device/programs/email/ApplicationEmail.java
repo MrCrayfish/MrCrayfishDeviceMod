@@ -148,7 +148,8 @@ public class ApplicationEmail extends Application
 		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnRegisterAccount = new Button("Register", 5, 50, 90, 20);
+		btnRegisterAccount = new Button(5, 50, "Register");
+		btnRegisterAccount.setSize(90, 20);
 		btnRegisterAccount.setClickListener(new ClickListener()
 		{
 			@Override
@@ -174,7 +175,8 @@ public class ApplicationEmail extends Application
 		labelDomain = new Label("@endermail.com", 88, 18);
 		layoutRegisterAccount.addComponent(labelDomain);
 
-		btnRegister = new Button("Register", 5, 35, 157, 20);
+		btnRegister = new Button(5, 35, "Register");
+		btnRegister.setSize(157, 20);
 		btnRegister.setClickListener(new ClickListener()
 		{
 			@Override
@@ -215,7 +217,7 @@ public class ApplicationEmail extends Application
 				taskUpdateInbox.setCallback((nbt, success) ->
 				{
                     listEmails.removeAll();
-                    for (Email email : EmailManager.INSTANCE.inbox)
+                    for (Email email : EmailManager.INSTANCE.getInbox())
                     {
                         listEmails.addItem(email);
                     }
@@ -344,7 +346,7 @@ public class ApplicationEmail extends Application
 				taskUpdateInbox.setCallback((nbt, success) ->
 				{
                     listEmails.removeAll();
-                    for (Email email : EmailManager.INSTANCE.inbox)
+                    for (Email email : EmailManager.INSTANCE.getInbox())
                     {
                         listEmails.addItem(email);
                     }
@@ -541,7 +543,7 @@ public class ApplicationEmail extends Application
             {
                 currentName = nbt.getString("Name");
                 listEmails.removeAll();
-                for (Email email : EmailManager.INSTANCE.inbox)
+                for (Email email : EmailManager.INSTANCE.getInbox())
                 {
                     listEmails.addItem(email);
                 }
@@ -604,11 +606,10 @@ public class ApplicationEmail extends Application
 
 	public static class EmailManager
 	{
-
 		public static final EmailManager INSTANCE = new EmailManager();
 
 		@SideOnly(Side.CLIENT)
-		private List<Email> inbox = new ArrayList<Email>();
+		private List<Email> inbox;
 
 		private Map<UUID, String> uuidToName = new HashMap<UUID, String>();
 		private Map<String, List<Email>> uuidToInbox = new HashMap<String, List<Email>>();
@@ -626,6 +627,10 @@ public class ApplicationEmail extends Application
 		@SideOnly(Side.CLIENT)
 		public List<Email> getInbox()
 		{
+			if(inbox == null)
+			{
+				inbox = new ArrayList<>();
+			}
 			return inbox;
 		}
 

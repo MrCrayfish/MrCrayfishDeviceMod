@@ -15,6 +15,7 @@ import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationSettings;
 
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -22,8 +23,9 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
 
-class TaskBar
+public class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 
@@ -39,7 +41,36 @@ class TaskBar
 
 	public TaskBar(List<Application> applications)
 	{
-		this.applications = applications;
+		setupApplications(applications);
+	}
+
+	public void setupApplications(List<Application> applications)
+	{
+		this.applications = applications.stream().filter(app ->
+		{
+			if(app instanceof SystemApplication)
+			{
+				return true;
+			}
+			if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+			{
+				if(MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+				{
+					if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+					{
+						return Settings.isShowAllApps();
+					}
+					return true;
+				}
+				return false;
+			}
+			else if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+			{
+				return Settings.isShowAllApps();
+			}
+			return true;
+		}).collect(Collectors.toList());
+
 	}
 
 	public void init(int posX, int posY)

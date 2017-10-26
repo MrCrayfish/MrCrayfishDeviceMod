@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
@@ -8,38 +9,65 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 {
 	protected boolean toggle = false;
 	protected RadioGroup group = null;
-	
+
 	/**
-	 * Default toggle button constructor
-	 * 
+	 * Alternate button constructor
+	 *
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
 	 * @param text text to be displayed in the button
-	 * @param left how many pixels from the left
-	 * @param top how many pixels from the top
-	 * @param width width of the button
-	 * @param height height of the button
 	 */
-	public ButtonToggle(String text, int left, int top, int width, int height) 
+	public ButtonToggle(int left, int top, String text)
 	{
-		super(text, left, top, width, height);
+		super(left, top, text);
 	}
-	
+
 	/**
-	 * Creates a toggle button with an image inside. The size of the 
-	 * button is based on the size of the image with 3 pixels of padding.
-	 * 
+	 * Alternate button constructor
+	 *
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
-	 * @param icon the icon resource location
-	 * @param iconU the u position on the resource
-	 * @param iconV the v position on the resource
-	 * @param iconWidth width of the icon
-	 * @param iconHeight height of the icon
+	 * @param icon
 	 */
-	public ButtonToggle(int left, int top, ResourceLocation icon, int iconU, int iconV, int iconWidth, int iconHeight)
+	public ButtonToggle(int left, int top, Icon icon)
 	{
-		super(left, top, icon, iconU, iconV, iconWidth, iconHeight);
+		super(left, top, icon);
 	}
-	
+
+	/**
+	 * Alternate button constructor
+	 *
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 * @param icon
+	 */
+	public ButtonToggle(int left, int top, String text, Icon icon)
+	{
+		super(left, top, text, icon);
+	}
+
+	/**
+	 * Alternate button constructor
+	 *
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 */
+	public ButtonToggle(int left, int top, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	{
+		super(left, top, iconResource, iconU, iconV, iconWidth, iconHeight);
+	}
+
+	/**
+	 * Alternate button constructor
+	 *
+	 * @param left how many pixels from the left
+	 * @param top how many pixels from the top
+	 */
+	public ButtonToggle(int left, int top, String text, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	{
+		super(left, top, text, iconResource, iconU, iconV, iconWidth, iconHeight);
+	}
+
 	/**
 	 * Sets the radio group for this button.
 	 * 
