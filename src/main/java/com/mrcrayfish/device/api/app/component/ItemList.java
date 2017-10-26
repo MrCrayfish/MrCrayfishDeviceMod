@@ -295,8 +295,6 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 */
 	public void addItem(@Nonnull E e)
 	{
-		if(e == null)
-			throw new IllegalArgumentException("A null object cannot be added to an ItemList");
 		items.add(e);
 		sort();
 		if(initialized)
@@ -313,6 +311,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 		items.clear();
 		items.addAll(newItems);
 		sort();
+		if(initialized)
+			updateComponent();
 	}
 	
 	/**
