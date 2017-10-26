@@ -189,13 +189,19 @@ public class Laptop extends GuiScreen implements System
 			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 
+		boolean insideContext = false;
+		if(context != null)
+		{
+			insideContext = GuiHelper.isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
+		}
+
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
 			Window window = windows[i];
 			if(window != null)
 			{
-				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0, partialTicks);
+				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
 			}
 		}
 		
