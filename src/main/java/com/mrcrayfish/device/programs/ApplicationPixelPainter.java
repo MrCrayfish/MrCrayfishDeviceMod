@@ -1,21 +1,29 @@
 package com.mrcrayfish.device.programs;
 
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.listener.InitListener;
+import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
+import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
+import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
 import com.mrcrayfish.device.object.ColourGrid;
 import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -25,6 +33,10 @@ import java.awt.*;
 public class ApplicationPixelPainter extends Application
 {
 	private static final ResourceLocation PIXEL_PAINTER_ICONS = new ResourceLocation("cdm:textures/gui/pixel_painter.png");
+
+	private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
+	private static final Color ITEM_SELECTED = new Color(200, 176, 174);
+	private static final Color AUTHOR_TEXT = new Color(114, 120, 138);
 
 	/* Main Menu */
 	private Layout layoutMainMenu;
@@ -46,9 +58,9 @@ public class ApplicationPixelPainter extends Application
 
 	/* Load Picture */
 	private Layout layoutLoadPicture;
-	private Label labelPictureList;
 	private ItemList<Picture> listPictures;
 	private Button btnLoadSavedPicture;
+	private Button btnBrowseSavedPicture;
 	private Button btnDeleteSavedPicture;
 	private Button btnBackSavedPicture;
 
@@ -85,7 +97,8 @@ public class ApplicationPixelPainter extends Application
 		labelLogo = new Label("Pixel Painter", 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnNewPicture = new Button("New", 5, 50, 90, 20);
+		btnNewPicture = new Button(5, 50, "New");
+		btnNewPicture.setSize(90, 20);
 		btnNewPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -96,7 +109,8 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutMainMenu.addComponent(btnNewPicture);
 
-		btnLoadPicture = new Button("Load", 5, 75, 90, 20);
+		btnLoadPicture = new Button(5, 75, "Load");
+		btnLoadPicture.setSize(90, 20);
 		btnLoadPicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -138,7 +152,8 @@ public class ApplicationPixelPainter extends Application
 		checkBox32x.setRadioGroup(sizeGroup);
 		layoutNewPicture.addComponent(checkBox32x);
 
-		btnCreatePicture = new Button("Create", 110, 40, 65, 20);
+		btnCreatePicture = new Button(110, 40, "Create");
+		btnCreatePicture.setSize(65, 20);
 		btnCreatePicture.setClickListener(new ClickListener()
 		{
 			@Override
@@ -153,46 +168,118 @@ public class ApplicationPixelPainter extends Application
 		
 		/* Load Picture */
 		
-		layoutLoadPicture = new Layout(180, 80);
+		layoutLoadPicture = new Layout(165, 116);
+		layoutLoadPicture.setInitListener(() ->
+		{
+			listPictures.removeAll();
+			FileSystem.getApplicationFolder(this, (folder, success) ->
+			{
+                if(success)
+				{
+					folder.search(file -> file.isForApplication(this)).forEach(file ->
+					{
+						Picture picture = Picture.fromFile(file);
+						listPictures.addItem(picture);
+					});
+				}
+            });
+        });
 
-		listPictures = new ItemList<Picture>(5, 5, 100, 5);
-		layoutLoadPicture.addComponent(listPictures);
-
-		btnLoadSavedPicture = new Button("Load", 124, 5, 50, 20);
-		btnLoadSavedPicture.setClickListener(new ClickListener()
+		listPictures = new ItemList<>(5, 5, 100, 5);
+		listPictures.setListItemRenderer(new ListItemRenderer<Picture>(20)
 		{
 			@Override
-			public void onClick(Component c, int mouseButton)
+			public void render(Picture picture, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
 			{
-				if (listPictures.getSelectedIndex() != -1)
-				{
-					canvas.setPicture(listPictures.getSelectedItem());
-					setCurrentLayout(layoutDraw);
-				}
+				Gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
+				mc.fontRendererObj.drawString(picture.getName(), x + 2, y + 2, Color.WHITE.getRGB(), false);
+				mc.fontRendererObj.drawString(picture.getAuthor(), x + 2, y + 11, AUTHOR_TEXT.getRGB(), false);
 			}
 		});
+		listPictures.setItemClickListener((picture, index, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				btnLoadSavedPicture.setEnabled(true);
+				btnDeleteSavedPicture.setEnabled(true);
+			}
+        });
+		layoutLoadPicture.addComponent(listPictures);
+
+		btnLoadSavedPicture = new Button(110, 5, "Load");
+		btnLoadSavedPicture.setSize(50, 20);
+		btnLoadSavedPicture.setEnabled(false);
+		btnLoadSavedPicture.setClickListener((c, mouseButton) ->
+		{
+            if (listPictures.getSelectedIndex() != -1)
+            {
+                canvas.setPicture(listPictures.getSelectedItem());
+                setCurrentLayout(layoutDraw);
+            }
+        });
 		layoutLoadPicture.addComponent(btnLoadSavedPicture);
 
-		btnDeleteSavedPicture = new Button("Delete", 124, 30, 50, 20);
-		btnDeleteSavedPicture.setClickListener(new ClickListener()
+		btnBrowseSavedPicture = new Button(110, 30, "Browse");
+		btnBrowseSavedPicture.setSize(50, 20);
+		btnBrowseSavedPicture.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			Dialog.OpenFile dialog = new Dialog.OpenFile(this);
+			dialog.setResponseHandler((success, file) ->
 			{
-				listPictures.removeItem(listPictures.getSelectedIndex());
+				if(file.isForApplication(this))
+				{
+					Picture picture = Picture.fromFile(file);
+					canvas.setPicture(picture);
+					setCurrentLayout(layoutDraw);
+					return true;
+				}
+				else
+				{
+					Dialog.Message dialog2 = new Dialog.Message("Invalid file for Pixel Painter");
+					openDialog(dialog2);
+				}
+				return false;
+			});
+			openDialog(dialog);
+        });
+		layoutLoadPicture.addComponent(btnBrowseSavedPicture);
+
+		btnDeleteSavedPicture = new Button(110, 55, "Delete");
+		btnDeleteSavedPicture.setSize(50, 20);
+		btnDeleteSavedPicture.setEnabled(false);
+		btnDeleteSavedPicture.setClickListener((c, mouseButton) ->
+		{
+			if(listPictures.getSelectedIndex() != -1)
+			{
+				Picture picture = listPictures.getSelectedItem();
+				File file = picture.getSource();
+				if(file != null)
+				{
+					file.delete((o, success) ->
+					{
+						if(success)
+						{
+							listPictures.removeItem(listPictures.getSelectedIndex());
+							btnDeleteSavedPicture.setEnabled(false);
+							btnLoadSavedPicture.setEnabled(false);
+						}
+						else
+						{
+							//TODO error dialog
+						}
+                    });
+				}
+				else
+				{
+					//TODO error dialog
+				}
 			}
 		});
 		layoutLoadPicture.addComponent(btnDeleteSavedPicture);
 
-		btnBackSavedPicture = new Button("Back", 124, 55, 50, 20);
-		btnBackSavedPicture.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutMainMenu);
-			}
-		});
+		btnBackSavedPicture = new Button(110, 80, "Back");
+		btnBackSavedPicture.setSize(50, 20);
+		btnBackSavedPicture.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMainMenu));
 		layoutLoadPicture.addComponent(btnBackSavedPicture);
 
 		
@@ -279,11 +366,48 @@ public class ApplicationPixelPainter extends Application
 			public void onClick(Component c, int mouseButton)
 			{
 				canvas.picture.pixels = canvas.copyPixels();
-				if (!canvas.isExistingImage())
-					listPictures.addItem(canvas.picture);
-				canvas.clear();
-				setCurrentLayout(layoutLoadPicture);
-				markDirty();
+
+				NBTTagCompound pictureTag = new NBTTagCompound();
+				canvas.picture.writeToNBT(pictureTag);
+
+				if(canvas.isExistingImage())
+				{
+					File file = canvas.picture.getSource();
+					if(file != null)
+					{
+						file.setData(pictureTag, (response, success) ->
+						{
+                            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+							{
+								canvas.clear();
+								setCurrentLayout(layoutLoadPicture);
+							}
+							else
+							{
+								//TODO error dialog
+							}
+                        });
+					}
+				}
+				else
+				{
+					Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationPixelPainter.this, pictureTag);
+					dialog.setResponseHandler((success, file) ->
+					{
+						if(success)
+						{
+							canvas.clear();
+							setCurrentLayout(layoutLoadPicture);
+							return true;
+						}
+						else
+						{
+							//TODO error dialog
+						}
+						return false;
+					});
+					openDialog(dialog);
+				}
 			}
 		});
 		layoutDraw.addComponent(btnSave);
@@ -352,27 +476,19 @@ public class ApplicationPixelPainter extends Application
 	@Override
 	public void load(NBTTagCompound tagCompound)
 	{
-		listPictures.removeAll();
 
-		NBTTagList pictureList = (NBTTagList) tagCompound.getTag("Pictures");
-		for (int i = 0; i < pictureList.tagCount(); i++)
-		{
-			NBTTagCompound pictureTag = pictureList.getCompoundTagAt(i);
-			Picture picture = Picture.readFromNBT(pictureTag);
-			listPictures.addItem(picture);
-		}
 	}
 
 	@Override
 	public void save(NBTTagCompound tagCompound)
 	{
-		NBTTagList pictureList = new NBTTagList();
-		for (Picture picture : listPictures)
-		{
-			NBTTagCompound pictureTag = new NBTTagCompound();
-			picture.writeToNBT(pictureTag);
-			pictureList.appendTag(pictureTag);
-		}
-		tagCompound.setTag("Pictures", pictureList);
+
+	}
+
+	@Override
+	public void onClose()
+	{
+		super.onClose();
+		listPictures.removeAll();
 	}
 }

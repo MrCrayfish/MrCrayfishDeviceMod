@@ -3,6 +3,7 @@ package com.mrcrayfish.device.proxy;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceItems;
@@ -14,14 +15,21 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
-public class ClientProxy implements IProxyInterface
+public class ClientProxy extends CommonProxy
 {
     @Override
     public void preInit()
@@ -33,9 +41,21 @@ public class ClientProxy implements IProxyInterface
     @Override
     public void init()
     {
-
-
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
+
+        if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+        {
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/developer_wallpaper.png"));
+        }
+        else
+        {
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_1.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_2.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_3.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_4.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
+        }
     }
 
     @Override
@@ -104,5 +124,47 @@ public class ClientProxy implements IProxyInterface
     {
         ReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
         ReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
+    }
+
+    @Nullable
+    @Override
+    public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
+    {
+        if("minecraft".equals(identifier.getResourceDomain()))
+        {
+            throw new IllegalArgumentException("Invalid identifier domain");
+        }
+
+        try
+        {
+            Application application = clazz.newInstance();
+            java.util.List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
+            APPS.add(application);
+
+            AppInfo info = new AppInfo(identifier);
+
+            Field field = Application.class.getDeclaredField("info");
+            field.setAccessible(true);
+
+            Field modifiers = Field.class.getDeclaredField("modifiers");
+            modifiers.setAccessible(true);
+            modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+            field.set(application, info);
+
+            return application;
+        }
+        catch(InstantiationException | IllegalAccessException | NoSuchFieldException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+    {
+        allowedApps = null;
     }
 }

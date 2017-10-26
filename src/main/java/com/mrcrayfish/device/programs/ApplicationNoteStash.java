@@ -5,8 +5,6 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.io.Folder;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.core.io.FileSystem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
@@ -21,7 +19,7 @@ public class ApplicationNoteStash extends Application
 
 	/* Main */
 	private Layout layoutMain;
-	private ItemList<File> notes;
+	private ItemList<Note> notes;
 	private Button btnNew;
 	private Button btnView;
 	private Button btnDelete;
@@ -57,7 +55,10 @@ public class ApplicationNoteStash extends Application
 			{
 				if(success)
 				{
-					folder.search(file -> file.isForApplication(this)).forEach(file -> notes.addItem(file));
+					folder.search(file -> file.isForApplication(this)).forEach(file ->
+					{
+						notes.addItem(Note.fromFile(file));
+					});
 				}
 				else
 				{
@@ -74,35 +75,58 @@ public class ApplicationNoteStash extends Application
         });
 		layoutMain.addComponent(notes);
 		
-		btnNew = new Button("New", 124, 5, 50, 20);
+		btnNew = new Button(124, 5, "New");
+		btnNew.setSize(50, 20);
 		btnNew.setClickListener((c, mouseButton) -> setCurrentLayout(layoutAddNote));
 		layoutMain.addComponent(btnNew);
 		
-		btnView = new Button("View", 124, 30, 50, 20);
+		btnView = new Button(124, 30, "View");
+		btnView.setSize(50, 20);
 		btnView.setEnabled(false);
 		btnView.setClickListener((c, mouseButton) ->
 		{
             if(notes.getSelectedIndex() != -1)
             {
-                NBTTagCompound data = notes.getSelectedItem().getData();
-                noteTitle.setText(data.getString("title"));
-                noteContent.setText(data.getString("content"));
+                Note note = notes.getSelectedItem();
+                noteTitle.setText(note.getTitle());
+                noteContent.setText(note.getContent());
                 setCurrentLayout(layoutViewNote);
             }
         });
 		layoutMain.addComponent(btnView);
 		
-		btnDelete = new Button("Delete", 124, 55, 50, 20);
+		btnDelete = new Button(124, 55, "Delete");
+		btnDelete.setSize(50, 20);
 		btnDelete.setEnabled(false);
 		btnDelete.setClickListener((c, mouseButton) ->
 		{
             if(notes.getSelectedIndex() != -1)
             {
-            	notes.getSelectedItem().delete();
-                notes.removeItem(notes.getSelectedIndex());
-                btnView.setEnabled(false);
-                btnDelete.setEnabled(false);
-                markDirty();
+				if(notes.getSelectedIndex() != -1)
+				{
+					Note note = notes.getSelectedItem();
+					File file = note.getSource();
+					if(file != null)
+					{
+						file.delete((o, success) ->
+						{
+							if(success)
+							{
+								notes.removeItem(notes.getSelectedIndex());
+								btnView.setEnabled(false);
+								btnDelete.setEnabled(false);
+							}
+							else
+							{
+								//TODO error dialog
+							}
+						});
+					}
+					else
+					{
+						//TODO error dialog
+					}
+				}
             }
         });
 		layoutMain.addComponent(btnDelete);
@@ -120,7 +144,8 @@ public class ApplicationNoteStash extends Application
 		textArea.setPadding(2);
 		layoutAddNote.addComponent(textArea);
 		
-		btnSave = new Button("Save", 124, 5, 50, 20);
+		btnSave = new Button(124, 5, "Save");
+		btnSave.setSize(50, 20);
 		btnSave.setClickListener((c, mouseButton) ->
 		{
             NBTTagCompound data = new NBTTagCompound();
@@ -140,7 +165,8 @@ public class ApplicationNoteStash extends Application
         });
 		layoutAddNote.addComponent(btnSave);
 		
-		btnCancel = new Button("Cancel", 124, 30, 50, 20);
+		btnCancel = new Button(124, 30, "Cancel");
+		btnCancel.setSize(50, 20);
 		btnCancel.setClickListener((c, mouseButton) ->
 		{
             title.clear();
@@ -160,7 +186,8 @@ public class ApplicationNoteStash extends Application
 		noteContent = new Text("", 5, 18, 110);
 		layoutViewNote.addComponent(noteContent);
 		
-		btnBack = new Button("Back", 124, 5, 50, 20);
+		btnBack = new Button(124, 5, "Back");
+		btnBack.setSize(50, 20);
 		btnBack.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMain));
 		layoutViewNote.addComponent(btnBack);
 		
@@ -174,6 +201,13 @@ public class ApplicationNoteStash extends Application
 	public void save(NBTTagCompound tagCompound) {}
 
 	@Override
+	public void onClose()
+	{
+		super.onClose();
+		notes.removeAll();
+	}
+
+	@Override
 	public boolean handleFile(File file)
 	{
 		if(!PREDICATE_FILE_NOTE.test(file))
@@ -184,5 +218,46 @@ public class ApplicationNoteStash extends Application
 		noteContent.setText(data.getString("content"));
 		setCurrentLayout(layoutViewNote);
 		return true;
+	}
+
+	private static class Note
+	{
+		private File source;
+		private String title;
+		private String content;
+
+		public Note(String title, String content)
+		{
+			this.title = title;
+			this.content = content;
+		}
+
+		public File getSource()
+		{
+			return source;
+		}
+
+		public String getTitle()
+		{
+			return title;
+		}
+
+		public String getContent()
+		{
+			return content;
+		}
+
+		@Override
+		public String toString()
+		{
+			return title;
+		}
+
+		public static Note fromFile(File file)
+		{
+			Note note = new Note(file.getData().getString("title"), file.getData().getString("content"));
+			note.source = file;
+			return note;
+		}
 	}
 }

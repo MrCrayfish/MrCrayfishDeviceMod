@@ -4,6 +4,12 @@ tile.laptop.name=Laptop
 
 item.flash_drive.name=Flash Drive
 
-app.bank.name=Bank
-app.example.name=UI Components
+app.cdm.settings.name=Settings
+app.cdm.bank.name=Bank
+app.cdm.example.name=UI Components
 app.cdm.file_browser.name=File Browser
+app.cdm.note_stash.name=Note Stash
+app.cdm.pixel_painter.name=Pixel Painter
+app.cdm.ender_mail.name=EnderMail
+app.cdm.boat_racers.name=Boat Racers
+app.cdm.mine_bay.name=MineBay
