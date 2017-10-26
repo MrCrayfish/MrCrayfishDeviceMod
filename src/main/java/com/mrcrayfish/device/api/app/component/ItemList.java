@@ -83,13 +83,12 @@ public class ItemList<E> extends Component implements Iterable<E>
         });
 		btnUp.setVisible(false);
 		layout.addComponent(btnUp);
-		
-		btnDown = new ButtonArrow(left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+
+		btnDown = new ButtonArrow(left + width - 12, top + getHeight() - 12, ButtonArrow.Type.DOWN);
 		btnDown.setClickListener((c, mouseButton) ->
 		{
             if(mouseButton == 0) scrollDown();
         });
-		btnDown = new ButtonArrow(left + width - 12, top + getHeight() - 12, ButtonArrow.Type.DOWN);
 		btnDown.setEnabled(false);
 		btnDown.setVisible(false);
 		layout.addComponent(btnDown);
@@ -295,12 +294,13 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 */
 	public void addItem(@Nonnull E e)
 	{
-		if(e == null)
-			throw new IllegalArgumentException("A null object cannot be added to an ItemList");
 		items.add(e);
 		sort();
 		if(initialized)
+		{
+			updateButtons();
 			updateComponent();
+		}
 	}
 
 	/**
@@ -313,6 +313,11 @@ public class ItemList<E> extends Component implements Iterable<E>
 		items.clear();
 		items.addAll(newItems);
 		sort();
+		if(initialized)
+		{
+			updateButtons();
+			updateComponent();
+		}
 	}
 	
 	/**
@@ -328,7 +333,10 @@ public class ItemList<E> extends Component implements Iterable<E>
 			if(index == selected)
 				selected = -1;
 			if(initialized)
+			{
+				updateButtons();
 				updateComponent();
+			}
 			return e;
 		}
 		return null;
