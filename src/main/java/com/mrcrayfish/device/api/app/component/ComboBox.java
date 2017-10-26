@@ -232,14 +232,37 @@ public abstract class ComboBox<T> extends Component
             if(items == null)
                 throw new IllegalArgumentException("Cannot set null items");
 
-            this.list.removeAll();
+            list.removeAll();
             for(T t : items)
             {
-                this.list.addItem(t);
+                list.addItem(t);
             }
-            this.selected = this.list.getItem(0);
-            this.layout.height = getListHeight(this.list);
-            updateValue(this.selected);
+            if(items.length > 0)
+            {
+                selected = list.getItem(0);
+                updateValue(selected);
+            }
+            layout.height = getListHeight(list);
+        }
+
+        public void setSelectedItem(int index)
+        {
+            T t = list.getItem(index);
+            if(t != null)
+            {
+                selected = t;
+                updateValue(t);
+            }
+        }
+
+        public void setSelectedItem(T t)
+        {
+            if(list.getItems().stream().anyMatch(i -> i == t))
+            {
+                list.setSelectedIndex(list.getItems().indexOf(t));
+                selected = t;
+                updateValue(t);
+            }
         }
 
         public T getSelectedItem()
@@ -249,8 +272,8 @@ public abstract class ComboBox<T> extends Component
 
         public void setListItemRenderer(ListItemRenderer<T> renderer)
         {
-            this.list.setListItemRenderer(renderer);
-            this.layout.height = getListHeight(list);
+            list.setListItemRenderer(renderer);
+            layout.height = getListHeight(list);
         }
 
         private static int getListHeight(ItemList list)
