@@ -123,6 +123,9 @@ public abstract class ComboBox<T> extends Component
     @Override
     public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
     {
+        if(!this.visible || !this.enabled)
+            return;
+
         if(this.hovered && !this.opened)
         {
             this.opened = true;
