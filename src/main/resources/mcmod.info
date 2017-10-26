@@ -3,7 +3,7 @@
   "modid": "cdm",
   "name": "MrCrayfish's Device Mod",
   "description": "Adds working electronic devices into Minecraft!",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "mcversion": "1.11.2",
   "url": "",
   "updateUrl": "",
