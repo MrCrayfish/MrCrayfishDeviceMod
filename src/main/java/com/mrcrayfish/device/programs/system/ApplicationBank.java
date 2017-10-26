@@ -144,7 +144,15 @@ public class ApplicationBank extends SystemApplication
 		
 		setCurrentLayout(layoutStart);
 		
-		layoutMain = new Layout(120, 143);
+		layoutMain = new Layout(120, 143) {
+			@Override
+			public void handleTick()
+			{
+				super.handleTick();
+				int amount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
+				labelEmeraldAmount.setText("x " + Integer.toString(amount));
+			}
+		};
 		layoutMain.setBackground(new Background()
 		{
 			@Override
@@ -217,7 +225,6 @@ public class ApplicationBank extends SystemApplication
 				{
                     if(success)
                     {
-                        updateEmeraldCount(-amount);
                         int balance = nbt.getInteger("balance");
                         labelAmount.setText("$" + balance);
                         amountField.setText("0");
@@ -237,13 +244,11 @@ public class ApplicationBank extends SystemApplication
 				if(amountField.getText().equals("0")) {
 					return;
 				}
-				
-				final int amount = Integer.parseInt(amountField.getText());
+
 				withdraw(Integer.parseInt(amountField.getText()), (nbt, success) ->
 				{
                     if(success)
                     {
-                        updateEmeraldCount(amount);
                         int balance = nbt.getInteger("balance");
                         labelAmount.setText("$" + balance);
                         amountField.setText("0");
@@ -252,9 +257,8 @@ public class ApplicationBank extends SystemApplication
 			}
 		});
 		layoutMain.addComponent(buttonWithdraw);
-		
-		emeraldAmount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
-		labelEmeraldAmount = new Label("x " + emeraldAmount, 83, 123);
+
+		labelEmeraldAmount = new Label("x 0", 83, 123);
 		layoutMain.addComponent(labelEmeraldAmount);
 		
 		labelInventory = new Label("Wallet", 74, 105);
@@ -273,23 +277,18 @@ public class ApplicationBank extends SystemApplication
 	
 	public void addNumberClickListener(Button btn, final TextField field, final int number) 
 	{
-		btn.setClickListener(new ClickListener()
+		btn.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			if(mouseButton == 0)
 			{
-				if(!(field.getText().equals("0") && number == 0)) {
-					if(field.getText().equals("0")) field.clear();
+				if(!(field.getText().equals("0") && number == 0))
+				{
+					if(field.getText().equals("0"))
+						field.clear();
 					field.writeText(Integer.toString(number));
 				}
 			}
-		});
-	}
-	
-	public void updateEmeraldCount(int amount) 
-	{
-		emeraldAmount += amount;
-		labelEmeraldAmount.setText("x " + emeraldAmount);
+        });
 	}
 
 	private void deposit(int amount, Callback<NBTTagCompound> callback)
