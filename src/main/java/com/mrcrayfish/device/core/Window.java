@@ -104,8 +104,13 @@ public class Window<T extends Wrappable>
 		
 		/* Center */
 		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
-		
-		mc.fontRendererObj.drawString(content.getWindowTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
+
+		String windowTitle = content.getWindowTitle();
+		if(mc.fontRendererObj.getStringWidth(windowTitle) > width - 2 - 13 - 3) // window width, border, close button, padding, padding
+		{
+			windowTitle = mc.fontRendererObj.trimStringToWidth(windowTitle, width - 2 - 13 - 3);
+		}
+		mc.fontRendererObj.drawString(windowTitle, x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
 		btnClose.drawButton(mc, mouseX, mouseY);
 		
