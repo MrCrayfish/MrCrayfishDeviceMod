@@ -93,7 +93,10 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
 		compound.setTag("data", data);
-		compound.setTag("file_system", fileSystem.toTag());
+		if(fileSystem != null)
+		{
+			compound.setTag("file_system", fileSystem.toTag());
+		}
 		return compound;
 	}
 
