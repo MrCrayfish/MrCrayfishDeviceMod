@@ -115,10 +115,7 @@ public class Window<T extends Wrappable>
 		GlStateManager.disableBlend();
 
 		/* Render content */
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GLHelper.scissor(x + offsetX + 1, y + offsetY + 13, width - 1 - 1, height - 15 - 1);
 		content.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active && dialogWindow == null, partialTicks);
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
