@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Author: MrCrayfish
  */
-public enum Icon
+public enum Icon extends IIcon
 {
     ARROW_RIGHT,
     ARROW_DOWN,
