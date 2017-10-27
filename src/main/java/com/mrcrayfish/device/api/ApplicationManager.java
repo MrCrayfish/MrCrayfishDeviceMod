@@ -51,8 +51,8 @@ public class ApplicationManager
 	}
 
 	@Nullable
-	public static AppInfo getApplication(String appId)
+	public static AppInfo getApplication(ResourceLocation identifier)
 	{
-		return APP_INFO.get(new ResourceLocation(appId.replace(".", ":")));
+		return APP_INFO.get(identifier);
 	}
 }
