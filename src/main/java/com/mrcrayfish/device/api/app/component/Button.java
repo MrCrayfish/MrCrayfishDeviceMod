@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Icon;
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -71,10 +71,10 @@ public class Button extends Component
 	 * Alternate button constructor
 	 *
 	 * @param left how many pixels from the left
-	 * @param top how many pixels from the top
+I	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, Icon icon)
+	public Button(int left, int top, IIcon icon)
 	{
 		super(left, top);
 		this.padding = 3;
@@ -90,7 +90,7 @@ public class Button extends Component
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, int buttonWidth, int buttonHeight, Icon icon)
+	public Button(int left, int top, int buttonWidth, int buttonHeight, IIcon icon)
 	{
 		super(left, top);
 		this.explicitSize = true;
@@ -106,7 +106,7 @@ public class Button extends Component
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, String text, Icon icon)
+	public Button(int left, int top, String text, IIcon icon)
 	{
 		this(left, top, text);
 		this.setIcon(icon);
@@ -119,7 +119,7 @@ public class Button extends Component
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, int buttonWidth, int buttonHeight, String text, Icon icon)
+	public Button(int left, int top, int buttonWidth, int buttonHeight, String text, IIcon icon)
 	{
 		super(left, top);
 		this.text = text;
@@ -345,15 +345,15 @@ public class Button extends Component
 		updateSize();
 	}
 
-	public void setIcon(Icon icon)
+	public void setIcon(IIcon icon)
 	{
 		this.iconU = icon.getU();
 		this.iconV = icon.getV();
-		this.iconResource = Icon.ICON_ASSET;
-		this.iconWidth = Icon.ICON_SIZE;
-		this.iconHeight = Icon.ICON_SIZE;
-		this.iconSourceWidth = Icon.GRID_SIZE * Icon.ICON_SIZE;
-		this.iconSourceHeight = Icon.GRID_SIZE * Icon.ICON_SIZE;
+		this.iconResource = icon.getIconAsset();
+		this.iconWidth = icon.getIconSize();
+		this.iconHeight = icon.getIconSize();
+		this.iconSourceWidth = icon.getGridSize() * icon.getIconSize();
+		this.iconSourceHeight = icon.getGridSize() * icon.getIconSize();
 		updateSize();
 	}
 
