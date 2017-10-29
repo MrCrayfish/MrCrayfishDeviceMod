@@ -25,6 +25,8 @@ public class TextArea extends Component
 	protected boolean isFocused = false;
 	protected boolean editable = true;
 	
+	protected Laptop laptop;
+	
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
 	protected int textColour = Color.WHITE.getRGB();
@@ -57,6 +59,7 @@ public class TextArea extends Component
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
+		this.laptop = laptop;
 		if (this.visible)
         {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -89,6 +92,9 @@ public class TextArea extends Component
 			return;
 
 		this.isFocused = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
+		if (laptop != null && this.isFocused){
+			laptop.focus = this;
+		}
 	}
 	
 	@Override
