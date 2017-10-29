@@ -9,6 +9,8 @@ import com.mrcrayfish.device.api.app.System;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+
+
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
@@ -42,6 +44,8 @@ public class Laptop extends GuiScreen implements System
 
 	public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/atlas/app_icons.png");
 	public static final int ICON_SIZE = 14;
+
+	public Component focus;
 
 	private static final List<Application> APPLICATIONS = new ArrayList<>();
 	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
