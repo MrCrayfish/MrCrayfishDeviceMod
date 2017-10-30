@@ -1,10 +1,6 @@
 package com.mrcrayfish.device.api.app.component;
 
-import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Icon;
-import com.mrcrayfish.device.core.Laptop;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mrcrayfish.device.api.app.Icons;
 
 public class ButtonArrow extends Button
 {
@@ -23,13 +19,13 @@ public class ButtonArrow extends Button
 
 	public enum Type
 	{
-		LEFT(Icon.CHEVRON_LEFT),
-		UP(Icon.CHEVRON_UP),
-		RIGHT(Icon.CHEVRON_RIGHT),
-		DOWN(Icon.CHEVRON_DOWN);
+		LEFT(Icons.CHEVRON_LEFT),
+		UP(Icons.CHEVRON_UP),
+		RIGHT(Icons.CHEVRON_RIGHT),
+		DOWN(Icons.CHEVRON_DOWN);
 		
-		private Icon icon;
-		Type(Icon icon)
+		private Icons icon;
+		Type(Icons icon)
 		{
 			this.icon = icon;
 		}

@@ -1,20 +1,31 @@
-package io.github.lukas2005.DeviceModApps;
+package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-public interface IIcon {
+public interface IIcon
+{
+	ResourceLocation getIconAsset();
+	
+	int getIconSize();
 
-	public ResourceLocation getIconAsset();
-	
-	public int getIconSize();
-	
-	public int getGridSize();
-	
-	public int getU();
+	int getGridWidth();
 
-    public int getV();
-
-    public void draw(Minecraft mc, float x, float y);
+	int getGridHeight();
 	
+	int getU();
+
+    int getV();
+
+    default void draw(Minecraft mc, int x, int y)
+	{
+		GlStateManager.color(1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(getIconAsset());
+		int size = getIconSize();
+		int assetWidth = getGridWidth() * size;
+		int assetHeight = getGridHeight() * size;
+		RenderUtil.drawRectWithTexture(x, y, getU(), getV(), size, size, size, size, assetWidth, assetHeight);
+	}
 }

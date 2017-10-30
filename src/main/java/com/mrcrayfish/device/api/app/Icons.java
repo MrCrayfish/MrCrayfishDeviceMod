@@ -1,15 +1,11 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.api.app.IIcon;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public enum Icon extends IIcon
+public enum Icons implements IIcon
 {
     ARROW_RIGHT,
     ARROW_DOWN,
@@ -113,25 +109,34 @@ public enum Icon extends IIcon
     SORT,
     FONT;
 
-    public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
+    private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
-    public static final int ICON_SIZE = 10;
-    public static final int GRID_SIZE = 20;
-
-	@Override
-	public ResourceLocation getIconAsset() {
-		return ICON_ASSET;
-	}
+    private static final int ICON_SIZE = 10;
+    private static final int GRID_SIZE = 20;
 
 	@Override
-	public int getIconSize() {
+	public ResourceLocation getIconAsset()
+    {
+        return ICON_ASSET;
+    }
+
+	@Override
+	public int getIconSize()
+    {
 		return ICON_SIZE;
 	}
 
-	@Override
-	public int getGridSize() {
-		return GRID_SIZE;
-	}
+    @Override
+	public int getGridWidth()
+    {
+        return GRID_SIZE;
+    }
+
+    @Override
+    public int getGridHeight()
+    {
+        return GRID_SIZE;
+    }
 
     @Override
     public int getU()
@@ -143,13 +148,5 @@ public enum Icon extends IIcon
     public int getV()
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
-    }
-
-    @Override
-    public void draw(Minecraft mc, int x, int y)
-    {
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(ICON_ASSET);
-        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, 200, 200);
     }
 }

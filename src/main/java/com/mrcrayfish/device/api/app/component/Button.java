@@ -78,8 +78,8 @@ I	 * @param top how many pixels from the top
 	{
 		super(left, top);
 		this.padding = 3;
-		this.width = Icon.ICON_SIZE + padding * 2;
-		this.height = Icon.ICON_SIZE + padding * 2;
+		this.width = icon.getIconSize() + padding * 2;
+		this.height = icon.getIconSize() + padding * 2;
 		this.setIcon(icon);
 	}
 
@@ -352,8 +352,8 @@ I	 * @param top how many pixels from the top
 		this.iconResource = icon.getIconAsset();
 		this.iconWidth = icon.getIconSize();
 		this.iconHeight = icon.getIconSize();
-		this.iconSourceWidth = icon.getGridSize() * icon.getIconSize();
-		this.iconSourceHeight = icon.getGridSize() * icon.getIconSize();
+		this.iconSourceWidth = icon.getGridWidth() * icon.getIconSize();
+		this.iconSourceHeight = icon.getGridHeight() * icon.getIconSize();
 		updateSize();
 	}
 

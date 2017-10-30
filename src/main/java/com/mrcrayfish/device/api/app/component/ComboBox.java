@@ -92,7 +92,7 @@ public abstract class ComboBox<T> extends Component
             /* Center */
             RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition + 2, 98 + i * 5, 14, height - 4, height - 4, 1, 1);
 
-            /* Icon */
+            /* Icons */
             RenderUtil.drawRectWithTexture(xPosition + xOffset + 3, yPosition + 5, 111, 12, 8, 5, 8, 5);
 
             /* Box */
