@@ -150,7 +150,7 @@ public class FileBrowser extends Component
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
-        btnPreviousFolder = new Button(5, 2, Icon.ARROW_LEFT);
+        btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
         btnPreviousFolder.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -164,7 +164,7 @@ public class FileBrowser extends Component
 
         int btnIndex = 0;
 
-        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icon.NEW_FOLDER);
+        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icons.NEW_FOLDER);
         btnNewFolder.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -177,7 +177,7 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnRename = new Button(5, 25 + btnIndex * 20, Icon.RENAME);
+        btnRename = new Button(5, 25 + btnIndex * 20, Icons.RENAME);
         btnRename.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -193,7 +193,7 @@ public class FileBrowser extends Component
         {
             btnIndex++;
 
-            btnCopy = new Button(5, 25 + btnIndex * 20, Icon.COPY);
+            btnCopy = new Button(5, 25 + btnIndex * 20, Icons.COPY);
             btnCopy.setClickListener((b, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -207,7 +207,7 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnCut = new Button(5, 25 + btnIndex * 20, Icon.CUT);
+            btnCut = new Button(5, 25 + btnIndex * 20, Icons.CUT);
             btnCut.setClickListener((c, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -221,7 +221,7 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnPaste = new Button(5, 25 + btnIndex * 20, Icon.CLIPBOARD);
+            btnPaste = new Button(5, 25 + btnIndex * 20, Icons.CLIPBOARD);
             btnPaste.setClickListener((b, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -236,7 +236,7 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnDelete = new Button(5, 25 + btnIndex * 20, Icon.TRASH);
+        btnDelete = new Button(5, 25 + btnIndex * 20, Icons.TRASH);
         btnDelete.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
