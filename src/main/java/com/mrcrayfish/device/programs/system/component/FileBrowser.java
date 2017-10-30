@@ -7,8 +7,6 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.Drive;
@@ -22,7 +20,6 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
@@ -37,7 +34,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.lang.System;
 import java.util.ArrayList;
@@ -54,7 +50,7 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
-    private static final Color HEADER_BACKGROUND = Color.decode("0x616161");
+    private static final Color HEADER_BACKGROUND = Color.decode("0x535861");
     private static final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");
     private static final Color ITEM_SELECTED = Color.decode("0x757575");
     private static final Color PROTECTED_FILE = new Color(155, 237, 242);
@@ -150,7 +146,7 @@ public class FileBrowser extends Component
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
-        btnPreviousFolder = new Button(5, 2, Icon.ARROW_LEFT);
+        btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
         btnPreviousFolder.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -164,7 +160,7 @@ public class FileBrowser extends Component
 
         int btnIndex = 0;
 
-        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icon.NEW_FOLDER);
+        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icons.NEW_FOLDER);
         btnNewFolder.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -177,7 +173,7 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnRename = new Button(5, 25 + btnIndex * 20, Icon.RENAME);
+        btnRename = new Button(5, 25 + btnIndex * 20, Icons.RENAME);
         btnRename.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -193,7 +189,7 @@ public class FileBrowser extends Component
         {
             btnIndex++;
 
-            btnCopy = new Button(5, 25 + btnIndex * 20, Icon.COPY);
+            btnCopy = new Button(5, 25 + btnIndex * 20, Icons.COPY);
             btnCopy.setClickListener((b, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -207,7 +203,7 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnCut = new Button(5, 25 + btnIndex * 20, Icon.CUT);
+            btnCut = new Button(5, 25 + btnIndex * 20, Icons.CUT);
             btnCut.setClickListener((c, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -221,7 +217,7 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnPaste = new Button(5, 25 + btnIndex * 20, Icon.CLIPBOARD);
+            btnPaste = new Button(5, 25 + btnIndex * 20, Icons.CLIPBOARD);
             btnPaste.setClickListener((b, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -236,7 +232,7 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnDelete = new Button(5, 25 + btnIndex * 20, Icon.TRASH);
+        btnDelete = new Button(5, 25 + btnIndex * 20, Icons.TRASH);
         btnDelete.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
