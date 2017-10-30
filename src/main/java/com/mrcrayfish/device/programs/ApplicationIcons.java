@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Icon;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -19,7 +19,7 @@ public class ApplicationIcons extends Application
     @Override
     public void init()
     {
-        for(Icon icon : Icon.values())
+        for(Icons icon : Icons.values())
         {
             int posX = (icon.ordinal() % 15) * 18;
             int posY = (icon.ordinal() / 15) * 18;

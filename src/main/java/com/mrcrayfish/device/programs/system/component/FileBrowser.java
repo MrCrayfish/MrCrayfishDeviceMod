@@ -1,10 +1,9 @@
 package com.mrcrayfish.device.programs.system.component;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
@@ -40,6 +39,7 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,9 +54,9 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
-    private static final Color HEADER_BACKGROUND = new Color(114, 120, 138);
-    private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
-    private static final Color ITEM_SELECTED = new Color(200, 176, 174);
+    private static final Color HEADER_BACKGROUND = Color.decode("0x616161");
+    private static final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");
+    private static final Color ITEM_SELECTED = Color.decode("0x757575");
     private static final Color PROTECTED_FILE = new Color(155, 237, 242);
 
     private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18)
@@ -150,7 +150,7 @@ public class FileBrowser extends Component
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
-        btnPreviousFolder = new Button(5, 2, ASSETS, 40, 20, 10, 10);
+        btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
         btnPreviousFolder.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -164,7 +164,7 @@ public class FileBrowser extends Component
 
         int btnIndex = 0;
 
-        btnNewFolder = new Button(5, 25 + btnIndex * 20, ASSETS, 0, 20, 10, 10);
+        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icons.NEW_FOLDER);
         btnNewFolder.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -177,7 +177,7 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnRename = new Button(5, 25 + btnIndex * 20, ASSETS, 50, 20, 10, 10);
+        btnRename = new Button(5, 25 + btnIndex * 20, Icons.RENAME);
         btnRename.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -193,7 +193,7 @@ public class FileBrowser extends Component
         {
             btnIndex++;
 
-            btnCopy = new Button(5, 25 + btnIndex * 20, ASSETS, 10, 20, 10, 10);
+            btnCopy = new Button(5, 25 + btnIndex * 20, Icons.COPY);
             btnCopy.setClickListener((b, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -207,7 +207,7 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnCut = new Button(5, 25 + btnIndex * 20, ASSETS, 60, 20, 10, 10);
+            btnCut = new Button(5, 25 + btnIndex * 20, Icons.CUT);
             btnCut.setClickListener((c, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -221,7 +221,7 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnPaste = new Button(5, 25 + btnIndex * 20, ASSETS, 20, 20, 10, 10);
+            btnPaste = new Button(5, 25 + btnIndex * 20, Icons.CLIPBOARD);
             btnPaste.setClickListener((b, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -236,7 +236,7 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnDelete = new Button(5, 25 + btnIndex * 20, ASSETS, 30, 20, 10, 10);
+        btnDelete = new Button(5, 25 + btnIndex * 20, Icons.TRASH);
         btnDelete.setClickListener((b, mouseButton) ->
         {
             if(mouseButton == 0)
