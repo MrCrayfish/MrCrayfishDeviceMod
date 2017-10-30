@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
@@ -75,7 +76,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	@Override
 	public void init(Layout layout)
 	{
-		btnUp = new ButtonArrow(left + width - 12, top, ButtonArrow.Type.UP);
+		btnUp = new Button(left + width - 12, top, Icons.CHEVRON_UP);
 		btnUp.setEnabled(false);
 		btnUp.setClickListener((c, mouseButton) ->
 		{
@@ -84,7 +85,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		btnUp.setVisible(false);
 		layout.addComponent(btnUp);
 
-		btnDown = new ButtonArrow(left + width - 12, top + getHeight() - 12, ButtonArrow.Type.DOWN);
+		btnDown = new Button(left + width - 12, top + getHeight() - 12, Icons.CHEVRON_DOWN);
 		btnDown.setClickListener((c, mouseButton) ->
 		{
             if(mouseButton == 0) scrollDown();

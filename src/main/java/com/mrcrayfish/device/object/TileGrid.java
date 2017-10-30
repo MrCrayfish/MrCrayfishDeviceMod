@@ -1,14 +1,9 @@
 package com.mrcrayfish.device.object;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -16,9 +11,12 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.object.tiles.Tile.Category;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileGrid extends Component
 {
@@ -44,7 +42,8 @@ public class TileGrid extends Component
 		labelCurrentCategory = new Label("", left + 14, top + 2);
 		layout.addComponent(labelCurrentCategory);
 		
-		btnNextCategory = new ButtonArrow(left + 81, top, ButtonArrow.Type.RIGHT);
+		btnNextCategory = new Button(left + 81, top, Icons.CHEVRON_RIGHT);
+		btnNextCategory.setPadding(1);
 		btnNextCategory.setClickListener(new ClickListener()
 		{
 			@Override
@@ -59,7 +58,8 @@ public class TileGrid extends Component
 		});
 		layout.addComponent(btnNextCategory);
 		
-		btnPrevCategory = new ButtonArrow(left, top, ButtonArrow.Type.LEFT);
+		btnPrevCategory = new Button(left, top, Icons.CHEVRON_LEFT);
+		btnPrevCategory.setPadding(1);
 		btnPrevCategory.setClickListener(new ClickListener()
 		{
 			@Override

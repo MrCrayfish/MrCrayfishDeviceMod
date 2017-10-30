@@ -2,9 +2,9 @@ package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
@@ -56,7 +56,7 @@ public class ApplicationBoatRacers extends Application
 		labelLayer = new Label("1", 280, 108);
 		layoutLevelEditor.addComponent(labelLayer);
 		
-		btnNextLayer = new ButtonArrow(266, 106, ButtonArrow.Type.RIGHT);
+		btnNextLayer = new Button(266, 106, Icons.CHEVRON_RIGHT);
 		btnNextLayer.setClickListener(new ClickListener()
 		{
 			@Override
@@ -68,7 +68,7 @@ public class ApplicationBoatRacers extends Application
 		});
 		layoutLevelEditor.addComponent(btnNextLayer);
 		
-		btnPrevLayer = new ButtonArrow(314, 106, ButtonArrow.Type.LEFT);
+		btnPrevLayer = new Button(314, 106, Icons.CHEVRON_LEFT);
 		btnPrevLayer.setClickListener(new ClickListener()
 		{
 			@Override

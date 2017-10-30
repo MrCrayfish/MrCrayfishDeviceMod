@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app.component;
 
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -28,7 +29,7 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public ButtonToggle(int left, int top, Icons icon)
+	public ButtonToggle(int left, int top, IIcon icon)
 	{
 		super(left, top, icon);
 	}
@@ -40,7 +41,7 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public ButtonToggle(int left, int top, String text, Icons icon)
+	public ButtonToggle(int left, int top, String text, IIcon icon)
 	{
 		super(left, top, text, icon);
 	}
