@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.api.app.IIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -8,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Author: MrCrayfish
  */
-public enum Icon
+public enum Icon extends IIcon
 {
     ARROW_RIGHT,
     ARROW_DOWN,
@@ -117,16 +118,34 @@ public enum Icon
     public static final int ICON_SIZE = 10;
     public static final int GRID_SIZE = 20;
 
+	@Override
+	public ResourceLocation getIconAsset() {
+		return ICON_ASSET;
+	}
+
+	@Override
+	public int getIconSize() {
+		return ICON_SIZE;
+	}
+
+	@Override
+	public int getGridSize() {
+		return GRID_SIZE;
+	}
+
+    @Override
     public int getU()
     {
         return (ordinal() % GRID_SIZE) * ICON_SIZE;
     }
 
+    @Override
     public int getV()
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
     }
 
+    @Override
     public void draw(Minecraft mc, int x, int y)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F);
