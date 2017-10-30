@@ -239,58 +239,6 @@ public class Folder extends File
         });
 	}
 
-	public void copyInto(File file, boolean override, boolean cut, @Nullable Callback<FileSystem.Response> callback)
-	{
-		if(file == null)
-		{
-			if(callback != null)
-			{
-				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal file"), false);
-			}
-			return;
-		}
-
-		if(!file.valid || file.drive == null)
-		{
-			if(callback != null)
-			{
-				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Source file is invalid"), false);
-			}
-			return;
-		}
-
-		if(hasFile(file.name))
-		{
-			if(!override)
-			{
-				if(callback != null)
-				{
-					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EXISTS, "A file with that name already exists"), true);
-				}
-				return;
-			}
-			else if(getFile(file.name).isProtected())
-			{
-				if(callback != null)
-				{
-					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Unable to override protected files"), true);
-				}
-				return;
-			}
-		}
-
-		FileSystem.sendAction(file.drive, FileAction.Factory.makeCopyCut(file, this, false, cut), (response, success) ->
-		{
-			if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-			{
-				if(file.isFolder())
-				{
-					((Folder)file).copy();
-				}
-			}
-		});
-	}
-
 	/**
 	 * Checks if the folder contains a file for the specified name.
 	 *
