@@ -70,7 +70,7 @@ public class TaskBar
 
 	public void init(int posX, int posY)
 	{
-		btnLeft = new Button(0, 0, Icons.CHEVRON_LEFT);
+		btnLeft = new Button(0, 0, 12, 12, Icons.CHEVRON_LEFT);
 		btnLeft.setPadding(1);
 		btnLeft.xPosition = posX + 3;
 		btnLeft.yPosition = posY + 3;
@@ -85,7 +85,7 @@ public class TaskBar
 				}
 			}
 		});
-		btnRight = new Button(0, 0, Icons.CHEVRON_RIGHT);
+		btnRight = new Button(0, 0, 12, 12, Icons.CHEVRON_RIGHT);
 		btnRight.setPadding(1);
 		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
 		btnRight.yPosition = posY + 3;
