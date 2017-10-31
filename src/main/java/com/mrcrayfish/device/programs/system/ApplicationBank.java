@@ -33,13 +33,11 @@ import java.awt.*;
 
 public class ApplicationBank extends SystemApplication
 {
-	private static boolean registered = false;
-	
 	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
 	private static final ResourceLocation BANK_ASSETS = new ResourceLocation("cdm:textures/gui/bank.png");
 	private static final ResourceLocation villagerTextures = new ResourceLocation("textures/entity/villager/villager.png");
     private static final ModelVillager villagerModel = new ModelVillager(0.0F);
-	
+
 	private Layout layoutStart;
 	private Label labelTeller;
 	private Text textWelcome;
@@ -72,7 +70,6 @@ public class ApplicationBank extends SystemApplication
 	public ApplicationBank()
 	{
 		//super(Reference.MOD_ID + "Bank", "The Emerald Bank");
-		this.registerTasks();
 	}
 	
 	@Override
@@ -89,33 +86,26 @@ public class ApplicationBank extends SystemApplication
 	public void init()
 	{
 		layoutStart = new Layout();
-		layoutStart.setBackground(new Background()
+		layoutStart.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 		{
-			private float scaleX = 0F;
-			private float scaleY = 0;
-			
-			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-			{
-				GlStateManager.pushMatrix();
-				{
-					GlStateManager.translate(x + 25, y + 33, 15);
-					GlStateManager.scale((float) -2.5, (float) -2.5, (float) -2.5);
-					GlStateManager.rotate(-10F, 1, 0, 0);
-					GlStateManager.rotate(180F, 0, 0, 1);
-					GlStateManager.rotate(-20F, 0, 1, 0);
-					scaleX = (mouseX - x - 25) / (float) width;
-					scaleY = (mouseY - y - 20) / (float) height;
-					mc.getTextureManager().bindTexture(villagerTextures);
-					villagerModel.render(null, 0F, 0F, 0F, -70F * scaleX + 20F, 30F * scaleY, 1F);
-					GlStateManager.disableDepth();
-				}
-				GlStateManager.popMatrix();
-				
-				mc.getTextureManager().bindTexture(BANK_ASSETS);
-				RenderUtil.drawRectWithTexture(x + 46, y + 19, 0, 0, 146, 52, 146, 52);
-			}
-		});
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.translate(x + 25, y + 33, 15);
+                GlStateManager.scale((float) -2.5, (float) -2.5, (float) -2.5);
+                GlStateManager.rotate(-10F, 1, 0, 0);
+                GlStateManager.rotate(180F, 0, 0, 1);
+                GlStateManager.rotate(-20F, 0, 1, 0);
+                float scaleX = (mouseX - x - 25) / (float) width;
+                float scaleY = (mouseY - y - 20) / (float) height;
+                mc.getTextureManager().bindTexture(villagerTextures);
+                villagerModel.render(null, 0F, 0F, 0F, -70F * scaleX + 20F, 30F * scaleY, 1F);
+                GlStateManager.disableDepth();
+            }
+            GlStateManager.popMatrix();
+
+            mc.getTextureManager().bindTexture(BANK_ASSETS);
+            RenderUtil.drawRectWithTexture(x + 46, y + 19, 0, 0, 146, 52, 146, 52);
+        });
 		
 		labelTeller = new Label(TextFormatting.YELLOW + "Casey The Teller", 60, 7);
 		layoutStart.addComponent(labelTeller);
@@ -137,9 +127,10 @@ public class ApplicationBank extends SystemApplication
 		btnTransfer = new Button(133, 74, "Transfer");
 		btnTransfer.setSize(58, 20);
 		btnTransfer.setToolTip("Transfer", "Withdraw and deposit emeralds");
-		btnTransfer.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
+		btnTransfer.setClickListener((c, mouseButton) ->
+		{
+			if(mouseButton == 0)
+			{
 				setCurrentLayout(layoutMain);
 			}
 		});
@@ -147,20 +138,24 @@ public class ApplicationBank extends SystemApplication
 		
 		setCurrentLayout(layoutStart);
 		
-		layoutMain = new Layout(120, 143);
-		layoutMain.setBackground(new Background()
-		{
+		layoutMain = new Layout(120, 143) {
 			@Override
-			public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
+			public void handleTick()
 			{
-				gui.drawRect(x, y, x + width, y + 40, Color.GRAY.getRGB());
-				gui.drawRect(x, y + 39, x + width, y + 40, Color.DARK_GRAY.getRGB());
-				gui.drawRect(x + 62, y + 103, x + 115, y + 138, Color.BLACK.getRGB());
-				gui.drawRect(x + 63, y + 104, x + 114, y + 113, Color.DARK_GRAY.getRGB());
-				gui.drawRect(x + 63, y + 114, x + 114, y + 137, Color.GRAY.getRGB());
-				RenderUtil.renderItem(x + 65, y + 118, EMERALD, false);
+				super.handleTick();
+				int amount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
+				labelEmeraldAmount.setText("x " + Integer.toString(amount));
 			}
-		});
+		};
+		layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+            Gui.drawRect(x, y, x + width, y + 40, Color.GRAY.getRGB());
+			Gui.drawRect(x, y + 39, x + width, y + 40, Color.DARK_GRAY.getRGB());
+			Gui.drawRect(x + 62, y + 103, x + 115, y + 138, Color.BLACK.getRGB());
+			Gui.drawRect(x + 63, y + 104, x + 114, y + 113, Color.DARK_GRAY.getRGB());
+			Gui.drawRect(x + 63, y + 114, x + 114, y + 137, Color.GRAY.getRGB());
+            RenderUtil.renderItem(x + 65, y + 118, EMERALD, false);
+        });
 		
 		labelBalance = new Label("Balance", 60, 5);
 		labelBalance.setAlignment(Label.ALIGN_CENTER);
@@ -194,10 +189,9 @@ public class ApplicationBank extends SystemApplication
 		
 		btnClear = new Button(24, 122, "Clr");
 		btnClear.setSize(35, 16);
-		btnClear.setClickListener(new ClickListener()
+		btnClear.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			if(mouseButton == 0)
 			{
 				amountField.setText("0");
 			}
@@ -206,58 +200,54 @@ public class ApplicationBank extends SystemApplication
 		
 		buttonDeposit = new Button(62, 65, "Deposit");
 		buttonDeposit.setSize(53, 16);
-		buttonDeposit.setClickListener(new ClickListener()
+		buttonDeposit.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			if(mouseButton == 0)
 			{
-				if(amountField.getText().equals("0")) {
+				if(amountField.getText().equals("0"))
+				{
 					return;
 				}
-				
+
 				final int amount = Integer.parseInt(amountField.getText());
 				deposit(amount, (nbt, success) ->
 				{
-                    if(success)
-                    {
-                        updateEmeraldCount(-amount);
-                        int balance = nbt.getInteger("balance");
-                        labelAmount.setText("$" + balance);
-                        amountField.setText("0");
-                    }
-                });
+					if(success)
+					{
+						int balance = nbt.getInteger("balance");
+						labelAmount.setText("$" + balance);
+						amountField.setText("0");
+					}
+				});
 			}
 		});
 		layoutMain.addComponent(buttonDeposit);
 		
 		buttonWithdraw = new Button(62, 84, "Withdraw");
 		buttonWithdraw.setSize(53, 16);
-		buttonWithdraw.setClickListener(new ClickListener()
+		buttonWithdraw.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			if(mouseButton == 0)
 			{
-				if(amountField.getText().equals("0")) {
+				if(amountField.getText().equals("0"))
+				{
 					return;
 				}
-				
-				final int amount = Integer.parseInt(amountField.getText());
+
 				withdraw(Integer.parseInt(amountField.getText()), (nbt, success) ->
 				{
-                    if(success)
-                    {
-                        updateEmeraldCount(amount);
-                        int balance = nbt.getInteger("balance");
-                        labelAmount.setText("$" + balance);
-                        amountField.setText("0");
-                    }
-                });
+					if(success)
+					{
+						int balance = nbt.getInteger("balance");
+						labelAmount.setText("$" + balance);
+						amountField.setText("0");
+					}
+				});
 			}
 		});
 		layoutMain.addComponent(buttonWithdraw);
-		
-		emeraldAmount = InventoryUtil.getItemAmount(Minecraft.getMinecraft().player, Items.EMERALD);
-		labelEmeraldAmount = new Label("x " + emeraldAmount, 83, 123);
+
+		labelEmeraldAmount = new Label("x 0", 83, 123);
 		layoutMain.addComponent(labelEmeraldAmount);
 		
 		labelInventory = new Label("Wallet", 74, 105);
@@ -276,23 +266,18 @@ public class ApplicationBank extends SystemApplication
 	
 	public void addNumberClickListener(Button btn, final TextField field, final int number) 
 	{
-		btn.setClickListener(new ClickListener()
+		btn.setClickListener((c, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			if(mouseButton == 0)
 			{
-				if(!(field.getText().equals("0") && number == 0)) {
-					if(field.getText().equals("0")) field.clear();
+				if(!(field.getText().equals("0") && number == 0))
+				{
+					if(field.getText().equals("0"))
+						field.clear();
 					field.writeText(Integer.toString(number));
 				}
 			}
-		});
-	}
-	
-	public void updateEmeraldCount(int amount) 
-	{
-		emeraldAmount += amount;
-		labelEmeraldAmount.setText("x " + emeraldAmount);
+        });
 	}
 
 	private void deposit(int amount, Callback<NBTTagCompound> callback)
@@ -303,16 +288,6 @@ public class ApplicationBank extends SystemApplication
 	private void withdraw(int amount, Callback<NBTTagCompound> callback)
 	{
 		TaskManager.sendTask(new TaskWithdraw(amount).setCallback(callback));
-	}
-	
-	public void registerTasks()
-	{
-		if(!registered)
-		{
-			TaskManager.registerTask(TaskDeposit.class);
-			TaskManager.registerTask(TaskWithdraw.class);
-			registered = true;
-		}
 	}
 
 	@Override

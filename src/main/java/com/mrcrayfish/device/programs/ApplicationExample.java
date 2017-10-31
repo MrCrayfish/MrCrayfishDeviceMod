@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,10 +10,10 @@ public class ApplicationExample extends Application
 {
 	private Label label;
 	private Button button;
-	private ButtonArrow leftButton;
-	private ButtonArrow upButton;
-	private ButtonArrow rightButton;
-	private ButtonArrow downButton;
+	private Button leftButton;
+	private Button upButton;
+	private Button rightButton;
+	private Button downButton;
 	private ItemList<String> itemList;
 	private CheckBox checkBoxOn;
 	private CheckBox checkBoxOff;
@@ -41,16 +42,20 @@ public class ApplicationExample extends Application
 		button.setSize(63, 20);
 		super.addComponent(button);
 		
-		leftButton = new ButtonArrow(5, 43, ButtonArrow.Type.LEFT);
+		leftButton = new Button(5, 43, Icons.CHEVRON_LEFT);
+		leftButton.setPadding(1);
 		super.addComponent(leftButton);
 		
-		upButton = new ButtonArrow(22, 43, ButtonArrow.Type.UP);
+		upButton = new Button(22, 43, Icons.CHEVRON_UP);
+		upButton.setPadding(1);
 		super.addComponent(upButton);
 		
-		rightButton = new ButtonArrow(39, 43, ButtonArrow.Type.RIGHT);
+		rightButton = new Button(39, 43, Icons.CHEVRON_RIGHT);
+		rightButton.setPadding(1);
 		super.addComponent(rightButton);
 		
-		downButton = new ButtonArrow(56, 43, ButtonArrow.Type.DOWN);
+		downButton = new Button(56, 43, Icons.CHEVRON_DOWN);
+		downButton.setPadding(1);
 		super.addComponent(downButton);
 		
 		itemList = new ItemList<String>(5, 60, 63, 4);

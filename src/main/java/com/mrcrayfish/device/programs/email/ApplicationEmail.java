@@ -217,7 +217,7 @@ public class ApplicationEmail extends Application
 				taskUpdateInbox.setCallback((nbt, success) ->
 				{
                     listEmails.removeAll();
-                    for (Email email : EmailManager.INSTANCE.inbox)
+                    for (Email email : EmailManager.INSTANCE.getInbox())
                     {
                         listEmails.addItem(email);
                     }
@@ -346,7 +346,7 @@ public class ApplicationEmail extends Application
 				taskUpdateInbox.setCallback((nbt, success) ->
 				{
                     listEmails.removeAll();
-                    for (Email email : EmailManager.INSTANCE.inbox)
+                    for (Email email : EmailManager.INSTANCE.getInbox())
                     {
                         listEmails.addItem(email);
                     }
@@ -543,7 +543,7 @@ public class ApplicationEmail extends Application
             {
                 currentName = nbt.getString("Name");
                 listEmails.removeAll();
-                for (Email email : EmailManager.INSTANCE.inbox)
+                for (Email email : EmailManager.INSTANCE.getInbox())
                 {
                     listEmails.addItem(email);
                 }

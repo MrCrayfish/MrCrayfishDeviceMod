@@ -1,11 +1,7 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
 import com.mrcrayfish.device.api.app.component.CheckBox;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Settings;
 import net.minecraft.nbt.NBTTagCompound;

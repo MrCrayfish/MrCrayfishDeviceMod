@@ -46,7 +46,7 @@ public class MessageSyncApplications implements IMessage, IMessageHandler<Messag
         for(int i = 0; i < size; i++)
         {
             AppInfo info = ApplicationManager.getApplication(ByteBufUtils.readUTF8String(buf));
-            allowedApps.set(i, info);
+            allowedApps.add(info);
         }
     }
 

@@ -1,20 +1,13 @@
 package com.mrcrayfish.device.core;
 
-import java.awt.Color;
-import java.util.List;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
-import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.system.ApplicationAppStore;
-import com.mrcrayfish.device.programs.system.ApplicationSettings;
-
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,7 +15,9 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskBar
@@ -52,13 +47,21 @@ public class TaskBar
 			{
 				return true;
 			}
-			if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+			if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+			{
+				if(MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+				{
+					if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+					{
+						return Settings.isShowAllApps();
+					}
+					return true;
+				}
+				return false;
+			}
+			else if(MrCrayfishDeviceMod.DEVELOPER_MODE)
 			{
 				return Settings.isShowAllApps();
-			}
-			else if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-			{
-				return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo());
 			}
 			return true;
 		}).collect(Collectors.toList());
@@ -67,7 +70,8 @@ public class TaskBar
 
 	public void init(int posX, int posY)
 	{
-		btnLeft = new ButtonArrow(0, 0, Type.LEFT);
+		btnLeft = new Button(0, 0, Icons.CHEVRON_LEFT);
+		btnLeft.setPadding(1);
 		btnLeft.xPosition = posX + 3;
 		btnLeft.yPosition = posY + 3;
 		btnLeft.setClickListener(new ClickListener()
@@ -81,7 +85,8 @@ public class TaskBar
 				}
 			}
 		});
-		btnRight = new ButtonArrow(0, 0, Type.RIGHT);
+		btnRight = new Button(0, 0, Icons.CHEVRON_RIGHT);
+		btnRight.setPadding(1);
 		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
 		btnRight.yPosition = posY + 3;
 		btnRight.setClickListener(new ClickListener()

@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core.io;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.Folder;
@@ -219,6 +220,14 @@ public class FileSystem
 
 	public static void getApplicationFolder(Application app, Callback<Folder> callback)
 	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+			{
+				callback.execute(null, false);
+				return;
+			}
+		}
 		if(Laptop.getMainDrive() == null)
 		{
 			Task task = new TaskGetMainDrive(Laptop.getPos());
