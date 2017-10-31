@@ -99,6 +99,7 @@ public enum Icons implements IIcon
     UNDO,
     REDO,
     WRENCH,
+    HAMMER,
     FORBIDDEN,
     MUSIC,
     EYE_DROPPER,
@@ -107,7 +108,11 @@ public enum Icons implements IIcon
     EXPAND,
     SHRINK,
     SORT,
-    FONT;
+    FONT,
+    ALIGN_LEFT,
+    ALIGN_CENTER,
+    ALIGN_RIGHT,
+    ALIGN_JUSTIFY;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
