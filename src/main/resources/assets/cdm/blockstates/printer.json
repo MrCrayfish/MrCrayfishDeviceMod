@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"facing=north": { "model": "cdm:printer"           },
+		"facing=east":  { "model": "cdm:printer", "y": 90  },
+		"facing=south": { "model": "cdm:printer", "y": 180 },
+		"facing=west":  { "model": "cdm:printer", "y": 270 }
+	}
+}

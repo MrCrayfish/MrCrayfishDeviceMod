@@ -3,6 +3,7 @@ package com.mrcrayfish.device.init;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.block.BlockLaptop;
 
+import com.mrcrayfish.device.block.BlockPrinter;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -14,15 +15,18 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class DeviceBlocks 
 {
 	public static Block laptop;
+	public static Block printer;
 	
 	public static void init()
 	{
 		laptop = new BlockLaptop().setUnlocalizedName("laptop").setRegistryName("laptop");
+		printer = new BlockPrinter().setUnlocalizedName("printer").setRegistryName("printer");
 	}
 	
 	public static void register()
 	{
 		registerBlock(laptop);
+		registerBlock(printer);
 	}
 	
 	public static void registerBlock(Block block)
@@ -36,6 +40,7 @@ public class DeviceBlocks
 	public static void registerRenders() 
 	{
 		registerRender(laptop);
+		registerRender(printer);
 	}
 	
 	private static void registerRender(Block blockIn)
