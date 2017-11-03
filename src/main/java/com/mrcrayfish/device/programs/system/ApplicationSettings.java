@@ -1,14 +1,17 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.CheckBox;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.component.ComboBox;
+import com.mrcrayfish.device.api.app.listener.ChangeListener;
+import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Settings;
+import com.mrcrayfish.device.programs.system.component.Palette;
+import com.mrcrayfish.device.programs.system.object.ColourScheme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,6 +27,9 @@ public class ApplicationSettings extends SystemApplication
 	private Button btnWallpaperPrev;
 
 	private Layout layoutColourScheme;
+	private Button buttonColourSchemeApply;
+
+	private boolean valueChanged;
 	
 	public ApplicationSettings() 
 	{
@@ -34,6 +40,8 @@ public class ApplicationSettings extends SystemApplication
 	@Override
 	public void init() 
 	{
+		valueChanged = false;
+
 		layoutMain = new Layout(100, 50);
 		layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 		{
@@ -71,34 +79,44 @@ public class ApplicationSettings extends SystemApplication
 			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
-		Button button = new Button(5, 26, Icons.EDIT);
-		button.setClickListener((c, mouseButton) ->
+		ComboBox.Custom<Integer> colourPicker = new ComboBox.Custom<>(5, 26, 50, 100, 100);
+		colourPicker.setValue(Color.RED.getRGB());
+		colourPicker.setItemRenderer(new ItemRenderer<Integer>()
+		{
+			@Override
+			public void render(Integer integer, Gui gui, Minecraft mc, int x, int y, int width, int height)
+			{
+				if(integer != null)
+				{
+					Gui.drawRect(x, y, x + width, y + height, integer);
+				}
+			}
+		});
+		colourPicker.setChangeListener((oldValue, newValue) ->
+		{
+			buttonColourSchemeApply.setEnabled(true);
+        });
+
+		Layout layout = colourPicker.getLayout();
+
+		Palette palette = new Palette(5, 5, colourPicker);
+		layout.addComponent(palette);
+
+		layoutColourScheme.addComponent(colourPicker);
+
+		buttonColourSchemeApply = new Button(5, 79, Icons.CHECK);
+		buttonColourSchemeApply.setEnabled(false);
+		buttonColourSchemeApply.setToolTip("Apply", "Set these colours as the new colour scheme");
+		buttonColourSchemeApply.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
-				Dialog.Input dialog = new Dialog.Input();
-				dialog.setResponseHandler((success, s) ->
-				{
-					if(success)
-					{
-						try
-						{
-							Color color = Color.decode(s);
-							Laptop.getSystem().getSettings().getColourScheme().setBackgroundColour(color.getRGB());
-						}
-						catch(NumberFormatException e)
-						{
-							Dialog.Message dialog1 = new Dialog.Message("Invalid colour!");
-							openDialog(dialog1);
-							return false;
-						}
-					}
-					return success;
-				});
-				openDialog(dialog);
+				ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
+				colourScheme.setBackgroundColour(colourPicker.getValue());
+				buttonColourSchemeApply.setEnabled(false);
 			}
         });
-		layoutColourScheme.addComponent(button);
+		layoutColourScheme.addComponent(buttonColourSchemeApply);
 
 		setCurrentLayout(layoutMain);
 	}
