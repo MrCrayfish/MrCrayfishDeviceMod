@@ -232,6 +232,7 @@ public class Laptop extends GuiScreen implements System
 			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
 				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
+				this.dragging = true;
 				return;
 			}
 			else
@@ -280,7 +281,16 @@ public class Laptop extends GuiScreen implements System
 	{
 		super.mouseReleased(mouseX, mouseY, state);
 		this.dragging = false;
-		if(windows[0] != null)
+		if(this.context != null)
+		{
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
+			{
+				this.context.handleMouseRelease(mouseX, mouseY, state);
+			}
+		}
+		else if(windows[0] != null)
 		{
 			windows[0].handleMouseRelease(mouseX, mouseY, state);
 		}
@@ -317,6 +327,21 @@ public class Laptop extends GuiScreen implements System
 	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
+
+		if(this.context != null)
+		{
+			if(dragging)
+			{
+				int dropdownX = context.xPosition;
+				int dropdownY = context.yPosition;
+				if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
+				{
+					this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
+				}
+			}
+			return;
+		}
+
 		if(windows[0] != null)
 		{
 			Window<Application> window = windows[0];
