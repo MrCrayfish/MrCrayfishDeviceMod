@@ -73,7 +73,7 @@ public class Laptop extends GuiScreen implements System
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
 		this.windows = new Window[5];
-		this.settings = Settings.fromTag(systemData.getCompoundTag("settings"));
+		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
 		this.bar = new TaskBar(APPLICATIONS);
 		Laptop.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
@@ -115,6 +115,7 @@ public class Laptop extends GuiScreen implements System
 		/* Send system data */
         NBTTagCompound systemData = new NBTTagCompound();
         systemData.setInteger("CurrentWallpaper", currentWallpaper);
+        systemData.setTag("Settings", settings.toTag());
         TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
 
 		Laptop.pos = null;
