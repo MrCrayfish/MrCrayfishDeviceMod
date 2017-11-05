@@ -1,0 +1,15 @@
+itemGroup.cdmTabDevice=MrCrayfish's Device Mod
+
+tile.laptop.name=Laptop
+
+item.flash_drive.name=Flash Drive
+
+app.cdm.settings.name=Einstellungen
+app.cdm.bank.name=Bank
+app.cdm.example.name=UI Komponenten
+app.cdm.file_browser.name=Datei Browser
+app.cdm.note_stash.name=Note Stash
+app.cdm.pixel_painter.name=Pixel Maler
+app.cdm.ender_mail.name=EnderMail
+app.cdm.boat_racers.name=Bootrennen
+app.cdm.mine_bay.name=MineBay
