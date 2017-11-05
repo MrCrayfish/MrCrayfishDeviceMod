@@ -13,20 +13,24 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class DeviceItems
 {
     public static Item flash_drive;
+    public static Item paper_printed;
 
     public static void init()
     {
         flash_drive = new Item().setUnlocalizedName("flash_drive").setRegistryName("flash_drive").setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        paper_printed = new Item().setUnlocalizedName("paper_printed").setRegistryName("paper_printed");
     }
 
     public static void register()
     {
         GameRegistry.register(flash_drive);
+        GameRegistry.register(paper_printed);
     }
 
     public static void registerRenders()
     {
         registerRender(flash_drive);
+        registerRender(paper_printed);
     }
 
     private static void registerRender(Item item)
