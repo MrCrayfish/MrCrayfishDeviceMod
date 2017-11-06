@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core;
 
+import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
@@ -45,7 +46,6 @@ public class Laptop extends GuiScreen implements System
 
 	private static final List<Application> APPLICATIONS = new ArrayList<>();
 	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
-	private static int currentWallpaper;
 
 	private static final int BORDER = 10;
 	private static final int DEVICE_WIDTH = 384;
@@ -65,6 +65,7 @@ public class Laptop extends GuiScreen implements System
 	private NBTTagCompound appData;
 	private NBTTagCompound systemData;
 
+	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
 	
@@ -75,9 +76,9 @@ public class Laptop extends GuiScreen implements System
 		this.windows = new Window[5];
 		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
 		this.bar = new TaskBar(APPLICATIONS);
-		Laptop.currentWallpaper = systemData.getInteger("CurrentWallpaper");
+		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-			Laptop.currentWallpaper = 0;
+			this.currentWallpaper = 0;
 		}
 		Laptop.system = this;
 		pos = laptop.getPos();
@@ -558,7 +559,7 @@ public class Laptop extends GuiScreen implements System
 		return false;
 	}
 
-	public static void nextWallpaper()
+	public void nextWallpaper()
 	{
 		if(currentWallpaper + 1 < WALLPAPERS.size())
 		{
@@ -566,20 +567,30 @@ public class Laptop extends GuiScreen implements System
 		}
 	}
 	
-	public static void prevWallpaper()
+	public void prevWallpaper()
 	{
 		if(currentWallpaper - 1 >= 0)
 		{
 			currentWallpaper--;
 		}
 	}
-	
+
+	public int getCurrentWallpaper()
+	{
+		return currentWallpaper;
+	}
+
 	public static void addWallpaper(ResourceLocation wallpaper)
 	{
 		if(wallpaper != null)
 		{
 			WALLPAPERS.add(wallpaper);
 		}
+	}
+
+	public List<ResourceLocation> getWallapapers()
+	{
+		return ImmutableList.copyOf(WALLPAPERS);
 	}
 
 	@Nullable
