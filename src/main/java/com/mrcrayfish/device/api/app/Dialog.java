@@ -2,23 +2,34 @@ package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.print.task.TaskPrint;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class Dialog extends Wrappable
@@ -643,7 +654,6 @@ public abstract class Dialog extends Wrappable
 		public void init()
 		{
 			super.init();
-
 			main = new Layout(210, 142);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
@@ -769,6 +779,120 @@ public abstract class Dialog extends Wrappable
 		public void setFolder(String path)
 		{
 			this.path = path;
+		}
+	}
+
+	public static class Print extends Dialog
+	{
+		private final int[] pixels;
+		private final int resolution;
+
+		private Layout layoutMain;
+		private Label labelMessage;
+		private ItemList<BlockPos> itemListPrinters;
+		private Button buttonPrint;
+		private Button buttonCancel;
+
+		public Print(int[] pixels, int resolution)
+		{
+			this.pixels = pixels;
+			this.resolution = resolution;
+			this.setTitle("Print");
+		}
+
+		@Override
+		public void init()
+		{
+			super.init();
+
+			layoutMain = new Layout(150, 132);
+
+			labelMessage = new Label("Select a Printer", 5, 5);
+			layoutMain.addComponent(labelMessage);
+
+			itemListPrinters = new ItemList<>(5, 18, 140, 5);
+			itemListPrinters.setListItemRenderer(new ListItemRenderer<BlockPos>(16)
+			{
+				@Override
+				public void render(BlockPos blockPos, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+				{
+					ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
+					Gui.drawRect(x, y, x + width, y + height, selected ? colourScheme.getItemHighlightColour() : colourScheme.getItemBackgroundColour());
+					Icons.PRINTER.draw(mc, x + 3, y + 3);
+					mc.fontRendererObj.drawString("Printer " + blockPos.toString(), x + 18, y + 4, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
+				}
+			});
+			itemListPrinters.setItemClickListener((blockPos, index, mouseButton) ->
+			{
+                if(mouseButton == 0)
+				{
+					buttonPrint.setEnabled(true);
+				}
+            });
+			itemListPrinters.setItems(getPrinters());
+			layoutMain.addComponent(itemListPrinters);
+
+			buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
+			buttonPrint.setEnabled(false);
+			buttonPrint.setClickListener((c, mouseButton) ->
+			{
+				if(mouseButton == 0)
+				{
+					BlockPos pos = itemListPrinters.getSelectedItem();
+					if(pos != null)
+					{
+						TaskPrint task = new TaskPrint(pos, pixels, resolution);
+						task.setCallback((nbtTagCompound, success) ->
+						{
+							if(success)
+							{
+								close();
+							}
+						});
+						TaskManager.sendTask(task);
+					}
+				}
+			});
+			layoutMain.addComponent(buttonPrint);
+
+			buttonCancel = new Button(74, 108, Icons.CROSS);
+			buttonCancel.setPadding(5);
+			buttonCancel.setClickListener((c, mouseButton) ->
+			{
+				if(mouseButton == 0)
+				{
+					close();
+				}
+			});
+			layoutMain.addComponent(buttonCancel);
+
+			setLayout(layoutMain);
+		}
+
+		private List<BlockPos> getPrinters()
+		{
+			List<BlockPos> printers = new ArrayList<>();
+
+			World world = Minecraft.getMinecraft().world;
+			BlockPos laptopPos = Laptop.getPos();
+			int range = 20;
+
+			for(int y = -range; y < range + 1; y++)
+			{
+				for(int z = -range; z < range + 1; z++)
+				{
+					for(int x = -range; x < range + 1; x++)
+					{
+						BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
+						IBlockState state = world.getBlockState(pos);
+						if(state.getBlock() == DeviceBlocks.printer)
+						{
+							printers.add(pos);
+						}
+					}
+				}
+			}
+			return printers;
 		}
 	}
 

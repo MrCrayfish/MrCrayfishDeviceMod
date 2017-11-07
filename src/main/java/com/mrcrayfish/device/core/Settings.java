@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class Settings
 {
-    private static boolean showAllApps = false;
+    private static boolean showAllApps = true;
 
     private ColourScheme colourScheme = new ColourScheme();
 

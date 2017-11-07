@@ -344,6 +344,26 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEyeDropper);
 
+		Button button = new Button(138, 81, Icons.PRINTER);
+		button.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				int[][] raw = canvas.getPixels();
+				int[] pixels = new int[raw.length * raw[0].length];
+				for(int j = 0; j < raw[0].length; j++)
+				{
+					for(int i = 0; i < raw.length; i++)
+					{
+						pixels[i + j * canvas.picture.getWidth()] = raw[i][j];
+					}
+				}
+				Dialog.Print dialog = new Dialog.Print(pixels, canvas.picture.getWidth());
+				openDialog(dialog);
+			}
+        });
+		layoutDraw.addComponent(button);
+
 		btnCancel = new Button(138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
 		btnCancel.setClickListener(new ClickListener()
 		{

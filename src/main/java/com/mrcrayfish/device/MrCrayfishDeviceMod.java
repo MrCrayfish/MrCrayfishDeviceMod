@@ -5,6 +5,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.task.*;
+import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
@@ -114,6 +115,7 @@ public class MrCrayfishDeviceMod
 
 		// Core
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
+		TaskManager.registerTask(TaskPrint.class);
 
 		//Bank
 		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);
@@ -154,6 +156,7 @@ public class MrCrayfishDeviceMod
 			// Applications (Developers)
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 		}
 	}
 
