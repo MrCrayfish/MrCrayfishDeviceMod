@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
@@ -819,7 +820,7 @@ public abstract class Dialog extends Wrappable
 					ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
 					Gui.drawRect(x, y, x + width, y + height, selected ? colourScheme.getItemHighlightColour() : colourScheme.getItemBackgroundColour());
 					Icons.PRINTER.draw(mc, x + 3, y + 3);
-					mc.fontRendererObj.drawString("Printer " + blockPos.toString(), x + 18, y + 4, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
+					RenderUtil.drawStringClipped("Printer " + blockPos.toString(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
 				}
 			});
 			itemListPrinters.setItemClickListener((blockPos, index, mouseButton) ->

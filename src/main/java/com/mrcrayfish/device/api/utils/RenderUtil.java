@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.utils;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -93,6 +94,17 @@ public class RenderUtil
 		{
 			drawRectWithTexture(x, y, 0, 0, 14, 14, 14, 14, 224, 224);
 		}
+	}
+
+	public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow)
+	{
+		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+		String clipped = text;
+		if(fontRenderer.getStringWidth(clipped) > width)
+		{
+			clipped = fontRenderer.trimStringToWidth(clipped, width - 8) + "...";
+		}
+		fontRenderer.drawString(clipped, x, y, color, shadow);
 	}
 	
 	public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)
