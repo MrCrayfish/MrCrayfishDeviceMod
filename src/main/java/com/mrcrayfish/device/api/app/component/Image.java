@@ -1,12 +1,14 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
@@ -107,6 +109,30 @@ public class Image extends Component
         this.componentWidth = componentWidth;
         this.componentHeight = componentHeight;
         this.drawFull = true;
+    }
+
+    public Image(int left, int top, IIcon icon)
+    {
+        super(left, top);
+        this.loader = new StandardLoader(icon.getIconAsset());
+        this.componentWidth = icon.getIconSize();
+        this.componentHeight = icon.getIconSize();
+        this.imageU = icon.getU();
+        this.imageV = icon.getV();
+        this.imageWidth = icon.getIconSize();
+        this.imageHeight = icon.getIconSize();
+    }
+
+    public Image(int left, int top, int componentWidth, int componentHeight, IIcon icon)
+    {
+        super(left, top);
+        this.loader = new StandardLoader(icon.getIconAsset());
+        this.componentWidth = componentWidth;
+        this.componentHeight = componentHeight;
+        this.imageU = icon.getU();
+        this.imageV = icon.getV();
+        this.imageWidth = icon.getIconSize();
+        this.imageHeight = icon.getIconSize();
     }
 
     @Override
@@ -302,8 +328,19 @@ public class Image extends Component
 
             try
             {
-                texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
-                CachedImage cachedImage = new CachedImage(texture.getGlTextureId(), 0, 0);
+                ResourceLocation resourceLocation = new ResourceLocation(resource);
+                ITextureObject textureObj = Minecraft.getMinecraft().getTextureManager().getTexture(resourceLocation);
+                int textureId;
+                if(textureObj != null)
+                {
+                    textureId = textureObj.getGlTextureId();
+                }
+                else
+                {
+                    texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
+                    textureId = texture.getGlTextureId();
+                }
+                CachedImage cachedImage = new CachedImage(textureId, 0, 0);
                 CACHE.put(resource, cachedImage);
                 return cachedImage;
             }
