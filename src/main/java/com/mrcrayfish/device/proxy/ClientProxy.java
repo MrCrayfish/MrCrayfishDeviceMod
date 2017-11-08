@@ -181,21 +181,11 @@ public class ClientProxy extends CommonProxy
     {
         if(event.getItem().getItem() == DeviceItems.paper_printed)
         {
-            event.getEntityItemFrame().setInvisible(true);
             NBTTagCompound tag = event.getItem().getTagCompound();
             if(tag != null)
             {
                 GlStateManager.pushMatrix();
                 {
-                    GlStateManager.enableBlend();
-                    OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-                    GlStateManager.disableLighting();
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                    GlStateManager.disableTexture2D();
-
-                    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-                    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.translate(-0.5, 0, 0.5);
 
@@ -203,6 +193,18 @@ public class ClientProxy extends CommonProxy
                     {
                         int[] pixels = tag.getIntArray("pixels");
                         int resolution = tag.getInteger("resolution");
+                        boolean cut = tag.getBoolean("cut");
+
+                        if(pixels.length != resolution * resolution) return;
+
+                        GlStateManager.enableBlend();
+                        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+                        GlStateManager.disableLighting();
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                        GlStateManager.disableTexture2D();
+
+                        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+                        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
                         GlStateManager.translate(0, 0.5 - (1.0 / resolution), -0.495);
                         Tessellator tessellator = Tessellator.getInstance();
@@ -218,9 +220,15 @@ public class ClientProxy extends CommonProxy
                                 float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
                                 float a = (float) Math.floor((pixels[j + i * resolution] >> 24 & 255) / 255.0F);
 
-                                if(a == 0.0F) continue;
-
-                                GlStateManager.color(r, g, b, a);
+                                if(a == 0.0F)
+                                {
+                                    if(cut) continue;
+                                    GlStateManager.color(1.0F, 1.0F, 1.0F);
+                                }
+                                else
+                                {
+                                    GlStateManager.color(r, g, b, a);
+                                }
 
                                 double pixelX = j / (double) resolution;
                                 buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
@@ -232,13 +240,13 @@ public class ClientProxy extends CommonProxy
                             }
                         }
 
+                        GlStateManager.enableTexture2D();
+                        GlStateManager.disableRescaleNormal();
+                        GlStateManager.disableBlend();
+                        GlStateManager.enableLighting();
+
                         event.setCanceled(true);
                     }
-
-                    GlStateManager.enableTexture2D();
-                    GlStateManager.disableRescaleNormal();
-                    GlStateManager.disableBlend();
-                    GlStateManager.enableLighting();
                 }
                 GlStateManager.popMatrix();
             }
