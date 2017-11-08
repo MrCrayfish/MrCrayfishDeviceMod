@@ -17,12 +17,16 @@ import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -30,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -790,9 +795,11 @@ public abstract class Dialog extends Wrappable
 
 		private Layout layoutMain;
 		private Label labelMessage;
-		private ItemList<BlockPos> itemListPrinters;
+		private Button buttonRefresh;
+		private ItemList<PrinterEntry> itemListPrinters;
 		private Button buttonPrint;
 		private Button buttonCancel;
+		private Button buttonInfo;
 
 		public Print(int[] pixels, int resolution)
 		{
@@ -811,16 +818,28 @@ public abstract class Dialog extends Wrappable
 			labelMessage = new Label("Select a Printer", 5, 5);
 			layoutMain.addComponent(labelMessage);
 
+			buttonRefresh = new Button(131, 2, Icons.RELOAD);
+			buttonRefresh.setPadding(2);
+			buttonRefresh.setClickListener((c, mouseButton) ->
+			{
+                if(mouseButton == 0)
+				{
+					itemListPrinters.setSelectedIndex(-1);
+					itemListPrinters.setItems(getPrinters());
+				}
+            });
+			layoutMain.addComponent(buttonRefresh);
+
 			itemListPrinters = new ItemList<>(5, 18, 140, 5);
-			itemListPrinters.setListItemRenderer(new ListItemRenderer<BlockPos>(16)
+			itemListPrinters.setListItemRenderer(new ListItemRenderer<PrinterEntry>(16)
 			{
 				@Override
-				public void render(BlockPos blockPos, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+				public void render(PrinterEntry printerEntry, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
 				{
 					ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
 					Gui.drawRect(x, y, x + width, y + height, selected ? colourScheme.getItemHighlightColour() : colourScheme.getItemBackgroundColour());
 					Icons.PRINTER.draw(mc, x + 3, y + 3);
-					RenderUtil.drawStringClipped("Printer " + blockPos.toString(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
+					RenderUtil.drawStringClipped(printerEntry.getName(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
 				}
 			});
 			itemListPrinters.setItemClickListener((blockPos, index, mouseButton) ->
@@ -828,21 +847,35 @@ public abstract class Dialog extends Wrappable
                 if(mouseButton == 0)
 				{
 					buttonPrint.setEnabled(true);
+					buttonInfo.setEnabled(true);
 				}
             });
+			itemListPrinters.sortBy((o1, o2) ->
+			{
+				BlockPos laptopPos = Laptop.getPos();
+
+				BlockPos pos1 = o1.getPos();
+				double distance1 = laptopPos.distanceSqToCenter(pos1.getX() + 0.5, pos1.getY() + 0.5, pos1.getZ() + 0.5);
+
+				BlockPos pos2 = o2.getPos();
+				double distance2 = laptopPos.distanceSqToCenter(pos2.getX() + 0.5, pos2.getY() + 0.5, pos2.getZ() + 0.5);
+
+				return distance2 < distance1 ? 1 : (distance1 == distance2) ? 0 : -1;
+			});
 			itemListPrinters.setItems(getPrinters());
 			layoutMain.addComponent(itemListPrinters);
 
 			buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
+			buttonPrint.setPadding(5);
 			buttonPrint.setEnabled(false);
 			buttonPrint.setClickListener((c, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
-					BlockPos pos = itemListPrinters.getSelectedItem();
-					if(pos != null)
+					PrinterEntry printerEntry = itemListPrinters.getSelectedItem();
+					if(printerEntry != null)
 					{
-						TaskPrint task = new TaskPrint(pos, pixels, resolution);
+						TaskPrint task = new TaskPrint(printerEntry.getPos(), pixels, resolution);
 						task.setCallback((nbtTagCompound, success) ->
 						{
 							if(success)
@@ -867,12 +900,29 @@ public abstract class Dialog extends Wrappable
 			});
 			layoutMain.addComponent(buttonCancel);
 
+			buttonInfo = new Button(5, 108, Icons.HELP);
+			buttonInfo.setEnabled(false);
+			buttonInfo.setPadding(5);
+			buttonInfo.setClickListener((c, mouseButton) ->
+			{
+                if(mouseButton == 0)
+				{
+					PrinterEntry printerEntry = itemListPrinters.getSelectedItem();
+					if(printerEntry != null)
+					{
+						Info info = new Info(printerEntry);
+						openDialog(info);
+					}
+				}
+            });
+			layoutMain.addComponent(buttonInfo);
+
 			setLayout(layoutMain);
 		}
 
-		private List<BlockPos> getPrinters()
+		private List<PrinterEntry> getPrinters()
 		{
-			List<BlockPos> printers = new ArrayList<>();
+			List<PrinterEntry> printers = new ArrayList<>();
 
 			World world = Minecraft.getMinecraft().world;
 			BlockPos laptopPos = Laptop.getPos();
@@ -888,12 +938,83 @@ public abstract class Dialog extends Wrappable
 						IBlockState state = world.getBlockState(pos);
 						if(state.getBlock() == DeviceBlocks.printer)
 						{
-							printers.add(pos);
+							TileEntity tileEntity = world.getTileEntity(pos);
+							if(tileEntity instanceof TileEntityPrinter)
+							{
+								TileEntityPrinter tileEntityPrinter = (TileEntityPrinter) tileEntity;
+								printers.add(new PrinterEntry(tileEntityPrinter.getName(), pos));
+							}
 						}
 					}
 				}
 			}
 			return printers;
+		}
+
+		private static class PrinterEntry
+		{
+			private String name;
+			private BlockPos pos;
+
+			public PrinterEntry(String name, BlockPos pos)
+			{
+				this.name = name;
+				this.pos = pos;
+			}
+
+			public String getName()
+			{
+				return name;
+			}
+
+			public BlockPos getPos()
+			{
+				return pos;
+			}
+		}
+
+		private static class Info extends Dialog
+		{
+			private final PrinterEntry entry;
+
+			private Layout layoutMain;
+			private Label labelName;
+			private Label labelPosition;
+			private Button buttonClose;
+
+			private Info(PrinterEntry entry)
+			{
+				this.entry = entry;
+				this.setTitle("Details");
+			}
+
+			@Override
+			public void init()
+			{
+				super.init();
+
+				layoutMain = new Layout(120, 60);
+
+				labelName = new Label(TextFormatting.GOLD.toString() + TextFormatting.BOLD.toString() + entry.getName(), 5, 5);
+				layoutMain.addComponent(labelName);
+
+				String position = TextFormatting.DARK_GRAY + "X: " + TextFormatting.RESET + entry.getPos().getX() + ", " + TextFormatting.DARK_GRAY + "Y: " + TextFormatting.RESET + entry.getPos().getY() + ", " + TextFormatting.DARK_GRAY + "Z: " + TextFormatting.RESET + entry.getPos().getZ();
+				labelPosition = new Label(position, 5, 20);
+				labelPosition.setShadow(false);
+				layoutMain.addComponent(labelPosition);
+
+				buttonClose = new Button(5, 39, "Close");
+				buttonClose.setClickListener((c, mouseButton) ->
+				{
+                    if(mouseButton == 0)
+					{
+						close();
+					}
+                });
+				layoutMain.addComponent(buttonClose);
+
+				setLayout(layoutMain);
+			}
 		}
 	}
 
