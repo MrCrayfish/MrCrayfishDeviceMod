@@ -363,33 +363,33 @@ I	 * @param top how many pixels from the top
 		updateSize();
 	}
 
-    private void updateSize()
-    {
-        if(explicitSize) return;
-        int height = padding * 2;
-        int width = padding * 2;
+	private void updateSize()
+	{
+		if(explicitSize) return;
+		int height = padding * 2;
+		int width = padding * 2;
 
-        if(iconResource != null)
-        {
-            height += iconHeight;
-            width += iconWidth;
-        }
+		if(iconResource != null)
+		{
+			width += iconWidth;
+			height += iconHeight;
+		}
 
-        if(text != null)
-        {
-            width += getTextWidth(text);
-            height = 16;
-        }
+		if(text != null)
+		{
+			width += getTextWidth(text);
+			height = 16;
+		}
 
-        if(iconResource != null && text != null)
-        {
-            width += 3;
-            height = iconHeight + padding * 2;
-        }
+		if(iconResource != null && text != null)
+		{
+			width += 3;
+			height = iconHeight + padding * 2;
+		}
 
-        this.width = width;
-        this.height = height;
-    }
+		this.width = width;
+		this.height = height;
+	}
 
 	/**
 	 * Displays a message when hovering the button.
