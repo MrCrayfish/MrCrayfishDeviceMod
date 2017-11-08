@@ -820,6 +820,7 @@ public abstract class Dialog extends Wrappable
 
 			buttonRefresh = new Button(131, 2, Icons.RELOAD);
 			buttonRefresh.setPadding(2);
+			buttonRefresh.setToolTip("Refresh", "Retrieve an updated list of printers");
 			buttonRefresh.setClickListener((c, mouseButton) ->
 			{
                 if(mouseButton == 0)
