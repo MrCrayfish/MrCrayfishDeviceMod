@@ -20,8 +20,11 @@ public class Button extends Component
 {
 	protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
 
+	protected static final int TOOLTIP_DELAY = 20;
+
 	protected String text;
 	protected String toolTip, toolTipTitle;
+	protected int toolTipTick;
 	protected boolean hovered;
 
 	protected int padding = 5;
@@ -187,6 +190,12 @@ I	 * @param top how many pixels from the top
 	}
 
 	@Override
+	protected void handleTick()
+	{
+		toolTipTick = hovered ? ++toolTipTick : 0;
+	}
+
+	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		if (this.visible)
@@ -240,7 +249,7 @@ I	 * @param top how many pixels from the top
 	@Override
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-        if(this.hovered && this.toolTip != null)
+        if(this.hovered && this.toolTip != null && toolTipTick >= TOOLTIP_DELAY)
         {
         	laptop.drawHoveringText(Arrays.asList(TextFormatting.GOLD + this.toolTipTitle, this.toolTip), mouseX, mouseY);
         }
