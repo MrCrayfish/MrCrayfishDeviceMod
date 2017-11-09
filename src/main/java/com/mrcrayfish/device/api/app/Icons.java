@@ -112,7 +112,18 @@ public enum Icons implements IIcon
     ALIGN_LEFT,
     ALIGN_CENTER,
     ALIGN_RIGHT,
-    ALIGN_JUSTIFY;
+    ALIGN_JUSTIFY,
+    COIN,
+    CASH,
+    VERIFIED,
+    BOOK_CLOSED,
+    BOOK_OPEN,
+    VIDEO_ROLL,
+    VIDEO_CAMERA,
+    LIGHT_BULB_OFF,
+    LIGHT_BULB_ON,
+    LOCATION,
+    SEND;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
