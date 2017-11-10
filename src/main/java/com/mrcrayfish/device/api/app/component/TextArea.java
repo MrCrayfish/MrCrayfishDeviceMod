@@ -93,12 +93,12 @@ public class TextArea extends Component
 			}*/
 
 			//original
-			for(int i = 0; i < visibleLines && i < lines.size(); i++)
+			for(int i = 0; i < visibleLines && i + lineScrollOffset < lines.size(); i++)
 			{
 				fontRendererObj.drawString(lines.get(lineScrollOffset + i), x + padding, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour, false);
 			}
 
-			if(this.isFocused)
+			if(this.isFocused && cursorY >= 0 && cursorY < visibleLines)
 			{
 				if (this.cursorTick / 6 % 2 == 0)
 				{
@@ -238,6 +238,15 @@ public class TextArea extends Component
 		}
 		else if(wrapText)
 		{
+			if(lines.get(lineIndex).isEmpty())
+			{
+				lines.remove(lineIndex);
+				if(lineScrollOffset > 0 && cursorY == visibleLines - 1)
+				{
+					lineScrollOffset--;
+					cursorY++;
+				}
+			}
 			String previousLine = lines.get(lineIndex - 1);
 			lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			moveCursorLeft(1);
@@ -252,6 +261,7 @@ public class TextArea extends Component
 
 	private void insertAtCursor(String text)
 	{
+		text = text.replace("\r", "").replace("\t", "    ");
 		int lineIndex = lineScrollOffset + cursorY;
 		String activeLine = getActiveLine();
 		String head = activeLine.substring(0, cursorX);
@@ -366,9 +376,10 @@ public class TextArea extends Component
 			}
 
 			cursorY--;
-			if(cursorY < lineScrollOffset)
+			if(cursorY < 0)
 			{
 				lineScrollOffset--;
+				cursorY++;
 			}
 		}
 
@@ -395,6 +406,7 @@ public class TextArea extends Component
 		if(cursorY - 1 < 0)
 		{
 			lineScrollOffset--;
+			cursorY++;
 		}
 		else
 		{
