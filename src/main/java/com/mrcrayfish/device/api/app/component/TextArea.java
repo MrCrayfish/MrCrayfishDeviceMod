@@ -50,7 +50,7 @@ public class TextArea extends Component
 	public TextArea(int left, int top, int width, int height)
 	{
 		super(left, top);
-		this.fontRendererObj = new LaptopFontRenderer(Minecraft.getMinecraft());
+		this.fontRendererObj = Laptop.fontRenderer;
 		this.width = width;
 		this.height = height;
 		this.visibleLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
