@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -34,6 +35,8 @@ public class ClientProxy extends CommonProxy
     @Override
     public void preInit()
     {
+        MinecraftForge.EVENT_BUS.register(this);
+
         DeviceBlocks.registerRenders();
         DeviceItems.registerRenders();
     }
