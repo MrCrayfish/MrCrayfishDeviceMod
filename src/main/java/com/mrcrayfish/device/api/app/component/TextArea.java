@@ -129,7 +129,7 @@ public class TextArea extends Component
 
 		if (GuiScreen.isKeyComboCtrlV(code))
 		{
-			this.writeText(GuiScreen.getClipboardString());
+			insertAtCursor(GuiScreen.getClipboardString());
 		}
 		else
 		{
