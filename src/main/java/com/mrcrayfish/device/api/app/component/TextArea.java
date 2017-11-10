@@ -310,6 +310,9 @@ public class TextArea extends Component
 
 	private void moveCursorRight(int amount)
 	{
+		if(amount <= 0)
+			return;
+
 		int lineIndex = lineScrollOffset + cursorY;
 		String activeLine = getActiveLine();
 
@@ -334,10 +337,15 @@ public class TextArea extends Component
 				cursorY++;
 			}
 		}
+
+		moveCursorRight(amount - 1);
 	}
 
 	private void moveCursorLeft(int amount)
 	{
+		if(amount <= 0)
+			return;
+
 		int lineIndex = lineScrollOffset + cursorY;
 
 		if(lineIndex == 0 && cursorX == 0)
@@ -363,6 +371,8 @@ public class TextArea extends Component
 				lineScrollOffset--;
 			}
 		}
+
+		moveCursorLeft(amount - 1);
 	}
 
 	private void moveCursorUp()
