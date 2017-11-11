@@ -97,14 +97,14 @@ public class TextArea extends Component
 				fontRendererObj.drawString(lines.get(lineScrollOffset + i), x + padding, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour, false);
 			}
 
-			if(this.isFocused && relativeCursorY >= 0 && relativeCursorY < visibleLines)
+			if(this.isFocused && cursorY >= lineScrollOffset && cursorY < lineScrollOffset + visibleLines)
 			{
 				if ((this.cursorTick / 10) % 2 == 0)
 				{
 					String subString = getActiveLine().substring(0, cursorX);
 					int width = fontRendererObj.getStringWidth(subString);
 					int posX = x + padding + width;
-					int posY = y + padding + relativeCursorY * fontRendererObj.FONT_HEIGHT;
+					int posY = y + padding + (cursorY - lineScrollOffset) * fontRendererObj.FONT_HEIGHT;
 					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT, Color.WHITE.getRGB());
 				}
 			}
@@ -185,7 +185,12 @@ public class TextArea extends Component
 				if(activeLine.contains("\n"))
 					return;
 
-				String result = activeLine + lines.remove(lineScrollOffset + relativeCursorY + 1);
+				String result = activeLine;
+				String old = lines.remove(lineScrollOffset + relativeCursorY + 1);
+				if(!old.equals("\n"))
+				{
+					result += old;
+				}
 				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
 				{
 					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
@@ -216,24 +221,18 @@ public class TextArea extends Component
 		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 
-		if((activeLine.contains("\n") && cursorX != activeLine.length() - 1) || cursorX == activeLine.length()) //TODO fix index bounds exception
+		lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
+		lines.add(lineIndex + 1, activeLine.substring(cursorX));
+
+		if(wrapText && cursorX == activeLine.length())
 		{
-			lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
-			lines.add(lineIndex + 1, activeLine.substring(cursorX));
-		}
-		else if(lineIndex + 1 < lines.size())
-		{
-			lines.add(lineIndex + 1, "");
-		}
-		else
-		{
-			lines.add("");
+			lines.set(lineIndex + 1, lines.get(lineIndex + 1) + "\n");
 		}
 
 		cursorX = 0;
 		if(relativeCursorY + 1 >= visibleLines)
 		{
-			lineScrollOffset++;
+			scroll(1);
 		}
 		else
 		{
@@ -254,11 +253,11 @@ public class TextArea extends Component
 			return;
 		}
 
-		if(activeLine.isEmpty())
+		if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
 		{
-			if(lineScrollOffset > 0 && relativeCursorY == visibleLines - 1)
+			if(lineScrollOffset > 0)
 			{
-				lineScrollOffset--;
+				scroll(-1);
 				moveYCursor(1);
 			}
 		}
@@ -286,6 +285,10 @@ public class TextArea extends Component
 				lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(lineIndex);
+			if(lineScrollOffset + visibleLines == lines.size() - 1)
+			{
+				scroll(-1);
+			}
 		}
 	}
 
@@ -370,7 +373,7 @@ public class TextArea extends Component
 			cursorX = 0;
 			if(relativeCursorY + 1 >= visibleLines)
 			{
-				lineScrollOffset++;
+				scroll(1);
 			}
 			else
 			{
@@ -405,11 +408,13 @@ public class TextArea extends Component
 				cursorX--;
 			}
 
-			moveYCursor(-1);
-			if(relativeCursorY < 0)
+			if(relativeCursorY - 1 < 0)
 			{
-				lineScrollOffset--;
-				moveYCursor(1);
+				scroll(-1);
+			}
+			else
+			{
+				moveYCursor(-1);
 			}
 		}
 
@@ -435,8 +440,7 @@ public class TextArea extends Component
 		}
 		if(relativeCursorY - 1 < 0)
 		{
-			lineScrollOffset--;
-			moveYCursor(1);
+			scroll(-1);
 		}
 		else
 		{
@@ -463,7 +467,7 @@ public class TextArea extends Component
 		}
 		if(relativeCursorY + 1 >= visibleLines)
 		{
-			lineScrollOffset++;
+			scroll(1);
 		}
 		else
 		{
@@ -474,6 +478,20 @@ public class TextArea extends Component
 	private void moveYCursor(int amount)
 	{
 		relativeCursorY += amount;
+		cursorY = lineScrollOffset + relativeCursorY;
+	}
+
+	private void scroll(int amount)
+	{
+		lineScrollOffset += amount;
+		if(lineScrollOffset < 0)
+		{
+			lineScrollOffset = 0;
+		}
+		else if(lineScrollOffset > lines.size() - visibleLines)
+		{
+			lineScrollOffset = Math.max(0, lines.size() - visibleLines - 1);
+		}
 		cursorY = lineScrollOffset + relativeCursorY;
 	}
 
