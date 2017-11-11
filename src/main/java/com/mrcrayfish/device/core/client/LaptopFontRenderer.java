@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation;
  */
 public class LaptopFontRenderer extends FontRenderer
 {
+    private boolean debug = false;
+
     public LaptopFontRenderer(Minecraft mc)
     {
         super(mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), mc.getTextureManager(), false);
@@ -20,5 +22,17 @@ public class LaptopFontRenderer extends FontRenderer
     {
         if(c == '\n') return 0;
         return super.getCharWidth(c);
+    }
+
+    @Override
+    protected float renderUnicodeChar(char ch, boolean italic)
+    {
+        if(ch == '\n' && !debug) return 0F;
+        return super.renderUnicodeChar(ch, italic);
+    }
+
+    public void setDebug(boolean debug)
+    {
+        this.debug = debug;
     }
 }
