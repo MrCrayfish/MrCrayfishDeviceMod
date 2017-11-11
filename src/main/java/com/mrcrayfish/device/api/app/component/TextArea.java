@@ -222,11 +222,9 @@ public class TextArea extends Component
 		String activeLine = getActiveLine();
 
 		lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
-		lines.add(lineIndex + 1, activeLine.substring(cursorX));
-
-		if(wrapText && cursorX == activeLine.length())
+		if(!(wrapText && cursorX == activeLine.length()))
 		{
-			lines.set(lineIndex + 1, lines.get(lineIndex + 1) + "\n");
+			lines.add(lineIndex + 1, activeLine.substring(cursorX));
 		}
 
 		cursorX = 0;
@@ -507,7 +505,10 @@ public class TextArea extends Component
 				{
 					updatedLines.add(split.get(j));
 				}
-				updatedLines.add(split.get(split.size() - 1) + "\n");
+				if(split.size() > 0)
+				{
+					updatedLines.add(split.get(split.size() - 1) + "\n");
+				}
 			}
 
 			List<String> split = fontRendererObj.listFormattedStringToWidth(lines.get(lines.size() - 1), width - padding * 2);
