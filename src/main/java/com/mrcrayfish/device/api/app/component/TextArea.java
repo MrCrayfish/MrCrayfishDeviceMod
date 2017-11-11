@@ -2,7 +2,6 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -13,7 +12,6 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TextArea extends Component
@@ -29,9 +27,10 @@ public class TextArea extends Component
 	protected int cursorTick = 0;
 	protected int cursorX;
 	protected int cursorY;
+	protected int relativeCursorY;
 	protected boolean isFocused = false;
 	protected boolean editable = true;
-	protected boolean wrapText = true;
+	protected boolean wrapText = false;
 
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
@@ -98,14 +97,14 @@ public class TextArea extends Component
 				fontRendererObj.drawString(lines.get(lineScrollOffset + i), x + padding, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour, false);
 			}
 
-			if(this.isFocused && cursorY >= 0 && cursorY < visibleLines)
+			if(this.isFocused && relativeCursorY >= 0 && relativeCursorY < visibleLines)
 			{
-				if (this.cursorTick / 6 % 2 == 0)
+				if ((this.cursorTick / 10) % 2 == 0)
 				{
 					String subString = getActiveLine().substring(0, cursorX);
 					int width = fontRendererObj.getStringWidth(subString);
 					int posX = x + padding + width;
-					int posY = y + padding + cursorY * fontRendererObj.FONT_HEIGHT;
+					int posY = y + padding + relativeCursorY * fontRendererObj.FONT_HEIGHT;
 					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT, Color.WHITE.getRGB());
 				}
 			}
@@ -133,29 +132,16 @@ public class TextArea extends Component
 		}
 		else
 		{
-			int lineIndex = lineScrollOffset + cursorY;
-			String activeLine = getActiveLine();
 			switch (code)
 			{
 				case Keyboard.KEY_BACK:
 					handleBackspace();
 					return;
 				case Keyboard.KEY_RETURN:
-					lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
-					lines.add(lineIndex + 1, activeLine.substring(cursorX));
-					cursorX = 0;
-					if(cursorY + 1 >= visibleLines)
-					{
-						lineScrollOffset++;
-					}
-					else
-					{
-						cursorY++;
-					}
+					handleReturn();
 					return;
 				case Keyboard.KEY_TAB:
-					lines.set(lineIndex, activeLine.substring(0, cursorX) + "    " + activeLine.substring(cursorX));
-					moveCursorRight(4);
+					insertAtCursor("    ");
 					return;
 				case Keyboard.KEY_LEFT:
 					moveCursorLeft(1);
@@ -180,12 +166,12 @@ public class TextArea extends Component
 
 	private String getActiveLine()
 	{
-		return lines.get(lineScrollOffset + cursorY);
+		return lines.get(lineScrollOffset + relativeCursorY);
 	}
 
 	private void handleBackspace()
 	{
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 
 		if(lineIndex == 0 && cursorX == 0)
 			return;
@@ -193,24 +179,24 @@ public class TextArea extends Component
 		removeCharAtCursor();
 		if(wrapText)
 		{
-			if(lineScrollOffset + cursorY + 1 < lines.size())
+			if(lineScrollOffset + relativeCursorY + 1 < lines.size())
 			{
 				String activeLine = getActiveLine();
 				if(activeLine.contains("\n"))
 					return;
 
-				String result = activeLine + lines.remove(lineScrollOffset + cursorY + 1);
+				String result = activeLine + lines.remove(lineScrollOffset + relativeCursorY + 1);
 				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
 				{
 					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
-					lines.set(lineScrollOffset + cursorY, trimmed);
+					lines.set(lineScrollOffset + relativeCursorY, trimmed);
 					if(trimmed.charAt(trimmed.length() - 1) != '\n')
 					{
-						prependToLine(lineScrollOffset + cursorY + 1, result.substring(trimmed.length()));
+						prependToLine(lineScrollOffset + relativeCursorY + 1, result.substring(trimmed.length()));
 					}
-					else if(lineScrollOffset + cursorY + 1 < lines.size())
+					else if(lineScrollOffset + relativeCursorY + 1 < lines.size())
 					{
-						lines.add(lineScrollOffset + cursorY + 1, trimmed);
+						lines.add(lineScrollOffset + relativeCursorY + 1, trimmed);
 					}
 					else
 					{
@@ -219,15 +205,45 @@ public class TextArea extends Component
 				}
 				else
 				{
-					lines.set(lineScrollOffset + cursorY, result);
+					lines.set(lineScrollOffset + relativeCursorY, result);
 				}
 			}
 		}
 	}
 
+	private void handleReturn()
+	{
+		int lineIndex = lineScrollOffset + relativeCursorY;
+		String activeLine = getActiveLine();
+
+		if((activeLine.contains("\n") && cursorX != activeLine.length() - 1) || cursorX == activeLine.length()) //TODO fix index bounds exception
+		{
+			lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
+			lines.add(lineIndex + 1, activeLine.substring(cursorX));
+		}
+		else if(lineIndex + 1 < lines.size())
+		{
+			lines.add(lineIndex + 1, "");
+		}
+		else
+		{
+			lines.add("");
+		}
+
+		cursorX = 0;
+		if(relativeCursorY + 1 >= visibleLines)
+		{
+			lineScrollOffset++;
+		}
+		else
+		{
+			moveYCursor(1);
+		}
+	}
+
 	private void removeCharAtCursor()
 	{
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 		if(cursorX > 0)
 		{
@@ -235,17 +251,23 @@ public class TextArea extends Component
 			String tail = activeLine.substring(cursorX);
 			lines.set(lineIndex, head + tail);
 			moveCursorLeft(1);
+			return;
 		}
-		else if(wrapText)
+
+		if(activeLine.isEmpty())
 		{
-			if(lines.get(lineIndex).isEmpty())
+			if(lineScrollOffset > 0 && relativeCursorY == visibleLines - 1)
+			{
+				lineScrollOffset--;
+				moveYCursor(1);
+			}
+		}
+
+		if(wrapText)
+		{
+			if(activeLine.isEmpty())
 			{
 				lines.remove(lineIndex);
-				if(lineScrollOffset > 0 && cursorY == visibleLines - 1)
-				{
-					lineScrollOffset--;
-					cursorY++;
-				}
 			}
 			String previousLine = lines.get(lineIndex - 1);
 			lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
@@ -255,14 +277,22 @@ public class TextArea extends Component
 		{
 			moveCursorLeft(1);
 			String previousLine = lines.get(lineIndex - 1);
-			lines.set(lineIndex - 1, previousLine + activeLine);
+			if(!activeLine.isEmpty())
+			{
+				lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)) + activeLine);
+			}
+			else
+			{
+				lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
+			}
+			lines.remove(lineIndex);
 		}
 	}
 
 	private void insertAtCursor(String text)
 	{
 		text = text.replace("\r", "").replace("\t", "    ");
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 		String head = activeLine.substring(0, cursorX);
 		String tail = activeLine.substring(cursorX);
@@ -287,7 +317,7 @@ public class TextArea extends Component
 
 		moveCursorRight(text.length());
 
-		if(wrapText && lineIndex < lineScrollOffset + cursorY)
+		if(wrapText && lineIndex < lineScrollOffset + relativeCursorY)
 		{
 			moveCursorRight(1);
 		}
@@ -323,7 +353,7 @@ public class TextArea extends Component
 		if(amount <= 0)
 			return;
 
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 
 		if(lineIndex == lines.size() - 1 && cursorX == activeLine.length() || (cursorX > 0 && activeLine.charAt(cursorX - 1) == '\n'))
@@ -335,16 +365,16 @@ public class TextArea extends Component
 		{
 			cursorX++;
 		}
-		else if(lineScrollOffset + cursorY + 1 < lines.size())
+		else if(lineScrollOffset + relativeCursorY + 1 < lines.size())
 		{
 			cursorX = 0;
-			if(cursorY + 1 >= visibleLines)
+			if(relativeCursorY + 1 >= visibleLines)
 			{
 				lineScrollOffset++;
 			}
 			else
 			{
-				cursorY++;
+				moveYCursor(1);
 			}
 		}
 
@@ -356,7 +386,7 @@ public class TextArea extends Component
 		if(amount <= 0)
 			return;
 
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 
 		if(lineIndex == 0 && cursorX == 0)
 			return;
@@ -375,11 +405,11 @@ public class TextArea extends Component
 				cursorX--;
 			}
 
-			cursorY--;
-			if(cursorY < 0)
+			moveYCursor(-1);
+			if(relativeCursorY < 0)
 			{
 				lineScrollOffset--;
-				cursorY++;
+				moveYCursor(1);
 			}
 		}
 
@@ -388,7 +418,7 @@ public class TextArea extends Component
 
 	private void moveCursorUp()
 	{
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 
 		if(lineIndex == 0)
 			return;
@@ -403,20 +433,20 @@ public class TextArea extends Component
 				cursorX--;
 			}
 		}
-		if(cursorY - 1 < 0)
+		if(relativeCursorY - 1 < 0)
 		{
 			lineScrollOffset--;
-			cursorY++;
+			moveYCursor(1);
 		}
 		else
 		{
-			cursorY--;
+			moveYCursor(-1);
 		}
 	}
 
 	private void moveCursorDown()
 	{
-		int lineIndex = lineScrollOffset + cursorY;
+		int lineIndex = lineScrollOffset + relativeCursorY;
 
 		if(lineIndex == lines.size() - 1)
 			return;
@@ -431,14 +461,69 @@ public class TextArea extends Component
 				cursorX--;
 			}
 		}
-		if(cursorY + 1 >= visibleLines)
+		if(relativeCursorY + 1 >= visibleLines)
 		{
 			lineScrollOffset++;
 		}
 		else
 		{
-			cursorY++;
+			moveYCursor(1);
 		}
+	}
+
+	private void moveYCursor(int amount)
+	{
+		relativeCursorY += amount;
+		cursorY = lineScrollOffset + relativeCursorY;
+	}
+
+	private void updateText()
+	{
+		List<String> updatedLines = new ArrayList<>();
+		if(wrapText)
+		{
+			for(int i = 0; i < lines.size() - 1; i++)
+			{
+				List<String> split = fontRendererObj.listFormattedStringToWidth(lines.get(i), width - padding * 2);
+				for(int j = 0; j < split.size() - 1; j++)
+				{
+					updatedLines.add(split.get(j));
+				}
+				updatedLines.add(split.get(split.size() - 1) + "\n");
+			}
+
+			List<String> split = fontRendererObj.listFormattedStringToWidth(lines.get(lines.size() - 1), width - padding * 2);
+			for(int i = 0; i < split.size() - 1; i++)
+			{
+				updatedLines.add(split.get(i));
+			}
+			updatedLines.add(split.get(split.size() - 1));
+		}
+		else
+		{
+			int lineIndex = 0;
+			StringBuilder builder = new StringBuilder();
+			do
+			{
+				String line = lines.get(lineIndex);
+				builder.append(line);
+				if(!line.endsWith("\n"))
+				{
+					if(lineIndex == lines.size() - 1)
+					{
+						updatedLines.add(builder.toString());
+						break;
+					}
+				}
+				else
+				{
+					updatedLines.add(builder.toString());
+					builder.setLength(0);
+				}
+			}
+			while(++lineIndex < lines.size());
+		}
+		lines = updatedLines;
 	}
 
 	/**
@@ -454,15 +539,15 @@ public class TextArea extends Component
 		String[] splitText = text.split("\n");
 		if(splitText.length > 0)
 		{
-			lines.set(lineScrollOffset + cursorY, head + splitText[0]);
+			lines.set(lineScrollOffset + relativeCursorY, head + splitText[0]);
 		}
 		if(splitText.length > 1)
 		{
 			for(int i = splitText.length - 2; i >= 1; i--)
 			{
-				lines.add(lineScrollOffset + cursorY + 1, splitText[i]);
+				lines.add(lineScrollOffset + relativeCursorY + 1, splitText[i]);
 			}
-			lines.add(lineScrollOffset + cursorY + splitText.length - 1, splitText[splitText.length - 1] + tail);
+			lines.add(lineScrollOffset + relativeCursorY + splitText.length - 1, splitText[splitText.length - 1] + tail);
 		}
 	}
 
@@ -513,6 +598,7 @@ public class TextArea extends Component
 	public void setWrapText(boolean wrapText)
 	{
 		this.wrapText = wrapText;
+		updateText();
 	}
 
 	/**
