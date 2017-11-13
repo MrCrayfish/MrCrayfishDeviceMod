@@ -27,7 +27,6 @@ public class TextArea extends Component
 	protected int cursorTick = 0;
 	protected int cursorX;
 	protected int cursorY;
-	protected int relativeCursorY;
 	protected boolean isFocused = false;
 	protected boolean editable = true;
 	protected boolean wrapText = false;
@@ -166,42 +165,35 @@ public class TextArea extends Component
 
 	private String getActiveLine()
 	{
-		return lines.get(lineScrollOffset + relativeCursorY);
+		return lines.get(cursorY);
 	}
 
 	private void handleBackspace()
 	{
-		int lineIndex = lineScrollOffset + relativeCursorY;
-
-		if(lineIndex == 0 && cursorX == 0)
+		if(cursorY == 0 && cursorX == 0)
 			return;
 
 		removeCharAtCursor();
 		if(wrapText)
 		{
-			if(lineScrollOffset + relativeCursorY + 1 < lines.size())
+			if(cursorY + 1 < lines.size())
 			{
 				String activeLine = getActiveLine();
 				if(activeLine.contains("\n"))
 					return;
 
-				String result = activeLine;
-				String old = lines.remove(lineScrollOffset + relativeCursorY + 1);
-				if(!old.equals("\n"))
-				{
-					result += old;
-				}
+				String result = activeLine + lines.remove(cursorY + 1);
 				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
 				{
 					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
-					lines.set(lineScrollOffset + relativeCursorY, trimmed);
+					lines.set(cursorY, trimmed);
 					if(trimmed.charAt(trimmed.length() - 1) != '\n')
 					{
-						prependToLine(lineScrollOffset + relativeCursorY + 1, result.substring(trimmed.length()));
+						prependToLine(cursorY + 1, result.substring(trimmed.length()));
 					}
-					else if(lineScrollOffset + relativeCursorY + 1 < lines.size())
+					else if(cursorY + 1 < lines.size())
 					{
-						lines.add(lineScrollOffset + relativeCursorY + 1, trimmed);
+						lines.add(cursorY + 1, trimmed);
 					}
 					else
 					{
@@ -210,7 +202,7 @@ public class TextArea extends Component
 				}
 				else
 				{
-					lines.set(lineScrollOffset + relativeCursorY, result);
+					lines.set(cursorY, result);
 				}
 			}
 		}
@@ -218,35 +210,40 @@ public class TextArea extends Component
 
 	private void handleReturn()
 	{
-		int lineIndex = lineScrollOffset + relativeCursorY;
+		int lineIndex = cursorY;
 		String activeLine = getActiveLine();
 
-		lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
-		if(!(wrapText && cursorX == activeLine.length()))
+		//if cursorX is equal to length, line doesn't have new line char
+		if(cursorX == activeLine.length())
 		{
-			lines.add(lineIndex + 1, activeLine.substring(cursorX));
-		}
-
-		cursorX = 0;
-		if(relativeCursorY + 1 >= visibleLines)
-		{
-			scroll(1);
+			lines.set(lineIndex, activeLine + "\n");
+			if(!wrapText || lineIndex + 1 == lines.size())
+			{
+				lines.add(lineIndex + 1, "");
+			}
 		}
 		else
 		{
-			moveYCursor(1);
+			lines.set(lineIndex, activeLine.substring(0, cursorX) + "\n");
+			lines.add(lineIndex + 1, activeLine.substring(cursorX));
 		}
+
+		if(cursorY + 1 >= lineScrollOffset + visibleLines)
+		{
+			scroll(1);
+		}
+		moveCursorRight(1);
+
 	}
 
 	private void removeCharAtCursor()
 	{
-		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 		if(cursorX > 0)
 		{
 			String head = activeLine.substring(0, cursorX - 1);
 			String tail = activeLine.substring(cursorX);
-			lines.set(lineIndex, head + tail);
+			lines.set(cursorY, head + tail);
 			moveCursorLeft(1);
 			return;
 		}
@@ -264,25 +261,25 @@ public class TextArea extends Component
 		{
 			if(activeLine.isEmpty())
 			{
-				lines.remove(lineIndex);
+				lines.remove(cursorY);
 			}
-			String previousLine = lines.get(lineIndex - 1);
-			lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
+			String previousLine = lines.get(cursorY - 1);
+			lines.set(cursorY - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			moveCursorLeft(1);
 		}
 		else
 		{
+			String previousLine = lines.get(cursorY - 1);
 			moveCursorLeft(1);
-			String previousLine = lines.get(lineIndex - 1);
 			if(!activeLine.isEmpty())
 			{
-				lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)) + activeLine);
+				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)) + activeLine);
 			}
 			else
 			{
-				lines.set(lineIndex - 1, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
+				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
-			lines.remove(lineIndex);
+			lines.remove(cursorY + 1);
 			if(lineScrollOffset + visibleLines == lines.size() - 1)
 			{
 				scroll(-1);
@@ -293,7 +290,6 @@ public class TextArea extends Component
 	private void insertAtCursor(String text)
 	{
 		text = text.replace("\r", "").replace("\t", "    ");
-		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 		String head = activeLine.substring(0, cursorX);
 		String tail = activeLine.substring(cursorX);
@@ -303,22 +299,22 @@ public class TextArea extends Component
 			if(fontRendererObj.getStringWidth(result) > width - padding * 2)
 			{
 				String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
-				lines.set(lineIndex, trimmed);
-				prependToLine(lineIndex + 1, result.substring(trimmed.length()));
+				lines.set(cursorY, trimmed);
+				prependToLine(cursorY + 1, result.substring(trimmed.length()));
 			}
 			else
 			{
-				lines.set(lineIndex, result);
+				lines.set(cursorY, result);
 			}
 		}
 		else
 		{
-			lines.set(lineIndex, head + text + tail);
+			lines.set(cursorY, head + text + tail);
 		}
 
+		int prevCursorY = cursorY;
 		moveCursorRight(text.length());
-
-		if(wrapText && lineIndex < lineScrollOffset + relativeCursorY)
+		if(wrapText && prevCursorY != cursorY)
 		{
 			moveCursorRight(1);
 		}
@@ -354,10 +350,9 @@ public class TextArea extends Component
 		if(amount <= 0)
 			return;
 
-		int lineIndex = lineScrollOffset + relativeCursorY;
 		String activeLine = getActiveLine();
 
-		if(lineIndex == lines.size() - 1 && cursorX == activeLine.length() || (cursorX > 0 && activeLine.charAt(cursorX - 1) == '\n'))
+		if(cursorY == lines.size() - 1 && cursorX == activeLine.length() || (cursorX > 0 && activeLine.charAt(cursorX - 1) == '\n'))
 			return;
 
 		cursorTick = 0;
@@ -366,17 +361,14 @@ public class TextArea extends Component
 		{
 			cursorX++;
 		}
-		else if(lineScrollOffset + relativeCursorY + 1 < lines.size())
+		else if(cursorY + 1 < lines.size())
 		{
 			cursorX = 0;
-			if(relativeCursorY + 1 >= visibleLines)
+			if(cursorY >= lineScrollOffset + visibleLines)
 			{
 				scroll(1);
 			}
-			else
-			{
-				moveYCursor(1);
-			}
+			moveYCursor(1);
 		}
 
 		moveCursorRight(amount - 1);
@@ -387,9 +379,7 @@ public class TextArea extends Component
 		if(amount <= 0)
 			return;
 
-		int lineIndex = lineScrollOffset + relativeCursorY;
-
-		if(lineIndex == 0 && cursorX == 0)
+		if(cursorX == 0 && cursorY == 0)
 			return;
 
 		cursorTick = 0;
@@ -399,21 +389,18 @@ public class TextArea extends Component
 		}
 		else
 		{
-			cursorX = lines.get(lineIndex - 1).length();
+			cursorX = lines.get(cursorY - 1).length();
 
-			if(cursorX > 0 && lines.get(lineIndex - 1).charAt(cursorX - 1) == '\n')
+			if(cursorX > 0 && lines.get(cursorY - 1).charAt(cursorX - 1) == '\n')
 			{
 				cursorX--;
 			}
 
-			if(relativeCursorY - 1 < 0)
+			if(cursorY - 1 < lineScrollOffset)
 			{
 				scroll(-1);
 			}
-			else
-			{
-				moveYCursor(-1);
-			}
+			moveYCursor(-1);
 		}
 
 		moveCursorLeft(amount - 1);
@@ -421,13 +408,11 @@ public class TextArea extends Component
 
 	private void moveCursorUp()
 	{
-		int lineIndex = lineScrollOffset + relativeCursorY;
-
-		if(lineIndex == 0)
+		if(cursorY == 0)
 			return;
 
 		cursorTick = 0;
-		String previousLine = lines.get(lineIndex - 1);
+		String previousLine = lines.get(cursorY - 1);
 		if(cursorX > previousLine.length())
 		{
 			cursorX = previousLine.length();
@@ -436,25 +421,20 @@ public class TextArea extends Component
 				cursorX--;
 			}
 		}
-		if(relativeCursorY - 1 < 0)
+		if(cursorY - 1 < lineScrollOffset)
 		{
 			scroll(-1);
 		}
-		else
-		{
-			moveYCursor(-1);
-		}
+		moveYCursor(-1);
 	}
 
 	private void moveCursorDown()
 	{
-		int lineIndex = lineScrollOffset + relativeCursorY;
-
-		if(lineIndex == lines.size() - 1)
+		if(cursorY == lines.size() - 1)
 			return;
 
 		cursorTick = 0;
-		String nextLine = lines.get(lineIndex + 1);
+		String nextLine = lines.get(cursorY + 1);
 		if(cursorX > nextLine.length())
 		{
 			cursorX = nextLine.length();
@@ -463,20 +443,26 @@ public class TextArea extends Component
 				cursorX--;
 			}
 		}
-		if(relativeCursorY + 1 >= visibleLines)
+		if(cursorY + 1 >= lineScrollOffset + visibleLines)
 		{
 			scroll(1);
 		}
-		else
-		{
-			moveYCursor(1);
-		}
+		moveYCursor(1);
 	}
 
 	private void moveYCursor(int amount)
 	{
-		relativeCursorY += amount;
-		cursorY = lineScrollOffset + relativeCursorY;
+		cursorY += amount;
+		if(cursorY < 0)
+		{
+			cursorY = 0;
+			cursorX = 0;
+		}
+		if(cursorY >= lines.size())
+		{
+			cursorX = lines.get(lines.size() - 1).length();
+			cursorY = lines.size() - 1;
+		}
 	}
 
 	private void scroll(int amount)
@@ -490,9 +476,11 @@ public class TextArea extends Component
 		{
 			lineScrollOffset = Math.max(0, lines.size() - visibleLines - 1);
 		}
-		cursorY = lineScrollOffset + relativeCursorY;
 	}
 
+    /**
+     * Converts the text from wrapped lines to single lines and vice versa.
+     */
 	private void updateText()
 	{
 		List<String> updatedLines = new ArrayList<>();
@@ -500,6 +488,13 @@ public class TextArea extends Component
 		{
 			for(int i = 0; i < lines.size() - 1; i++)
 			{
+				String line = lines.get(i);
+				if(line.equals("\n"))
+				{
+					updatedLines.add(line);
+					continue;
+				}
+
 				List<String> split = fontRendererObj.listFormattedStringToWidth(lines.get(i), width - padding * 2);
 				for(int j = 0; j < split.size() - 1; j++)
 				{
@@ -516,16 +511,48 @@ public class TextArea extends Component
 			{
 				updatedLines.add(split.get(i));
 			}
-			updatedLines.add(split.get(split.size() - 1));
+			if(split.size() > 0)
+			{
+				updatedLines.add(split.get(split.size() - 1));
+			}
+
+            List<String> activeLine = fontRendererObj.listFormattedStringToWidth(lines.get(cursorY), width - padding * 2);
+            int totalLength = 0;
+            for(int i = 0; i < activeLine.size(); i++)
+            {
+                String line = activeLine.get(i);
+                if(totalLength + line.length() < cursorX)
+                {
+                    totalLength += line.length();
+                    cursorY++;
+                }
+                else
+                {
+                    cursorX -= totalLength;
+                    break;
+                }
+            }
 		}
 		else
 		{
+		    int totalLength = 0;
 			int lineIndex = 0;
 			StringBuilder builder = new StringBuilder();
 			do
 			{
 				String line = lines.get(lineIndex);
 				builder.append(line);
+
+				if(lineIndex == cursorY)
+                {
+                    cursorX += totalLength;
+                    cursorY = updatedLines.size();
+                }
+                else
+                {
+                    totalLength += line.length();
+                }
+
 				if(!line.endsWith("\n"))
 				{
 					if(lineIndex == lines.size() - 1)
@@ -538,6 +565,7 @@ public class TextArea extends Component
 				{
 					updatedLines.add(builder.toString());
 					builder.setLength(0);
+					totalLength = 0;
 				}
 			}
 			while(++lineIndex < lines.size());
@@ -558,15 +586,15 @@ public class TextArea extends Component
 		String[] splitText = text.split("\n");
 		if(splitText.length > 0)
 		{
-			lines.set(lineScrollOffset + relativeCursorY, head + splitText[0]);
+			lines.set(cursorY, head + splitText[0]);
 		}
 		if(splitText.length > 1)
 		{
 			for(int i = splitText.length - 2; i >= 1; i--)
 			{
-				lines.add(lineScrollOffset + relativeCursorY + 1, splitText[i]);
+				lines.add(cursorY + 1, splitText[i]);
 			}
-			lines.add(lineScrollOffset + relativeCursorY + splitText.length - 1, splitText[splitText.length - 1] + tail);
+			lines.add(cursorY + splitText.length - 1, splitText[splitText.length - 1] + tail);
 		}
 	}
 
