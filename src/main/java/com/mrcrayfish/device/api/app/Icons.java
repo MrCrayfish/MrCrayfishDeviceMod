@@ -47,7 +47,7 @@ public enum Icons implements IIcon
     PAUSE,
     PREVIOUS,
     NEXT,
-    HELP,
+    INFO,
     WARNING,
     ERROR,
     VOLUME_ON,
@@ -123,7 +123,14 @@ public enum Icons implements IIcon
     LIGHT_BULB_OFF,
     LIGHT_BULB_ON,
     LOCATION,
-    SEND;
+    SEND,
+    LOGIN,
+    LOGOUT,
+    HELP,
+    HEART_OFF,
+    HEART_ON,
+    MAP,
+    BRIGHTNESS;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
