@@ -437,10 +437,10 @@ public class TextArea extends Component
 
 		cursorTick = 0;
 		String previousLine = lines.get(cursorY - 1);
-		if(cursorX > previousLine.length())
+		if(cursorX >= previousLine.length())
 		{
 			cursorX = previousLine.length();
-			if(previousLine.endsWith("\n"))
+			if(previousLine.contains("\n"))
 			{
 				cursorX--;
 			}
