@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -22,7 +24,8 @@ public class TextArea extends Component
 	protected String placeholder = null;
 	protected int width, height;
 	protected int visibleLines;
-	protected int lineScrollOffset;
+	protected int horizontalScroll;
+	protected int verticalScroll;
 	protected int padding = 4;
 	protected int cursorTick = 0;
 	protected int cursorX;
@@ -66,6 +69,7 @@ public class TextArea extends Component
 	{
 		if (this.visible)
 		{
+
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
 			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
@@ -76,34 +80,21 @@ public class TextArea extends Component
 				mc.fontRendererObj.drawSplitString(placeholder, x + padding + 1, y + padding + 2, width - padding * 2 - 2, placeholderColour);
 			}
 
-			//Word wrapping
-			/*int remainingLines = visibleLines;
-			for(int i = 0; i < visibleLines && i < lines.size() && i < remainingLines; i++)
-			{
-				List<String> subLines = fontRendererObj.listFormattedStringToWidth(lines.get(lineScrollOffset + i), width - padding * 2);
-				int posX = x + padding;
-				for(int j = 0; j < subLines.size() && j < remainingLines; j++)
-				{
-					int posY = y + padding + i * fontRendererObj.FONT_HEIGHT + j * fontRendererObj.FONT_HEIGHT + (visibleLines - remainingLines) * fontRendererObj.FONT_HEIGHT;
-					fontRendererObj.drawSplitString(subLines.get(j), posX, posY, width - padding * 2, textColour);
-				}
-				if(subLines.size() > 1) remainingLines -= subLines.size();
-			}*/
+			GLHelper.scissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
 
-			//original
-			for(int i = 0; i < visibleLines && i + lineScrollOffset < lines.size(); i++)
+			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
-				fontRendererObj.drawString(lines.get(lineScrollOffset + i), x + padding, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour, false);
+				fontRendererObj.drawString(lines.get(verticalScroll + i), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour, false);
 			}
 
-			if(this.isFocused && cursorY >= lineScrollOffset && cursorY < lineScrollOffset + visibleLines)
+			if(this.isFocused && cursorY >= verticalScroll && cursorY < verticalScroll + visibleLines)
 			{
 				if ((this.cursorTick / 10) % 2 == 0)
 				{
 					String subString = getActiveLine().substring(0, cursorX);
 					int width = fontRendererObj.getStringWidth(subString);
-					int posX = x + padding + width;
-					int posY = y + padding + (cursorY - lineScrollOffset) * fontRendererObj.FONT_HEIGHT;
+					int posX = x + padding + width - horizontalScroll;
+					int posY = y + padding + (cursorY - verticalScroll) * fontRendererObj.FONT_HEIGHT;
 					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT, Color.WHITE.getRGB());
 				}
 			}
@@ -228,12 +219,11 @@ public class TextArea extends Component
 			lines.add(lineIndex + 1, activeLine.substring(cursorX));
 		}
 
-		if(cursorY + 1 >= lineScrollOffset + visibleLines)
+		if(cursorY + 1 >= verticalScroll + visibleLines)
 		{
 			scroll(1);
 		}
 		moveCursorRight(1);
-
 	}
 
 	private void removeCharAtCursor()
@@ -250,7 +240,7 @@ public class TextArea extends Component
 
 		if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
 		{
-			if(lineScrollOffset > 0)
+			if(verticalScroll > 0)
 			{
 				scroll(-1);
 				moveYCursor(1);
@@ -280,7 +270,7 @@ public class TextArea extends Component
 				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(cursorY + 1);
-			if(lineScrollOffset + visibleLines == lines.size() - 1)
+			if(verticalScroll + visibleLines == lines.size() - 1)
 			{
 				scroll(-1);
 			}
@@ -364,11 +354,26 @@ public class TextArea extends Component
 		else if(cursorY + 1 < lines.size())
 		{
 			cursorX = 0;
-			if(cursorY >= lineScrollOffset + visibleLines)
+			if(cursorY >= verticalScroll + visibleLines - 1)
 			{
 				scroll(1);
 			}
 			moveYCursor(1);
+		}
+
+		if(!wrapText)
+		{
+			String line = lines.get(cursorY);
+			int visibleWidth = width - padding * 2;
+			int textWidth = fontRendererObj.getStringWidth(line.substring(0, cursorX));
+			if(textWidth > visibleWidth || cursorX == line.length() || line.charAt(cursorX) == '\n')
+			{
+				horizontalScroll = Math.max(0, textWidth - visibleWidth + 1);
+			}
+			else if(cursorX == 0)
+			{
+				horizontalScroll = 0;
+			}
 		}
 
 		moveCursorRight(amount - 1);
@@ -396,11 +401,30 @@ public class TextArea extends Component
 				cursorX--;
 			}
 
-			if(cursorY - 1 < lineScrollOffset)
+			if(cursorY - 1 < verticalScroll)
 			{
 				scroll(-1);
 			}
 			moveYCursor(-1);
+		}
+
+		if(!wrapText)
+		{
+			String line = lines.get(cursorY);
+			int visibleWidth = width - padding * 2;
+			int textWidth = fontRendererObj.getStringWidth(lines.get(cursorY).substring(0, cursorX));
+			if(textWidth < horizontalScroll)
+			{
+				horizontalScroll = Math.max(0, textWidth - 1);
+			}
+			else if(cursorX == line.length() || line.charAt(cursorX) == '\n')
+			{
+				horizontalScroll = Math.max(0, textWidth - visibleWidth + 1);
+			}
+			else if(cursorX == 0)
+			{
+				horizontalScroll = 0;
+			}
 		}
 
 		moveCursorLeft(amount - 1);
@@ -416,16 +440,18 @@ public class TextArea extends Component
 		if(cursorX > previousLine.length())
 		{
 			cursorX = previousLine.length();
-			if(previousLine.contains("\n"))
+			if(previousLine.endsWith("\n"))
 			{
 				cursorX--;
 			}
 		}
-		if(cursorY - 1 < lineScrollOffset)
+		if(cursorY - 1 < verticalScroll)
 		{
 			scroll(-1);
 		}
 		moveYCursor(-1);
+
+		updateHorizontalScroll();
 	}
 
 	private void moveCursorDown()
@@ -438,16 +464,18 @@ public class TextArea extends Component
 		if(cursorX > nextLine.length())
 		{
 			cursorX = nextLine.length();
-			if(nextLine.contains("\n"))
+			if(nextLine.endsWith("\n"))
 			{
 				cursorX--;
 			}
 		}
-		if(cursorY + 1 >= lineScrollOffset + visibleLines)
+		if(cursorY + 1 >= verticalScroll + visibleLines)
 		{
 			scroll(1);
 		}
 		moveYCursor(1);
+
+		updateHorizontalScroll();
 	}
 
 	private void moveYCursor(int amount)
@@ -467,14 +495,14 @@ public class TextArea extends Component
 
 	private void scroll(int amount)
 	{
-		lineScrollOffset += amount;
-		if(lineScrollOffset < 0)
+		verticalScroll += amount;
+		if(verticalScroll < 0)
 		{
-			lineScrollOffset = 0;
+			verticalScroll = 0;
 		}
-		else if(lineScrollOffset > lines.size() - visibleLines)
+		else if(verticalScroll > lines.size() - visibleLines)
 		{
-			lineScrollOffset = Math.max(0, lines.size() - visibleLines - 1);
+			verticalScroll = Math.max(0, lines.size() - visibleLines - 1);
 		}
 	}
 
@@ -572,6 +600,29 @@ public class TextArea extends Component
 		}
 		lines = updatedLines;
 	}
+
+	private void updateHorizontalScroll()
+	{
+		if(!wrapText)
+		{
+			String line = lines.get(cursorY);
+			int visibleWidth = width - padding * 2;
+			int textWidth = fontRendererObj.getStringWidth(lines.get(cursorY).substring(0, cursorX));
+			if(textWidth < horizontalScroll)
+			{
+				horizontalScroll = Math.max(0, textWidth - 1);
+			}
+			else if(textWidth > visibleWidth)
+			{
+				horizontalScroll = Math.max(0, textWidth - visibleWidth + 1);
+			}
+			else if(cursorX == 0)
+			{
+				horizontalScroll = 0;
+			}
+		}
+	}
+
 
 	/**
 	 * Appends text to the text area
