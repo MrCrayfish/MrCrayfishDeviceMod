@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.interfaces.IHighlight;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
@@ -9,14 +10,31 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class TextArea extends Component
 {
+	private static final String UNFORMATTED_SPLIT = "(?<=%1$s)|(?=%1$s)";
+	private static final String[] DELIMITERS = {"(\\s|$)(?=(([^\"]*\"){2})*[^\"]*$)", "[\\p{Punct}&&[^@\"]]", "\\p{Digit}+"};
+	private static final String SPLIT_REGEX;
+	static
+	{
+		StringJoiner joiner = new StringJoiner("|");
+		for(String s : DELIMITERS)
+		{
+			joiner.add(s);
+		}
+		SPLIT_REGEX = String.format(UNFORMATTED_SPLIT, "(" + joiner.toString() + ")");
+	}
+
+	public static final IHighlight STANDARD_HIGHLIGHTER = text -> new TextFormatting[] { TextFormatting.WHITE };
+
 	protected FontRenderer fontRendererObj;
 
 	protected List<String> lines = new ArrayList<>();
@@ -32,6 +50,7 @@ public class TextArea extends Component
 	protected boolean isFocused = false;
 	protected boolean editable = true;
 	protected boolean wrapText = false;
+	protected IHighlight highlight = STANDARD_HIGHLIGHTER;
 
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
@@ -83,7 +102,26 @@ public class TextArea extends Component
 
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
-				fontRendererObj.drawString(lines.get(verticalScroll + i), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour, false);
+				if(highlight != null)
+				{
+					String[] words = lines.get(verticalScroll + i).split(SPLIT_REGEX);
+					StringBuilder builder = new StringBuilder();
+					for(String word : words)
+					{
+						TextFormatting[] formatting = highlight.getKeywordFormatting(word);
+						for(TextFormatting format : formatting)
+						{
+							builder.append(format);
+						}
+						builder.append(word);
+						builder.append(TextFormatting.RESET);
+					}
+					fontRendererObj.drawString(builder.toString(), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, -1);
+				}
+				else
+				{
+					fontRendererObj.drawString(lines.get(verticalScroll + i), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour);
+				}
 			}
 
 			if(this.isFocused && cursorY >= verticalScroll && cursorY < verticalScroll + visibleLines)
@@ -661,7 +699,6 @@ public class TextArea extends Component
 		}
 	}
 
-
 	/**
 	 * Appends text to the text area
 	 *
@@ -735,6 +772,11 @@ public class TextArea extends Component
 	{
 		this.wrapText = wrapText;
 		updateText();
+	}
+
+	public void setHighlight(IHighlight highlight)
+	{
+		this.highlight = highlight;
 	}
 
 	/**
