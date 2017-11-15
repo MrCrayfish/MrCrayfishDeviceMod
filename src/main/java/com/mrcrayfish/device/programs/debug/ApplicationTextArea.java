@@ -80,6 +80,7 @@ public class ApplicationTextArea extends Application
             case "native":	
             case "super":	
             case "while":
+            case "null":
                 return asArray(TextFormatting.BLUE);
             default:
                 return asArray(TextFormatting.WHITE);
