@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -118,7 +117,12 @@ public class TextArea extends Component
 
 		if (GuiScreen.isKeyComboCtrlV(code))
 		{
-			insertAtCursor(GuiScreen.getClipboardString());
+			String[] lines = GuiScreen.getClipboardString().split("\n");
+			for(int i = 0; i < lines.length - 1; i++)
+			{
+				insertAtCursor(lines[i] + "\n");
+			}
+			insertAtCursor(lines[lines.length - 1]);
 		}
 		else
 		{
@@ -131,7 +135,7 @@ public class TextArea extends Component
 					handleReturn();
 					return;
 				case Keyboard.KEY_TAB:
-					insertAtCursor("    ");
+					insertAtCursor('\t');
 					return;
 				case Keyboard.KEY_LEFT:
 					moveCursorLeft(1);
@@ -148,7 +152,7 @@ public class TextArea extends Component
 				default:
 					if (ChatAllowedCharacters.isAllowedCharacter(character))
 					{
-						insertAtCursor(Character.toString(character));
+						insertAtCursor(character);
 					}
 			}
 		}
@@ -277,46 +281,80 @@ public class TextArea extends Component
 		}
 	}
 
-	private void insertAtCursor(String text)
+	private void insertAtCursor(char c)
 	{
-		text = text.replace("\r", "").replace("\t", "    ");
-		String activeLine = getActiveLine();
-		String head = activeLine.substring(0, cursorX);
-		String tail = activeLine.substring(cursorX);
-		if(wrapText)
-		{
-			String result = head + text + tail;
-			if(fontRendererObj.getStringWidth(result) > width - padding * 2)
-			{
-				String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
-				lines.set(cursorY, trimmed);
-				prependToLine(cursorY + 1, result.substring(trimmed.length()));
-			}
-			else
-			{
-				lines.set(cursorY, result);
-			}
-		}
-		else
-		{
-			lines.set(cursorY, head + text + tail);
-		}
-
 		int prevCursorY = cursorY;
-		moveCursorRight(text.length());
+		insertAtCursor(Character.toString(c));
 		if(wrapText && prevCursorY != cursorY)
 		{
 			moveCursorRight(1);
 		}
 	}
 
+	private void insertAtCursor(String text)
+	{
+		text = text.replace("\r", "");
+		String activeLine = getActiveLine();
+		String head = activeLine.substring(0, cursorX);
+		String tail = activeLine.substring(cursorX);
+		if(wrapText)
+		{
+			if(text.endsWith("\n"))
+			{
+				String result = head + text;
+				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
+				{
+					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
+					lines.set(cursorY, trimmed);
+					prependToLine(cursorY + 1, result.substring(trimmed.length()));
+				}
+				else
+				{
+					lines.set(cursorY, result);
+				}
+				prependToLine(cursorY + 1, tail);
+			}
+			else
+			{
+				String result = head + text + tail;
+				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
+				{
+					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
+					lines.set(cursorY, trimmed);
+					prependToLine(cursorY + 1, result.substring(trimmed.length()));
+				}
+				else
+				{
+					lines.set(cursorY, result);
+				}
+			}
+		}
+		else
+		{
+			if(text.endsWith("\n"))
+			{
+				lines.set(cursorY, head + text);
+				prependToLine(cursorY + 1, tail);
+			}
+			else
+			{
+				lines.set(cursorY, head + text + tail);
+			}
+		}
+		moveCursorRight(text.length());
+	}
+
 	private void prependToLine(int lineIndex, String text)
 	{
 		if(lineIndex == lines.size())
 			lines.add("");
+
+		if(text.length() <= 0)
+			return;
+
 		if(lineIndex < lines.size())
 		{
-			if(text.charAt(text.length() - 1) == '\n')
+			if(text.charAt(Math.max(0, text.length() - 1)) == '\n')
 			{
 				lines.add(lineIndex, text);
 				return;

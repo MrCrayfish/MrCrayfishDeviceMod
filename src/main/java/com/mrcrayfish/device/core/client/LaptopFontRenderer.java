@@ -21,14 +21,20 @@ public class LaptopFontRenderer extends FontRenderer
     public int getCharWidth(char c)
     {
         if(c == '\n') return 0;
+        if(c == '\t') return 20;
         return super.getCharWidth(c);
     }
 
     @Override
-    protected float renderUnicodeChar(char ch, boolean italic)
+    protected float renderUnicodeChar(char c, boolean italic)
     {
-        if(ch == '\n' && !debug) return 0F;
-        return super.renderUnicodeChar(ch, italic);
+        if(!debug && c == '\n') return 0F;
+        if(c == '\t')
+        {
+            if(debug) super.renderUnicodeChar(c, italic);
+            return 20F;
+        }
+        return super.renderUnicodeChar(c, italic);
     }
 
     public void setDebug(boolean debug)
