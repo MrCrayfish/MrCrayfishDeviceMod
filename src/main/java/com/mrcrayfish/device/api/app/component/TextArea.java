@@ -4,6 +4,7 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
+import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -144,7 +145,7 @@ public class TextArea extends Component
 		if(!this.visible || !this.enabled || !this.editable)
 			return;
 
-		this.isFocused = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
+		this.isFocused = GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height);
 	}
 
 	@Override
@@ -193,6 +194,15 @@ public class TextArea extends Component
 						insertAtCursor(character);
 					}
 			}
+		}
+	}
+
+	@Override
+	protected void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	{
+		if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height))
+		{
+			scroll(direction ? -1 : 1);
 		}
 	}
 
@@ -578,7 +588,7 @@ public class TextArea extends Component
 		}
 		else if(verticalScroll > lines.size() - visibleLines)
 		{
-			verticalScroll = Math.max(0, lines.size() - visibleLines - 1);
+			verticalScroll = Math.max(0, lines.size() - visibleLines);
 		}
 	}
 
