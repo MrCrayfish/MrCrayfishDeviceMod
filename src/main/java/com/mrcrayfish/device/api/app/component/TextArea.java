@@ -11,9 +11,13 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +46,12 @@ public class TextArea extends Component
 	protected String placeholder = null;
 	protected int width, height;
 	protected int visibleLines;
+	protected ScrollBar scrollBar;
+	protected int scrollBarSize = 3;
 	protected int horizontalScroll;
 	protected int verticalScroll;
+	protected int horizontalOffset;
+	protected int verticalOffset;
 	protected int padding = 4;
 	protected int cursorTick = 0;
 	protected int cursorX;
@@ -51,7 +59,11 @@ public class TextArea extends Component
 	protected boolean isFocused = false;
 	protected boolean editable = true;
 	protected boolean wrapText = false;
+	protected int maxLineWidth;
 	protected IHighlight highlight = STANDARD_HIGHLIGHTER;
+
+	private int clickedX;
+	private int clickedY;
 
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
@@ -88,7 +100,6 @@ public class TextArea extends Component
 	{
 		if (this.visible)
 		{
-
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
 			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
@@ -103,9 +114,10 @@ public class TextArea extends Component
 
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
+				int index = i + MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, Math.max(0, lines.size() - visibleLines));
 				if(highlight != null)
 				{
-					String[] words = lines.get(verticalScroll + i).split(SPLIT_REGEX);
+					String[] words = lines.get(index).split(SPLIT_REGEX);
 					StringBuilder builder = new StringBuilder();
 					for(String word : words)
 					{
@@ -121,7 +133,7 @@ public class TextArea extends Component
 				}
 				else
 				{
-					fontRendererObj.drawString(lines.get(verticalScroll + i), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour);
+					fontRendererObj.drawString(lines.get(index), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour);
 				}
 			}
 
@@ -136,6 +148,29 @@ public class TextArea extends Component
 					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT, Color.WHITE.getRGB());
 				}
 			}
+
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+			if(lines.size() > visibleLines)
+			{
+				int visibleScrollBarHeight = height - 4;
+				float scrollPercentage = (float) verticalScroll / (float) (lines.size() - visibleLines);
+				int scrollBarHeight = Math.max(20, (int) ((float) visibleLines / (float) lines.size() * (float) visibleScrollBarHeight));
+				int relativeScrollY = (int) (scrollPercentage * (visibleScrollBarHeight - scrollBarHeight));
+				int scrollY = yPosition + 2 + MathHelper.clamp(relativeScrollY + verticalOffset, 0, visibleScrollBarHeight - scrollBarHeight) + verticalScroll / fontRendererObj.FONT_HEIGHT;
+				Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + 1 + width - scrollBarSize, scrollY + scrollBarHeight, placeholderColour);
+			}
+
+			if(!wrapText && maxLineWidth >= width - padding * 2)
+			{
+				int visibleWidth = width - padding * 2;
+				int visibleScrollBarWidth = width - 4 - (lines.size() > visibleLines ? scrollBarSize + 1 : 0);
+				float scrollPercentage = (float) (horizontalScroll + 1) / (float) (maxLineWidth - visibleWidth + 1);
+				int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
+				int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
+				int scrollX = xPosition + 2 + MathHelper.clamp(relativeScrollX + horizontalOffset, 0, visibleScrollBarWidth - scrollBarWidth);
+				Gui.drawRect(scrollX, y + height - 2 - scrollBarSize, scrollX + scrollBarWidth, y + 1 + height - scrollBarSize, placeholderColour);
+			}
 		}
 	}
 
@@ -146,6 +181,61 @@ public class TextArea extends Component
 			return;
 
 		this.isFocused = GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height);
+
+		ScrollBar scrollBar = isMouseInsideScrollBar(mouseX, mouseY);
+		if(scrollBar != null)
+		{
+			this.scrollBar = scrollBar;
+			switch(scrollBar)
+			{
+				case HORIZONTAL:
+					clickedX = mouseX;
+					break;
+				case VERTICAL:
+					clickedY = mouseY;
+					break;
+			}
+		}
+	}
+
+	@Override
+	protected void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
+	{
+		if(scrollBar != null)
+		{
+			switch(scrollBar)
+			{
+				case HORIZONTAL:
+					horizontalOffset = mouseX - clickedX;
+					break;
+				case VERTICAL:
+					verticalOffset = mouseY - clickedY;
+					break;
+			}
+		}
+	}
+
+	@Override
+	protected void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
+	{
+		if(scrollBar != null)
+		{
+			switch(scrollBar)
+			{
+				case HORIZONTAL:
+				{
+					int visibleWidth = width - padding * 2;
+					horizontalScroll = MathHelper.clamp(horizontalScroll + horizontalOffset, 0, maxLineWidth - visibleWidth);
+					break;
+				}
+				case VERTICAL:
+					verticalScroll = MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, lines.size() - visibleLines);
+					break;
+			}
+			horizontalOffset = 0;
+			verticalOffset = 0;
+			scrollBar = null;
+		}
 	}
 
 	@Override
@@ -206,6 +296,40 @@ public class TextArea extends Component
 		}
 	}
 
+	@Nullable
+	private ScrollBar isMouseInsideScrollBar(int mouseX, int mouseY)
+	{
+		if(lines.size() > visibleLines)
+		{
+			int visibleScrollBarHeight = height - 4;
+			float scrollPercentage = (float) verticalScroll / (float) (lines.size() - visibleLines);
+			int scrollBarHeight = Math.max(20, (int) ((float) visibleLines / (float) lines.size() * (float) visibleScrollBarHeight));
+			int relativeScrollY = (int) (scrollPercentage * (visibleScrollBarHeight - scrollBarHeight));
+			int posX = xPosition + width - 2 - scrollBarSize;
+			int posY = yPosition + 2 + MathHelper.clamp(relativeScrollY + verticalOffset, 0, visibleScrollBarHeight - scrollBarHeight) + verticalScroll / fontRendererObj.FONT_HEIGHT;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + scrollBarSize, posY + scrollBarHeight))
+			{
+				return ScrollBar.VERTICAL;
+			}
+		}
+
+		if(!wrapText && maxLineWidth >= width - padding * 2)
+		{
+			int visibleWidth = width - padding * 2;
+			int visibleScrollBarWidth = width - 4 - (lines.size() > visibleLines ? scrollBarSize + 1 : 0);
+			float scrollPercentage = (float) horizontalScroll / (float) (maxLineWidth - visibleWidth + 1);
+			int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
+			int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
+			int posX = xPosition + 2 + MathHelper.clamp(relativeScrollX, 0, visibleScrollBarWidth - scrollBarWidth);
+			int posY = yPosition + height - 2 - scrollBarSize;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + scrollBarWidth, posY + scrollBarSize))
+			{
+				return ScrollBar.HORIZONTAL;
+			}
+		}
+		return null;
+	}
+
 	private String getActiveLine()
 	{
 		return lines.get(cursorY);
@@ -249,6 +373,7 @@ public class TextArea extends Component
 				}
 			}
 		}
+		recalculateMaxWidth();
 	}
 
 	private void handleReturn()
@@ -276,6 +401,7 @@ public class TextArea extends Component
 			scroll(1);
 		}
 		moveCursorRight(1);
+		recalculateMaxWidth();
 	}
 
 	private void removeCharAtCursor()
@@ -327,6 +453,7 @@ public class TextArea extends Component
 				scroll(-1);
 			}
 		}
+		recalculateMaxWidth();
 	}
 
 	private void insertAtCursor(char c)
@@ -390,6 +517,7 @@ public class TextArea extends Component
 			}
 		}
 		moveCursorRight(text.length());
+		recalculateMaxWidth();
 	}
 
 	private void prependToLine(int lineIndex, String text)
@@ -685,6 +813,7 @@ public class TextArea extends Component
 			while(++lineIndex < lines.size());
 		}
 		lines = updatedLines;
+		recalculateMaxWidth();
 	}
 
 	private void updateHorizontalScroll()
@@ -707,6 +836,19 @@ public class TextArea extends Component
 				horizontalScroll = 0;
 			}
 		}
+	}
+
+	public void recalculateMaxWidth()
+	{
+		int maxWidth = 0;
+		for(String line : lines)
+		{
+			if(fontRendererObj.getStringWidth(line) > maxWidth)
+			{
+				maxWidth = fontRendererObj.getStringWidth(line);
+			}
+		}
+		maxLineWidth = maxWidth;
 	}
 
 	/**
@@ -850,4 +992,8 @@ public class TextArea extends Component
 		this.editable = editable;
 	}
 
+	private enum ScrollBar
+	{
+		HORIZONTAL, VERTICAL;
+	}
 }

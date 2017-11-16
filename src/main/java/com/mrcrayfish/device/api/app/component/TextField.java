@@ -12,5 +12,6 @@ public class TextField extends TextArea {
 	public TextField(int left, int top, int width) 
 	{
 		super(left, top, width, 15);
+		this.setPadding(3);
 	}
 }
