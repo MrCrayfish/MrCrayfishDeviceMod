@@ -114,7 +114,8 @@ public class TextArea extends Component
 
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
-				int index = i + MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, Math.max(0, lines.size() - visibleLines));
+				float linesPerUnit = (float) lines.size() / (float) visibleLines;
+				int index = i + MathHelper.clamp(verticalScroll + (int) (verticalOffset * linesPerUnit) / fontRendererObj.FONT_HEIGHT, 0, Math.max(0, lines.size() - visibleLines));
 				if(highlight != null)
 				{
 					String[] words = lines.get(index).split(SPLIT_REGEX);
@@ -141,7 +142,8 @@ public class TextArea extends Component
 				}
 			}
 
-			int scroll = MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, Math.max(0, lines.size() - visibleLines));
+			float linesPerUnit = (float) lines.size() / (float) visibleLines;
+			int scroll = MathHelper.clamp(verticalScroll + verticalOffset * (int) Math.ceil(linesPerUnit), 0, Math.max(0, lines.size() - visibleLines));
 			if(this.isFocused && cursorY >= scroll && cursorY < scroll + visibleLines)
 			{
 				if ((this.cursorTick / 10) % 2 == 0)
@@ -162,8 +164,8 @@ public class TextArea extends Component
 				float scrollPercentage = (float) verticalScroll / (float) (lines.size() - visibleLines);
 				int scrollBarHeight = Math.max(20, (int) ((float) visibleLines / (float) lines.size() * (float) visibleScrollBarHeight));
 				int relativeScrollY = (int) (scrollPercentage * (visibleScrollBarHeight - scrollBarHeight));
-				int scrollY = yPosition + 2 + MathHelper.clamp(relativeScrollY + verticalOffset, 0, visibleScrollBarHeight - scrollBarHeight) + verticalScroll / fontRendererObj.FONT_HEIGHT;
-				Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + 1 + width - scrollBarSize, scrollY + scrollBarHeight, placeholderColour);
+				int scrollY = yPosition + 2 + MathHelper.clamp(relativeScrollY + verticalOffset, 0, visibleScrollBarHeight - scrollBarHeight);
+				Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColour);
 			}
 
 			if(!wrapText && maxLineWidth >= width - padding * 2)
@@ -174,7 +176,7 @@ public class TextArea extends Component
 				int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
 				int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
 				int scrollX = xPosition + 2 + MathHelper.clamp(relativeScrollX + horizontalOffset, 0, visibleScrollBarWidth - scrollBarWidth);
-				Gui.drawRect(scrollX, y + height - 2 - scrollBarSize, scrollX + scrollBarWidth, y + 1 + height - scrollBarSize, placeholderColour);
+				Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColour);
 			}
 		}
 	}
@@ -231,11 +233,11 @@ public class TextArea extends Component
 				{
 					float percent = (float) maxLineWidth / (float) (width - padding * 2);
 					horizontalScroll = MathHelper.clamp(horizontalScroll + (int)(horizontalOffset * percent), 0, maxLineWidth - (width - padding * 2));
-					System.out.println("Setting to: " + horizontalScroll);
 					break;
 				}
 				case VERTICAL:
-					verticalScroll = MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, lines.size() - visibleLines);
+					float linesPerUnit = (float) lines.size() / (float) visibleLines;
+					verticalScroll = MathHelper.clamp(verticalScroll + (int) (verticalOffset * linesPerUnit) / fontRendererObj.FONT_HEIGHT, 0, lines.size() - visibleLines);
 					break;
 			}
 			horizontalOffset = 0;
@@ -930,6 +932,11 @@ public class TextArea extends Component
 	{
 		this.wrapText = wrapText;
 		updateText();
+	}
+
+	public void setScrollBarSize(int scrollBarSize)
+	{
+		this.scrollBarSize = Math.max(0, scrollBarSize);
 	}
 
 	public void setHighlight(IHighlight highlight)
