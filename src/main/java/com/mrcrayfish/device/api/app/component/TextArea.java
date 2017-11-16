@@ -129,14 +129,17 @@ public class TextArea extends Component
 						builder.append(word);
 						builder.append(TextFormatting.RESET);
 					}
-					fontRendererObj.drawString(builder.toString(), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, -1);
+					float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
+					int scroll = MathHelper.clamp(horizontalScroll + (int)(horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - (width - padding * 2)));
+					fontRendererObj.drawString(builder.toString(), x + padding - scroll, y + padding + i * fontRendererObj.FONT_HEIGHT, -1);
 				}
 				else
 				{
-					fontRendererObj.drawString(lines.get(index), x + padding - horizontalScroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour);
+					float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
+					int scroll = MathHelper.clamp(horizontalScroll + (int)(horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - (width - padding * 2)));
+					fontRendererObj.drawString(lines.get(index), x + padding - scroll, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour);
 				}
 			}
-
 
 			int scroll = MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, Math.max(0, lines.size() - visibleLines));
 			if(this.isFocused && cursorY >= scroll && cursorY < scroll + visibleLines)
@@ -226,8 +229,9 @@ public class TextArea extends Component
 			{
 				case HORIZONTAL:
 				{
-					int visibleWidth = width - padding * 2;
-					horizontalScroll = MathHelper.clamp(horizontalScroll + horizontalOffset, 0, maxLineWidth - visibleWidth);
+					float percent = (float) maxLineWidth / (float) (width - padding * 2);
+					horizontalScroll = MathHelper.clamp(horizontalScroll + (int)(horizontalOffset * percent), 0, maxLineWidth - (width - padding * 2));
+					System.out.println("Setting to: " + horizontalScroll);
 					break;
 				}
 				case VERTICAL:
