@@ -137,7 +137,9 @@ public class TextArea extends Component
 				}
 			}
 
-			if(this.isFocused && cursorY >= verticalScroll && cursorY < verticalScroll + visibleLines)
+
+			int scroll = MathHelper.clamp(verticalScroll + (verticalOffset / fontRendererObj.FONT_HEIGHT), 0, Math.max(0, lines.size() - visibleLines));
+			if(this.isFocused && cursorY >= scroll && cursorY < scroll + visibleLines)
 			{
 				if ((this.cursorTick / 10) % 2 == 0)
 				{
