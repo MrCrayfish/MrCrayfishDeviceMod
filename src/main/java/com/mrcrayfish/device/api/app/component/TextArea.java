@@ -37,32 +37,29 @@ public class TextArea extends Component
 		SPLIT_REGEX = String.format(UNFORMATTED_SPLIT, "(" + joiner.toString() + ")");
 	}
 
-	public static final IHighlight STANDARD_HIGHLIGHTER = text -> new TextFormatting[] { TextFormatting.WHITE };
-
 	protected FontRenderer fontRendererObj;
-
-	protected List<String> lines = new ArrayList<>();
-	protected String placeholder = null;
 	protected int width, height;
-	protected int visibleLines;
-	protected ScrollBar scrollBar;
-	protected int scrollBarSize = 3;
-	protected int horizontalScroll;
-	protected int verticalScroll;
-	protected int horizontalOffset;
-	protected int verticalOffset;
 	protected int padding = 4;
-	protected int cursorTick = 0;
-	protected int cursorX;
-	protected int cursorY;
+	protected String placeholder = null;
 	protected boolean isFocused = false;
 	protected boolean editable = true;
-	protected boolean wrapText = false;
-	protected int maxLineWidth;
-	protected IHighlight highlight = STANDARD_HIGHLIGHTER;
 
+	private List<String> lines = new ArrayList<>();
+	private int visibleLines;
+	private ScrollBar scrollBar;
+	private int scrollBarSize = 3;
+	private int horizontalScroll;
+	private int verticalScroll;
+	private int horizontalOffset;
+	private int verticalOffset;
+	private int cursorTick = 0;
+	private int cursorX;
+	private int cursorY;
 	private int clickedX;
 	private int clickedY;
+	private boolean wrapText = false;
+	private int maxLineWidth;
+	private IHighlight highlight = null;
 
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
@@ -232,14 +229,16 @@ public class TextArea extends Component
 			{
 				case HORIZONTAL:
 				{
-					float percent = (float) maxLineWidth / (float) (width - padding * 2);
-					horizontalScroll = MathHelper.clamp(horizontalScroll + (int)(horizontalOffset * percent), 0, maxLineWidth - (width - padding * 2));
+					float scrollPercentage = (float) maxLineWidth / (float) (width - padding * 2);
+					horizontalScroll = MathHelper.clamp(horizontalScroll + (int)(horizontalOffset * scrollPercentage), 0, maxLineWidth - (width - padding * 2));
 					break;
 				}
 				case VERTICAL:
+				{
 					float scrollPercentage = MathHelper.clamp((verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines), 0.0F, 1.0F);
 					verticalScroll = (int) ((lines.size() - visibleLines) * (scrollPercentage));
 					break;
+				}
 			}
 			horizontalOffset = 0;
 			verticalOffset = 0;
