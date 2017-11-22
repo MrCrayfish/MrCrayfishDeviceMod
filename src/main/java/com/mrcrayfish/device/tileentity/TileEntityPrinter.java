@@ -1,9 +1,9 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.block.BlockPrinter;
+import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
 import com.mrcrayfish.device.util.TileEntityUtil;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -12,6 +12,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.util.Constants;
 
 import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
@@ -40,6 +41,10 @@ public class TileEntityPrinter extends TileEntity implements ITickable
                 {
                     bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
                     TileEntityUtil.markBlockForUpdate(world, pos);
+                    if(remainingPrintTime != 0 && state == PRINTING)
+                    {
+                        world.playSound(null, pos, DeviceSounds.printing_ink, SoundCategory.BLOCKS, 0.5F, 1.0F);
+                    }
                 }
             }
             else
@@ -145,6 +150,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         bufferTag.setInteger("state", state.ordinal());
         bufferTag.setTag("item", item.writeToNBT(new NBTTagCompound()));
         TileEntityUtil.markBlockForUpdate(world, pos);
+        world.playSound(null, pos, DeviceSounds.printing_paper, SoundCategory.BLOCKS, 0.5F, 1.0F);
     }
 
     public boolean isLoading()
