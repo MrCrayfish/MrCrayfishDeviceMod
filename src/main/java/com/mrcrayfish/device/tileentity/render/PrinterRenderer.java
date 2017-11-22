@@ -38,7 +38,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
 
 
                 GlStateManager.translate(0, -0.5, 0);
-                double progress = -0.25 + (0.30 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.PRINT_TIME));
+                double progress = -0.25 + (0.40 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.PRINT_TIME));
                 GlStateManager.translate(0.015625, progress, 0);
                 Minecraft.getMinecraft().getRenderManager().doRenderEntity(ENTITY, 0, 0, 0, 0, 0, true);
             }

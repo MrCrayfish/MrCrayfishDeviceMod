@@ -47,7 +47,11 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             if(!world.isRemote)
             {
-                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, item));
+                EntityItem entity = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, item);
+                entity.motionX = 0;
+                entity.motionY = 0;
+                entity.motionZ = 0;
+                world.spawnEntity(entity);
             }
             item = null;
         }
