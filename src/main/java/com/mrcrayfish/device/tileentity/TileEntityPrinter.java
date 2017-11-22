@@ -6,6 +6,7 @@ import com.mrcrayfish.device.util.CollisionHelper;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -26,6 +27,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     private ItemStack item;
     private State state = IDLE;
     private int remainingPrintTime;
+    private int paperCount = 0;
 
     private NBTTagCompound bufferTag = new NBTTagCompound();
 
@@ -89,6 +91,10 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             setState(State.values()[compound.getInteger("state")]);
         }
+        if(compound.hasKey("paperCount", Constants.NBT.TAG_INT))
+        {
+            this.paperCount = compound.getInteger("paperCount");
+        }
     }
 
     @Override
@@ -123,7 +129,6 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
     }
 
-
     public void setState(State state)
     {
         if(state == null)
@@ -136,6 +141,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
 
     public void print(ItemStack stack)
     {
+        if(paperCount <= 0)
+            return;
+
         if(!stack.hasTagCompound())
             return;
 
@@ -146,8 +154,10 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             return;
 
         setState(LOADING_PAPER);
+        paperCount--;
         item = stack.copy();
         bufferTag.setInteger("state", state.ordinal());
+        bufferTag.setInteger("paperCount", paperCount);
         bufferTag.setTag("item", item.writeToNBT(new NBTTagCompound()));
         TileEntityUtil.markBlockForUpdate(world, pos);
         world.playSound(null, pos, DeviceSounds.printing_paper, SoundCategory.BLOCKS, 0.5F, 1.0F);
@@ -166,6 +176,28 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     public int getRemainingPrintTime()
     {
         return remainingPrintTime;
+    }
+
+    public boolean addPaper(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() == Items.PAPER)
+        {
+            paperCount++;
+            bufferTag.setInteger("paperCount", paperCount);
+            TileEntityUtil.markBlockForUpdate(world, pos);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasPaper()
+    {
+        return paperCount > 0;
+    }
+
+    public int getPaperCount()
+    {
+        return paperCount;
     }
 
     public void setName(String name)

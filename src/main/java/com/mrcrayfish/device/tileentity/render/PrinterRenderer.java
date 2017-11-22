@@ -15,6 +15,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.*;
+
 /**
  * Author: MrCrayfish
  */
@@ -30,29 +32,66 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
     {
         GlStateManager.pushMatrix();
         {
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.translate(x, y, z);
-            if(te.isLoading())
+
+            if(te.hasPaper())
             {
+                GlStateManager.pushMatrix();
+                {
+                    GlStateManager.translate(0.5, 0.5, 0.5);
+                    IBlockState state = te.getWorld().getBlockState(te.getPos());
+                    GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
+                    GlStateManager.rotate(22.5F, 1, 0, 0);
+                    GlStateManager.translate(0, 0, 0.4);
+                    GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
+                    MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
+                }
+                GlStateManager.popMatrix();
+            }
+
+            GlStateManager.pushMatrix();
+            {
+                if(te.isLoading())
+                {
+                    GlStateManager.translate(0.5, 0.5, 0.5);
+                    IBlockState state1 = te.getWorld().getBlockState(te.getPos());
+                    GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
+                    GlStateManager.rotate(22.5F, 1, 0, 0);
+                    double progress = -0.4 + (0.4 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.LOADING_PAPER.getAnimationTime()));
+                    GlStateManager.translate(0, progress, 0.36875);
+                    GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
+                    MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
+                }
+                else if(te.isPrinting())
+                {
+                    GlStateManager.translate(0.5, 0.078125, 0.5);
+                    IBlockState state1 = te.getWorld().getBlockState(te.getPos());
+                    GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
+                    GlStateManager.rotate(90F, 1, 0, 0);
+                    double progress = -0.25 + (0.40 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.PRINTING.getAnimationTime()));
+                    GlStateManager.translate(0, progress, 0);
+                    GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
+                    MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
+                }
+            }
+            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.depthMask(false);
                 GlStateManager.translate(0.5, 0.5, 0.5);
                 IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                 GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
-                GlStateManager.rotate(22.5F, 1, 0, 0);
-                double progress = -0.4 + (0.4 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.LOADING_PAPER.getAnimationTime()));
-                GlStateManager.translate(0, progress, 0.4);
-                GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
-                MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
+                GlStateManager.rotate(180F, 0, 1, 0);
+                GlStateManager.translate(-6.5 * 0.0625, -3.5 * 0.0625, 3.01 * 0.0625);
+                GlStateManager.scale(0.010416667F, -0.010416667F, 0.010416667F);
+                GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
+                Minecraft.getMinecraft().fontRendererObj.drawString(Integer.toString(te.getPaperCount()), 0, 0, Color.WHITE.getRGB());
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.depthMask(true);
             }
-            else if(te.isPrinting())
-            {
-                GlStateManager.translate(0.5, 0.078125, 0.5);
-                IBlockState state1 = te.getWorld().getBlockState(te.getPos());
-                GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
-                GlStateManager.rotate(90F, 1, 0, 0);
-                double progress = -0.25 + (0.40 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.PRINTING.getAnimationTime()));
-                GlStateManager.translate(0, progress, 0);
-                GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
-                MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
-            }
+            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
     }

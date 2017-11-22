@@ -11,6 +11,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -84,6 +85,22 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
         super.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_BOUNDING_BOX[facing.getHorizontalIndex()]);
         super.addCollisionBoxToList(pos, entityBox, collidingBoxes, TRAY_BOUNDING_BOX[facing.getHorizontalIndex()]);
         super.addCollisionBoxToList(pos, entityBox, collidingBoxes, PAPER_BOUNDING_BOX[facing.getHorizontalIndex()]);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        ItemStack heldItem = playerIn.getHeldItem(hand);
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof TileEntityPrinter)
+        {
+            if(((TileEntityPrinter) tileEntity).addPaper(heldItem))
+            {
+                heldItem.shrink(1);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
