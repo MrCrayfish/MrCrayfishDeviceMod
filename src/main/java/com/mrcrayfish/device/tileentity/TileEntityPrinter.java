@@ -13,20 +13,17 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Set;
+import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 
 /**
  * Author: MrCrayfish
  */
 public class TileEntityPrinter extends TileEntity implements ITickable
 {
-    public static final int PRINT_TIME = 400;
-
     private String name = "Printer";
     private ItemStack item;
+    private State state = IDLE;
     private int remainingPrintTime;
 
     private NBTTagCompound bufferTag = new NBTTagCompound();
@@ -39,15 +36,19 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             if(remainingPrintTime > 0)
             {
                 remainingPrintTime--;
-                if(remainingPrintTime % 20 == 0)
+                if(remainingPrintTime % 20 == 0 || state == LOADING_PAPER)
                 {
                     bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
                     TileEntityUtil.markBlockForUpdate(world, pos);
                 }
             }
+            else
+            {
+                setState(state.next());
+            }
         }
 
-        if(remainingPrintTime == 0 && item != null)
+        if(state == IDLE && item != null)
         {
             if(!world.isRemote)
             {
@@ -78,6 +79,10 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         if(compound.hasKey("remainingPrintTime", Constants.NBT.TAG_INT))
         {
             this.remainingPrintTime = compound.getInteger("remainingPrintTime");
+        }
+        if(compound.hasKey("state", Constants.NBT.TAG_INT))
+        {
+            setState(State.values()[compound.getInteger("state")]);
         }
     }
 
@@ -113,6 +118,17 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
     }
 
+
+    public void setState(State state)
+    {
+        if(state == null)
+            return;
+        this.state = state;
+        this.remainingPrintTime = state.animationTime;
+        bufferTag.setInteger("state", state.ordinal());
+        TileEntityUtil.markBlockForUpdate(world, pos);
+    }
+
     public void print(ItemStack stack)
     {
         if(!stack.hasTagCompound())
@@ -124,17 +140,21 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         if(!stack.getTagCompound().hasKey("data", Constants.NBT.TAG_COMPOUND))
             return;
 
-        remainingPrintTime = PRINT_TIME;
+        setState(LOADING_PAPER);
         item = stack.copy();
-
-        bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
+        bufferTag.setInteger("state", state.ordinal());
         bufferTag.setTag("item", item.writeToNBT(new NBTTagCompound()));
         TileEntityUtil.markBlockForUpdate(world, pos);
     }
 
+    public boolean isLoading()
+    {
+        return state == LOADING_PAPER;
+    }
+
     public boolean isPrinting()
     {
-        return item != null && remainingPrintTime > 0;
+        return state == PRINTING || (state == IDLE && remainingPrintTime > 0);
     }
 
     public int getRemainingPrintTime()
@@ -150,5 +170,29 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     public String getName()
     {
         return name;
+    }
+
+    public enum State
+    {
+        LOADING_PAPER(20), PRINTING(400), IDLE(0);
+
+        final int animationTime;
+
+        State(int time)
+        {
+            this.animationTime = time;
+        }
+
+        public int getAnimationTime()
+        {
+            return animationTime;
+        }
+
+        public State next()
+        {
+            if(ordinal() + 1 >= values().length)
+                return null;
+            return values()[ordinal() + 1];
+        }
     }
 }
