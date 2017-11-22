@@ -2,10 +2,12 @@ package com.mrcrayfish.device.core.print.task;
 
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.init.DeviceItems;
+import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -42,14 +44,24 @@ public class TaskPrint extends Task
     @Override
     public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
     {
-        BlockPos pos = BlockPos.fromLong(nbt.getLong("pos"));
-        ItemStack stack = new ItemStack(DeviceItems.paper_printed);
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setIntArray("pixels", nbt.getIntArray("pixels"));
-        tag.setInteger("resolution", nbt.getInteger("resolution"));
-        stack.setTagCompound(tag);
-        world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, stack));
-        this.setSuccessful();
+        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("pos")));
+        if(tileEntity instanceof TileEntityPrinter)
+        {
+            TileEntityPrinter printer = (TileEntityPrinter) tileEntity;
+
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString("type", "cdm:picture");
+            NBTTagCompound data = new NBTTagCompound();
+            data.setIntArray("pixels", nbt.getIntArray("pixels"));
+            data.setInteger("resolution", nbt.getInteger("resolution"));
+            tag.setTag("data", data);
+
+            ItemStack stack = new ItemStack(DeviceItems.paper_printed);
+            stack.setTagCompound(tag);
+            printer.print(stack);
+
+            this.setSuccessful();
+        }
     }
 
     @Override

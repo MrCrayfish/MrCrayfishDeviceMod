@@ -4,12 +4,17 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
+import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -50,6 +55,7 @@ public class ClientProxy extends CommonProxy
     public void init()
     {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
 
         if(MrCrayfishDeviceMod.DEVELOPER_MODE)
         {
@@ -64,6 +70,8 @@ public class ClientProxy extends CommonProxy
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
         }
+
+        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), new ApplicationPixelPainter.PicturePrint());
     }
 
     @Override
@@ -189,63 +197,14 @@ public class ClientProxy extends CommonProxy
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.translate(-0.5, 0, 0.5);
 
-                    if(tag.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) && tag.hasKey("resolution", Constants.NBT.TAG_INT))
+                    if(tag.hasKey("type", Constants.NBT.TAG_STRING))
                     {
-                        int[] pixels = tag.getIntArray("pixels");
-                        int resolution = tag.getInteger("resolution");
-                        boolean cut = tag.getBoolean("cut");
-
-                        if(pixels.length != resolution * resolution) return;
-
-                        GlStateManager.enableBlend();
-                        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-                        GlStateManager.disableLighting();
-                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                        GlStateManager.disableTexture2D();
-
-                        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-                        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-                        GlStateManager.translate(0, 0.5 - (1.0 / resolution), -0.495);
-                        Tessellator tessellator = Tessellator.getInstance();
-                        VertexBuffer buffer = tessellator.getBuffer();
-
-                        for(int i = 0; i < resolution; i++)
+                        IPrint print = PrintingManager.getPrint(tag.getString("type"));
+                        if(print != null)
                         {
-                            double pixelY = -i / (double) resolution;
-                            for(int j = 0; j < resolution; j++)
-                            {
-                                float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
-                                float g = (float) (pixels[j + i * resolution] >> 8 & 255) / 255.0F;
-                                float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
-                                float a = (float) Math.floor((pixels[j + i * resolution] >> 24 & 255) / 255.0F);
-
-                                if(a == 0.0F)
-                                {
-                                    if(cut) continue;
-                                    GlStateManager.color(1.0F, 1.0F, 1.0F);
-                                }
-                                else
-                                {
-                                    GlStateManager.color(r, g, b, a);
-                                }
-
-                                double pixelX = j / (double) resolution;
-                                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-                                buffer.pos(pixelX, pixelY, 0).endVertex();
-                                buffer.pos(pixelX + 1 / (double) resolution, pixelY, 0).endVertex();
-                                buffer.pos(pixelX + 1 / (double) resolution, pixelY + 1 / (double) resolution, 0).endVertex();
-                                buffer.pos(pixelX, pixelY + 1 / (double) resolution, 0).endVertex();
-                                tessellator.draw();
-                            }
+                            boolean success = print.render(tag.getCompoundTag("data"));
+                            event.setCanceled(success);
                         }
-
-                        GlStateManager.enableTexture2D();
-                        GlStateManager.disableRescaleNormal();
-                        GlStateManager.disableBlend();
-                        GlStateManager.enableLighting();
-
-                        event.setCanceled(true);
                     }
                 }
                 GlStateManager.popMatrix();
