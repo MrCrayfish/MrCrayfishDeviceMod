@@ -1,6 +1,10 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.block.BlockPrinter;
+import com.mrcrayfish.device.util.CollisionHelper;
 import com.mrcrayfish.device.util.TileEntityUtil;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +51,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             if(!world.isRemote)
             {
-                EntityItem entity = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, item);
+                IBlockState state = world.getBlockState(pos);
+                double[] fixedPosition = CollisionHelper.fixRotation(state.getValue(BlockPrinter.FACING), 0.15, 0.5, 0.0, 0.0);
+                EntityItem entity = new EntityItem(world, pos.getX() + fixedPosition[0], pos.getY() + 0.0625, pos.getZ() + fixedPosition[1], item);
                 entity.motionX = 0;
                 entity.motionY = 0;
                 entity.motionZ = 0;
