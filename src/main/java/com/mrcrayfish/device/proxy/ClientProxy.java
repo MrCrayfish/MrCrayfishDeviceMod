@@ -202,6 +202,7 @@ public class ClientProxy extends CommonProxy
                         IPrint print = PrintingManager.getPrint(tag.getString("type"));
                         if(print != null)
                         {
+                            GlStateManager.translate(0, 0, -0.495);
                             boolean success = print.render(tag.getCompoundTag("data"));
                             event.setCanceled(success);
                         }

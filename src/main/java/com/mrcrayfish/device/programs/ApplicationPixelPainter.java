@@ -508,7 +508,6 @@ public class ApplicationPixelPainter extends Application
 
 	public static class PicturePrint implements IPrint
 	{
-
 		@Override
 		public boolean render(NBTTagCompound data)
 		{
@@ -529,8 +528,8 @@ public class ApplicationPixelPainter extends Application
 
 				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-				GlStateManager.translate(0, 0.5 - (1.0 / resolution), -0.495);
+				
+				GlStateManager.translate(0, 0.5 - (1.0 / resolution), 0);
 				Tessellator tessellator = Tessellator.getInstance();
 				VertexBuffer buffer = tessellator.getBuffer();
 

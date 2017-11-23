@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.tileentity.render;
 
 import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.block.state.IBlockState;
@@ -10,7 +12,10 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
 
@@ -67,6 +72,24 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     GlStateManager.translate(0, progress, 0);
                     GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
+
+                    GlStateManager.translate(0.265, 0.1875, -0.001);
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                    GlStateManager.scale(0.25, 0.25, 0.25);
+
+                    ItemStack stack = te.getItem();
+                    if(stack.hasTagCompound())
+                    {
+                        NBTTagCompound tag = stack.getTagCompound();
+                        if(tag.hasKey("type", Constants.NBT.TAG_STRING) && tag.hasKey("data", Constants.NBT.TAG_COMPOUND))
+                        {
+                            IPrint print = PrintingManager.getPrint(tag.getString("type"));
+                            if(print != null)
+                            {
+                                print.render(tag.getCompoundTag("data"));
+                            }
+                        }
+                    }
                 }
             }
             GlStateManager.popMatrix();

@@ -210,6 +210,11 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         return name;
     }
 
+    public ItemStack getItem()
+    {
+        return item;
+    }
+
     public enum State
     {
         LOADING_PAPER(20), PRINTING(400), IDLE(0);
