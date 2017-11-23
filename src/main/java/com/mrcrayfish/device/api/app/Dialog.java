@@ -943,7 +943,7 @@ public abstract class Dialog extends Wrappable
 							if(tileEntity instanceof TileEntityPrinter)
 							{
 								TileEntityPrinter tileEntityPrinter = (TileEntityPrinter) tileEntity;
-								printers.add(new PrinterEntry(tileEntityPrinter.getName(), pos));
+								printers.add(new PrinterEntry(tileEntityPrinter.getName(), tileEntityPrinter.getPaperCount(), pos));
 							}
 						}
 					}
@@ -955,17 +955,24 @@ public abstract class Dialog extends Wrappable
 		private static class PrinterEntry
 		{
 			private String name;
+			private int paperCount;
 			private BlockPos pos;
 
-			public PrinterEntry(String name, BlockPos pos)
+			public PrinterEntry(String name, int paperCount, BlockPos pos)
 			{
 				this.name = name;
+				this.paperCount = paperCount;
 				this.pos = pos;
 			}
 
 			public String getName()
 			{
 				return name;
+			}
+
+			public int getPaperCount()
+			{
+				return paperCount;
 			}
 
 			public BlockPos getPos()
@@ -980,6 +987,8 @@ public abstract class Dialog extends Wrappable
 
 			private Layout layoutMain;
 			private Label labelName;
+			private Image imagePaper;
+			private Label labelPaper;
 			private Label labelPosition;
 			private Button buttonClose;
 
@@ -994,17 +1003,22 @@ public abstract class Dialog extends Wrappable
 			{
 				super.init();
 
-				layoutMain = new Layout(120, 60);
+				layoutMain = new Layout(120, 70);
 
 				labelName = new Label(TextFormatting.GOLD.toString() + TextFormatting.BOLD.toString() + entry.getName(), 5, 5);
 				layoutMain.addComponent(labelName);
 
-				String position = TextFormatting.DARK_GRAY + "X: " + TextFormatting.RESET + entry.getPos().getX() + ", " + TextFormatting.DARK_GRAY + "Y: " + TextFormatting.RESET + entry.getPos().getY() + ", " + TextFormatting.DARK_GRAY + "Z: " + TextFormatting.RESET + entry.getPos().getZ();
-				labelPosition = new Label(position, 5, 20);
+				labelPaper = new Label(TextFormatting.DARK_GRAY + "Paper: " + TextFormatting.RESET + Integer.toString(entry.getPaperCount()), 5, 18);
+				labelPaper.setAlignment(Component.ALIGN_LEFT);
+				labelPaper.setShadow(false);
+				layoutMain.addComponent(labelPaper);
+
+				String position = TextFormatting.DARK_GRAY + "X: " + TextFormatting.RESET + entry.getPos().getX() + " " + TextFormatting.DARK_GRAY + "Y: " + TextFormatting.RESET + entry.getPos().getY() + " " + TextFormatting.DARK_GRAY + "Z: " + TextFormatting.RESET + entry.getPos().getZ();
+				labelPosition = new Label(position, 5, 30);
 				labelPosition.setShadow(false);
 				layoutMain.addComponent(labelPosition);
 
-				buttonClose = new Button(5, 39, "Close");
+				buttonClose = new Button(5, 49, "Close");
 				buttonClose.setClickListener((c, mouseButton) ->
 				{
                     if(mouseButton == 0)
