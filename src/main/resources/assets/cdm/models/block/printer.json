@@ -1,6 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
+        "particle": "blocks/anvil_base",
         "0": "blocks/anvil_base",
         "1": "blocks/hardened_clay_stained_cyan",
         "2": "blocks/wool_colored_red",
