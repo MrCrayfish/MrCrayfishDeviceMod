@@ -2,7 +2,6 @@ package com.mrcrayfish.device.tileentity.render;
 
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.block.BlockPrinter;
-import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -11,8 +10,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -23,9 +20,6 @@ import java.awt.*;
 public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter>
 {
     private static final ModelPaper MODEL_PAPER = new ModelPaper();
-    private static final ItemStack ITEM = new ItemStack(DeviceItems.paper_printed);
-    private static final EntityItem ENTITY = new EntityItem(null, 0, 0, 0, ITEM);
-    static { ENTITY.hoverStart = 0.0F; }
 
     @Override
     public void renderTileEntityAt(TileEntityPrinter te, double x, double y, double z, float partialTicks, int destroyStage)
@@ -84,9 +78,11 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                 GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                 GlStateManager.rotate(180F, 0, 1, 0);
+                GlStateManager.translate(0.0675, 0.005, -0.032);
                 GlStateManager.translate(-6.5 * 0.0625, -3.5 * 0.0625, 3.01 * 0.0625);
                 GlStateManager.scale(0.010416667F, -0.010416667F, 0.010416667F);
                 GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
+                GlStateManager.rotate(22.5F, 1, 0, 0);
                 Minecraft.getMinecraft().fontRendererObj.drawString(Integer.toString(te.getPaperCount()), 0, 0, Color.WHITE.getRGB());
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.depthMask(true);
