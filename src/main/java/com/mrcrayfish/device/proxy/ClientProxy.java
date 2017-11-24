@@ -17,12 +17,8 @@ import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
 import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
@@ -31,15 +27,17 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 public class ClientProxy extends CommonProxy
 {
@@ -71,7 +69,7 @@ public class ClientProxy extends CommonProxy
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
         }
 
-        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), new ApplicationPixelPainter.PicturePrint());
+        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
     }
 
     @Override
@@ -178,6 +176,34 @@ public class ClientProxy extends CommonProxy
         return null;
     }
 
+    @Override
+    public boolean registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint)
+    {
+        try
+        {
+            Constructor<? extends IPrint> constructor = classPrint.getConstructor();
+            IPrint print = constructor.newInstance();
+            Class<? extends IPrint.Renderer> classRenderer = print.getRenderer();
+            try
+            {
+                IPrint.Renderer renderer = classRenderer.newInstance();
+                Map<String, IPrint.Renderer> idToRenderer = ReflectionHelper.getPrivateValue(PrintingManager.class, null, "registeredRenders");
+                idToRenderer.put(identifier.toString(), renderer);
+            }
+            catch(InstantiationException e)
+            {
+                MrCrayfishDeviceMod.getLogger().error("The print renderer '" + classRenderer.getName() + "' is missing an empty constructor and could not be registered!");
+                return false;
+            }
+            return true;
+        }
+        catch(Exception e)
+        {
+            MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
+        }
+        return false;
+    }
+
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
@@ -199,7 +225,7 @@ public class ClientProxy extends CommonProxy
 
                     if(tag.hasKey("type", Constants.NBT.TAG_STRING))
                     {
-                        IPrint print = PrintingManager.getPrint(tag.getString("type"));
+                        IPrint.Renderer print = PrintingManager.getRenderer(tag.getString("type"));
                         if(print != null)
                         {
                             GlStateManager.translate(0, 0, -0.495);

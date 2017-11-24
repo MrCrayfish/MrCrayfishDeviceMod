@@ -83,7 +83,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                         NBTTagCompound tag = stack.getTagCompound();
                         if(tag.hasKey("type", Constants.NBT.TAG_STRING) && tag.hasKey("data", Constants.NBT.TAG_COMPOUND))
                         {
-                            IPrint print = PrintingManager.getPrint(tag.getString("type"));
+                            IPrint.Renderer print = PrintingManager.getRenderer(tag.getString("type"));
                             if(print != null)
                             {
                                 print.render(tag.getCompoundTag("data"));

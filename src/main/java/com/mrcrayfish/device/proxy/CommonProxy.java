@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.proxy;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.object.AppInfo;
@@ -37,6 +38,11 @@ public class CommonProxy
 		}
 		allowedApps.add(new AppInfo(identifier));
 		return null;
+	}
+
+	public boolean registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint)
+	{
+		return true;
 	}
 
 	public boolean hasAllowedApplications()

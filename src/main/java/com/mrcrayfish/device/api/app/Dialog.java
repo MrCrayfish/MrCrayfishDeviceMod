@@ -8,6 +8,7 @@ import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -790,8 +791,7 @@ public abstract class Dialog extends Wrappable
 
 	public static class Print extends Dialog
 	{
-		private final int[] pixels;
-		private final int resolution;
+		private final IPrint print;
 
 		private Layout layoutMain;
 		private Label labelMessage;
@@ -801,10 +801,9 @@ public abstract class Dialog extends Wrappable
 		private Button buttonCancel;
 		private Button buttonInfo;
 
-		public Print(int[] pixels, int resolution)
+		public Print(IPrint print)
 		{
-			this.pixels = pixels;
-			this.resolution = resolution;
+			this.print = print;
 			this.setTitle("Print");
 		}
 
@@ -876,7 +875,7 @@ public abstract class Dialog extends Wrappable
 					PrinterEntry printerEntry = itemListPrinters.getSelectedItem();
 					if(printerEntry != null)
 					{
-						TaskPrint task = new TaskPrint(printerEntry.getPos(), pixels, resolution);
+						TaskPrint task = new TaskPrint(printerEntry.getPos(), print);
 						task.setCallback((nbtTagCompound, success) ->
 						{
 							if(success)

@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.print.task;
 
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
@@ -17,28 +19,26 @@ import net.minecraft.world.World;
 public class TaskPrint extends Task
 {
     private BlockPos pos;
-    private int[] pixels;
-    private int resolution;
+    private IPrint print;
 
     private TaskPrint()
     {
         super("print");
     }
 
-    public TaskPrint(BlockPos pos, int[] pixels, int resolution)
+    public TaskPrint(BlockPos pos, IPrint print)
     {
         this();
         this.pos = pos;
-        this.pixels = pixels;
-        this.resolution = resolution;
+        this.print = print;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
         nbt.setLong("pos", pos.toLong());
-        nbt.setIntArray("pixels", pixels);
-        nbt.setInteger("resolution", resolution);
+        nbt.setString("type", PrintingManager.getPrintIdentifier(print));
+        nbt.setTag("data", print.toTag());
     }
 
     @Override
@@ -50,11 +50,8 @@ public class TaskPrint extends Task
             TileEntityPrinter printer = (TileEntityPrinter) tileEntity;
 
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("type", "cdm:picture");
-            NBTTagCompound data = new NBTTagCompound();
-            data.setIntArray("pixels", nbt.getIntArray("pixels"));
-            data.setInteger("resolution", nbt.getInteger("resolution"));
-            tag.setTag("data", data);
+            tag.setString("type", nbt.getString("type"));
+            tag.setTag("data", nbt.getTag("data"));
 
             ItemStack stack = new ItemStack(DeviceItems.paper_printed);
             stack.setTagCompound(tag);
