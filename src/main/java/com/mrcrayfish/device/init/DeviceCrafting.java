@@ -67,13 +67,21 @@ public class DeviceCrafting
 				if(!paper.isEmpty() && paper.hasTagCompound())
 				{
 					ItemStack result = new ItemStack(DeviceItems.paper_printed);
-					NBTTagCompound tag = paper.getTagCompound().copy();
-					if(!tag.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) || !tag.hasKey("resolution", Constants.NBT.TAG_INT))
+
+					NBTTagCompound tag = paper.getTagCompound();
+					if(!tag.hasKey("data", Constants.NBT.TAG_COMPOUND))
 					{
 						return ItemStack.EMPTY;
 					}
-					tag.setBoolean("cut", true);
+
+					NBTTagCompound data = tag.getCompoundTag("data");
+					if(!data.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) || !data.hasKey("resolution", Constants.NBT.TAG_INT))
+					{
+						return ItemStack.EMPTY;
+					}
+					data.setBoolean("cut", true);
 					result.setTagCompound(tag);
+
 					return result;
 				}
 
