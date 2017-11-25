@@ -113,6 +113,13 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(0, -0.5, 0);
+            super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
+        }
+        GlStateManager.popMatrix();
     }
 
     public static class ModelPaper extends ModelBase

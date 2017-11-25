@@ -14,7 +14,11 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
+
+import javax.annotation.Nullable;
 
 import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 
@@ -225,6 +229,13 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     public ItemStack getItem()
     {
         return item;
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TextComponentString(name);
     }
 
     public enum State
