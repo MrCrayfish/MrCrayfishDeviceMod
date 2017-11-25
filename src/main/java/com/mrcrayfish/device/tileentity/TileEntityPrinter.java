@@ -7,6 +7,7 @@ import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -27,6 +28,8 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
  */
 public class TileEntityPrinter extends TileEntity implements ITickable
 {
+    private static final int MAX_PAPER = 64;
+
     private String name = "Printer";
     private ItemStack item;
     private State state = IDLE;
@@ -193,12 +196,30 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         return remainingPrintTime;
     }
 
-    public boolean addPaper(ItemStack stack)
+    public boolean addPaper(ItemStack stack, boolean addAll)
     {
-        if(!stack.isEmpty() && stack.getItem() == Items.PAPER)
+        if(!stack.isEmpty() && stack.getItem() == Items.PAPER && paperCount < MAX_PAPER)
         {
-            paperCount++;
+            if(!addAll)
+            {
+                paperCount++;
+                stack.shrink(1);
+            }
+            else
+            {
+                paperCount += stack.getCount();
+                int remaining = Math.max(0, paperCount - 64);
+                if(remaining > 0)
+                {
+                    stack.shrink(remaining);
+                }
+                else
+                {
+                    stack.shrink(stack.getCount());
+                }
+            }
             bufferTag.setInteger("paperCount", paperCount);
+            world.playSound(null, pos, SoundEvents.ENTITY_ITEMFRAME_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
             TileEntityUtil.markBlockForUpdate(world, pos);
             markDirty();
             return true;
