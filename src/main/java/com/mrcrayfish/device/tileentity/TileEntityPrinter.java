@@ -144,6 +144,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         this.state = state;
         this.remainingPrintTime = state.animationTime;
         bufferTag.setInteger("state", state.ordinal());
+        bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
         TileEntityUtil.markBlockForUpdate(world, pos);
         markDirty();
     }
