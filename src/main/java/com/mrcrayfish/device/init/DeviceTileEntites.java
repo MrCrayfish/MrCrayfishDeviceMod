@@ -10,7 +10,7 @@ public class DeviceTileEntites
 {
 	public static void register()
 	{
-		GameRegistry.registerTileEntity(TileEntityLaptop.class, Reference.MOD_ID + "Laptop");
-		GameRegistry.registerTileEntity(TileEntityPrinter.class, Reference.MOD_ID + "Printer");
+		GameRegistry.registerTileEntity(TileEntityLaptop.class, "cdm:laptop");
+		GameRegistry.registerTileEntity(TileEntityPrinter.class, "cdm:printer");
 	}
 }

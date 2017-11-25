@@ -77,31 +77,39 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         super.readFromNBT(compound);
         if(compound.hasKey("name", Constants.NBT.TAG_STRING))
         {
-            this.name = compound.getString("name");
+            name = compound.getString("name");
         }
         if(compound.hasKey("item", Constants.NBT.TAG_COMPOUND))
         {
-            this.item = new ItemStack(compound.getCompoundTag("item"));
+            item = new ItemStack(compound.getCompoundTag("item"));
         }
         if(compound.hasKey("remainingPrintTime", Constants.NBT.TAG_INT))
         {
-            this.remainingPrintTime = compound.getInteger("remainingPrintTime");
+            remainingPrintTime = compound.getInteger("remainingPrintTime");
         }
         if(compound.hasKey("state", Constants.NBT.TAG_INT))
         {
-            setState(State.values()[compound.getInteger("state")]);
+            state = State.values()[compound.getInteger("state")];
         }
         if(compound.hasKey("paperCount", Constants.NBT.TAG_INT))
         {
-            this.paperCount = compound.getInteger("paperCount");
+            paperCount = compound.getInteger("paperCount");
         }
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        compound.setString("name", this.name);
-        return super.writeToNBT(compound);
+        super.writeToNBT(compound);
+        compound.setString("name", name);
+        compound.setInteger("remainingPrintTime", remainingPrintTime);
+        compound.setInteger("state", state.ordinal());
+        compound.setInteger("paperCount", paperCount);
+        if(item != null)
+        {
+            compound.setTag("item", item.writeToNBT(new NBTTagCompound()));
+        }
+        return compound;
     }
 
     @Override
@@ -137,6 +145,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         this.remainingPrintTime = state.animationTime;
         bufferTag.setInteger("state", state.ordinal());
         TileEntityUtil.markBlockForUpdate(world, pos);
+        markDirty();
     }
 
     public void print(ItemStack stack)
@@ -161,6 +170,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         bufferTag.setTag("item", item.writeToNBT(new NBTTagCompound()));
         TileEntityUtil.markBlockForUpdate(world, pos);
         world.playSound(null, pos, DeviceSounds.printing_paper, SoundCategory.BLOCKS, 0.5F, 1.0F);
+        markDirty();
     }
 
     public boolean isLoading()
@@ -185,6 +195,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             paperCount++;
             bufferTag.setInteger("paperCount", paperCount);
             TileEntityUtil.markBlockForUpdate(world, pos);
+            markDirty();
             return true;
         }
         return false;

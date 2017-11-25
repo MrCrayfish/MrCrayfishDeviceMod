@@ -515,7 +515,8 @@ public class ApplicationPixelPainter extends Application
 
 		public PicturePrint(int[] pixels, int resolution)
 		{
-
+			this.pixels = pixels;
+			this.resolution = resolution;
 		}
 
 		@Override

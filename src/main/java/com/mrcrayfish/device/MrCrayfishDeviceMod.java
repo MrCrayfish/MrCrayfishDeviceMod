@@ -71,6 +71,12 @@ public class MrCrayfishDeviceMod
 
 		DeviceItems.init();
 		DeviceItems.register();
+
+		/* Tile Entity Registering */
+		DeviceTileEntites.register();
+
+		/* Crafting Registering */
+		DeviceCrafting.register();
 		
 		/* Packet Registering */
 		PacketHandler.init();
@@ -81,12 +87,6 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		/* Crafting Registering */
-		DeviceCrafting.register();
-		
-		/* Tile Entity Registering */
-		DeviceTileEntites.register();
-		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
