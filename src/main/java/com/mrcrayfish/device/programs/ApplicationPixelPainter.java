@@ -529,13 +529,6 @@ public class ApplicationPixelPainter extends Application
 		}
 
 		@Override
-		public void fromTag(NBTTagCompound tag)
-		{
-			pixels = tag.getIntArray("pixels");
-			resolution = tag.getInteger("resolution");
-		}
-
-		@Override
 		public Class<? extends IPrint.Renderer> getRenderer()
 		{
 			return PictureRenderer.class;

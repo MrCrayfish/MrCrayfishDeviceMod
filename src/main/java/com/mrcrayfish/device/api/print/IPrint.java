@@ -11,8 +11,6 @@ public interface IPrint
 {
     NBTTagCompound toTag();
 
-    void fromTag(NBTTagCompound tag);
-
     @SideOnly(Side.CLIENT)
     Class<? extends Renderer> getRenderer();
 
