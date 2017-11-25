@@ -43,7 +43,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(22.5F, 1, 0, 0);
                     GlStateManager.translate(0, 0, 0.4);
-                    GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
+                    GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
                 }
                 GlStateManager.popMatrix();
@@ -59,7 +59,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     GlStateManager.rotate(22.5F, 1, 0, 0);
                     double progress = -0.4 + (0.4 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.LOADING_PAPER.getAnimationTime()));
                     GlStateManager.translate(0, progress, 0.36875);
-                    GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
+                    GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
                 }
                 else if(te.isPrinting())
@@ -68,14 +68,14 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                     GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(90F, 1, 0, 0);
-                    double progress = -0.25 + (0.40 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.PRINTING.getAnimationTime()));
+                    double progress = -0.35 + (0.50 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.PRINTING.getAnimationTime()));
                     GlStateManager.translate(0, progress, 0);
-                    GlStateManager.translate(-9 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
+                    GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
 
-                    GlStateManager.translate(0.265, 0.1875, -0.001);
+                    GlStateManager.translate(0.3225, 0.225, -0.001);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    GlStateManager.scale(0.25, 0.25, 0.25);
+                    GlStateManager.scale(0.3, 0.3, 0.3);
 
                     ItemStack stack = te.getItem();
                     if(stack.hasTagCompound())
@@ -119,7 +119,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
     {
         public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/model/paper.png");
 
-        private ModelRenderer box = new ModelRenderer(this, 0, 0).addBox(0, 0, 0, 18, 26, 1);
+        private ModelRenderer box = new ModelRenderer(this, 0, 0).addBox(0, 0, 0, 22, 30, 1);
 
         @Override
         public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
