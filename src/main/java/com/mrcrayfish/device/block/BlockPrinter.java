@@ -95,7 +95,7 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if(tileEntity instanceof TileEntityPrinter)
         {
-            if(((TileEntityPrinter) tileEntity).addPaper(heldItem, false))
+            if(((TileEntityPrinter) tileEntity).addPaper(heldItem, playerIn.isSneaking()))
             {
                 return true;
             }

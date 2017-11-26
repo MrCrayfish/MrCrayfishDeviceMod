@@ -208,15 +208,8 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             else
             {
                 paperCount += stack.getCount();
-                int remaining = Math.max(0, paperCount - 64);
-                if(remaining > 0)
-                {
-                    stack.shrink(remaining);
-                }
-                else
-                {
-                    stack.shrink(stack.getCount());
-                }
+                stack.setCount(Math.max(0, paperCount - 64));
+                paperCount = Math.min(64, paperCount);
             }
             bufferTag.setInteger("paperCount", paperCount);
             world.playSound(null, pos, SoundEvents.ENTITY_ITEMFRAME_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
