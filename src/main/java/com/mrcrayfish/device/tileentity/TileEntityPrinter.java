@@ -71,8 +71,8 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             if(!world.isRemote)
             {
                 IBlockState state = world.getBlockState(pos);
-                double[] fixedPosition = CollisionHelper.fixRotation(state.getValue(BlockPrinter.FACING), 0.15, 0.5, 0.0, 0.0);
-                EntityItem entity = new EntityItem(world, pos.getX() + fixedPosition[0], pos.getY() + 0.0625, pos.getZ() + fixedPosition[1], item);
+                double[] fixedPosition = CollisionHelper.fixRotation(state.getValue(BlockPrinter.FACING), 0.15, 0.5, 0.15, 0.5);
+                EntityItem entity = new EntityItem(world, pos.getX() + fixedPosition[0], pos.getY() + 0.0625, pos.getZ() + fixedPosition[1], IPrint.generateItem(currentPrint));
                 entity.motionX = 0;
                 entity.motionY = 0;
                 entity.motionZ = 0;
