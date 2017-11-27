@@ -37,8 +37,7 @@ public class TaskPrint extends Task
     public void prepareRequest(NBTTagCompound nbt)
     {
         nbt.setLong("pos", pos.toLong());
-        nbt.setString("type", PrintingManager.getPrintIdentifier(print));
-        nbt.setTag("data", print.toTag());
+        nbt.setTag("print", IPrint.writeToTag(print));
     }
 
     @Override
@@ -48,14 +47,8 @@ public class TaskPrint extends Task
         if(tileEntity instanceof TileEntityPrinter)
         {
             TileEntityPrinter printer = (TileEntityPrinter) tileEntity;
-
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("type", nbt.getString("type"));
-            tag.setTag("data", nbt.getTag("data"));
-
-            ItemStack stack = new ItemStack(DeviceItems.paper_printed);
-            stack.setTagCompound(tag);
-            printer.print(stack);
+            IPrint print = IPrint.loadFromTag(nbt.getCompoundTag("print"));
+            printer.print(print);
 
             this.setSuccessful();
         }

@@ -1,6 +1,9 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPrinter;
+import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
 import com.mrcrayfish.device.util.TileEntityUtil;
@@ -31,8 +34,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     private static final int MAX_PAPER = 64;
 
     private String name = "Printer";
-    private ItemStack item;
+    private IPrint currentPrint;
     private State state = IDLE;
+    private int totalPrintTime;
     private int remainingPrintTime;
     private int paperCount = 0;
 
@@ -52,7 +56,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
                     TileEntityUtil.markBlockForUpdate(world, pos);
                     if(remainingPrintTime != 0 && state == PRINTING)
                     {
-                        world.playSound(null, pos, DeviceSounds.printing_ink, SoundCategory.BLOCKS, 0.5F, 1.0F);
+                        world.playSound(null, pos, DeviceSounds.PRINTER_PRINTING, SoundCategory.BLOCKS, 0.5F, 1.0F);
                     }
                 }
             }
@@ -62,7 +66,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             }
         }
 
-        if(state == IDLE && item != null)
+        if(state == IDLE && currentPrint != null)
         {
             if(!world.isRemote)
             {
@@ -74,7 +78,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
                 entity.motionZ = 0;
                 world.spawnEntity(entity);
             }
-            item = null;
+            currentPrint = null;
         }
     }
 
@@ -86,9 +90,13 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             name = compound.getString("name");
         }
-        if(compound.hasKey("item", Constants.NBT.TAG_COMPOUND))
+        if(compound.hasKey("currentPrint", Constants.NBT.TAG_COMPOUND))
         {
-            item = new ItemStack(compound.getCompoundTag("item"));
+            currentPrint = IPrint.loadFromTag(compound.getCompoundTag("currentPrint"));
+        }
+        if(compound.hasKey("totalPrintTime", Constants.NBT.TAG_INT))
+        {
+            totalPrintTime = compound.getInteger("totalPrintTime");
         }
         if(compound.hasKey("remainingPrintTime", Constants.NBT.TAG_INT))
         {
@@ -109,12 +117,13 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     {
         super.writeToNBT(compound);
         compound.setString("name", name);
+        compound.setInteger("totalPrintTime", totalPrintTime);
         compound.setInteger("remainingPrintTime", remainingPrintTime);
         compound.setInteger("state", state.ordinal());
         compound.setInteger("paperCount", paperCount);
-        if(item != null)
+        if(currentPrint != null)
         {
-            compound.setTag("item", item.writeToNBT(new NBTTagCompound()));
+            compound.setTag("currentPrint", IPrint.writeToTag(currentPrint));
         }
         return compound;
     }
@@ -144,40 +153,46 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
     }
 
-    public void setState(State state)
+    public void setState(State newState)
     {
-        if(state == null)
+        if(newState == null)
             return;
-        this.state = state;
-        this.remainingPrintTime = state.animationTime;
+
+        state = newState;
         bufferTag.setInteger("state", state.ordinal());
+
+        if(state.animationTime != -1)
+        {
+            remainingPrintTime = state.animationTime;
+        }
+        else if(state == PRINTING)
+        {
+            remainingPrintTime = currentPrint.speed() * 20;
+        }
+        totalPrintTime = remainingPrintTime;
+
+        bufferTag.setInteger("totalPrintTime", totalPrintTime);
         bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
+
         TileEntityUtil.markBlockForUpdate(world, pos);
         markDirty();
     }
 
-    public void print(ItemStack stack)
+    public void print(IPrint print)
     {
         if(paperCount <= 0)
             return;
 
-        if(!stack.hasTagCompound())
-            return;
-
-        if(!stack.getTagCompound().hasKey("type", Constants.NBT.TAG_STRING))
-            return;
-
-        if(!stack.getTagCompound().hasKey("data", Constants.NBT.TAG_COMPOUND))
-            return;
+        world.playSound(null, pos, DeviceSounds.PRINTER_LOADING_PAPER, SoundCategory.BLOCKS, 0.5F, 1.0F);
 
         setState(LOADING_PAPER);
+        currentPrint = print;
         paperCount--;
-        item = stack.copy();
-        bufferTag.setInteger("state", state.ordinal());
+
         bufferTag.setInteger("paperCount", paperCount);
-        bufferTag.setTag("item", item.writeToNBT(new NBTTagCompound()));
+        bufferTag.setTag("currentPrint", IPrint.writeToTag(currentPrint));
+
         TileEntityUtil.markBlockForUpdate(world, pos);
-        world.playSound(null, pos, DeviceSounds.printing_paper, SoundCategory.BLOCKS, 0.5F, 1.0F);
         markDirty();
     }
 
@@ -189,6 +204,11 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     public boolean isPrinting()
     {
         return state == PRINTING || (state == IDLE && remainingPrintTime > 0);
+    }
+
+    public int getTotalPrintTime()
+    {
+        return totalPrintTime;
     }
 
     public int getRemainingPrintTime()
@@ -240,9 +260,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         return name;
     }
 
-    public ItemStack getItem()
+    public IPrint getPrint()
     {
-        return item;
+        return currentPrint;
     }
 
     @Nullable
@@ -254,7 +274,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
 
     public enum State
     {
-        LOADING_PAPER(20), PRINTING(400), IDLE(0);
+        LOADING_PAPER(20), PRINTING(-1), IDLE(0);
 
         final int animationTime;
 

@@ -520,6 +520,28 @@ public class ApplicationPixelPainter extends Application
 		}
 
 		@Override
+		public int speed()
+		{
+			return resolution;
+		}
+
+		@Override
+		public boolean requiresColor()
+		{
+			for(int pixel : pixels)
+			{
+				int r = (pixel >> 16 & 255);
+				int g = (pixel >> 8 & 255);
+				int b = (pixel & 255);
+				if(r != g || r != b)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
 		public NBTTagCompound toTag()
 		{
 			NBTTagCompound tag = new NBTTagCompound();
@@ -529,11 +551,17 @@ public class ApplicationPixelPainter extends Application
 		}
 
 		@Override
+		public void fromTag(NBTTagCompound tag)
+		{
+			pixels = tag.getIntArray("pixels");
+			resolution = tag.getInteger("resolution");
+		}
+
+		@Override
 		public Class<? extends IPrint.Renderer> getRenderer()
 		{
 			return PictureRenderer.class;
 		}
-
 	}
 
 	public static class PictureRenderer implements IPrint.Renderer

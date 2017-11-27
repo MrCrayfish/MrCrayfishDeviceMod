@@ -15,13 +15,13 @@ import java.util.List;
  */
 public class DeviceSounds
 {
-    public static SoundEvent printing_ink;
-    public static SoundEvent printing_paper;
+    public static final SoundEvent PRINTER_PRINTING;
+    public static final SoundEvent PRINTER_LOADING_PAPER;
 
-    public static void register()
+    static
     {
-        printing_ink = registerSound("cdm:printing_ink");
-        printing_paper = registerSound("cdm:printing_paper");
+        PRINTER_PRINTING = registerSound("cdm:printing_ink");
+        PRINTER_LOADING_PAPER = registerSound("cdm:printing_paper");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -40,7 +40,6 @@ public class DeviceSounds
         @SubscribeEvent
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
-            register();
             SOUNDS.stream().forEach(sound -> event.getRegistry().register(sound));
         }
     }

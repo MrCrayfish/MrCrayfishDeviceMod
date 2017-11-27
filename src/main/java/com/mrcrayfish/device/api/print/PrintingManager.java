@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.lang.reflect.Constructor;
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +48,31 @@ public class PrintingManager
     public static boolean isRegisteredPrint(Class<? extends IPrint> clazz)
     {
         return registeredPrints.containsValue(clazz);
+    }
+
+    @Nullable
+    public static IPrint getPrint(String identifier)
+    {
+        Class<? extends IPrint> clazz = registeredPrints.get(identifier);
+        if(clazz != null)
+        {
+            try
+            {
+                return clazz.newInstance();
+            }
+            catch(InstantiationException | IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static IPrint.Renderer getRenderer(IPrint print)
+    {
+        String id = getPrintIdentifier(print);
+        return registeredRenders.get(id);
     }
 
     @SideOnly(Side.CLIENT)

@@ -12,10 +12,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
 
@@ -57,7 +54,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                     GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(22.5F, 1, 0, 0);
-                    double progress = -0.4 + (0.4 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.LOADING_PAPER.getAnimationTime()));
+                    double progress = -0.4 + (0.4 * ((double) te.getRemainingPrintTime() / te.getTotalPrintTime()));
                     GlStateManager.translate(0, progress, 0.36875);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
@@ -68,7 +65,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                     GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(90F, 1, 0, 0);
-                    double progress = -0.35 + (0.50 * ((double) te.getRemainingPrintTime() / TileEntityPrinter.State.PRINTING.getAnimationTime()));
+                    double progress = -0.35 + (0.50 * ((double) te.getRemainingPrintTime() / te.getTotalPrintTime()));
                     GlStateManager.translate(0, progress, 0);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
@@ -77,19 +74,9 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.scale(0.3, 0.3, 0.3);
 
-                    ItemStack stack = te.getItem();
-                    if(stack.hasTagCompound())
-                    {
-                        NBTTagCompound tag = stack.getTagCompound();
-                        if(tag.hasKey("type", Constants.NBT.TAG_STRING) && tag.hasKey("data", Constants.NBT.TAG_COMPOUND))
-                        {
-                            IPrint.Renderer print = PrintingManager.getRenderer(tag.getString("type"));
-                            if(print != null)
-                            {
-                                print.render(tag.getCompoundTag("data"));
-                            }
-                        }
-                    }
+                    IPrint print = te.getPrint();
+                    IPrint.Renderer renderer = PrintingManager.getRenderer(print);
+                    renderer.render(print.toTag());
                 }
             }
             GlStateManager.popMatrix();
