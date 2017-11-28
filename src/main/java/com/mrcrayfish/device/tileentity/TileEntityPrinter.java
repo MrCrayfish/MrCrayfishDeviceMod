@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPrinter;
@@ -31,7 +32,6 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
  */
 public class TileEntityPrinter extends TileEntity implements ITickable
 {
-    private static final int MAX_PAPER = 64;
 
     private String name = "Printer";
     private IPrint currentPrint;
@@ -159,7 +159,21 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             return;
 
         state = newState;
-        remainingPrintTime = state == PRINTING ? currentPrint.speed() * 20 : state.animationTime;
+        if(state == PRINTING)
+        {
+            if(DeviceConfig.isOverridePrintSpeed())
+            {
+                remainingPrintTime = DeviceConfig.getCustomPrintSpeed() * 20;
+            }
+            else
+            {
+                remainingPrintTime = currentPrint.speed() * 20;
+            }
+        }
+        else
+        {
+            remainingPrintTime = state.animationTime;
+        }
         totalPrintTime = remainingPrintTime;
 
         bufferTag.setInteger("state", state.ordinal());
@@ -210,7 +224,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
 
     public boolean addPaper(ItemStack stack, boolean addAll)
     {
-        if(!stack.isEmpty() && stack.getItem() == Items.PAPER && paperCount < MAX_PAPER)
+        if(!stack.isEmpty() && stack.getItem() == Items.PAPER && paperCount < DeviceConfig.getMaxPaperCount())
         {
             if(!addAll)
             {
