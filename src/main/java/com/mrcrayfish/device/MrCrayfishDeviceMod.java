@@ -77,7 +77,7 @@ public class MrCrayfishDeviceMod
 
 		/* Crafting Registering */
 		DeviceCrafting.register();
-		
+
 		/* Packet Registering */
 		PacketHandler.init();
 		
@@ -116,6 +116,7 @@ public class MrCrayfishDeviceMod
 		// Core
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
 		TaskManager.registerTask(TaskPrint.class);
+		TaskManager.registerTask(TaskUpdateSystemData.class);
 
 		//Bank
 		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);

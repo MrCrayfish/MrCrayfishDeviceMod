@@ -12,6 +12,7 @@ public class ColourScheme
 {
     public int textColour;
     public int textSecondaryColour;
+    public int headerColour;
     public int backgroundColour;
     public int backgroundSecondaryColour;
     public int itemBackgroundColour;
@@ -40,6 +41,16 @@ public class ColourScheme
     public void setTextSecondaryColour(int textSecondaryColour)
     {
         this.textSecondaryColour = textSecondaryColour;
+    }
+
+    public int getHeaderColour()
+    {
+        return headerColour;
+    }
+
+    public void setHeaderColour(int headerColour)
+    {
+        this.headerColour = headerColour;
     }
 
     public int getBackgroundColour()
@@ -86,6 +97,7 @@ public class ColourScheme
     {
         textColour = Color.decode("0xFFFFFF").getRGB();
         textSecondaryColour = Color.decode("0x9BEDF2").getRGB();
+        headerColour = Color.decode("0x535861").getRGB();
         backgroundColour = Color.decode("0x535861").getRGB();
         backgroundSecondaryColour = 0;
         itemBackgroundColour = Color.decode("0x9E9E9E").getRGB();
@@ -97,6 +109,7 @@ public class ColourScheme
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("textColour", textColour);
         tag.setInteger("textSecondaryColour", textSecondaryColour);
+        tag.setInteger("headerColour", headerColour);
         tag.setInteger("backgroundColour", backgroundColour);
         tag.setInteger("backgroundSecondaryColour", backgroundSecondaryColour);
         tag.setInteger("itemBackgroundColour", itemBackgroundColour);
@@ -114,6 +127,10 @@ public class ColourScheme
         if(tag.hasKey("textSecondaryColour", Constants.NBT.TAG_INT))
         {
             scheme.textSecondaryColour = tag.getInteger("textSecondaryColour");
+        }
+        if(tag.hasKey("headerColour", Constants.NBT.TAG_INT))
+        {
+            scheme.headerColour = tag.getInteger("headerColour");
         }
         if(tag.hasKey("backgroundColour", Constants.NBT.TAG_INT))
         {

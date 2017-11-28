@@ -29,11 +29,18 @@ public class Settings
 
     public NBTTagCompound toTag()
     {
-        return null;
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setBoolean("showAllApps", showAllApps);
+        tag.setTag("colourScheme", colourScheme.toTag());
+        return tag;
     }
 
     public static Settings fromTag(NBTTagCompound tag)
     {
-        return new Settings();
+        //showAllApps = tag.getBoolean("showAllApps");
+
+        Settings settings = new Settings();
+        settings.colourScheme = ColourScheme.fromTag(tag.getCompoundTag("colourScheme"));
+        return settings;
     }
 }

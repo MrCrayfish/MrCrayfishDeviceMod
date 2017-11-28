@@ -24,7 +24,8 @@ import java.util.List;
 
 public class CommonProxy
 {
-	protected List<AppInfo> allowedApps;
+	List<AppInfo> allowedApps;
+	int hashCode = -1;
 
 	public void preInit()
 	{
