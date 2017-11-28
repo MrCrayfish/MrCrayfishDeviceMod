@@ -54,7 +54,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                     GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(22.5F, 1, 0, 0);
-                    double progress = -0.4 + (0.4 * ((double) te.getRemainingPrintTime() / te.getTotalPrintTime()));
+                    double progress = Math.max(-0.4, -0.4 + (0.4 * ((double) (te.getRemainingPrintTime() - 10) / 20)));
                     GlStateManager.translate(0, progress, 0.36875);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
@@ -65,12 +65,12 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     IBlockState state1 = te.getWorld().getBlockState(te.getPos());
                     GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(90F, 1, 0, 0);
-                    double progress = -0.35 + (0.50 * ((double) te.getRemainingPrintTime() / te.getTotalPrintTime()));
+                    double progress = -0.35 + (0.50 * ((double) (te.getRemainingPrintTime() - 20) / te.getTotalPrintTime()));
                     GlStateManager.translate(0, progress, 0);
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
 
-                    GlStateManager.translate(0.3225, 0.225, -0.001);
+                    GlStateManager.translate(0.3225, 0.2375, -0.001);
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.scale(0.3, 0.3, 0.3);
 

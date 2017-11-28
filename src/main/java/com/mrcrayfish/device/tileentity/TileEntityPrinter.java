@@ -49,7 +49,6 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             if(remainingPrintTime > 0)
             {
-                remainingPrintTime--;
                 if(remainingPrintTime % 20 == 0 || state == LOADING_PAPER)
                 {
                     bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
@@ -59,6 +58,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
                         world.playSound(null, pos, DeviceSounds.PRINTER_PRINTING, SoundCategory.BLOCKS, 0.5F, 1.0F);
                     }
                 }
+                remainingPrintTime--;
             }
             else
             {
@@ -66,7 +66,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             }
         }
 
-        if(state == IDLE && currentPrint != null)
+        if(state == IDLE && remainingPrintTime == 0 && currentPrint != null)
         {
             if(!world.isRemote)
             {
@@ -159,18 +159,10 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             return;
 
         state = newState;
-        bufferTag.setInteger("state", state.ordinal());
-
-        if(state.animationTime != -1)
-        {
-            remainingPrintTime = state.animationTime;
-        }
-        else if(state == PRINTING)
-        {
-            remainingPrintTime = currentPrint.speed() * 20;
-        }
+        remainingPrintTime = state == PRINTING ? currentPrint.speed() * 20 : state.animationTime;
         totalPrintTime = remainingPrintTime;
 
+        bufferTag.setInteger("state", state.ordinal());
         bufferTag.setInteger("totalPrintTime", totalPrintTime);
         bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
 
@@ -203,7 +195,7 @@ public class TileEntityPrinter extends TileEntity implements ITickable
 
     public boolean isPrinting()
     {
-        return state == PRINTING || (state == IDLE && remainingPrintTime > 0);
+        return state == PRINTING;
     }
 
     public int getTotalPrintTime()
@@ -274,18 +266,13 @@ public class TileEntityPrinter extends TileEntity implements ITickable
 
     public enum State
     {
-        LOADING_PAPER(20), PRINTING(-1), IDLE(0);
+        LOADING_PAPER(30), PRINTING(0), IDLE(0);
 
         final int animationTime;
 
         State(int time)
         {
             this.animationTime = time;
-        }
-
-        public int getAnimationTime()
-        {
-            return animationTime;
         }
 
         public State next()
