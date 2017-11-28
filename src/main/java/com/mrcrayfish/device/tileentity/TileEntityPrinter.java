@@ -12,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -119,6 +120,16 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             paperCount = compound.getInteger("paperCount");
         }
+        if(compound.hasKey("queue", Constants.NBT.TAG_LIST))
+        {
+            printQueue.clear();
+            NBTTagList queue = compound.getTagList("queue", Constants.NBT.TAG_COMPOUND);
+            for(int i = 0; i < queue.tagCount(); i++)
+            {
+                IPrint print = IPrint.loadFromTag(queue.getCompoundTagAt(i));
+                printQueue.offer(print);
+            }
+        }
     }
 
     @Override
@@ -133,6 +144,14 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         if(currentPrint != null)
         {
             compound.setTag("currentPrint", IPrint.writeToTag(currentPrint));
+        }
+        if(!printQueue.isEmpty())
+        {
+            NBTTagList queue = new NBTTagList();
+            printQueue.forEach(print -> {
+                queue.appendTag(IPrint.writeToTag(print));
+            });
+            compound.setTag("queue", queue);
         }
         return compound;
     }
