@@ -1,13 +1,9 @@
 package com.mrcrayfish.device.core.print.task;
 
 import com.mrcrayfish.device.api.print.IPrint;
-import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +44,7 @@ public class TaskPrint extends Task
         {
             TileEntityPrinter printer = (TileEntityPrinter) tileEntity;
             IPrint print = IPrint.loadFromTag(nbt.getCompoundTag("print"));
-            printer.print(print);
+            printer.addToQueue(print);
 
             this.setSuccessful();
         }

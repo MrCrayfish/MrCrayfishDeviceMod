@@ -2,9 +2,7 @@ package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.api.print.IPrint;
-import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPrinter;
-import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
 import com.mrcrayfish.device.util.TileEntityUtil;
@@ -25,6 +23,10 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Queue;
+
 import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 
 /**
@@ -32,10 +34,12 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
  */
 public class TileEntityPrinter extends TileEntity implements ITickable
 {
-
     private String name = "Printer";
-    private IPrint currentPrint;
     private State state = IDLE;
+
+    private Deque<IPrint> printQueue = new ArrayDeque<>();
+    private IPrint currentPrint;
+
     private int totalPrintTime;
     private int remainingPrintTime;
     private int paperCount = 0;
@@ -79,6 +83,11 @@ public class TileEntityPrinter extends TileEntity implements ITickable
                 world.spawnEntity(entity);
             }
             currentPrint = null;
+        }
+
+        if(state == IDLE && currentPrint == null && !printQueue.isEmpty() && paperCount > 0)
+        {
+            print(printQueue.poll());
         }
     }
 
@@ -184,11 +193,13 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         markDirty();
     }
 
-    public void print(IPrint print)
+    public void addToQueue(IPrint print)
     {
-        if(paperCount <= 0)
-            return;
+        printQueue.offer(print);
+    }
 
+    private void print(IPrint print)
+    {
         world.playSound(null, pos, DeviceSounds.PRINTER_LOADING_PAPER, SoundCategory.BLOCKS, 0.5F, 1.0F);
 
         setState(LOADING_PAPER);
