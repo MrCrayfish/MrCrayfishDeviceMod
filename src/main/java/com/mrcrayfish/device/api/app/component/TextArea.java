@@ -139,18 +139,21 @@ public class TextArea extends Component
 
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-			float linesPerUnit = (float) lines.size() / (float) visibleLines;
-			int scroll = MathHelper.clamp(verticalScroll + verticalOffset * (int) linesPerUnit, 0, Math.max(0, lines.size() - visibleLines));
-			if(this.isFocused && cursorY >= scroll && cursorY < scroll + visibleLines)
+			if(editable && isFocused)
 			{
-				if ((this.cursorTick / 10) % 2 == 0)
+				float linesPerUnit = (float) lines.size() / (float) visibleLines;
+				int scroll = MathHelper.clamp(verticalScroll + verticalOffset * (int) linesPerUnit, 0, Math.max(0, lines.size() - visibleLines));
+				if(this.isFocused && cursorY >= scroll && cursorY < scroll + visibleLines)
 				{
-					String subString = getActiveLine().substring(0, cursorX);
-					int visibleWidth = width - padding * 2;
-					float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
-					int posX = x + padding + fontRendererObj.getStringWidth(subString) - MathHelper.clamp(horizontalScroll - (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
-					int posY = y + padding + (cursorY - scroll) * fontRendererObj.FONT_HEIGHT;
-					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT - 1, Color.WHITE.getRGB());
+					if((this.cursorTick / 10) % 2 == 0)
+					{
+						String subString = getActiveLine().substring(0, cursorX);
+						int visibleWidth = width - padding * 2;
+						float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
+						int posX = x + padding + fontRendererObj.getStringWidth(subString) - MathHelper.clamp(horizontalScroll - (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
+						int posY = y + padding + (cursorY - scroll) * fontRendererObj.FONT_HEIGHT;
+						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT - 1, Color.WHITE.getRGB());
+					}
 				}
 			}
 
