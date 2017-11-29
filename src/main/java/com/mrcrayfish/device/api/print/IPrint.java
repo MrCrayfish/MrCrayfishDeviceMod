@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
  */
 public interface IPrint
 {
+    String getName();
+
     /**
      * Gets the speed of the print. The higher the value, the longer it will take to print.
      * @return the speed of this print
@@ -62,6 +64,10 @@ public interface IPrint
     {
         ItemStack stack = new ItemStack(DeviceItems.paper_printed);
         stack.setTagCompound(writeToTag(print));
+        if(print.getName() != null && !print.getName().isEmpty())
+        {
+            stack.setStackDisplayName(print.getName());
+        }
         return stack;
     }
 

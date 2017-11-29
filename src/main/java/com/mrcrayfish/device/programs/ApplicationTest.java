@@ -24,7 +24,7 @@ public class ApplicationTest extends Application
             if(mouseButton == 0)
             {
                 int[] pixels = {Color.RED.getRGB(), Color.DARK_GRAY.getRGB(), Color.YELLOW.getRGB(), Color.MAGENTA.getRGB()};
-                Dialog.Print dialog = new Dialog.Print(new ApplicationPixelPainter.PicturePrint(pixels, 2));
+                Dialog.Print dialog = new Dialog.Print(new ApplicationPixelPainter.PicturePrint("Test", pixels, 2));
                 openDialog(dialog);
             }
         });

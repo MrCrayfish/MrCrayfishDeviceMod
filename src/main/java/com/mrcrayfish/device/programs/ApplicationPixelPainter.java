@@ -352,7 +352,7 @@ public class ApplicationPixelPainter extends Application
 		{
             if(mouseButton == 0)
 			{
-				Dialog.Print dialog = new Dialog.Print(new PicturePrint(canvas.getPixels(), canvas.picture.getWidth()));
+				Dialog.Print dialog = new Dialog.Print(new PicturePrint(canvas.picture.getName(), canvas.getPixels(), canvas.picture.getWidth()));
 				openDialog(dialog);
 			}
         });
@@ -508,15 +508,23 @@ public class ApplicationPixelPainter extends Application
 
 	public static class PicturePrint implements IPrint
 	{
+		private String name;
 		private int[] pixels;
 		private int resolution;
 
 		public PicturePrint() {}
 
-		public PicturePrint(int[] pixels, int resolution)
+		public PicturePrint(String name, int[] pixels, int resolution)
 		{
+			this.name = name;
 			this.pixels = pixels;
 			this.resolution = resolution;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
 		}
 
 		@Override
@@ -545,6 +553,7 @@ public class ApplicationPixelPainter extends Application
 		public NBTTagCompound toTag()
 		{
 			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("name", name);
 			tag.setIntArray("pixels", pixels);
 			tag.setInteger("resolution", resolution);
 			return tag;
@@ -553,6 +562,7 @@ public class ApplicationPixelPainter extends Application
 		@Override
 		public void fromTag(NBTTagCompound tag)
 		{
+			name = tag.getString("name");
 			pixels = tag.getIntArray("pixels");
 			resolution = tag.getInteger("resolution");
 		}

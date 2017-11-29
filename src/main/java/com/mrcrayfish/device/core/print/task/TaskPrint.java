@@ -9,6 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -45,7 +47,6 @@ public class TaskPrint extends Task
             TileEntityPrinter printer = (TileEntityPrinter) tileEntity;
             IPrint print = IPrint.loadFromTag(nbt.getCompoundTag("print"));
             printer.addToQueue(print);
-
             this.setSuccessful();
         }
     }
