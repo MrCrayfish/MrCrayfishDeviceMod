@@ -137,6 +137,8 @@ public class TextArea extends Component
 				}
 			}
 
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
 			float linesPerUnit = (float) lines.size() / (float) visibleLines;
 			int scroll = MathHelper.clamp(verticalScroll + verticalOffset * (int) linesPerUnit, 0, Math.max(0, lines.size() - visibleLines));
 			if(this.isFocused && cursorY >= scroll && cursorY < scroll + visibleLines)
@@ -144,16 +146,13 @@ public class TextArea extends Component
 				if ((this.cursorTick / 10) % 2 == 0)
 				{
 					String subString = getActiveLine().substring(0, cursorX);
-					int stringWidth = fontRendererObj.getStringWidth(subString);
 					int visibleWidth = width - padding * 2;
 					float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
-					int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll - (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
-					int posY = y + padding + (cursorY - verticalScroll) * fontRendererObj.FONT_HEIGHT;
-					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT, Color.WHITE.getRGB());
+					int posX = x + padding + fontRendererObj.getStringWidth(subString) - MathHelper.clamp(horizontalScroll - (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
+					int posY = y + padding + (cursorY - scroll) * fontRendererObj.FONT_HEIGHT;
+					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT - 1, Color.WHITE.getRGB());
 				}
 			}
-
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 			if(lines.size() > visibleLines)
 			{
@@ -205,7 +204,7 @@ public class TextArea extends Component
 		if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + padding, yPosition + padding, width - padding * 2, height - padding * 2))
 		{
 			int lineX = mouseX - xPosition - padding + horizontalScroll;
-			int lineY = Math.min((mouseY - yPosition - padding) / fontRendererObj.FONT_HEIGHT, Math.max(0, lines.size() - 1));
+			int lineY = Math.min((mouseY - yPosition - padding) / fontRendererObj.FONT_HEIGHT + verticalScroll, Math.max(0, lines.size() - 1));
 			cursorX = getClosestLineIndex(lineX, lineY);
 			cursorY = lineY;
 			cursorTick = 0;
