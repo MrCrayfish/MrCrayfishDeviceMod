@@ -3,6 +3,7 @@ package com.mrcrayfish.device.init;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.block.BlockLaptop;
 
+import com.mrcrayfish.device.item.ItemLaptop;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -22,13 +23,17 @@ public class DeviceBlocks
 	
 	public static void register()
 	{
-		registerBlock(laptop);
+		registerBlock(laptop, new ItemLaptop(laptop));
 	}
 	
 	public static void registerBlock(Block block)
 	{
+		registerBlock(block, new ItemBlock(block));
+	}
+
+	private static void registerBlock(Block block, ItemBlock item)
+	{
 		GameRegistry.register(block);
-		ItemBlock item = new ItemBlock(block);
 		item.setRegistryName(block.getRegistryName());
 		GameRegistry.register(item);
 	}

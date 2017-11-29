@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.block;
 
 import java.util.List;
+import java.util.Random;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.Laptop;
@@ -18,8 +19,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
@@ -130,6 +134,39 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public Item getItemDropped(IBlockState state, Random rand, int fortune)
+	{
+		return null;
+	}
+
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+	{
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if(tileEntity instanceof TileEntityLaptop)
+		{
+			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
+
+			NBTTagCompound tileEntityTag = new NBTTagCompound();
+			laptop.writeToNBT(tileEntityTag);
+			tileEntityTag.removeTag("x");
+			tileEntityTag.removeTag("y");
+			tileEntityTag.removeTag("z");
+			tileEntityTag.removeTag("id");
+			tileEntityTag.removeTag("open");
+
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setTag("BlockEntityTag", tileEntityTag);
+
+			ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+			drop.setTagCompound(compound);
+
+			worldIn.spawnEntity(new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+		}
+		super.breakBlock(worldIn, pos, state);
 	}
 	
 	@Override
