@@ -110,7 +110,7 @@ public class ClientProxy extends CommonProxy
                 }
                 else
                 {
-                    MrCrayfishDeviceMod.getLogger().error("Missing icon for " + identifier.toString());
+                    MrCrayfishDeviceMod.getLogger().error("Icon for application '" + identifier.toString() +  "' could not be found at '" + path + "'");
                 }
             }
             catch(Exception e)
