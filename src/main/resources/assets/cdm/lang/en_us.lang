@@ -4,6 +4,7 @@ tile.laptop.name=Laptop
 tile.printer.name=Printer
 
 item.flash_drive.name=Flash Drive
+item.printed_paper.name=Printed Paper
 
 app.cdm.settings.name=Settings
 app.cdm.bank.name=Bank
