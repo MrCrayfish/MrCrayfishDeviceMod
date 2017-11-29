@@ -137,8 +137,8 @@ public class TextArea extends Component
 				}
 			}
 
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
-
+			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2, height - padding * 2 + 1);
+			
 			if(editable && isFocused)
 			{
 				float linesPerUnit = (float) lines.size() / (float) visibleLines;
@@ -150,12 +150,15 @@ public class TextArea extends Component
 						String subString = getActiveLine().substring(0, cursorX);
 						int visibleWidth = width - padding * 2;
 						float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
-						int posX = x + padding + fontRendererObj.getStringWidth(subString) - MathHelper.clamp(horizontalScroll - (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
+						int stringWidth = fontRendererObj.getStringWidth(subString);
+						int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll + (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
 						int posY = y + padding + (cursorY - scroll) * fontRendererObj.FONT_HEIGHT;
 						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT - 1, Color.WHITE.getRGB());
 					}
 				}
 			}
+
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 			if(lines.size() > visibleLines)
 			{
