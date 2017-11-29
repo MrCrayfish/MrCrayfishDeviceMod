@@ -207,9 +207,17 @@ public class TextArea extends Component
 		if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + padding, yPosition + padding, width - padding * 2, height - padding * 2))
 		{
 			int lineX = mouseX - xPosition - padding + horizontalScroll;
-			int lineY = Math.min((mouseY - yPosition - padding) / fontRendererObj.FONT_HEIGHT + verticalScroll, Math.max(0, lines.size() - 1));
-			cursorX = getClosestLineIndex(lineX, lineY);
-			cursorY = lineY;
+			int lineY = (mouseY - yPosition - padding) / fontRendererObj.FONT_HEIGHT + verticalScroll;
+			if(lineY >= lines.size())
+			{
+				cursorX = lines.get(Math.max(0, lines.size() - 1)).length();
+				cursorY = lines.size() - 1;
+			}
+			else
+			{
+				cursorX = getClosestLineIndex(lineX, MathHelper.clamp(lineY, 0, lines.size() - 1));
+				cursorY = lineY;
+			}
 			cursorTick = 0;
 		}
 	}
@@ -875,11 +883,6 @@ public class TextArea extends Component
 
 	private int getClosestLineIndex(int lineX, int lineY)
 	{
-		if(lineY >= lines.size())
-		{
-			return lines.get(Math.max(0, lines.size() - 1)).length();
-		}
-		lineY = MathHelper.clamp(lineY, 0, lines.size() - 1);
 		String line = lines.get(lineY);
 		int clickedCharX = fontRendererObj.trimStringToWidth(line, lineX).length();
 		int nextCharX = MathHelper.clamp(clickedCharX + 1, 0, Math.max(0, line.length()));
@@ -887,14 +890,21 @@ public class TextArea extends Component
 		int nextCharWidth = fontRendererObj.getStringWidth(line.substring(0, nextCharX));
 		int clickedDistanceX = Math.abs(clickedCharWidth - lineX);
 		int nextDistanceX = Math.abs(nextCharWidth - lineX - 1);
+
+		int charX;
 		if(Math.min(clickedDistanceX, nextDistanceX) == clickedDistanceX)
 		{
-			return clickedCharX;
+			charX = clickedCharX;
 		}
 		else
 		{
-			return nextCharX;
+			charX = nextCharX;
 		}
+		if(charX > 0 && lines.get(lineY).charAt(charX - 1) == '\n')
+		{
+			charX--;
+		}
+		return charX;
 	}
 
 	/**
