@@ -924,7 +924,10 @@ public class TextArea extends Component
 	 */
 	public void clear()
 	{
+		cursorX = 0;
+		cursorY = 0;
 		lines.clear();
+		lines.add("");
 	}
 
 	/**
