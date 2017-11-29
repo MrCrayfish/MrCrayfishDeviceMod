@@ -46,6 +46,7 @@ public class TextArea extends Component
 
 	private List<String> lines = new ArrayList<>();
 	private int visibleLines;
+	private int maxLines;
 	private ScrollBar scrollBar;
 	private int scrollBarSize = 3;
 	private int horizontalScroll;
@@ -411,6 +412,14 @@ public class TextArea extends Component
 
 	private void handleReturn()
 	{
+		if(maxLines > 0)
+		{
+			if(getNewLineCount() == maxLines - 1)
+			{
+				return;
+			}
+		}
+
 		int lineIndex = cursorY;
 		String activeLine = getActiveLine();
 
@@ -435,6 +444,19 @@ public class TextArea extends Component
 		}
 		moveCursorRight(1);
 		recalculateMaxWidth();
+	}
+
+	private int getNewLineCount()
+	{
+		int count = 0;
+		for(int i = 0; i < lines.size() - 1; i++)
+		{
+			if(lines.get(i).endsWith("\n"))
+			{
+				count++;
+			}
+		}
+		return count;
 	}
 
 	private void removeCharAtCursor()
@@ -1058,6 +1080,12 @@ public class TextArea extends Component
 	public void setEditable(boolean editable)
 	{
 		this.editable = editable;
+	}
+
+	public void setMaxLines(int maxLines)
+	{
+		if(maxLines < 0) maxLines = 0;
+		this.maxLines = maxLines;
 	}
 
 	private enum ScrollBar
