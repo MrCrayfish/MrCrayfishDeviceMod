@@ -882,8 +882,6 @@ public class TextArea extends Component
 		int nextCharX = MathHelper.clamp(clickedCharX + 1, 0, Math.max(0, line.length()));
 		int clickedCharWidth = fontRendererObj.getStringWidth(line.substring(0, clickedCharX));
 		int nextCharWidth = fontRendererObj.getStringWidth(line.substring(0, nextCharX));
-		System.out.println("Trimmed string: " + fontRendererObj.trimStringToWidth(line, lineX));
-		System.out.println("Other trimmed string: " + line.substring(0, MathHelper.clamp(clickedCharX + 1, 0, Math.max(0, line.length()))));
 		int clickedDistanceX = Math.abs(clickedCharWidth - lineX);
 		int nextDistanceX = Math.abs(nextCharWidth - lineX - 1);
 		if(Math.min(clickedDistanceX, nextDistanceX) == clickedDistanceX)
@@ -953,10 +951,11 @@ public class TextArea extends Component
 	public String getText()
 	{
 		StringBuilder builder = new StringBuilder();
-		lines.forEach(s -> {
-			builder.append(s);
-			builder.append("\n");
-		});
+		for(int i = 0; i < lines.size() - 1; i++)
+		{
+			builder.append(lines.get(i)).append("\n");
+		}
+		builder.append(lines.get(lines.size() - 1));
 		return builder.toString();
 	}
 
