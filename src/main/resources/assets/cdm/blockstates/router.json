@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"facing=north": { "model": "cdm:router"           },
+		"facing=east":  { "model": "cdm:router", "y": 90  },
+		"facing=south": { "model": "cdm:router", "y": 180 },
+		"facing=west":  { "model": "cdm:router", "y": 270 }
+	}
+}
