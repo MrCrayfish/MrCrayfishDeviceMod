@@ -129,7 +129,7 @@ public class ApplicationTextArea extends Application
                 }
                 else
                 {
-                    textArea.setHighlight(TextArea.STANDARD_HIGHLIGHTER);
+                    textArea.setHighlight(null);
                 }
             }
         });

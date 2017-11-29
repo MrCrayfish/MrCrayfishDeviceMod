@@ -197,6 +197,16 @@ public class TextArea extends Component
 					clickedY = mouseY;
 					break;
 			}
+			return;
+		}
+
+		if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + padding, yPosition + padding, width - padding * 2, height - padding * 2))
+		{
+			int lineX = mouseX - xPosition - padding + horizontalScroll;
+			int lineY = Math.min((mouseY - yPosition - padding) / fontRendererObj.FONT_HEIGHT, Math.max(0, lines.size() - 1));
+			cursorX = getClosestLineIndex(lineX, lineY);
+			cursorY = lineY;
+			cursorTick = 0;
 		}
 	}
 
@@ -846,7 +856,7 @@ public class TextArea extends Component
 		}
 	}
 
-	public void recalculateMaxWidth()
+	private void recalculateMaxWidth()
 	{
 		int maxWidth = 0;
 		for(String line : lines)
@@ -857,6 +867,32 @@ public class TextArea extends Component
 			}
 		}
 		maxLineWidth = maxWidth;
+	}
+
+	private int getClosestLineIndex(int lineX, int lineY)
+	{
+		if(lineY >= lines.size())
+		{
+			return lines.get(Math.max(0, lines.size() - 1)).length();
+		}
+		lineY = MathHelper.clamp(lineY, 0, lines.size() - 1);
+		String line = lines.get(lineY);
+		int clickedCharX = fontRendererObj.trimStringToWidth(line, lineX).length();
+		int nextCharX = MathHelper.clamp(clickedCharX + 1, 0, Math.max(0, line.length()));
+		int clickedCharWidth = fontRendererObj.getStringWidth(line.substring(0, clickedCharX));
+		int nextCharWidth = fontRendererObj.getStringWidth(line.substring(0, nextCharX));
+		System.out.println("Trimmed string: " + fontRendererObj.trimStringToWidth(line, lineX));
+		System.out.println("Other trimmed string: " + line.substring(0, MathHelper.clamp(clickedCharX + 1, 0, Math.max(0, line.length()))));
+		int clickedDistanceX = Math.abs(clickedCharWidth - lineX);
+		int nextDistanceX = Math.abs(nextCharWidth - lineX - 1);
+		if(Math.min(clickedDistanceX, nextDistanceX) == clickedDistanceX)
+		{
+			return clickedCharX;
+		}
+		else
+		{
+			return nextCharX;
+		}
 	}
 
 	/**
