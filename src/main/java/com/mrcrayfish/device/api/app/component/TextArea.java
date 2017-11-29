@@ -932,6 +932,7 @@ public class TextArea extends Component
 		return charX;
 	}
 
+	//TODO remove
 	/**
 	 * Appends text to the text area
 	 *
@@ -1000,22 +1001,44 @@ public class TextArea extends Component
 		return builder.toString();
 	}
 
+	/**
+	 * Sets the placeholder for the text area. This is the text that is shown if no text is present
+	 * and gives a hint to the user what this text area is for.
+	 *
+	 * @param placeholder the placeholder text
+	 */
 	public void setPlaceholder(String placeholder)
 	{
 		this.placeholder = placeholder;
 	}
 
+	/**
+	 * Sets whether or not the text area should wrap it's contents.
+	 *
+	 * @param wrapText if should wrap text
+	 */
 	public void setWrapText(boolean wrapText)
 	{
 		this.wrapText = wrapText;
 		updateText();
 	}
 
+	/**
+	 * Sets the width of the scroll bars.
+	 *
+	 * @param scrollBarSize the width of the scroll bar
+	 */
 	public void setScrollBarSize(int scrollBarSize)
 	{
 		this.scrollBarSize = Math.max(0, scrollBarSize);
 	}
 
+	/**
+	 * Sets the highlighting for the text area. This is used, for instance, where you want
+	 * particular keywords to be a different colour from the rest.
+	 *
+	 * @param highlight the highlight
+	 */
 	public void setHighlight(IHighlight highlight)
 	{
 		this.highlight = highlight;
@@ -1082,6 +1105,13 @@ public class TextArea extends Component
 		this.editable = editable;
 	}
 
+	/**
+	 * Sets the maximum amount of lines that the text area can have. If the maximum lines is set to
+	 * zero or below, the text area will ignore the max line property. It's suggested that this
+	 * method should not be called in any other place besides the initialization of the component.
+	 *
+	 * @param maxLines the maximum amount of lines for the text area
+	 */
 	public void setMaxLines(int maxLines)
 	{
 		if(maxLines < 0) maxLines = 0;
