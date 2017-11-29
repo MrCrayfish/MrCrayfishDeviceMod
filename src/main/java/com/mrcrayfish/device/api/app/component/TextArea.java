@@ -144,8 +144,10 @@ public class TextArea extends Component
 				if ((this.cursorTick / 10) % 2 == 0)
 				{
 					String subString = getActiveLine().substring(0, cursorX);
-					int width = fontRendererObj.getStringWidth(subString);
-					int posX = x + padding + width - horizontalScroll;
+					int stringWidth = fontRendererObj.getStringWidth(subString);
+					int visibleWidth = width - padding * 2;
+					float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
+					int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll - (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
 					int posY = y + padding + (cursorY - verticalScroll) * fontRendererObj.FONT_HEIGHT;
 					Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT, Color.WHITE.getRGB());
 				}
