@@ -292,25 +292,25 @@ public class TextArea extends Component
 			{
 				case Keyboard.KEY_BACK:
 					performBackspace();
-					return;
+					break;
 				case Keyboard.KEY_RETURN:
 					performReturn();
-					return;
+					break;
 				case Keyboard.KEY_TAB:
 					writeText('\t');
-					return;
+					break;
 				case Keyboard.KEY_LEFT:
 					moveCursorLeft(1);
-					return;
+					break;
 				case Keyboard.KEY_RIGHT:
 					moveCursorRight(1);
-					return;
+					break;
 				case Keyboard.KEY_UP:
 					moveCursorUp();
-					return;
+					break;
 				case Keyboard.KEY_DOWN:
 					moveCursorDown();
-					return;
+					break;
 				default:
 					if (ChatAllowedCharacters.isAllowedCharacter(character))
 					{
@@ -318,6 +318,7 @@ public class TextArea extends Component
 					}
 			}
 		}
+		updateScroll();
 	}
 
 	@Override
@@ -644,9 +645,6 @@ public class TextArea extends Component
 			}
 			moveYCursor(1);
 		}
-
-		updateHorizontalScroll();
-
 		moveCursorRight(amount - 1);
 	}
 
@@ -678,9 +676,6 @@ public class TextArea extends Component
 			}
 			moveYCursor(-1);
 		}
-
-		updateHorizontalScroll();
-
 		moveCursorLeft(amount - 1);
 	}
 
@@ -704,8 +699,6 @@ public class TextArea extends Component
 			scroll(-1);
 		}
 		moveYCursor(-1);
-
-		updateHorizontalScroll();
 	}
 
 	private void moveCursorDown()
@@ -728,8 +721,6 @@ public class TextArea extends Component
 			scroll(1);
 		}
 		moveYCursor(1);
-
-		updateHorizontalScroll();
 	}
 
 	private void moveYCursor(int amount)
@@ -855,7 +846,7 @@ public class TextArea extends Component
 		recalculateMaxWidth();
 	}
 
-	private void updateHorizontalScroll()
+	private void updateScroll()
 	{
 		if(!wrapText)
 		{
@@ -873,6 +864,15 @@ public class TextArea extends Component
 			{
 				horizontalScroll = 0;
 			}
+		}
+
+		if(cursorY < verticalScroll)
+		{
+			verticalScroll = Math.min(Math.max(0, cursorY - 1), Math.max(0, lines.size() - visibleLines));
+		}
+		else if(cursorY >= verticalScroll + visibleLines)
+		{
+			verticalScroll = Math.max(0, Math.min(cursorY + 1 - (visibleLines - 1), lines.size() - visibleLines));
 		}
 	}
 

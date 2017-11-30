@@ -93,7 +93,6 @@ public class ApplicationTextArea extends Application
 
         TextArea textArea = new TextArea(5, 25, 240, 120);
         textArea.setScrollBarSize(5);
-        textArea.setMaxLines(5);
         layout.addComponent(textArea);
 
         ButtonToggle buttonWordWrap = new ButtonToggle(5, 5, Icons.ALIGN_JUSTIFY);
