@@ -37,13 +37,12 @@ public class TextArea extends Component
 		SPLIT_REGEX = String.format(UNFORMATTED_SPLIT, "(" + joiner.toString() + ")");
 	}
 
-	protected FontRenderer fontRendererObj;
-	protected int width, height;
-	protected int padding = 4;
-	protected String placeholder = null;
-	protected boolean isFocused = false;
-	protected boolean editable = true;
-
+	private FontRenderer fontRendererObj;
+	private int width, height;
+	private int padding = 4;
+	private String placeholder = null;
+	private boolean isFocused = false;
+	private boolean editable = true;
 	private List<String> lines = new ArrayList<>();
 	private int visibleLines;
 	private int maxLines;
@@ -283,22 +282,22 @@ public class TextArea extends Component
 			String[] lines = GuiScreen.getClipboardString().split("\n");
 			for(int i = 0; i < lines.length - 1; i++)
 			{
-				insertAtCursor(lines[i] + "\n");
+				writeText(lines[i] + "\n");
 			}
-			insertAtCursor(lines[lines.length - 1]);
+			writeText(lines[lines.length - 1]);
 		}
 		else
 		{
 			switch (code)
 			{
 				case Keyboard.KEY_BACK:
-					handleBackspace();
+					performBackspace();
 					return;
 				case Keyboard.KEY_RETURN:
-					handleReturn();
+					performReturn();
 					return;
 				case Keyboard.KEY_TAB:
-					insertAtCursor('\t');
+					writeText('\t');
 					return;
 				case Keyboard.KEY_LEFT:
 					moveCursorLeft(1);
@@ -315,7 +314,7 @@ public class TextArea extends Component
 				default:
 					if (ChatAllowedCharacters.isAllowedCharacter(character))
 					{
-						insertAtCursor(character);
+						writeText(character);
 					}
 			}
 		}
@@ -369,7 +368,10 @@ public class TextArea extends Component
 		return lines.get(cursorY);
 	}
 
-	private void handleBackspace()
+	/**
+	 * Performs a backspace at the current cursor position
+	 */
+	public void performBackspace()
 	{
 		if(cursorY == 0 && cursorX == 0)
 			return;
@@ -410,7 +412,10 @@ public class TextArea extends Component
 		recalculateMaxWidth();
 	}
 
-	private void handleReturn()
+	/**
+	 * Performs a return at the current cursor position
+	 */
+	public void performReturn()
 	{
 		if(maxLines > 0)
 		{
@@ -511,17 +516,27 @@ public class TextArea extends Component
 		recalculateMaxWidth();
 	}
 
-	private void insertAtCursor(char c)
+	/**
+	 * Writes a character at the current cursor position
+	 *
+	 * @param c the char to write
+	 */
+	public void writeText(char c)
 	{
 		int prevCursorY = cursorY;
-		insertAtCursor(Character.toString(c));
+		writeText(Character.toString(c));
 		if(wrapText && prevCursorY != cursorY)
 		{
 			moveCursorRight(1);
 		}
 	}
 
-	private void insertAtCursor(String text)
+	/**
+	 * Writes a String at the current cursor position
+	 *
+	 * @param text the String to write
+	 */
+	public void writeText(String text)
 	{
 		text = text.replace("\r", "");
 		String activeLine = getActiveLine();
@@ -815,20 +830,19 @@ public class TextArea extends Component
 
             List<String> activeLine = fontRendererObj.listFormattedStringToWidth(lines.get(cursorY), width - padding * 2);
             int totalLength = 0;
-            for(int i = 0; i < activeLine.size(); i++)
-            {
-                String line = activeLine.get(i);
-                if(totalLength + line.length() < cursorX)
-                {
-                    totalLength += line.length();
-                    cursorY++;
-                }
-                else
-                {
-                    cursorX -= totalLength;
-                    break;
-                }
-            }
+			for(String line : activeLine)
+			{
+				if(totalLength + line.length() < cursorX)
+				{
+					totalLength += line.length();
+					cursorY++;
+				}
+				else
+				{
+					cursorX -= totalLength;
+					break;
+				}
+			}
 		}
 		else
 		{
@@ -875,7 +889,6 @@ public class TextArea extends Component
 	{
 		if(!wrapText)
 		{
-			String line = lines.get(cursorY);
 			int visibleWidth = width - padding * 2;
 			int textWidth = fontRendererObj.getStringWidth(lines.get(cursorY).substring(0, cursorX));
 			if(textWidth < horizontalScroll)
@@ -930,32 +943,6 @@ public class TextArea extends Component
 			charX--;
 		}
 		return charX;
-	}
-
-	//TODO remove
-	/**
-	 * Appends text to the text area
-	 *
-	 * @param text the text to append
-	 */
-	public void writeText(String text)
-	{
-		String activeLine = getActiveLine();
-		String head = activeLine.substring(0, cursorX);
-		String tail = activeLine.substring(cursorX);
-		String[] splitText = text.split("\n");
-		if(splitText.length > 0)
-		{
-			lines.set(cursorY, head + splitText[0]);
-		}
-		if(splitText.length > 1)
-		{
-			for(int i = splitText.length - 2; i >= 1; i--)
-			{
-				lines.add(cursorY + 1, splitText[i]);
-			}
-			lines.add(cursorY + splitText.length - 1, splitText[splitText.length - 1] + tail);
-		}
 	}
 
 	/**
@@ -1120,6 +1107,6 @@ public class TextArea extends Component
 
 	private enum ScrollBar
 	{
-		HORIZONTAL, VERTICAL;
+		HORIZONTAL, VERTICAL
 	}
 }
