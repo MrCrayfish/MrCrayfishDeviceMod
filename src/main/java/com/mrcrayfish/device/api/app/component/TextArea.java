@@ -137,7 +137,7 @@ public class TextArea extends Component
 				}
 			}
 
-			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2, height - padding * 2 + 1);
+			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
 			
 			if(editable && isFocused)
 			{
@@ -645,20 +645,7 @@ public class TextArea extends Component
 			moveYCursor(1);
 		}
 
-		if(!wrapText)
-		{
-			String line = lines.get(cursorY);
-			int visibleWidth = width - padding * 2;
-			int textWidth = fontRendererObj.getStringWidth(line.substring(0, cursorX));
-			if(textWidth > visibleWidth || cursorX == line.length() || line.charAt(cursorX) == '\n')
-			{
-				horizontalScroll = Math.max(0, textWidth - visibleWidth + 1);
-			}
-			else if(cursorX == 0)
-			{
-				horizontalScroll = 0;
-			}
-		}
+		updateHorizontalScroll();
 
 		moveCursorRight(amount - 1);
 	}
@@ -692,24 +679,7 @@ public class TextArea extends Component
 			moveYCursor(-1);
 		}
 
-		if(!wrapText)
-		{
-			String line = lines.get(cursorY);
-			int visibleWidth = width - padding * 2;
-			int textWidth = fontRendererObj.getStringWidth(lines.get(cursorY).substring(0, cursorX));
-			if(textWidth < horizontalScroll)
-			{
-				horizontalScroll = Math.max(0, textWidth - 1);
-			}
-			else if(cursorX == line.length() || line.charAt(cursorX) == '\n')
-			{
-				horizontalScroll = Math.max(0, textWidth - visibleWidth + 1);
-			}
-			else if(cursorX == 0)
-			{
-				horizontalScroll = 0;
-			}
-		}
+		updateHorizontalScroll();
 
 		moveCursorLeft(amount - 1);
 	}
@@ -895,7 +865,7 @@ public class TextArea extends Component
 			{
 				horizontalScroll = Math.max(0, textWidth - 1);
 			}
-			else if(textWidth > visibleWidth)
+			else if(textWidth > horizontalScroll + visibleWidth)
 			{
 				horizontalScroll = Math.max(0, textWidth - visibleWidth + 1);
 			}
