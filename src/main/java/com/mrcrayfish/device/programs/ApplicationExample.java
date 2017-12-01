@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
@@ -72,11 +73,12 @@ public class ApplicationExample extends Application
 		super.addComponent(checkBoxOn);
 		
 		textField = new TextField(88, 5, 80);
-		textField.setText("Text Field");
+		textField.setPlaceholder("Text Field");
+		textField.setIcon(Icons.USER);
 		super.addComponent(textField);
 		
 		textArea = new TextArea(88, 25, 80, 60);
-		textArea.setText("Text Area");
+		textArea.setPlaceholder("Text Area");
 		super.addComponent(textArea);
 		
 		progressBar = new ProgressBar(88, 90, 80, 16);

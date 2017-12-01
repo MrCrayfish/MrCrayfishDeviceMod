@@ -66,6 +66,7 @@ public class TextArea extends Component
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
 	protected int textColour = Color.WHITE.getRGB();
 	protected int backgroundColour = Color.DARK_GRAY.getRGB();
+	protected int secondaryBackgroundColour = Color.GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
 
 	/**
@@ -98,15 +99,16 @@ public class TextArea extends Component
 		if (this.visible)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
-			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
+			Gui.drawRect(x, y, x + width, y + height, borderColour);
+			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, backgroundColour);
 
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
 				GlStateManager.enableBlend();
-				mc.fontRendererObj.drawSplitString(placeholder, x + padding + 1, y + padding + 2, width - padding * 2 - 2, placeholderColour);
+				mc.fontRendererObj.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColour);
 			}
 
+			GL11.glEnable(GL11.GL_SCISSOR_TEST);
 			GLHelper.scissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
 
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
@@ -1011,7 +1013,7 @@ public class TextArea extends Component
 	 * Sets the highlighting for the text area. This is used, for instance, where you want
 	 * particular keywords to be a different colour from the rest.
 	 *
-	 * @param highlight the highlight
+	 * @param highlight the highlight to colour the text
 	 */
 	public void setHighlight(IHighlight highlight)
 	{
