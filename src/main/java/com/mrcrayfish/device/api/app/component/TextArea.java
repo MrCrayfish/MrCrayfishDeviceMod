@@ -38,7 +38,7 @@ public class TextArea extends Component
 	}
 
 	private FontRenderer fontRendererObj;
-	private int width, height;
+	protected int width, height;
 	private int padding = 4;
 	private String placeholder = null;
 	private boolean isFocused = false;
@@ -47,6 +47,7 @@ public class TextArea extends Component
 	private int visibleLines;
 	private int maxLines;
 	private ScrollBar scrollBar;
+	private boolean scrollBarVisible = true;
 	private int scrollBarSize = 3;
 	private int horizontalScroll;
 	private int verticalScroll;
@@ -160,25 +161,28 @@ public class TextArea extends Component
 
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-			if(lines.size() > visibleLines)
+			if(scrollBarVisible)
 			{
-				int visibleScrollBarHeight = height - 4;
-				int scrollBarHeight = Math.max(20, (int) ((float) visibleLines / (float) lines.size() * (float) visibleScrollBarHeight));
-				float scrollPercentage = MathHelper.clamp((verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines), 0.0F, 1.0F);
-				int scrollBarY = (int) ((visibleScrollBarHeight - scrollBarHeight) * scrollPercentage);
-				int scrollY = yPosition + 2 + scrollBarY;
-				Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColour);
-			}
+				if(lines.size() > visibleLines)
+				{
+					int visibleScrollBarHeight = height - 4;
+					int scrollBarHeight = Math.max(20, (int) ((float) visibleLines / (float) lines.size() * (float) visibleScrollBarHeight));
+					float scrollPercentage = MathHelper.clamp((verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines), 0.0F, 1.0F);
+					int scrollBarY = (int) ((visibleScrollBarHeight - scrollBarHeight) * scrollPercentage);
+					int scrollY = yPosition + 2 + scrollBarY;
+					Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColour);
+				}
 
-			if(!wrapText && maxLineWidth >= width - padding * 2)
-			{
-				int visibleWidth = width - padding * 2;
-				int visibleScrollBarWidth = width - 4 - (lines.size() > visibleLines ? scrollBarSize + 1 : 0);
-				float scrollPercentage = (float) (horizontalScroll + 1) / (float) (maxLineWidth - visibleWidth + 1);
-				int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
-				int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
-				int scrollX = xPosition + 2 + MathHelper.clamp(relativeScrollX + horizontalOffset, 0, visibleScrollBarWidth - scrollBarWidth);
-				Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColour);
+				if(!wrapText && maxLineWidth >= width - padding * 2)
+				{
+					int visibleWidth = width - padding * 2;
+					int visibleScrollBarWidth = width - 4 - (lines.size() > visibleLines ? scrollBarSize + 1 : 0);
+					float scrollPercentage = (float) (horizontalScroll + 1) / (float) (maxLineWidth - visibleWidth + 1);
+					int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
+					int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
+					int scrollX = xPosition + 2 + MathHelper.clamp(relativeScrollX + horizontalOffset, 0, visibleScrollBarWidth - scrollBarWidth);
+					Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColour);
+				}
 			}
 		}
 	}
@@ -333,6 +337,9 @@ public class TextArea extends Component
 	@Nullable
 	private ScrollBar isMouseInsideScrollBar(int mouseX, int mouseY)
 	{
+		if(!scrollBarVisible)
+			return null;
+
 		if(lines.size() > visibleLines)
 		{
 			int visibleScrollBarHeight = height - 4;
@@ -978,6 +985,16 @@ public class TextArea extends Component
 	{
 		this.wrapText = wrapText;
 		updateText();
+	}
+
+	/**
+	 * Sets whether or not the scroll bar should be visible
+	 *
+	 * @param scrollBarVisible the scroll bar visibility
+	 */
+	public void setScrollBarVisible(boolean scrollBarVisible)
+	{
+		this.scrollBarVisible = scrollBarVisible;
 	}
 
 	/**
