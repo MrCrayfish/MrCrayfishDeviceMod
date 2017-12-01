@@ -82,7 +82,7 @@ public class TextArea extends Component
 		this.fontRendererObj = Laptop.fontRenderer;
 		this.width = width;
 		this.height = height;
-		this.visibleLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
+		this.visibleLines = (int) Math.floor((height - padding * 2 + 1) / fontRendererObj.FONT_HEIGHT);
 		this.lines.add("");
 	}
 
