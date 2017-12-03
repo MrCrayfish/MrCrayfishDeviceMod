@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.model.IModel;
 
 public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 {
@@ -29,7 +28,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 	@Override
 	public void renderTileEntityAt(TileEntityLaptop te, double x, double y, double z, float partialTicks, int destroyStage) 
 	{
-		IBlockState state = DeviceBlocks.laptop.getDefaultState().withProperty(BlockLaptop.TYPE, BlockLaptop.Type.SCREEN);
+		IBlockState state = DeviceBlocks.LAPTOP.getDefaultState().withProperty(BlockLaptop.TYPE, BlockLaptop.Type.SCREEN);
 		BlockPos pos = te.getPos();
 		
 		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -46,7 +45,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 					GlStateManager.translate(-0.5, 0, -0.5);
 					GlStateManager.translate(0.6, -0.21, -0.005);
 					entityItem.hoverStart = 0.0F;
-					entityItem.setEntityItemStack(new ItemStack(DeviceItems.flash_drive));
+					entityItem.setEntityItemStack(new ItemStack(DeviceItems.FLASH_DRIVE));
 					Minecraft.getMinecraft().getRenderManager().doRenderEntity(entityItem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
 					GlStateManager.translate(0.1, 0, 0);
 				}

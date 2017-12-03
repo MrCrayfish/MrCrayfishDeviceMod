@@ -3,9 +3,9 @@ package com.mrcrayfish.device.init;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.block.BlockLaptop;
 
+import com.mrcrayfish.device.block.BlockPaper;
 import com.mrcrayfish.device.block.BlockPrinter;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -14,33 +14,36 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class DeviceBlocks 
 {
-	public static Block laptop;
-	public static Block printer;
-	
-	public static void init()
+	public static final Block LAPTOP;
+	public static final Block PRINTER;
+	public static final Block PAPER;
+	static
 	{
-		laptop = new BlockLaptop().setUnlocalizedName("laptop").setRegistryName("laptop");
-		printer = new BlockPrinter().setUnlocalizedName("printer").setRegistryName("printer");
+		LAPTOP = new BlockLaptop().setUnlocalizedName("laptop").setRegistryName("laptop");
+		PRINTER = new BlockPrinter().setUnlocalizedName("printer").setRegistryName("printer");
+		PAPER = new BlockPaper();
 	}
-	
+
 	public static void register()
 	{
-		registerBlock(laptop);
-		registerBlock(printer);
+		registerBlock(LAPTOP);
+		registerBlock(PRINTER);
+		registerBlock(PAPER);
 	}
 	
-	public static void registerBlock(Block block)
+	private static void registerBlock(Block block)
 	{
 		GameRegistry.register(block);
 		ItemBlock item = new ItemBlock(block);
 		item.setRegistryName(block.getRegistryName());
 		GameRegistry.register(item);
 	}
-	
+
 	public static void registerRenders() 
 	{
-		registerRender(laptop);
-		registerRender(printer);
+		registerRender(LAPTOP);
+		registerRender(PRINTER);
+		registerRender(PAPER);
 	}
 	
 	private static void registerRender(Block blockIn)

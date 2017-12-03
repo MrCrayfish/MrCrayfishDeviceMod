@@ -93,7 +93,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 				if(side == state.getValue(FACING).rotateYCCW())
 				{
 					ItemStack heldItem = playerIn.getHeldItem(hand);
-					if(!heldItem.isEmpty() && heldItem.getItem() == DeviceItems.flash_drive)
+					if(!heldItem.isEmpty() && heldItem.getItem() == DeviceItems.FLASH_DRIVE)
 					{
 						if(!worldIn.isRemote)
 						{

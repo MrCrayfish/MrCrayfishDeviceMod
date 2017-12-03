@@ -2,6 +2,7 @@ package com.mrcrayfish.device.init;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +28,7 @@ public class DeviceCrafting
 					ItemStack stack = inv.getStackInSlot(i);
 					if(!stack.isEmpty())
 					{
-						if(stack.getItem() == DeviceItems.paper_printed)
+						if(stack.getItem() == Item.getItemFromBlock(DeviceBlocks.PAPER))
 						{
 							if(!paper.isEmpty())
 								return false;
@@ -55,7 +56,7 @@ public class DeviceCrafting
 					ItemStack stack = inv.getStackInSlot(i);
 					if(!stack.isEmpty())
 					{
-						if(stack.getItem() == DeviceItems.paper_printed)
+						if(stack.getItem() == Item.getItemFromBlock(DeviceBlocks.PAPER))
 						{
 							if(!paper.isEmpty())
 								return ItemStack.EMPTY;
@@ -66,15 +67,22 @@ public class DeviceCrafting
 
 				if(!paper.isEmpty() && paper.hasTagCompound())
 				{
-					ItemStack result = new ItemStack(DeviceItems.paper_printed);
+					ItemStack result = new ItemStack(DeviceBlocks.PAPER);
 
 					NBTTagCompound tag = paper.getTagCompound();
-					if(!tag.hasKey("data", Constants.NBT.TAG_COMPOUND))
+					if(!tag.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
 					{
 						return ItemStack.EMPTY;
 					}
 
-					NBTTagCompound data = tag.getCompoundTag("data");
+					NBTTagCompound blockTag = tag.getCompoundTag("BlockEntityTag");
+					if(!blockTag.hasKey("print", Constants.NBT.TAG_COMPOUND))
+					{
+						return ItemStack.EMPTY;
+					}
+
+					NBTTagCompound printTag = blockTag.getCompoundTag("print");
+					NBTTagCompound data = printTag.getCompoundTag("data");
 					if(!data.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) || !data.hasKey("resolution", Constants.NBT.TAG_INT))
 					{
 						return ItemStack.EMPTY;

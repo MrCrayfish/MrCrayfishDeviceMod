@@ -70,7 +70,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     GlStateManager.translate(-11 * 0.015625, -13 * 0.015625, -0.5 * 0.015625);
                     MODEL_PAPER.render(null, 0F, 0F, 0F, 0F, 0F, 0.015625F);
 
-                    GlStateManager.translate(0.3225, 0.2375, -0.001);
+                    GlStateManager.translate(0.3225, 0.085, -0.001);
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.scale(0.3, 0.3, 0.3);
 

@@ -12,17 +12,15 @@ import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import com.mrcrayfish.device.tileentity.TileEntityPaper;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
+import com.mrcrayfish.device.tileentity.render.PaperRenderer;
 import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderItemInFrameEvent;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -35,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
@@ -54,6 +51,7 @@ public class ClientProxy extends CommonProxy
     {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
 
         if(MrCrayfishDeviceMod.DEVELOPER_MODE)
         {
@@ -208,34 +206,5 @@ public class ClientProxy extends CommonProxy
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         allowedApps = null;
-    }
-
-    @SubscribeEvent
-    public void onRenderItemInFrame(RenderItemInFrameEvent event)
-    {
-        if(event.getItem().getItem() == DeviceItems.paper_printed)
-        {
-            NBTTagCompound tag = event.getItem().getTagCompound();
-            if(tag != null)
-            {
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                    GlStateManager.translate(-0.5, 0, 0.5);
-
-                    if(tag.hasKey("type", Constants.NBT.TAG_STRING))
-                    {
-                        IPrint.Renderer print = PrintingManager.getRenderer(tag.getString("type"));
-                        if(print != null)
-                        {
-                            GlStateManager.translate(0, 0, -0.495);
-                            boolean success = print.render(tag.getCompoundTag("data"));
-                            event.setCanceled(success);
-                        }
-                    }
-                }
-                GlStateManager.popMatrix();
-            }
-        }
     }
 }

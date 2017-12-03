@@ -6,7 +6,6 @@ import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.object.AppInfo;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
@@ -81,7 +80,7 @@ public class CommonProxy
 		World world = event.getWorld();
 		if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() == Items.PAPER)
 		{
-			if(world.getBlockState(event.getPos()).getBlock() == DeviceBlocks.printer)
+			if(world.getBlockState(event.getPos()).getBlock() == DeviceBlocks.PRINTER)
 			{
 				event.setUseBlock(Event.Result.ALLOW);
 			}

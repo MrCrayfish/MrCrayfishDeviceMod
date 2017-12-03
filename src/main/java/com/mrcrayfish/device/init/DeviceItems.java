@@ -4,6 +4,7 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -12,25 +13,21 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class DeviceItems
 {
-    public static Item flash_drive;
-    public static Item paper_printed;
+    public static final Item FLASH_DRIVE;
 
-    public static void init()
+    static
     {
-        flash_drive = new Item().setUnlocalizedName("flash_drive").setRegistryName("flash_drive").setCreativeTab(MrCrayfishDeviceMod.tabDevice);
-        paper_printed = new Item().setUnlocalizedName("paper_printed").setRegistryName("paper_printed");
+        FLASH_DRIVE = new Item().setUnlocalizedName("flash_drive").setRegistryName("flash_drive").setCreativeTab(MrCrayfishDeviceMod.tabDevice);
     }
 
     public static void register()
     {
-        GameRegistry.register(flash_drive);
-        GameRegistry.register(paper_printed);
+        GameRegistry.register(FLASH_DRIVE);
     }
 
     public static void registerRenders()
     {
-        registerRender(flash_drive);
-        registerRender(paper_printed);
+        registerRender(FLASH_DRIVE);
     }
 
     private static void registerRender(Item item)

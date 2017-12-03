@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.api.print;
 
-import com.mrcrayfish.device.init.DeviceItems;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -62,8 +62,15 @@ public interface IPrint
 
     static ItemStack generateItem(IPrint print)
     {
-        ItemStack stack = new ItemStack(DeviceItems.paper_printed);
-        stack.setTagCompound(writeToTag(print));
+        NBTTagCompound itemTag = new NBTTagCompound();
+
+        NBTTagCompound blockTag = new NBTTagCompound();
+        blockTag.setTag("print", writeToTag(print));
+        itemTag.setTag("BlockEntityTag", blockTag);
+
+        ItemStack stack = new ItemStack(DeviceBlocks.PAPER);
+        stack.setTagCompound(itemTag);
+
         if(print.getName() != null && !print.getName().isEmpty())
         {
             stack.setStackDisplayName(print.getName());

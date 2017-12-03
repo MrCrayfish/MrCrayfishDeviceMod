@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
@@ -511,6 +512,7 @@ public class ApplicationPixelPainter extends Application
 		private String name;
 		private int[] pixels;
 		private int resolution;
+		private boolean cut;
 
 		public PicturePrint() {}
 
@@ -556,6 +558,7 @@ public class ApplicationPixelPainter extends Application
 			tag.setString("name", name);
 			tag.setIntArray("pixels", pixels);
 			tag.setInteger("resolution", resolution);
+			if(cut) tag.setBoolean("cut", cut);
 			return tag;
 		}
 
@@ -565,6 +568,7 @@ public class ApplicationPixelPainter extends Application
 			name = tag.getString("name");
 			pixels = tag.getIntArray("pixels");
 			resolution = tag.getInteger("resolution");
+			cut = tag.getBoolean("cut");
 		}
 
 		@Override
@@ -576,6 +580,8 @@ public class ApplicationPixelPainter extends Application
 
 	public static class PictureRenderer implements IPrint.Renderer
 	{
+		public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/model/paper.png");
+
 		@Override
 		public boolean render(NBTTagCompound data)
 		{
@@ -588,22 +594,25 @@ public class ApplicationPixelPainter extends Application
 				if(pixels.length != resolution * resolution)
 					return false;
 
+				GlStateManager.translate(0, 1.0 - (1.0 / resolution), 0);
+
 				GlStateManager.enableBlend();
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 				GlStateManager.disableLighting();
-				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-				GlStateManager.disableTexture2D();
+				Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
 
 				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-				
-				GlStateManager.translate(0, 0.5 - (1.0 / resolution), 0);
+
 				Tessellator tessellator = Tessellator.getInstance();
 				VertexBuffer buffer = tessellator.getBuffer();
+				double scale = 1 / (double) resolution;
 
+				GlStateManager.enableRescaleNormal();
+				GL11.glNormal3f(0.0f, 0.0F, 1.0f);
 				for(int i = 0; i < resolution; i++)
 				{
-					double pixelY = -i / (double) resolution;
+					double pixelY = i / (double) resolution;
 					for(int j = 0; j < resolution; j++)
 					{
 						float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
@@ -622,19 +631,18 @@ public class ApplicationPixelPainter extends Application
 						}
 
 						double pixelX = j / (double) resolution;
-						buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-						buffer.pos(pixelX, pixelY, 0).endVertex();
-						buffer.pos(pixelX + 1 / (double) resolution, pixelY, 0).endVertex();
-						buffer.pos(pixelX + 1 / (double) resolution, pixelY + 1 / (double) resolution, 0).endVertex();
-						buffer.pos(pixelX, pixelY + 1 / (double) resolution, 0).endVertex();
+						buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+						buffer.pos(pixelX, -pixelY, 0).tex(pixelX, pixelY).endVertex();
+						buffer.pos(pixelX + scale, -pixelY, 0).tex(pixelX + scale, pixelY).endVertex();
+						buffer.pos(pixelX + scale, -pixelY + scale, 0).tex(pixelX + scale, pixelY + scale).endVertex();
+						buffer.pos(pixelX, -pixelY + scale, 0).tex(0, pixelY + scale).endVertex();
 						tessellator.draw();
 					}
 				}
-
-				GlStateManager.enableTexture2D();
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.disableBlend();
 				GlStateManager.enableLighting();
+
 				return true;
 			}
 			return false;

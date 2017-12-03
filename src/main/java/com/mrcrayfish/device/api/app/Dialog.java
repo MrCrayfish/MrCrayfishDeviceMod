@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -35,7 +34,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -936,7 +934,7 @@ public abstract class Dialog extends Wrappable
 					{
 						BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
 						IBlockState state = world.getBlockState(pos);
-						if(state.getBlock() == DeviceBlocks.printer)
+						if(state.getBlock() == DeviceBlocks.PRINTER)
 						{
 							TileEntity tileEntity = world.getTileEntity(pos);
 							if(tileEntity instanceof TileEntityPrinter)
