@@ -19,7 +19,7 @@ public class PrintingManager
     private static HashBiMap<String, Class<? extends IPrint>> registeredPrints = HashBiMap.create();
 
     @SideOnly(Side.CLIENT)
-    private static Map<String, IPrint.Renderer> registeredRenders = new HashMap<>();
+    private static Map<String, IPrint.Renderer> registeredRenders;
 
     public static void registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint)
     {
@@ -28,6 +28,7 @@ public class PrintingManager
             classPrint.getConstructor().newInstance();
             if(MrCrayfishDeviceMod.proxy.registerPrint(identifier, classPrint))
             {
+                MrCrayfishDeviceMod.getLogger().info("Registering print '" + classPrint.getName() + "'");
                 registeredPrints.put(identifier.toString(), classPrint);
             }
             else

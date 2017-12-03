@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ClientProxy extends CommonProxy
@@ -66,8 +67,6 @@ public class ClientProxy extends CommonProxy
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
         }
-
-        PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
     }
 
     @Override
@@ -186,6 +185,11 @@ public class ClientProxy extends CommonProxy
             {
                 IPrint.Renderer renderer = classRenderer.newInstance();
                 Map<String, IPrint.Renderer> idToRenderer = ReflectionHelper.getPrivateValue(PrintingManager.class, null, "registeredRenders");
+                if(idToRenderer == null)
+                {
+                    idToRenderer = new HashMap<>();
+                    ReflectionHelper.setPrivateValue(PrintingManager.class, null, idToRenderer, "registeredRenders");
+                }
                 idToRenderer.put(identifier.toString(), renderer);
             }
             catch(InstantiationException e)

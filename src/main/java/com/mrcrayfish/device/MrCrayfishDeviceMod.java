@@ -1,6 +1,7 @@
 package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.io.task.*;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
@@ -156,6 +157,8 @@ public class MrCrayfishDeviceMod
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 		}
+
+		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
 	}
 
 	public static Logger getLogger()
