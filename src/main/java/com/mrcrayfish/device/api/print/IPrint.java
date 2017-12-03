@@ -62,11 +62,11 @@ public interface IPrint
 
     static ItemStack generateItem(IPrint print)
     {
-        NBTTagCompound itemTag = new NBTTagCompound();
+        NBTTagCompound blockEntityTag = new NBTTagCompound();
+        blockEntityTag.setTag("print", writeToTag(print));
 
-        NBTTagCompound blockTag = new NBTTagCompound();
-        blockTag.setTag("print", writeToTag(print));
-        itemTag.setTag("BlockEntityTag", blockTag);
+        NBTTagCompound itemTag = new NBTTagCompound();
+        itemTag.setTag("BlockEntityTag", blockEntityTag);
 
         ItemStack stack = new ItemStack(DeviceBlocks.PAPER);
         stack.setTagCompound(itemTag);
