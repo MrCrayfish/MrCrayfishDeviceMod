@@ -24,7 +24,7 @@ public class PaperRenderer extends TileEntitySpecialRenderer<TileEntityPaper>
             IBlockState state = te.getWorld().getBlockState(te.getPos());
             if(state.getBlock() != DeviceBlocks.PAPER) return;
             GlStateManager.rotate(state.getValue(BlockPaper.FACING).getHorizontalIndex() * -90F + 180F, 0, 1, 0);
-            GlStateManager.rotate(0F, 0, 0, 1);
+            GlStateManager.rotate(-te.getRotation(), 0, 0, 1);
             GlStateManager.translate(-0.5, -0.5, -0.485);
             IPrint print = te.getPrint();
             if(print != null)
