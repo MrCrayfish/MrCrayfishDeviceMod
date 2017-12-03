@@ -28,19 +28,17 @@ public class DeviceSounds
     {
         ResourceLocation resource = new ResourceLocation(soundNameIn);
         SoundEvent sound = new SoundEvent(resource).setRegistryName(soundNameIn);
-        RegistrationHandler.SOUNDS.add(sound);
         return sound;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class RegistrationHandler
     {
-        public static final List<SoundEvent> SOUNDS = new LinkedList<>();
-
         @SubscribeEvent
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
-            SOUNDS.stream().forEach(sound -> event.getRegistry().register(sound));
+            event.getRegistry().register(PRINTER_PRINTING);
+            event.getRegistry().register(PRINTER_LOADING_PAPER);
         }
     }
 }
