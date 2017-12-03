@@ -5,6 +5,7 @@ import com.mrcrayfish.device.block.BlockLaptop;
 
 import com.mrcrayfish.device.block.BlockPaper;
 import com.mrcrayfish.device.block.BlockPrinter;
+import com.mrcrayfish.device.item.ItemPaper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -28,13 +29,17 @@ public class DeviceBlocks
 	{
 		registerBlock(LAPTOP);
 		registerBlock(PRINTER);
-		registerBlock(PAPER);
+		registerBlock(PAPER, new ItemPaper(PAPER));
 	}
-	
-	private static void registerBlock(Block block)
+
+	public static void registerBlock(Block block)
+	{
+		registerBlock(block, new ItemBlock(block));
+	}
+
+	private static void registerBlock(Block block, ItemBlock item)
 	{
 		GameRegistry.register(block);
-		ItemBlock item = new ItemBlock(block);
 		item.setRegistryName(block.getRegistryName());
 		GameRegistry.register(item);
 	}

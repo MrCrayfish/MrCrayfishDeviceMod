@@ -114,6 +114,13 @@ public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
+    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
+    {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity != null && tileentity.receiveClientEvent(id, param);
+    }
+
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return state.getValue(FACING).getHorizontalIndex();
