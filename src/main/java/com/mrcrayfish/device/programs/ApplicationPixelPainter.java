@@ -615,18 +615,17 @@ public class ApplicationPixelPainter extends Application
 					double pixelY = i / (double) resolution;
 					for(int j = 0; j < resolution; j++)
 					{
-						float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
-						float g = (float) (pixels[j + i * resolution] >> 8 & 255) / 255.0F;
-						float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
 						float a = (float) Math.floor((pixels[j + i * resolution] >> 24 & 255) / 255.0F);
-
-						if(a == 0.0F)
+						if(a < 1.0F)
 						{
 							if(cut) continue;
 							GlStateManager.color(1.0F, 1.0F, 1.0F);
 						}
 						else
 						{
+							float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
+							float g = (float) (pixels[j + i * resolution] >> 8 & 255) / 255.0F;
+							float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
 							GlStateManager.color(r, g, b, a);
 						}
 
@@ -635,7 +634,7 @@ public class ApplicationPixelPainter extends Application
 						buffer.pos(pixelX, -pixelY, 0).tex(pixelX, pixelY).endVertex();
 						buffer.pos(pixelX + scale, -pixelY, 0).tex(pixelX + scale, pixelY).endVertex();
 						buffer.pos(pixelX + scale, -pixelY + scale, 0).tex(pixelX + scale, pixelY + scale).endVertex();
-						buffer.pos(pixelX, -pixelY + scale, 0).tex(0, pixelY + scale).endVertex();
+						buffer.pos(pixelX, -pixelY + scale, 0).tex(pixelX, pixelY + scale).endVertex();
 						tessellator.draw();
 					}
 				}
