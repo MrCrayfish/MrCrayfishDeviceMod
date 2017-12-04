@@ -8,9 +8,9 @@ import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityPaper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 public class PaperRenderer extends TileEntitySpecialRenderer<TileEntityPaper>
 {
     @Override
-    public void renderTileEntityAt(TileEntityPaper te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(TileEntityPaper te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         GlStateManager.pushMatrix();
         {
@@ -99,7 +99,7 @@ public class PaperRenderer extends TileEntitySpecialRenderer<TileEntityPaper>
         double textureDepth = Math.abs(zTo - zFrom);
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         switch(facing.getAxis())
         {

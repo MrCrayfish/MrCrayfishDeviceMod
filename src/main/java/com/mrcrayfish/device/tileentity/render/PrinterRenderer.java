@@ -24,7 +24,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
     private static final ModelPaper MODEL_PAPER = new ModelPaper();
 
     @Override
-    public void renderTileEntityAt(TileEntityPrinter te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void render(TileEntityPrinter te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         GlStateManager.pushMatrix();
         {
@@ -93,7 +93,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 GlStateManager.scale(0.010416667F, -0.010416667F, 0.010416667F);
                 GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
                 GlStateManager.rotate(22.5F, 1, 0, 0);
-                Minecraft.getMinecraft().fontRendererObj.drawString(Integer.toString(te.getPaperCount()), 0, 0, Color.WHITE.getRGB());
+                Minecraft.getMinecraft().fontRenderer.drawString(Integer.toString(te.getPaperCount()), 0, 0, Color.WHITE.getRGB());
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.depthMask(true);
             }
@@ -104,7 +104,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(0, -0.5, 0);
-            super.renderTileEntityAt(te, x, y, z, partialTicks, destroyStage);
+            super.render(te, x, y, z, partialTicks, destroyStage, alpha);
         }
         GlStateManager.popMatrix();
     }

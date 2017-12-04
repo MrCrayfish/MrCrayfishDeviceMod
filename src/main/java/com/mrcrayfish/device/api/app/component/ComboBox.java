@@ -65,7 +65,7 @@ public abstract class ComboBox<T> extends Component
     {
         if (this.visible)
         {
-            FontRenderer fontrenderer = mc.fontRendererObj;
+            FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -108,10 +108,10 @@ public abstract class ComboBox<T> extends Component
             else if(value != null)
             {
                 String text = value.toString();
-                int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+                int valWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
                 if(valWidth > (width - height - 8))
                 {
-                    text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                    text = Minecraft.getMinecraft().fontRenderer.trimStringToWidth(text, width - height - 12, false) + "...";
                 }
                 fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
             }

@@ -59,6 +59,8 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
         super(Material.ANVIL);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setUnlocalizedName("printer");
+        this.setRegistryName("printer");
     }
 
     @Override

@@ -8,10 +8,7 @@ import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.DeviceBlocks;
-import com.mrcrayfish.device.init.DeviceCrafting;
-import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.init.*;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
@@ -59,25 +56,14 @@ public class MrCrayfishDeviceMod
 	{
 		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
 		{
-			//throw new LaunchException();
+			throw new LaunchException();
 		}
 		logger = event.getModLog();
 
 		DeviceConfig.load(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
 
-		/* Block and Item Registering */
-		DeviceBlocks.register();
-		DeviceItems.register();
-
-		/* Tile Entity Registering */
-		DeviceTileEntites.register();
-
-		/* Crafting Registering */
-		DeviceCrafting.register();
-
-		/* Packet Registering */
-		PacketHandler.init();
+		RegistrationHandler.init();
 		
 		proxy.preInit();
 	}
@@ -85,6 +71,12 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
+		/* Tile Entity Registering */
+		DeviceTileEntites.register();
+
+		/* Packet Registering */
+		PacketHandler.init();
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());

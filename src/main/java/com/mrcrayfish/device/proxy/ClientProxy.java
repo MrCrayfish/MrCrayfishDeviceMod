@@ -7,8 +7,6 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.init.DeviceBlocks;
-import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
@@ -21,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -42,9 +41,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void preInit()
     {
-        super.preInit();
-        DeviceBlocks.registerRenders();
-        DeviceItems.registerRenders();
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ClientProxy extends CommonProxy
         generateIconAtlas();
     }
 
-    public void generateIconAtlas()
+    private void generateIconAtlas()
     {
         final int ICON_SIZE = 14;
         int index = 0;
@@ -118,7 +115,7 @@ public class ClientProxy extends CommonProxy
                 }
                 else
                 {
-                    MrCrayfishDeviceMod.getLogger().error("Missing icon for " + identifier.toString());
+                    MrCrayfishDeviceMod.getLogger().error("Icon for application '" + identifier.toString() +  "' could not be found at '" + path + "'");
                 }
             }
             catch(Exception e)
