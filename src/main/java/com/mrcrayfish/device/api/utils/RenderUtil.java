@@ -3,10 +3,10 @@ package com.mrcrayfish.device.api.utils;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 
@@ -20,7 +20,7 @@ public class RenderUtil
 		GlStateManager.enableLighting();
 		RenderHelper.enableGUIStandardItemLighting();
 		Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, x, y);
-		if(overlay) Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRendererObj, stack, x, y);
+		if(overlay) Minecraft.getMinecraft().getRenderItem().renderItemOverlays(Minecraft.getMinecraft().fontRenderer, stack, x, y);
 		GlStateManager.enableAlpha();
 		GlStateManager.disableLighting();
 	}
@@ -47,7 +47,7 @@ public class RenderUtil
     {
 		float scale = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
         buffer.pos(x, y + height, z).tex((double)(u * scale), (double)(v + textureHeight) * scale).endVertex();
         buffer.pos(x + width, y + height, z).tex((double)(u + textureWidth) * scale, (double)(v + textureHeight) * scale).endVertex();
@@ -59,7 +59,7 @@ public class RenderUtil
 	public static void drawRectWithFullTexture(double x, double y, float u, float v, int width, int height)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 		buffer.pos(x, y + height, 0).tex(0, 1).endVertex();
 		buffer.pos(x + width, y + height, 0).tex(1, 1).endVertex();
@@ -73,7 +73,7 @@ public class RenderUtil
 		float scaleWidth = 1.0F / sourceWidth;
 		float scaleHeight = 1.0F / sourceHeight;
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 		buffer.pos(x, y + height, 0).tex((double)(u * scaleWidth), (double)(v + textureHeight) * scaleHeight).endVertex();
 		buffer.pos(x + width, y + height, 0).tex((double)(u + textureWidth) * scaleWidth, (double)(v + textureHeight) * scaleHeight).endVertex();

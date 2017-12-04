@@ -8,10 +8,7 @@ import com.mrcrayfish.device.core.io.task.*;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.DeviceBlocks;
-import com.mrcrayfish.device.init.DeviceCrafting;
-import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.init.*;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
@@ -67,15 +64,7 @@ public class MrCrayfishDeviceMod
 		DeviceConfig.load(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
 
-		/* Block Registering */
-		DeviceBlocks.init();
-		DeviceBlocks.register();
-
-		DeviceItems.init();
-		DeviceItems.register();
-		
-		/* Packet Registering */
-		PacketHandler.init();
+		RegistrationHandler.init();
 		
 		proxy.preInit();
 	}
@@ -88,6 +77,9 @@ public class MrCrayfishDeviceMod
 		
 		/* Tile Entity Registering */
 		DeviceTileEntites.register();
+
+		/* Packet Registering */
+		PacketHandler.init();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 

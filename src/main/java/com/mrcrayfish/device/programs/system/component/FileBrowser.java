@@ -74,7 +74,7 @@ public class FileBrowser extends Component
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
             Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
-            gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
+            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, color.getRGB());
         }
     };
 
@@ -327,11 +327,11 @@ public class FileBrowser extends Component
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
 
                 String text = drive.getName();
-                if(mc.fontRendererObj.getStringWidth(text) > 87)
+                if(mc.fontRenderer.getStringWidth(text) > 87)
                 {
-                    text = mc.fontRendererObj.trimStringToWidth(drive.getName(), 78) + "...";
+                    text = mc.fontRenderer.trimStringToWidth(drive.getName(), 78) + "...";
                 }
-                mc.fontRendererObj.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
+                mc.fontRenderer.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
             }
         });
         layoutMain.addComponent(comboBoxDrive);
@@ -862,10 +862,10 @@ public class FileBrowser extends Component
     {
         String path = currentFolder.getPath();
         path = path.replace("/", TextFormatting.GOLD + "/" + TextFormatting.RESET);
-        int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(path);
+        int width = Minecraft.getMinecraft().fontRenderer.getStringWidth(path);
         if(width > 144)
         {
-            path = "..." + Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(path, 144, true);
+            path = "..." + Minecraft.getMinecraft().fontRenderer.trimStringToWidth(path, 144, true);
         }
         labelPath.setText(path);
     }

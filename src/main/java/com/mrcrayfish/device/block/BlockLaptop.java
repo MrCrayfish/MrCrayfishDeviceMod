@@ -23,7 +23,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
@@ -46,6 +45,8 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		super(Material.ANVIL);
 		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.BASE));
 		this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+		this.setUnlocalizedName("laptop");
+		this.setRegistryName("laptop");
 	}
 	
 	@Override
@@ -97,7 +98,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 				if(side == state.getValue(FACING).rotateYCCW())
 				{
 					ItemStack heldItem = playerIn.getHeldItem(hand);
-					if(!heldItem.isEmpty() && heldItem.getItem() == DeviceItems.flash_drive)
+					if(!heldItem.isEmpty() && heldItem.getItem() == DeviceItems.FLASH_DRIVE)
 					{
 						if(!worldIn.isRemote)
 						{

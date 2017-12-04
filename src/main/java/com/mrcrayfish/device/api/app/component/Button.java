@@ -238,10 +238,10 @@ I	 * @param top how many pixels from the top
 
 			if(text != null)
 			{
-				int textY = (height - mc.fontRendererObj.FONT_HEIGHT) / 2 + 1;
+				int textY = (height - mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
 				int textOffsetX = iconResource != null ? iconWidth + 3 : 0;
 				int textColour = !Button.this.enabled ? 10526880 : (Button.this.hovered ? 16777120 : 14737632);
-				drawString(mc.fontRendererObj, text, x + contentX + textOffsetX, y + textY, textColour);
+				drawString(mc.fontRenderer, text, x + contentX + textOffsetX, y + textY, textColour);
 			}
         }
 	}
@@ -414,7 +414,7 @@ I	 * @param top how many pixels from the top
 
 	private static int getTextWidth(String text)
 	{
-		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		boolean flag = fontRenderer.getUnicodeFlag();
 		fontRenderer.setUnicodeFlag(false);
 		int width = fontRenderer.getStringWidth(text);
