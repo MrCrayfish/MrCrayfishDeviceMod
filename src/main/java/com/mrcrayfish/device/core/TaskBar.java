@@ -4,19 +4,29 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,8 +118,8 @@ public class TaskBar
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		gui.drawTexturedModalRect(x, y, 0, 0, 1, 18);
-		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 34, 18, 1, 18);
-		gui.drawTexturedModalRect(x + Laptop.SCREEN_WIDTH - 33, y, 2, 0, 33, 18);
+		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 52, 18, 1, 18);
+		RenderUtil.drawRectWithTexture(x + Laptop.SCREEN_WIDTH - 51, y, 2, 0, 51, 18, 1, 18);
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -130,10 +140,14 @@ public class TaskBar
 		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		
+
+		if(isMouseInside(mouseX, mouseY, x + 317, y + 3, x + 328, y + 14))
+		{
+			Gui.drawRect(x + 316, y + 2, x + 330, y + 16, new Color(1.0F, 1.0F, 1.0F, 0.1F).getRGB());
+		}
+
 		/* Settings App */
-		gui.drawTexturedModalRect(x + 316, y + 2, 14, 30, 14, 14);
-		gui.drawTexturedModalRect(x + 300, y + 2, 28, 30, 14, 14);
+		Icons.WIFI_NONE.draw(mc, x + 318, y + 4);
 
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
@@ -164,6 +178,18 @@ public class TaskBar
 				return;
 			}
 		}
+
+		if(isMouseInside(mouseX, mouseY, x + 317, y + 3, x + 328, y + 14))
+		{
+			if(Laptop.getSystem().hasContext())
+			{
+				Laptop.getSystem().closeContext();
+			}
+			else
+			{
+				Laptop.getSystem().openContext(createWifiMenu(), mouseX - 100, mouseY - 100);
+			}
+		}
 	}
 	
 	public boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)
@@ -176,5 +202,79 @@ public class TaskBar
 	    int hours = (int) ((Math.floor(time / 1000.0) + 7) % 24);
 	    int minutes = (int) Math.floor((time % 1000) / 1000.0 * 60);
 	    return String.format("%02d:%02d", hours, minutes);
+	}
+
+	public static Layout createWifiMenu()
+	{
+		Layout layout = new Layout.Context(100, 100);
+		layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+			Gui.drawRect(x, y, x + width, y + height, new Color(0.65F, 0.65F, 0.65F, 0.9F).getRGB());
+		});
+
+		ItemList<BlockPos> itemListRouters = new ItemList<>(5, 5, 90, 4);
+		itemListRouters.setItems(getRouters());
+		itemListRouters.setListItemRenderer(new ListItemRenderer<BlockPos>(16)
+		{
+			@Override
+			public void render(BlockPos blockPos, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+			{
+				Gui.drawRect(x, y, x + width, y + height, selected ? Color.DARK_GRAY.getRGB() : Color.GRAY.getRGB());
+				gui.drawString(mc.fontRendererObj, "Router", x + 16, y + 4, Color.WHITE.getRGB());
+
+				BlockPos laptopPos = Laptop.getPos();
+				double distance = Math.sqrt(blockPos.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
+				if(distance > 20)
+				{
+					Icons.WIFI_LOW.draw(mc, x + 3, y + 3);
+				}
+				else if(distance > 10)
+				{
+					Icons.WIFI_MED.draw(mc, x + 3, y + 3);
+				}
+				else
+				{
+					Icons.WIFI_HIGH.draw(mc, x + 3, y + 3);
+				}
+			}
+		});
+		itemListRouters.sortBy((o1, o2) -> {
+			BlockPos laptopPos = Laptop.getPos();
+			double distance1 = Math.sqrt(o1.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
+			double distance2 = Math.sqrt(o2.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
+			return distance1 == distance2 ? 0 : distance1 > distance2 ? 1 : -1;
+		});
+		layout.addComponent(itemListRouters);
+
+		Button buttonConnect = new Button(79, 79, Icons.CHECK);
+		layout.addComponent(buttonConnect);
+
+		return layout;
+	}
+
+	private static List<BlockPos> getRouters()
+	{
+		List<BlockPos> routers = new ArrayList<>();
+
+		World world = Minecraft.getMinecraft().world;
+		BlockPos laptopPos = Laptop.getPos();
+		int range = 30;
+
+		for(int y = -range; y < range + 1; y++)
+		{
+			for(int z = -range; z < range + 1; z++)
+			{
+				for(int x = -range; x < range + 1; x++)
+				{
+					BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
+					IBlockState state = world.getBlockState(pos);
+					if(state.getBlock() == DeviceBlocks.router)
+					{
+						routers.add(pos);
+					}
+				}
+			}
+		}
+		return routers;
 	}
 }
