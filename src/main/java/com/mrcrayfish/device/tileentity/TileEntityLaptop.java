@@ -2,28 +2,20 @@ package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.util.TileEntityUtil;
-
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
-public class TileEntityLaptop extends TileEntity implements ITickable
+public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickable
 {
-	public boolean open = false;
-	
+	private String name = "Laptop";
+	private boolean open = false;
+
 	private NBTTagCompound applicationData;
 	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
@@ -37,13 +29,12 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	@SideOnly(Side.CLIENT)
 	private boolean hasExternalDrive;
 
-	public void openClose()
+	@Override
+	public String getDeviceName()
 	{
-		open = !open;
-		markDirty();
-		TileEntityUtil.markBlockForUpdate(world, pos);
+		return name;
 	}
-	
+
 	@Override
 	public void update() 
 	{
@@ -73,6 +64,11 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		super.readFromNBT(compound);
 		this.open = compound.getBoolean("open");
 
+		if(compound.hasKey("device_name", Constants.NBT.TAG_STRING))
+		{
+			this.name = compound.getString("device_name");
+		}
+
 		if(compound.hasKey("system_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.systemData = compound.getCompoundTag("system_data");
@@ -99,6 +95,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
+		compound.setString("device_name", name);
 
 		if(systemData != null)
 		{
@@ -162,7 +159,19 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		return INFINITE_EXTENT_AABB;
 	}
 
-    public NBTTagCompound getApplicationData()
+	public void openClose()
+	{
+		open = !open;
+		markDirty();
+		TileEntityUtil.markBlockForUpdate(world, pos);
+	}
+
+	public boolean isOpen()
+	{
+		return open;
+	}
+
+	public NBTTagCompound getApplicationData()
     {
 		return applicationData != null ? applicationData : new NBTTagCompound();
     }

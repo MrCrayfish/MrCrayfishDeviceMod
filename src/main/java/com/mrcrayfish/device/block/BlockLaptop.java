@@ -123,7 +123,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 					return true;
 				}
 
-				if(laptop.open && worldIn.isRemote)
+				if(laptop.isOpen() && worldIn.isRemote)
 				{
 					playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 				}

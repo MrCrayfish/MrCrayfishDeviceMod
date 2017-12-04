@@ -644,6 +644,7 @@ public class Laptop extends GuiScreen implements System
 	{
 		layout.updateComponents(x, y);
 		context = layout;
+		layout.init();
 	}
 
 	@Override

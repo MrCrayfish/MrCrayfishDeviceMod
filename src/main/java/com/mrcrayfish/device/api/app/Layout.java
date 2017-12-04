@@ -353,10 +353,10 @@ public class Layout extends Component
 			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 			if(borderVisible)
 			{
-				drawHorizontalLine(x, x + width - 1, y, Color.BLACK.getRGB());
-				drawHorizontalLine(x, x + width - 1, y + height - 1, Color.BLACK.getRGB());
-				drawVerticalLine(x, y, y + height - 1, Color.BLACK.getRGB());
-				drawVerticalLine(x + width - 1, y, y + height - 1, Color.BLACK.getRGB());
+				drawHorizontalLine(x, x + width - 1, y, Color.DARK_GRAY.getRGB());
+				drawHorizontalLine(x, x + width - 1, y + height - 1, Color.DARK_GRAY.getRGB());
+				drawVerticalLine(x, y, y + height - 1, Color.DARK_GRAY.getRGB());
+				drawVerticalLine(x + width - 1, y, y + height - 1, Color.DARK_GRAY.getRGB());
 			}
 		}
 
