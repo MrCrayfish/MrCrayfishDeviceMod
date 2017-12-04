@@ -1,54 +1,41 @@
 package com.mrcrayfish.device.init;
 
-import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.block.BlockLaptop;
 
 import com.mrcrayfish.device.block.BlockRouter;
+import com.mrcrayfish.device.item.ItemLaptop;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 public class DeviceBlocks 
 {
-	public static Block laptop;
-	public static Block router;
-	
-	public static void init()
+	public static final Block LAPTOP;
+	public static final Block ROUTER;
+    static
 	{
-		laptop = new BlockLaptop().setUnlocalizedName("laptop").setRegistryName("laptop");
-		router = new BlockRouter();
+		LAPTOP = new BlockLaptop();
+        ROUTER = new BlockRouter();
 	}
-	
+
 	public static void register()
 	{
-		registerBlock(laptop);
-		registerBlock(router);
+		registerBlock(LAPTOP, new ItemLaptop(LAPTOP));
+		registerBlock(ROUTER);
 	}
-	
-	public static void registerBlock(Block block)
+
+	private static void registerBlock(Block block)
 	{
-		GameRegistry.register(block);
-		ItemBlock item = new ItemBlock(block);
+		registerBlock(block, new ItemBlock(block));
+	}
+
+	private static void registerBlock(Block block, ItemBlock item)
+	{
+		if(block.getRegistryName() == null)
+			throw new IllegalArgumentException("A block being registered does not have a registry name and could be successfully registered.");
+
+		RegistrationHandler.Blocks.add(block);
 		item.setRegistryName(block.getRegistryName());
-		GameRegistry.register(item);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static void registerRenders() 
-	{
-		registerRender(laptop);
-		registerRender(router);
-	}
-
-	@SideOnly(Side.CLIENT)
-	private static void registerRender(Block blockIn)
-	{
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockIn), 0, new ModelResourceLocation(Reference.MOD_ID + ":" + blockIn.getUnlocalizedName().substring(5), "inventory"));
+		RegistrationHandler.Items.add(item);
 	}
 }

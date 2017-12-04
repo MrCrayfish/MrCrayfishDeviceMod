@@ -97,7 +97,7 @@ public class ApplicationSettings extends SystemApplication
 			List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
 			mc.getTextureManager().bindTexture(wallpapers.get(getLaptop().getCurrentWallpaper()));
 			RenderUtil.drawRectWithTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68, 256, 144);
-			mc.fontRendererObj.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColourScheme().getTextColour(), true);
+			mc.fontRenderer.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColourScheme().getTextColour(), true);
 		});
 
 		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
@@ -194,7 +194,7 @@ public class ApplicationSettings extends SystemApplication
 		{
 			Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
 			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
-			mc.fontRendererObj.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
+			mc.fontRenderer.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
 			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 		}
 	}

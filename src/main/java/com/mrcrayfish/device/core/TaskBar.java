@@ -26,7 +26,6 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,7 +136,7 @@ public class TaskBar
 			}
 		}
 
-		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
+		mc.fontRenderer.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
@@ -220,7 +219,7 @@ public class TaskBar
 			public void render(BlockPos blockPos, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
 			{
 				Gui.drawRect(x, y, x + width, y + height, selected ? Color.DARK_GRAY.getRGB() : Color.GRAY.getRGB());
-				gui.drawString(mc.fontRendererObj, "Router", x + 16, y + 4, Color.WHITE.getRGB());
+				gui.drawString(mc.fontRenderer, "Router", x + 16, y + 4, Color.WHITE.getRGB());
 
 				BlockPos laptopPos = Laptop.getPos();
 				double distance = Math.sqrt(blockPos.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
@@ -268,7 +267,7 @@ public class TaskBar
 				{
 					BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
 					IBlockState state = world.getBlockState(pos);
-					if(state.getBlock() == DeviceBlocks.router)
+					if(state.getBlock() == DeviceBlocks.ROUTER)
 					{
 						routers.add(pos);
 					}

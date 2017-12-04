@@ -184,11 +184,11 @@ public class Laptop extends GuiScreen implements System
 
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
 		{
-			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+			drawString(fontRenderer, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 		else
 		{
-			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+			drawString(fontRenderer, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 
 		boolean insideContext = false;

@@ -4,15 +4,14 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ComboBox;
 import com.mrcrayfish.device.api.app.component.Slider;
-import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
@@ -92,12 +91,12 @@ public class Palette extends Component
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        vertexbuffer.pos((double) x + 1, (double)(y + 1 + 50), 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        vertexbuffer.pos((double)(x + 1 + 50), (double)(y + 1 + 50), 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
-        vertexbuffer.pos((double)(x + 1 + 50), (double) y + 1, 1).color(currentColor.getRed() / 255F, currentColor.getGreen() / 255F, currentColor.getBlue() / 255F, 1.0F).endVertex();
-        vertexbuffer.pos((double) x + 1, (double) y + 1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        buffer.pos((double) x + 1, (double)(y + 1 + 50), 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos((double)(x + 1 + 50), (double)(y + 1 + 50), 1).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
+        buffer.pos((double)(x + 1 + 50), (double) y + 1, 1).color(currentColor.getRed() / 255F, currentColor.getGreen() / 255F, currentColor.getBlue() / 255F, 1.0F).endVertex();
+        buffer.pos((double) x + 1, (double) y + 1, 1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
         tessellator.draw();
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
