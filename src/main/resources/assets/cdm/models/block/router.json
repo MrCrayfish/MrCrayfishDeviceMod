@@ -1,6 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
+        "particle": "blocks/anvil_base",
         "0": "blocks/anvil_base",
         "1": "blocks/wool_colored_red",
         "2": "blocks/stone"
@@ -59,27 +60,27 @@
         {
             "name": "base_2",
             "from": [ 2.00, 0.00, 10.00 ], 
-            "to": [ 4.00, 2.00, 12.00 ], 
+            "to": [ 5.00, 2.00, 12.00 ], 
             "faces": {
-                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
+                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 3.00, 2.00 ] },
                 "east": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
-                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
+                "south": { "texture": "#0", "uv": [ 8.00, 6.00, 11.00, 8.00 ] },
                 "west": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
-                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
-                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] }
+                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 3.00, 2.00 ] },
+                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 3.00, 2.00 ] }
             }
         },
         {
             "name": "base_3",
-            "from": [ 12.00, 0.00, 10.00 ], 
+            "from": [ 11.00, 0.00, 10.00 ], 
             "to": [ 14.00, 2.00, 12.00 ], 
             "faces": {
-                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
+                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 3.00, 2.00 ] },
                 "east": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
-                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
+                "south": { "texture": "#0", "uv": [ 10.00, 6.00, 13.00, 8.00 ] },
                 "west": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
-                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
-                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 2.00, 2.00 ] }
+                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 3.00, 2.00 ] },
+                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 3.00, 2.00 ] }
             }
         },
         {
