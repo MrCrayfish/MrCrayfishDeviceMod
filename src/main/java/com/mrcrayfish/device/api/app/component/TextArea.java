@@ -37,10 +37,12 @@ public class TextArea extends Component
 		SPLIT_REGEX = String.format(UNFORMATTED_SPLIT, "(" + joiner.toString() + ")");
 	}
 
-	private FontRenderer fontRendererObj;
+	protected FontRenderer fontRenderer;
+
+	protected String text = "";
+	protected String placeholder = null;
 	protected int width, height;
 	private int padding = 4;
-	private String placeholder = null;
 	private boolean isFocused = false;
 	private boolean editable = true;
 	private List<String> lines = new ArrayList<>();
@@ -80,10 +82,10 @@ public class TextArea extends Component
 	public TextArea(int left, int top, int width, int height)
 	{
 		super(left, top);
-		this.fontRendererObj = Laptop.fontRenderer;
+		this.fontRenderer = Laptop.fontRenderer;
 		this.width = width;
 		this.height = height;
-		this.visibleLines = (int) Math.floor((height - padding * 2 + 1) / fontRendererObj.FONT_HEIGHT);
+		this.visibleLines = (int) Math.floor((height - padding * 2 + 1) / fontRenderer.FONT_HEIGHT);
 		this.lines.add("");
 	}
 
@@ -105,7 +107,7 @@ public class TextArea extends Component
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
 				GlStateManager.enableBlend();
-				mc.fontRendererObj.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColour);
+				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColour);
 			}
 
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -132,16 +134,16 @@ public class TextArea extends Component
 						builder.append(word);
 						builder.append(TextFormatting.RESET);
 					}
-					fontRendererObj.drawString(builder.toString(), x + padding - scrollX, y + padding + i * fontRendererObj.FONT_HEIGHT, -1);
+					fontRenderer.drawString(builder.toString(), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, -1);
 				}
 				else
 				{
-					fontRendererObj.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRendererObj.FONT_HEIGHT, textColour);
+					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColour);
 				}
 			}
 
 			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
-			
+
 			if(editable && isFocused)
 			{
 				float linesPerUnit = (float) lines.size() / (float) visibleLines;
@@ -153,10 +155,10 @@ public class TextArea extends Component
 						String subString = getActiveLine().substring(0, cursorX);
 						int visibleWidth = width - padding * 2;
 						float pixelsPerUnit = (float) maxLineWidth / (float) (width - padding * 2);
-						int stringWidth = fontRendererObj.getStringWidth(subString);
+						int stringWidth = fontRenderer.getStringWidth(subString);
 						int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll + (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
-						int posY = y + padding + (cursorY - scroll) * fontRendererObj.FONT_HEIGHT;
-						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRendererObj.FONT_HEIGHT - 1, Color.WHITE.getRGB());
+						int posY = y + padding + (cursorY - scroll) * fontRenderer.FONT_HEIGHT;
+						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT - 1, Color.WHITE.getRGB());
 					}
 				}
 			}
@@ -216,7 +218,7 @@ public class TextArea extends Component
 		if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + padding, yPosition + padding, width - padding * 2, height - padding * 2))
 		{
 			int lineX = mouseX - xPosition - padding + horizontalScroll;
-			int lineY = (mouseY - yPosition - padding) / fontRendererObj.FONT_HEIGHT + verticalScroll;
+			int lineY = (mouseY - yPosition - padding) / fontRenderer.FONT_HEIGHT + verticalScroll;
 			if(lineY >= lines.size())
 			{
 				cursorX = lines.get(Math.max(0, lines.size() - 1)).length();
@@ -396,9 +398,9 @@ public class TextArea extends Component
 					return;
 
 				String result = activeLine + lines.remove(cursorY + 1);
-				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
+				if(fontRenderer.getStringWidth(result) > width - padding * 2)
 				{
-					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
+					String trimmed = fontRenderer.trimStringToWidth(result, width - padding * 2);
 					lines.set(cursorY, trimmed);
 					if(trimmed.charAt(trimmed.length() - 1) != '\n')
 					{
@@ -557,9 +559,9 @@ public class TextArea extends Component
 			if(text.endsWith("\n"))
 			{
 				String result = head + text;
-				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
+				if(fontRenderer.getStringWidth(result) > width - padding * 2)
 				{
-					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
+					String trimmed = fontRenderer.trimStringToWidth(result, width - padding * 2);
 					lines.set(cursorY, trimmed);
 					prependToLine(cursorY + 1, result.substring(trimmed.length()));
 				}
@@ -572,9 +574,9 @@ public class TextArea extends Component
 			else
 			{
 				String result = head + text + tail;
-				if(fontRendererObj.getStringWidth(result) > width - padding * 2)
+				if(fontRenderer.getStringWidth(result) > width - padding * 2)
 				{
-					String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
+					String trimmed = fontRenderer.trimStringToWidth(result, width - padding * 2);
 					lines.set(cursorY, trimmed);
 					prependToLine(cursorY + 1, result.substring(trimmed.length()));
 				}
@@ -616,9 +618,9 @@ public class TextArea extends Component
 				return;
 			}
 			String result = text + lines.get(lineIndex);
-			if(fontRendererObj.getStringWidth(result) > width - padding * 2)
+			if(fontRenderer.getStringWidth(result) > width - padding * 2)
 			{
-				String trimmed = fontRendererObj.trimStringToWidth(result, width - padding * 2);
+				String trimmed = fontRenderer.trimStringToWidth(result, width - padding * 2);
 				lines.set(lineIndex, trimmed);
 				prependToLine(lineIndex + 1, result.substring(trimmed.length()));
 			}
@@ -777,7 +779,7 @@ public class TextArea extends Component
 					continue;
 				}
 
-				List<String> split = fontRendererObj.listFormattedStringToWidth(lines.get(i), width - padding * 2);
+				List<String> split = fontRenderer.listFormattedStringToWidth(lines.get(i), width - padding * 2);
 				for(int j = 0; j < split.size() - 1; j++)
 				{
 					updatedLines.add(split.get(j));
@@ -788,7 +790,7 @@ public class TextArea extends Component
 				}
 			}
 
-			List<String> split = fontRendererObj.listFormattedStringToWidth(lines.get(lines.size() - 1), width - padding * 2);
+			List<String> split = fontRenderer.listFormattedStringToWidth(lines.get(lines.size() - 1), width - padding * 2);
 			for(int i = 0; i < split.size() - 1; i++)
 			{
 				updatedLines.add(split.get(i));
@@ -798,7 +800,7 @@ public class TextArea extends Component
 				updatedLines.add(split.get(split.size() - 1));
 			}
 
-            List<String> activeLine = fontRendererObj.listFormattedStringToWidth(lines.get(cursorY), width - padding * 2);
+            List<String> activeLine = fontRenderer.listFormattedStringToWidth(lines.get(cursorY), width - padding * 2);
             int totalLength = 0;
 			for(String line : activeLine)
 			{
@@ -860,7 +862,7 @@ public class TextArea extends Component
 		if(!wrapText)
 		{
 			int visibleWidth = width - padding * 2;
-			int textWidth = fontRendererObj.getStringWidth(lines.get(cursorY).substring(0, cursorX));
+			int textWidth = fontRenderer.getStringWidth(lines.get(cursorY).substring(0, cursorX));
 			if(textWidth < horizontalScroll)
 			{
 				horizontalScroll = Math.max(0, textWidth - 1);
@@ -890,9 +892,9 @@ public class TextArea extends Component
 		int maxWidth = 0;
 		for(String line : lines)
 		{
-			if(fontRendererObj.getStringWidth(line) > maxWidth)
+			if(fontRenderer.getStringWidth(line) > maxWidth)
 			{
-				maxWidth = fontRendererObj.getStringWidth(line);
+				maxWidth = fontRenderer.getStringWidth(line);
 			}
 		}
 		maxLineWidth = maxWidth;
@@ -901,10 +903,10 @@ public class TextArea extends Component
 	private int getClosestLineIndex(int lineX, int lineY)
 	{
 		String line = lines.get(lineY);
-		int clickedCharX = fontRendererObj.trimStringToWidth(line, lineX).length();
+		int clickedCharX = fontRenderer.trimStringToWidth(line, lineX).length();
 		int nextCharX = MathHelper.clamp(clickedCharX + 1, 0, Math.max(0, line.length()));
-		int clickedCharWidth = fontRendererObj.getStringWidth(line.substring(0, clickedCharX));
-		int nextCharWidth = fontRendererObj.getStringWidth(line.substring(0, nextCharX));
+		int clickedCharWidth = fontRenderer.getStringWidth(line.substring(0, clickedCharX));
+		int nextCharWidth = fontRenderer.getStringWidth(line.substring(0, nextCharX));
 		int clickedDistanceX = Math.abs(clickedCharWidth - lineX);
 		int nextDistanceX = Math.abs(nextCharWidth - lineX - 1);
 
@@ -1038,7 +1040,7 @@ public class TextArea extends Component
 	public void setPadding(int padding)
 	{
 		this.padding = padding;
-		this.visibleLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
+		this.visibleLines = (int) Math.floor((height - padding * 2) / fontRenderer.FONT_HEIGHT);
 	}
 
 	/**

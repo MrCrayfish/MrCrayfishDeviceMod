@@ -191,7 +191,7 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 			
-			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
 			super.init();
@@ -258,7 +258,7 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 			
-			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
 			super.init();
@@ -381,7 +381,7 @@ public abstract class Dialog extends Wrappable
 
 			if(messageText != null)
 			{
-				int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+				int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 				defaultLayout.height += lines * 9 + 10;
 				offset += lines * 9 + 5;
 			}
@@ -403,7 +403,7 @@ public abstract class Dialog extends Wrappable
 			textFieldInput.setFocused(true);
 			this.addComponent(textFieldInput);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
 			buttonPositive = new Button(getWidth() - positiveWidth - 15, getHeight() - 20, positiveText);
 			buttonPositive.setSize(positiveWidth + 10, 15);
 			buttonPositive.setClickListener((c, mouseButton) ->
@@ -420,7 +420,7 @@ public abstract class Dialog extends Wrappable
             });
 			this.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
+			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
 			buttonNegative = new Button(getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeText);
 			buttonNegative.setSize(negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
@@ -530,7 +530,7 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(browser);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
 			buttonPositive = new Button(172, 105, positiveText);
 			buttonPositive.setSize(positiveWidth + 10, 15);
 			buttonPositive.setEnabled(false);
@@ -552,7 +552,7 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
+			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
 			buttonNegative = new Button(125, 105, negativeText);
 			buttonNegative.setSize(negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
@@ -651,7 +651,7 @@ public abstract class Dialog extends Wrappable
 			browser.openFolder(path);
 			main.addComponent(browser);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
 			buttonPositive = new Button(172, 123, positiveText);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
@@ -711,7 +711,7 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
+			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
 			buttonNegative = new Button(126, 123, negativeText);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);

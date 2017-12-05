@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.network.task;
 
+import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.object.AppInfo;
@@ -42,12 +43,21 @@ public class MessageSyncApplications implements IMessage, IMessageHandler<Messag
     public void fromBytes(ByteBuf buf)
     {
         int size = buf.readInt();
-        allowedApps = new ArrayList<>(size);
+        ImmutableList.Builder<AppInfo> builder = new ImmutableList.Builder<>();
         for(int i = 0; i < size; i++)
         {
-            AppInfo info = ApplicationManager.getApplication(ByteBufUtils.readUTF8String(buf));
-            allowedApps.add(info);
+            String appId = ByteBufUtils.readUTF8String(buf);
+            AppInfo info = ApplicationManager.getApplication(appId);
+            if(info != null)
+            {
+                builder.add(info);
+            }
+            else
+            {
+                MrCrayfishDeviceMod.getLogger().error("Missing application '" + appId + "'");
+            }
         }
+        allowedApps = builder.build();
     }
 
     @Override

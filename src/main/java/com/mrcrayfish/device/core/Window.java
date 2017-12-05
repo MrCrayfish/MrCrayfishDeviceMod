@@ -104,13 +104,13 @@ public class Window<T extends Wrappable>
 		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
 
 		String windowTitle = content.getWindowTitle();
-		if(mc.fontRendererObj.getStringWidth(windowTitle) > width - 2 - 13 - 3) // window width, border, close button, padding, padding
+		if(mc.fontRenderer.getStringWidth(windowTitle) > width - 2 - 13 - 3) // window width, border, close button, padding, padding
 		{
-			windowTitle = mc.fontRendererObj.trimStringToWidth(windowTitle, width - 2 - 13 - 3);
+			windowTitle = mc.fontRenderer.trimStringToWidth(windowTitle, width - 2 - 13 - 3);
 		}
-		mc.fontRendererObj.drawString(windowTitle, x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
+		mc.fontRenderer.drawString(windowTitle, x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
-		btnClose.drawButton(mc, mouseX, mouseY);
+		btnClose.drawButton(mc, mouseX, mouseY, partialTicks);
 		
 		GlStateManager.disableBlend();
 
@@ -243,8 +243,8 @@ public class Window<T extends Wrappable>
 	private void updateComponents(int x, int y)
 	{
 		content.updateComponents(x + offsetX + 1, y + offsetY + 13);
-		btnClose.xPosition = x + offsetX + width - 12;
-		btnClose.yPosition = y + offsetY + 1;
+		btnClose.x = x + offsetX + width - 12;
+		btnClose.y = y + offsetY + 1;
 	}
 	
 	public void openDialog(Dialog dialog)

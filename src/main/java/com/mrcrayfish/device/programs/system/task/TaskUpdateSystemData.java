@@ -12,36 +12,33 @@ import javax.annotation.Nonnull;
 
 public class TaskUpdateSystemData extends Task
 {
-    private int x, y, z;
+    private BlockPos pos;
     private NBTTagCompound data;
 
     public TaskUpdateSystemData()
     {
-        super("update_application_data");
+        super("update_system_data");
     }
 
-    public TaskUpdateSystemData(BlockPos pos, @Nonnull NBTTagCompound data)
+    public TaskUpdateSystemData(BlockPos pos, NBTTagCompound data)
     {
         this();
-        this.x = pos.getX();
-        this.y = pos.getY();
-        this.z = pos.getZ();
+        this.pos = pos;
         this.data = data;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound tag)
     {
-        tag.setInteger("posX", this.x);
-        tag.setInteger("posY", this.y);
-        tag.setInteger("posZ", this.z);
+        tag.setLong("pos", pos.toLong());
         tag.setTag("data", this.data);
     }
 
     @Override
     public void processRequest(NBTTagCompound tag, World world, EntityPlayer player)
     {
-        TileEntity tileEntity = world.getTileEntity(new BlockPos(tag.getInteger("posX"), tag.getInteger("posY"), tag.getInteger("posZ")));
+        BlockPos pos = BlockPos.fromLong(tag.getLong("pos"));
+        TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof TileEntityLaptop)
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;

@@ -249,8 +249,8 @@ public class ApplicationEmail extends Application
 					gui.drawTexturedModalRect(posX, y + 5, 20, 10, 13, 20);
 				}
 
-				mc.fontRendererObj.drawString(e.subject, x + 5, y + 5, Color.WHITE.getRGB());
-				mc.fontRendererObj.drawString(e.author + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
+				mc.fontRenderer.drawString(e.subject, x + 5, y + 5, Color.WHITE.getRGB());
+				mc.fontRenderer.drawString(e.author + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
 			}
 		});
 		layoutInbox.addComponent(listEmails);

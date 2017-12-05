@@ -7,8 +7,6 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.Drive;
@@ -22,7 +20,6 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
@@ -37,7 +34,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.lang.System;
 import java.util.ArrayList;
@@ -54,7 +50,7 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
-    private static final Color HEADER_BACKGROUND = Color.decode("0x616161");
+    private static final Color HEADER_BACKGROUND = Color.decode("0x535861");
     private static final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");
     private static final Color ITEM_SELECTED = Color.decode("0x757575");
     private static final Color PROTECTED_FILE = new Color(155, 237, 242);
@@ -78,7 +74,7 @@ public class FileBrowser extends Component
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
             Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
-            gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
+            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, color.getRGB());
         }
     };
 
@@ -146,7 +142,7 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, HEADER_BACKGROUND.getRGB());
+            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
@@ -331,11 +327,11 @@ public class FileBrowser extends Component
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
 
                 String text = drive.getName();
-                if(mc.fontRendererObj.getStringWidth(text) > 87)
+                if(mc.fontRenderer.getStringWidth(text) > 87)
                 {
-                    text = mc.fontRendererObj.trimStringToWidth(drive.getName(), 78) + "...";
+                    text = mc.fontRenderer.trimStringToWidth(drive.getName(), 78) + "...";
                 }
-                mc.fontRendererObj.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
+                mc.fontRenderer.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
             }
         });
         layoutMain.addComponent(comboBoxDrive);
@@ -866,10 +862,10 @@ public class FileBrowser extends Component
     {
         String path = currentFolder.getPath();
         path = path.replace("/", TextFormatting.GOLD + "/" + TextFormatting.RESET);
-        int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(path);
+        int width = Minecraft.getMinecraft().fontRenderer.getStringWidth(path);
         if(width > 144)
         {
-            path = "..." + Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(path, 144, true);
+            path = "..." + Minecraft.getMinecraft().fontRenderer.trimStringToWidth(path, 144, true);
         }
         labelPath.setText(path);
     }
