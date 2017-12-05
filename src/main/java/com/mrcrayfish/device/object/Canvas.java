@@ -22,7 +22,7 @@ public class Canvas extends Component
 	public static final Tool ERASER = new ToolEraser();
 	public static final Tool EYE_DROPPER = new ToolEyeDropper();
 	
-	public int[][] pixels;
+	public int[] pixels;
 	private int red, green, blue;
 	private int currentColour = Color.BLACK.getRGB();
 	
@@ -44,7 +44,7 @@ public class Canvas extends Component
 	{
 		this.existingImage = false;
 		this.picture = new Picture(name, author, size);
-		this.pixels = new int[picture.size.width][picture.size.height];
+		this.pixels = new int[picture.size.width * picture.size.height];
 	}
 	
 	public void setPicture(Picture picture)
@@ -68,7 +68,7 @@ public class Canvas extends Component
 			{
 				int pixelX = xPosition + j * picture.getPixelWidth() + 1;
 				int pixelY = yPosition + i * picture.getPixelHeight() + 1;
-				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), pixels[j][i]);
+				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), pixels[j + i * picture.size.width]);
 				if(showGrid)
 				{
 					drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + 1, gridColour);
@@ -126,19 +126,19 @@ public class Canvas extends Component
 		}
 	}
 	
-	public int[][] getPixels()
+	public int[] getPixels()
 	{
 		return this.pixels;
 	}
 	
 	public int getPixel(int x, int y)
 	{
-		return this.pixels[x][y];
+		return this.pixels[x + y * picture.size.width];
 	}
 	
 	public void setPixel(int x, int y, int colour)
 	{
-		this.pixels[x][y] = colour;
+		this.pixels[x + y * picture.size.width] = colour;
 	}
 
 	public boolean isExistingImage() 
@@ -194,15 +194,12 @@ public class Canvas extends Component
 		this.showGrid = showGrid;
 	}
 	
-	public int[][] copyPixels()
+	public int[] copyPixels()
 	{
-		int[][] copiedPixels = new int[pixels.length][pixels.length];
+		int[] copiedPixels = new int[pixels.length];
 		for(int i = 0; i < pixels.length; i++)
 		{
-			for(int j = 0; j < pixels.length; j++)
-			{
-				copiedPixels[j][i] = pixels[j][i];
-			}
+			copiedPixels[i] = pixels[i];
 		}
 		return copiedPixels;
 	}
@@ -213,10 +210,7 @@ public class Canvas extends Component
 		{
 			for(int i = 0; i < pixels.length; i++)
 			{
-				for(int j = 0; j < pixels[0].length; j++)
-				{
-					pixels[i][j] = 0; 
-				}
+				pixels[i] = 0;
 			}
 		}
 	}

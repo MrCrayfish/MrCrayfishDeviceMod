@@ -1,8 +1,10 @@
 package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.io.task.*;
+import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
@@ -25,7 +27,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -71,15 +72,12 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		/* Crafting Registering */
-		DeviceCrafting.register();
-		
 		/* Tile Entity Registering */
 		DeviceTileEntites.register();
 
 		/* Packet Registering */
 		PacketHandler.init();
-		
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
@@ -108,6 +106,7 @@ public class MrCrayfishDeviceMod
 
 		// Core
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
+		TaskManager.registerTask(TaskPrint.class);
 		TaskManager.registerTask(TaskUpdateSystemData.class);
 
 		//Bank
@@ -150,7 +149,10 @@ public class MrCrayfishDeviceMod
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 		}
+
+		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
 	}
 
 	public static Logger getLogger()
