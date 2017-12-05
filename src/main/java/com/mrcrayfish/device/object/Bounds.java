@@ -1,5 +1,9 @@
 package com.mrcrayfish.device.object;
 
+import com.mrcrayfish.device.util.CollisionHelper;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+
 /**
  * Author: MrCrayfish
  */
@@ -16,5 +20,24 @@ public class Bounds
         this.x2 = x2;
         this.y2 = y2;
         this.z2 = z2;
+    }
+
+    public AxisAlignedBB toAABB()
+    {
+        return new AxisAlignedBB(x1, y1, z1, x2, y2, z2);
+    }
+
+    public AxisAlignedBB getRotation(EnumFacing facing)
+    {
+        return CollisionHelper.getBlockBounds(facing, this);
+    }
+
+    public AxisAlignedBB[] getRotatedBounds()
+    {
+        AxisAlignedBB boundsNorth = CollisionHelper.getBlockBounds(EnumFacing.NORTH, this);
+        AxisAlignedBB boundsEast = CollisionHelper.getBlockBounds(EnumFacing.EAST, this);
+        AxisAlignedBB boundsSouth = CollisionHelper.getBlockBounds(EnumFacing.SOUTH, this);
+        AxisAlignedBB boundsWest = CollisionHelper.getBlockBounds(EnumFacing.WEST, this);
+        return new AxisAlignedBB[] { boundsSouth, boundsWest, boundsNorth, boundsEast };
     }
 }
