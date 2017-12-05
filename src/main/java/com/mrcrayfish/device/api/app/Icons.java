@@ -1,14 +1,11 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public enum Icon
+public enum Icons implements IIcon
 {
     ARROW_RIGHT,
     ARROW_DOWN,
@@ -50,7 +47,7 @@ public enum Icon
     PAUSE,
     PREVIOUS,
     NEXT,
-    HELP,
+    INFO,
     WARNING,
     ERROR,
     VOLUME_ON,
@@ -102,6 +99,7 @@ public enum Icon
     UNDO,
     REDO,
     WRENCH,
+    HAMMER,
     FORBIDDEN,
     MUSIC,
     EYE_DROPPER,
@@ -110,27 +108,68 @@ public enum Icon
     EXPAND,
     SHRINK,
     SORT,
-    FONT;
+    FONT,
+    ALIGN_LEFT,
+    ALIGN_CENTER,
+    ALIGN_RIGHT,
+    ALIGN_JUSTIFY,
+    COIN,
+    CASH,
+    VERIFIED,
+    BOOK_CLOSED,
+    BOOK_OPEN,
+    VIDEO_ROLL,
+    VIDEO_CAMERA,
+    LIGHT_BULB_OFF,
+    LIGHT_BULB_ON,
+    LOCATION,
+    SEND,
+    LOGIN,
+    LOGOUT,
+    HELP,
+    HEART_OFF,
+    HEART_ON,
+    MAP,
+    BRIGHTNESS;
 
-    public static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
+    private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
-    public static final int ICON_SIZE = 10;
-    public static final int GRID_SIZE = 20;
+    private static final int ICON_SIZE = 10;
+    private static final int GRID_SIZE = 20;
 
+	@Override
+	public ResourceLocation getIconAsset()
+    {
+        return ICON_ASSET;
+    }
+
+	@Override
+	public int getIconSize()
+    {
+		return ICON_SIZE;
+	}
+
+    @Override
+	public int getGridWidth()
+    {
+        return GRID_SIZE;
+    }
+
+    @Override
+    public int getGridHeight()
+    {
+        return GRID_SIZE;
+    }
+
+    @Override
     public int getU()
     {
         return (ordinal() % GRID_SIZE) * ICON_SIZE;
     }
 
+    @Override
     public int getV()
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
-    }
-
-    public void draw(Minecraft mc, int x, int y)
-    {
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(ICON_ASSET);
-        RenderUtil.drawRectWithTexture(x, y, getU(), getV(), ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE, 200, 200);
     }
 }

@@ -8,10 +8,7 @@ import com.mrcrayfish.device.core.io.task.*;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.DeviceBlocks;
-import com.mrcrayfish.device.init.DeviceCrafting;
-import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.init.*;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
@@ -29,6 +26,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -55,24 +53,18 @@ public class MrCrayfishDeviceMod
 	public static final boolean DEVELOPER_MODE = true;
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) throws LaunchException {
-
+	public void preInit(FMLPreInitializationEvent event) throws LaunchException
+	{
 		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
 		{
 			throw new LaunchException();
 		}
-
 		logger = event.getModLog();
 
-		/* Block Registering */
-		DeviceBlocks.init();
-		DeviceBlocks.register();
+		DeviceConfig.load(event.getSuggestedConfigurationFile());
+		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
 
-		DeviceItems.init();
-		DeviceItems.register();
-		
-		/* Packet Registering */
-		PacketHandler.init();
+		RegistrationHandler.init();
 		
 		proxy.preInit();
 	}
@@ -85,6 +77,9 @@ public class MrCrayfishDeviceMod
 		
 		/* Tile Entity Registering */
 		DeviceTileEntites.register();
+
+		/* Packet Registering */
+		PacketHandler.init();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
@@ -114,6 +109,7 @@ public class MrCrayfishDeviceMod
 
 		// Core
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
+		TaskManager.registerTask(TaskUpdateSystemData.class);
 
 		//Bank
 		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);

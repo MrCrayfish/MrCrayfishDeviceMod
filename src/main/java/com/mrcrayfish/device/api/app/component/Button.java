@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.app.Icon;
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -20,8 +20,11 @@ public class Button extends Component
 {
 	protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
 
+	protected static final int TOOLTIP_DELAY = 20;
+
 	protected String text;
 	protected String toolTip, toolTipTitle;
+	protected int toolTipTick;
 	protected boolean hovered;
 
 	protected int padding = 5;
@@ -71,15 +74,15 @@ public class Button extends Component
 	 * Alternate button constructor
 	 *
 	 * @param left how many pixels from the left
-	 * @param top how many pixels from the top
+I	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, Icon icon)
+	public Button(int left, int top, IIcon icon)
 	{
 		super(left, top);
 		this.padding = 3;
-		this.width = Icon.ICON_SIZE + padding * 2;
-		this.height = Icon.ICON_SIZE + padding * 2;
+		this.width = icon.getIconSize() + padding * 2;
+		this.height = icon.getIconSize() + padding * 2;
 		this.setIcon(icon);
 	}
 
@@ -90,7 +93,7 @@ public class Button extends Component
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, int buttonWidth, int buttonHeight, Icon icon)
+	public Button(int left, int top, int buttonWidth, int buttonHeight, IIcon icon)
 	{
 		super(left, top);
 		this.explicitSize = true;
@@ -106,7 +109,7 @@ public class Button extends Component
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, String text, Icon icon)
+	public Button(int left, int top, String text, IIcon icon)
 	{
 		this(left, top, text);
 		this.setIcon(icon);
@@ -119,7 +122,7 @@ public class Button extends Component
 	 * @param top how many pixels from the top
 	 * @param icon
 	 */
-	public Button(int left, int top, int buttonWidth, int buttonHeight, String text, Icon icon)
+	public Button(int left, int top, int buttonWidth, int buttonHeight, String text, IIcon icon)
 	{
 		super(left, top);
 		this.text = text;
@@ -187,6 +190,12 @@ public class Button extends Component
 	}
 
 	@Override
+	protected void handleTick()
+	{
+		toolTipTick = hovered ? ++toolTipTick : 0;
+	}
+
+	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 
 	{
 		if (this.visible)
@@ -229,10 +238,10 @@ public class Button extends Component
 
 			if(text != null)
 			{
-				int textY = (height - mc.fontRendererObj.FONT_HEIGHT) / 2 + 1;
+				int textY = (height - mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
 				int textOffsetX = iconResource != null ? iconWidth + 3 : 0;
 				int textColour = !Button.this.enabled ? 10526880 : (Button.this.hovered ? 16777120 : 14737632);
-				drawString(mc.fontRendererObj, text, x + contentX + textOffsetX, y + textY, textColour);
+				drawString(mc.fontRenderer, text, x + contentX + textOffsetX, y + textY, textColour);
 			}
         }
 	}
@@ -240,7 +249,7 @@ public class Button extends Component
 	@Override
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive) 
 	{
-        if(this.hovered && this.toolTip != null)
+        if(this.hovered && this.toolTip != null && toolTipTick >= TOOLTIP_DELAY)
         {
         	laptop.drawHoveringText(Arrays.asList(TextFormatting.GOLD + this.toolTipTitle, this.toolTip), mouseX, mouseY);
         }
@@ -345,15 +354,15 @@ public class Button extends Component
 		updateSize();
 	}
 
-	public void setIcon(Icon icon)
+	public void setIcon(IIcon icon)
 	{
 		this.iconU = icon.getU();
 		this.iconV = icon.getV();
-		this.iconResource = Icon.ICON_ASSET;
-		this.iconWidth = Icon.ICON_SIZE;
-		this.iconHeight = Icon.ICON_SIZE;
-		this.iconSourceWidth = Icon.GRID_SIZE * Icon.ICON_SIZE;
-		this.iconSourceHeight = Icon.GRID_SIZE * Icon.ICON_SIZE;
+		this.iconResource = icon.getIconAsset();
+		this.iconWidth = icon.getIconSize();
+		this.iconHeight = icon.getIconSize();
+		this.iconSourceWidth = icon.getGridWidth() * icon.getIconSize();
+		this.iconSourceHeight = icon.getGridHeight() * icon.getIconSize();
 		updateSize();
 	}
 
@@ -366,22 +375,25 @@ public class Button extends Component
 	private void updateSize()
 	{
 		if(explicitSize) return;
-		int height = Math.max(iconHeight + padding * 2, 16);
+		int height = padding * 2;
 		int width = padding * 2;
 
 		if(iconResource != null)
 		{
 			width += iconWidth;
+			height += iconHeight;
 		}
 
 		if(text != null)
 		{
 			width += getTextWidth(text);
+			height = 16;
 		}
 
 		if(iconResource != null && text != null)
 		{
 			width += 3;
+			height = iconHeight + padding * 2;
 		}
 
 		this.width = width;
@@ -402,7 +414,7 @@ public class Button extends Component
 
 	private static int getTextWidth(String text)
 	{
-		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		boolean flag = fontRenderer.getUnicodeFlag();
 		fontRenderer.setUnicodeFlag(false);
 		int width = fontRenderer.getStringWidth(text);

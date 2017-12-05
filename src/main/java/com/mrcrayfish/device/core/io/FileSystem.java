@@ -16,7 +16,6 @@ import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -26,7 +25,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -193,7 +191,7 @@ public class FileSystem
 	{
 		if(attachedDrive != null)
 		{
-			ItemStack stack = new ItemStack(DeviceItems.flash_drive);
+			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE);
 			stack.setStackDisplayName(attachedDrive.getName());
 			stack.getTagCompound().setTag("drive", attachedDrive.toTag());
 			attachedDrive = null;

@@ -14,7 +14,7 @@ import java.awt.*;
 
 public class TextArea extends Component
 {
-	protected FontRenderer fontRendererObj;
+	protected FontRenderer fontRenderer;
 	
 	protected String text = "";
 	protected String placeholder = null;
@@ -42,10 +42,10 @@ public class TextArea extends Component
 	public TextArea(int left, int top, int width, int height) 
 	{
 		super(left, top);
-		this.fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
+		this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		this.width = width;
 		this.height = height;
-		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
+		this.maxLines = (int) Math.floor((height - padding * 2) / fontRenderer.FONT_HEIGHT);
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class TextArea extends Component
 			if(!isFocused && placeholder != null && text.isEmpty())
 			{
 				GlStateManager.enableBlend();
-				mc.fontRendererObj.drawSplitString(placeholder, x + padding + 1, y + padding + 2, width - padding * 2 - 2, placeholderColour);
+				mc.fontRenderer.drawSplitString(placeholder, x + padding + 1, y + padding + 2, width - padding * 2 - 2, placeholderColour);
 			}
 
 			String text = this.text;
@@ -78,7 +78,7 @@ public class TextArea extends Component
 	        {
 	        	text = text + TextFormatting.GRAY + (this.isFocused ? "_" : "");
 	        }
-			this.fontRendererObj.drawSplitString(text, xPosition + padding + 1, yPosition + padding + 2, width - padding * 2 - 2, textColour);
+			this.fontRenderer.drawSplitString(text, xPosition + padding + 1, yPosition + padding + 2, width - padding * 2 - 2, textColour);
         }
 	}
 	
@@ -189,7 +189,7 @@ public class TextArea extends Component
 	public void setPadding(int padding) 
 	{
 		this.padding = padding;
-		this.maxLines = (int) Math.floor((height - padding * 2) / fontRendererObj.FONT_HEIGHT);
+		this.maxLines = (int) Math.floor((height - padding * 2) / fontRenderer.FONT_HEIGHT);
 	}
 	
 	/**
