@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.IIcon;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,10 +11,10 @@ public class ApplicationExample extends Application
 {
 	private Label label;
 	private Button button;
-	private ButtonArrow leftButton;
-	private ButtonArrow upButton;
-	private ButtonArrow rightButton;
-	private ButtonArrow downButton;
+	private Button leftButton;
+	private Button upButton;
+	private Button rightButton;
+	private Button downButton;
 	private ItemList<String> itemList;
 	private CheckBox checkBoxOn;
 	private CheckBox checkBoxOff;
@@ -37,19 +39,24 @@ public class ApplicationExample extends Application
 		label = new Label("Label", 5, 5);
 		super.addComponent(label);
 		
-		button = new Button("Button", 5, 18, 63, 20);
+		button = new Button(5, 18, "Button");
+		button.setSize(63, 20);
 		super.addComponent(button);
 		
-		leftButton = new ButtonArrow(5, 43, ButtonArrow.Type.LEFT);
+		leftButton = new Button(5, 43, Icons.CHEVRON_LEFT);
+		leftButton.setPadding(1);
 		super.addComponent(leftButton);
 		
-		upButton = new ButtonArrow(22, 43, ButtonArrow.Type.UP);
+		upButton = new Button(22, 43, Icons.CHEVRON_UP);
+		upButton.setPadding(1);
 		super.addComponent(upButton);
 		
-		rightButton = new ButtonArrow(39, 43, ButtonArrow.Type.RIGHT);
+		rightButton = new Button(39, 43, Icons.CHEVRON_RIGHT);
+		rightButton.setPadding(1);
 		super.addComponent(rightButton);
 		
-		downButton = new ButtonArrow(56, 43, ButtonArrow.Type.DOWN);
+		downButton = new Button(56, 43, Icons.CHEVRON_DOWN);
+		downButton.setPadding(1);
 		super.addComponent(downButton);
 		
 		itemList = new ItemList<String>(5, 60, 63, 4);
@@ -66,11 +73,12 @@ public class ApplicationExample extends Application
 		super.addComponent(checkBoxOn);
 		
 		textField = new TextField(88, 5, 80);
-		textField.setText("Text Field");
+		textField.setPlaceholder("Text Field");
+		textField.setIcon(Icons.USER);
 		super.addComponent(textField);
 		
 		textArea = new TextArea(88, 25, 80, 60);
-		textArea.setText("Text Area");
+		textArea.setPlaceholder("Text Area");
 		super.addComponent(textArea);
 		
 		progressBar = new ProgressBar(88, 90, 80, 16);

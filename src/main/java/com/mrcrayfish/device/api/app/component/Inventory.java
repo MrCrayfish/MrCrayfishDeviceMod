@@ -8,7 +8,6 @@ import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
-import com.mrcrayfish.device.util.InventoryUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -51,7 +50,7 @@ public class Inventory extends Component
 			mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 			RenderUtil.drawRectWithTexture(xPosition, yPosition, 7, 139, 162, 54, 162, 54);
 
-			InventoryPlayer inventory = mc.thePlayer.inventory;
+			InventoryPlayer inventory = mc.player.inventory;
 			for(int i = 9; i < inventory.getSizeInventory() - 4; i++)
 			{
 				int offsetX = (i % 9) * 18;
@@ -68,7 +67,7 @@ public class Inventory extends Component
 				}
 
 				ItemStack stack = inventory.getStackInSlot(i);
-				if(!InventoryUtil.isStackEmpty(stack))
+				if(!stack.isEmpty())
 				{
 					RenderUtil.renderItem(xPosition + offsetX + 1, yPosition + offsetY + 1, stack, true);
 				}
@@ -89,8 +88,8 @@ public class Inventory extends Component
 					int y = yPosition + (i * 18) - 1;
 					if(GuiHelper.isMouseInside(mouseX, mouseY, x, y, x + 18, y + 18))
 					{
-						ItemStack stack = mc.thePlayer.inventory.getStackInSlot((i * 9) + j + 9);
-						if(!InventoryUtil.isStackEmpty(stack))
+						ItemStack stack = mc.player.inventory.getStackInSlot((i * 9) + j + 9);
+						if(!stack.isEmpty())
 						{
 							laptop.drawHoveringText(Arrays.asList(new String[]{stack.getDisplayName()}), mouseX, mouseY);
 						}

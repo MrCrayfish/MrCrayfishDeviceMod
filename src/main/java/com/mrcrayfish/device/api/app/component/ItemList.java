@@ -2,15 +2,14 @@ package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
@@ -18,6 +17,14 @@ import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.util.NonNullList;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class ItemList<E> extends Component implements Iterable<E>
@@ -31,7 +38,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected boolean resized = false;
 	protected boolean initialized = false;
 
-	protected List<E> items = new ArrayList<E>();
+	protected List<E> items = NonNullList.create();
 	protected ListItemRenderer<E> renderer = null;
 	protected ItemClickListener<E> itemClickListener = null;
 	
@@ -69,7 +76,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	@Override
 	public void init(Layout layout)
 	{
-		btnUp = new ButtonArrow(left + width - 12, top, ButtonArrow.Type.UP);
+		btnUp = new Button(left + width - 12, top, Icons.CHEVRON_UP);
 		btnUp.setEnabled(false);
 		btnUp.setClickListener((c, mouseButton) ->
 		{
@@ -77,13 +84,12 @@ public class ItemList<E> extends Component implements Iterable<E>
         });
 		btnUp.setVisible(false);
 		layout.addComponent(btnUp);
-		
-		btnDown = new ButtonArrow(left + width + 3, top + 14, ButtonArrow.Type.DOWN);
+
+		btnDown = new Button(left + width - 12, top + getHeight() - 12, Icons.CHEVRON_DOWN);
 		btnDown.setClickListener((c, mouseButton) ->
 		{
             if(mouseButton == 0) scrollDown();
         });
-		btnDown = new ButtonArrow(left + width - 12, top + getHeight() - 12, ButtonArrow.Type.DOWN);
 		btnDown.setEnabled(false);
 		btnDown.setVisible(false);
 		layout.addComponent(btnDown);
@@ -130,7 +136,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 					else
 					{
 						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
-						drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
+						drawString(mc.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
 						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, Color.DARK_GRAY.getRGB());
 					}
 				}
@@ -148,7 +154,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 				else
 				{
 					drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
-					drawString(mc.fontRendererObj, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
+					drawString(mc.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
 				}
 			}
 
@@ -289,12 +295,13 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 */
 	public void addItem(@Nonnull E e)
 	{
-		if(e == null)
-			throw new IllegalArgumentException("A null object cannot be added to an ItemList");
 		items.add(e);
 		sort();
 		if(initialized)
+		{
+			updateButtons();
 			updateComponent();
+		}
 	}
 
 	/**
@@ -307,6 +314,11 @@ public class ItemList<E> extends Component implements Iterable<E>
 		items.clear();
 		items.addAll(newItems);
 		sort();
+		if(initialized)
+		{
+			updateButtons();
+			updateComponent();
+		}
 	}
 	
 	/**
@@ -322,7 +334,10 @@ public class ItemList<E> extends Component implements Iterable<E>
 			if(index == selected)
 				selected = -1;
 			if(initialized)
+			{
+				updateButtons();
 				updateComponent();
+			}
 			return e;
 		}
 		return null;

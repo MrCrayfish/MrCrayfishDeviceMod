@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.programs.auction;
 
-import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
@@ -11,7 +10,6 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -19,7 +17,6 @@ import com.mrcrayfish.device.programs.auction.object.AuctionItem;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
 import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
-import com.mrcrayfish.device.util.InventoryUtil;
 import com.mrcrayfish.device.util.TimeUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -104,13 +101,15 @@ public class ApplicationMineBay extends Application
 			}
 		});
 		
-		Button btnAddItem = new Button("Add Item", 70, 5, 60, 15);
+		Button btnAddItem = new Button(70, 5, "Add Item");
+		btnAddItem.setSize(60, 15);
 		btnAddItem.setClickListener((c, mouseButton) -> setCurrentLayout(layoutSelectItem));
 		super.addComponent(btnAddItem);
 
-		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
+		Button btnViewItem = new Button(135, 5, "Your Auctions");
+		btnViewItem.setSize(80, 15);
 		btnViewItem.setClickListener((c, mouseButton) -> {
-			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().thePlayer.getUniqueID());
+			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
 			task.setCallback((nbt, success) -> {
                 items.removeAll();
                 for(AuctionItem item : AuctionManager.INSTANCE.getItems()) {
@@ -166,18 +165,19 @@ public class ApplicationMineBay extends Application
 				{
 					GlStateManager.translate(x + 24, y + 4, 0);
 					GlStateManager.scale(0.666, 0.666, 0);
-					mc.fontRendererObj.drawString(e.getStack().getDisplayName(), 0, 0, Color.WHITE.getRGB(), false);
-					mc.fontRendererObj.drawString(TimeUtil.getTotalRealTime(e.getTimeLeft()), 0, 11, Color.LIGHT_GRAY.getRGB(), false);
+					mc.fontRenderer.drawString(e.getStack().getDisplayName(), 0, 0, Color.WHITE.getRGB(), false);
+					mc.fontRenderer.drawString(TimeUtil.getTotalRealTime(e.getTimeLeft()), 0, 11, Color.LIGHT_GRAY.getRGB(), false);
 				}
 				GlStateManager.popMatrix();
 				
 				String price = "$" + e.getPrice();
-				mc.fontRendererObj.drawString(price, x - mc.fontRendererObj.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
+				mc.fontRenderer.drawString(price, x - mc.fontRenderer.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
 			}
 		});
 		super.addComponent(items);
 		
-		Button btnBuy = new Button("Buy", 100, 127, 50, 15);
+		Button btnBuy = new Button(100, 127, "Buy");
+		btnBuy.setSize(50, 15);
 		btnBuy.setClickListener(new ClickListener()
 		{
 			@Override
@@ -221,7 +221,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
 		
@@ -233,12 +233,12 @@ public class ApplicationMineBay extends Application
 			{
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
-					ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(!InventoryUtil.isStackEmpty(stack))
+					ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					if(!stack.isEmpty())
 					{
 						buttonAddNext.setEnabled(true);
-						selectorAmount.setMax(stack.stackSize);
-						selectorAmount.setNumber(stack.stackSize);
+						selectorAmount.setMax(stack.getCount());
+						selectorAmount.setNumber(stack.getCount());
 					}
 					else
 					{
@@ -288,7 +288,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 				
 				int offsetX = 14;
 				int offsetY = 40;
@@ -301,8 +301,8 @@ public class ApplicationMineBay extends Application
 				
 				if(inventory.getSelectedSlotIndex() != -1)
 				{
-					ItemStack stack = mc.thePlayer.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(!InventoryUtil.isStackEmpty(stack))
+					ItemStack stack = mc.player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					if(!stack.isEmpty())
 					{
 						GlStateManager.pushMatrix();
 						{
@@ -382,7 +382,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
 		

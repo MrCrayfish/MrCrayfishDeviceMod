@@ -65,7 +65,7 @@ public abstract class ComboBox<T> extends Component
     {
         if (this.visible)
         {
-            FontRenderer fontrenderer = mc.fontRendererObj;
+            FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -92,7 +92,7 @@ public abstract class ComboBox<T> extends Component
             /* Center */
             RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition + 2, 98 + i * 5, 14, height - 4, height - 4, 1, 1);
 
-            /* Icon */
+            /* Icons */
             RenderUtil.drawRectWithTexture(xPosition + xOffset + 3, yPosition + 5, 111, 12, 8, 5, 8, 5);
 
             /* Box */
@@ -108,10 +108,10 @@ public abstract class ComboBox<T> extends Component
             else if(value != null)
             {
                 String text = value.toString();
-                int valWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+                int valWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
                 if(valWidth > (width - height - 8))
                 {
-                    text = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(text, width - height - 12, false) + "...";
+                    text = Minecraft.getMinecraft().fontRenderer.trimStringToWidth(text, width - height - 12, false) + "...";
                 }
                 fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
             }
@@ -123,6 +123,9 @@ public abstract class ComboBox<T> extends Component
     @Override
     public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
     {
+        if(!this.visible || !this.enabled)
+            return;
+
         if(this.hovered && !this.opened)
         {
             this.opened = true;
@@ -232,14 +235,37 @@ public abstract class ComboBox<T> extends Component
             if(items == null)
                 throw new IllegalArgumentException("Cannot set null items");
 
-            this.list.removeAll();
+            list.removeAll();
             for(T t : items)
             {
-                this.list.addItem(t);
+                list.addItem(t);
             }
-            this.selected = this.list.getItem(0);
-            this.layout.height = getListHeight(this.list);
-            updateValue(this.selected);
+            if(items.length > 0)
+            {
+                selected = list.getItem(0);
+                updateValue(selected);
+            }
+            layout.height = getListHeight(list);
+        }
+
+        public void setSelectedItem(int index)
+        {
+            T t = list.getItem(index);
+            if(t != null)
+            {
+                selected = t;
+                updateValue(t);
+            }
+        }
+
+        public void setSelectedItem(T t)
+        {
+            if(list.getItems().stream().anyMatch(i -> i == t))
+            {
+                list.setSelectedIndex(list.getItems().indexOf(t));
+                selected = t;
+                updateValue(t);
+            }
         }
 
         public T getSelectedItem()
@@ -249,8 +275,8 @@ public abstract class ComboBox<T> extends Component
 
         public void setListItemRenderer(ListItemRenderer<T> renderer)
         {
-            this.list.setListItemRenderer(renderer);
-            this.layout.height = getListHeight(list);
+            list.setListItemRenderer(renderer);
+            layout.height = getListHeight(list);
         }
 
         private static int getListHeight(ItemList list)

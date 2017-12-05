@@ -66,11 +66,9 @@ public class AppInfo
 	@Override
 	public boolean equals(Object obj)
 	{
-		if(obj == null)
-			return false;
-		if(!(obj instanceof AppInfo))
-			return false;
+		if(obj == null) return false;
+		if(!(obj instanceof AppInfo)) return false;
 		AppInfo info = (AppInfo) obj;
-		return getFormattedId().equals(info.getFormattedId());
+		return this == info || getFormattedId().equals(info.getFormattedId());
 	}
 }

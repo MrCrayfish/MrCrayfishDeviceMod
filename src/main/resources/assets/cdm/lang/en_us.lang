@@ -1,9 +1,12 @@
 itemGroup.cdmTabDevice=MrCrayfish's Device Mod
 
 tile.laptop.name=Laptop
+tile.printer.name=Printer
 
 item.flash_drive.name=Flash Drive
+item.printed_paper.name=Printed Paper
 
+app.cdm.settings.name=Settings
 app.cdm.bank.name=Bank
 app.cdm.example.name=UI Components
 app.cdm.file_browser.name=File Browser

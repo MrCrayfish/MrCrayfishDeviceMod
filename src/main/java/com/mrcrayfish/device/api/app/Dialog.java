@@ -2,23 +2,39 @@ package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.print.task.TaskPrint;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class Dialog extends Wrappable
@@ -191,7 +207,7 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 			
-			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
 			super.init();
@@ -208,7 +224,8 @@ public abstract class Dialog extends Wrappable
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
-			buttonPositive = new Button("Close", getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
+			buttonPositive.setSize(36, 15);
 			buttonPositive.setClickListener(new ClickListener()
 			{
 				@Override
@@ -257,7 +274,7 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 			
-			int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
 			super.init();
@@ -274,7 +291,8 @@ public abstract class Dialog extends Wrappable
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
-			buttonPositive = new Button(positiveText, getWidth() - 35, getHeight() - 20, 30, 15);
+			buttonPositive = new Button(getWidth() - 35, getHeight() - 20, positiveText);
+			buttonPositive.setSize(30, 15);
 			buttonPositive.setClickListener(new ClickListener()
 			{
 				@Override
@@ -289,7 +307,8 @@ public abstract class Dialog extends Wrappable
 			});
 			this.addComponent(buttonPositive);
 			
-			buttonNegative = new Button(negativeText, getWidth() - 70, getHeight() - 20, 30, 15);
+			buttonNegative = new Button(getWidth() - 70, getHeight() - 20, negativeText);
+			buttonPositive.setSize(30, 15);
 			buttonNegative.setClickListener(new ClickListener()
 			{
 				@Override
@@ -378,7 +397,7 @@ public abstract class Dialog extends Wrappable
 
 			if(messageText != null)
 			{
-				int lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+				int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 				defaultLayout.height += lines * 9 + 10;
 				offset += lines * 9 + 5;
 			}
@@ -400,8 +419,9 @@ public abstract class Dialog extends Wrappable
 			textFieldInput.setFocused(true);
 			this.addComponent(textFieldInput);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, getWidth() - positiveWidth - 15, getHeight() - 20, positiveWidth + 10, 15);
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
+			buttonPositive = new Button(getWidth() - positiveWidth - 15, getHeight() - 20, positiveText);
+			buttonPositive.setSize(positiveWidth + 10, 15);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
                 if(!textFieldInput.getText().isEmpty())
@@ -416,8 +436,9 @@ public abstract class Dialog extends Wrappable
             });
 			this.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeWidth + 10, 15);
+			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
+			buttonNegative = new Button(getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeText);
+			buttonNegative.setSize(negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			this.addComponent(buttonNegative);
 		}
@@ -525,8 +546,9 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(browser);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, 172, 105, positiveWidth + 10, 15);
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
+			buttonPositive = new Button(172, 105, positiveText);
+			buttonPositive.setSize(positiveWidth + 10, 15);
 			buttonPositive.setEnabled(false);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
@@ -546,8 +568,9 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, 125, 105, negativeWidth + 10, 15);
+			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
+			buttonNegative = new Button(125, 105, negativeText);
+			buttonNegative.setSize(negativeWidth + 10, 15);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
@@ -636,7 +659,6 @@ public abstract class Dialog extends Wrappable
 		public void init()
 		{
 			super.init();
-
 			main = new Layout(210, 142);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
@@ -644,8 +666,8 @@ public abstract class Dialog extends Wrappable
 			browser.openFolder(path);
 			main.addComponent(browser);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(positiveText);
-			buttonPositive = new Button(positiveText, 172, 123, positiveWidth + 10, 15);
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
+			buttonPositive = new Button(172, 123, positiveText);
 			buttonPositive.setClickListener((c, mouseButton) ->
 			{
 				if(mouseButton == 0)
@@ -704,8 +726,8 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(negativeText);
-			buttonNegative = new Button(negativeText, 126, 123, negativeWidth + 10, 15);
+			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
+			buttonNegative = new Button(126, 123, negativeText);
 			buttonNegative.setClickListener((c, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
@@ -762,6 +784,249 @@ public abstract class Dialog extends Wrappable
 		public void setFolder(String path)
 		{
 			this.path = path;
+		}
+	}
+
+	public static class Print extends Dialog
+	{
+		private final IPrint print;
+
+		private Layout layoutMain;
+		private Label labelMessage;
+		private Button buttonRefresh;
+		private ItemList<PrinterEntry> itemListPrinters;
+		private Button buttonPrint;
+		private Button buttonCancel;
+		private Button buttonInfo;
+
+		public Print(IPrint print)
+		{
+			this.print = print;
+			this.setTitle("Print");
+		}
+
+		@Override
+		public void init()
+		{
+			super.init();
+
+			layoutMain = new Layout(150, 132);
+
+			labelMessage = new Label("Select a Printer", 5, 5);
+			layoutMain.addComponent(labelMessage);
+
+			buttonRefresh = new Button(131, 2, Icons.RELOAD);
+			buttonRefresh.setPadding(2);
+			buttonRefresh.setToolTip("Refresh", "Retrieve an updated list of printers");
+			buttonRefresh.setClickListener((c, mouseButton) ->
+			{
+                if(mouseButton == 0)
+				{
+					itemListPrinters.setSelectedIndex(-1);
+					itemListPrinters.setItems(getPrinters());
+				}
+            });
+			layoutMain.addComponent(buttonRefresh);
+
+			itemListPrinters = new ItemList<>(5, 18, 140, 5);
+			itemListPrinters.setListItemRenderer(new ListItemRenderer<PrinterEntry>(16)
+			{
+				@Override
+				public void render(PrinterEntry printerEntry, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+				{
+					ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
+					Gui.drawRect(x, y, x + width, y + height, selected ? colourScheme.getItemHighlightColour() : colourScheme.getItemBackgroundColour());
+					Icons.PRINTER.draw(mc, x + 3, y + 3);
+					RenderUtil.drawStringClipped(printerEntry.getName(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
+				}
+			});
+			itemListPrinters.setItemClickListener((blockPos, index, mouseButton) ->
+			{
+                if(mouseButton == 0)
+				{
+					buttonPrint.setEnabled(true);
+					buttonInfo.setEnabled(true);
+				}
+            });
+			itemListPrinters.sortBy((o1, o2) ->
+			{
+				BlockPos laptopPos = Laptop.getPos();
+
+				BlockPos pos1 = o1.getPos();
+				double distance1 = laptopPos.distanceSqToCenter(pos1.getX() + 0.5, pos1.getY() + 0.5, pos1.getZ() + 0.5);
+
+				BlockPos pos2 = o2.getPos();
+				double distance2 = laptopPos.distanceSqToCenter(pos2.getX() + 0.5, pos2.getY() + 0.5, pos2.getZ() + 0.5);
+
+				return distance2 < distance1 ? 1 : (distance1 == distance2) ? 0 : -1;
+			});
+			itemListPrinters.setItems(getPrinters());
+			layoutMain.addComponent(itemListPrinters);
+
+			buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
+			buttonPrint.setPadding(5);
+			buttonPrint.setEnabled(false);
+			buttonPrint.setClickListener((c, mouseButton) ->
+			{
+				if(mouseButton == 0)
+				{
+					PrinterEntry printerEntry = itemListPrinters.getSelectedItem();
+					if(printerEntry != null)
+					{
+						TaskPrint task = new TaskPrint(printerEntry.getPos(), print);
+						task.setCallback((nbtTagCompound, success) ->
+						{
+							if(success)
+							{
+								close();
+							}
+						});
+						TaskManager.sendTask(task);
+					}
+				}
+			});
+			layoutMain.addComponent(buttonPrint);
+
+			buttonCancel = new Button(74, 108, Icons.CROSS);
+			buttonCancel.setPadding(5);
+			buttonCancel.setClickListener((c, mouseButton) ->
+			{
+				if(mouseButton == 0)
+				{
+					close();
+				}
+			});
+			layoutMain.addComponent(buttonCancel);
+
+			buttonInfo = new Button(5, 108, Icons.HELP);
+			buttonInfo.setEnabled(false);
+			buttonInfo.setPadding(5);
+			buttonInfo.setClickListener((c, mouseButton) ->
+			{
+                if(mouseButton == 0)
+				{
+					PrinterEntry printerEntry = itemListPrinters.getSelectedItem();
+					if(printerEntry != null)
+					{
+						Info info = new Info(printerEntry);
+						openDialog(info);
+					}
+				}
+            });
+			layoutMain.addComponent(buttonInfo);
+
+			setLayout(layoutMain);
+		}
+
+		private List<PrinterEntry> getPrinters()
+		{
+			List<PrinterEntry> printers = new ArrayList<>();
+
+			World world = Minecraft.getMinecraft().world;
+			BlockPos laptopPos = Laptop.getPos();
+			int range = 20;
+
+			for(int y = -range; y < range + 1; y++)
+			{
+				for(int z = -range; z < range + 1; z++)
+				{
+					for(int x = -range; x < range + 1; x++)
+					{
+						BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
+						IBlockState state = world.getBlockState(pos);
+						if(state.getBlock() == DeviceBlocks.PRINTER)
+						{
+							TileEntity tileEntity = world.getTileEntity(pos);
+							if(tileEntity instanceof TileEntityPrinter)
+							{
+								TileEntityPrinter tileEntityPrinter = (TileEntityPrinter) tileEntity;
+								printers.add(new PrinterEntry(tileEntityPrinter.getName(), tileEntityPrinter.getPaperCount(), pos));
+							}
+						}
+					}
+				}
+			}
+			return printers;
+		}
+
+		private static class PrinterEntry
+		{
+			private String name;
+			private int paperCount;
+			private BlockPos pos;
+
+			public PrinterEntry(String name, int paperCount, BlockPos pos)
+			{
+				this.name = name;
+				this.paperCount = paperCount;
+				this.pos = pos;
+			}
+
+			public String getName()
+			{
+				return name;
+			}
+
+			public int getPaperCount()
+			{
+				return paperCount;
+			}
+
+			public BlockPos getPos()
+			{
+				return pos;
+			}
+		}
+
+		private static class Info extends Dialog
+		{
+			private final PrinterEntry entry;
+
+			private Layout layoutMain;
+			private Label labelName;
+			private Image imagePaper;
+			private Label labelPaper;
+			private Label labelPosition;
+			private Button buttonClose;
+
+			private Info(PrinterEntry entry)
+			{
+				this.entry = entry;
+				this.setTitle("Details");
+			}
+
+			@Override
+			public void init()
+			{
+				super.init();
+
+				layoutMain = new Layout(120, 70);
+
+				labelName = new Label(TextFormatting.GOLD.toString() + TextFormatting.BOLD.toString() + entry.getName(), 5, 5);
+				layoutMain.addComponent(labelName);
+
+				labelPaper = new Label(TextFormatting.DARK_GRAY + "Paper: " + TextFormatting.RESET + Integer.toString(entry.getPaperCount()), 5, 18);
+				labelPaper.setAlignment(Component.ALIGN_LEFT);
+				labelPaper.setShadow(false);
+				layoutMain.addComponent(labelPaper);
+
+				String position = TextFormatting.DARK_GRAY + "X: " + TextFormatting.RESET + entry.getPos().getX() + " " + TextFormatting.DARK_GRAY + "Y: " + TextFormatting.RESET + entry.getPos().getY() + " " + TextFormatting.DARK_GRAY + "Z: " + TextFormatting.RESET + entry.getPos().getZ();
+				labelPosition = new Label(position, 5, 30);
+				labelPosition.setShadow(false);
+				layoutMain.addComponent(labelPosition);
+
+				buttonClose = new Button(5, 49, "Close");
+				buttonClose.setClickListener((c, mouseButton) ->
+				{
+                    if(mouseButton == 0)
+					{
+						close();
+					}
+                });
+				layoutMain.addComponent(buttonClose);
+
+				setLayout(layoutMain);
+			}
 		}
 	}
 

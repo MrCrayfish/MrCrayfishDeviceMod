@@ -1,16 +1,17 @@
 package com.mrcrayfish.device.core.io;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.util.Constants;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.mrcrayfish.device.core.io.FileSystem.Status;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * Author: MrCrayfish
@@ -102,7 +103,7 @@ public class ServerFolder extends ServerFile
 
     public List<ServerFile> search(Predicate<ServerFile> conditions, boolean includeSubServerFolders)
     {
-        List<ServerFile> found = new ArrayList<ServerFile>();
+        List<ServerFile> found = NonNullList.create();
         search(found, conditions, includeSubServerFolders);
         return found;
     }
