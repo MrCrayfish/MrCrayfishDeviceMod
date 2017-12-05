@@ -6,4 +6,9 @@ public class GuiHelper
 	{
 		return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
 	}
+
+	public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height)
+	{
+		return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+	}
 }

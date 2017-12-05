@@ -1,9 +1,9 @@
 package com.mrcrayfish.device.programs;
 
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Image;
@@ -13,6 +13,7 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
@@ -21,8 +22,15 @@ import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -340,6 +348,17 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEyeDropper);
 
+		Button button = new Button(138, 81, Icons.PRINTER);
+		button.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				Dialog.Print dialog = new Dialog.Print(new PicturePrint(canvas.picture.getName(), canvas.getPixels(), canvas.picture.getWidth()));
+				openDialog(dialog);
+			}
+        });
+		layoutDraw.addComponent(button);
+
 		btnCancel = new Button(138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
 		btnCancel.setClickListener(new ClickListener()
 		{
@@ -486,5 +505,146 @@ public class ApplicationPixelPainter extends Application
 	{
 		super.onClose();
 		listPictures.removeAll();
+	}
+
+	public static class PicturePrint implements IPrint
+	{
+		private String name;
+		private int[] pixels;
+		private int resolution;
+		private boolean cut;
+
+		public PicturePrint() {}
+
+		public PicturePrint(String name, int[] pixels, int resolution)
+		{
+			this.name = name;
+			this.pixels = pixels;
+			this.resolution = resolution;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+
+		@Override
+		public int speed()
+		{
+			return resolution;
+		}
+
+		@Override
+		public boolean requiresColor()
+		{
+			for(int pixel : pixels)
+			{
+				int r = (pixel >> 16 & 255);
+				int g = (pixel >> 8 & 255);
+				int b = (pixel & 255);
+				if(r != g || r != b)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public NBTTagCompound toTag()
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("name", name);
+			tag.setIntArray("pixels", pixels);
+			tag.setInteger("resolution", resolution);
+			if(cut) tag.setBoolean("cut", cut);
+			return tag;
+		}
+
+		@Override
+		public void fromTag(NBTTagCompound tag)
+		{
+			name = tag.getString("name");
+			pixels = tag.getIntArray("pixels");
+			resolution = tag.getInteger("resolution");
+			cut = tag.getBoolean("cut");
+		}
+
+		@Override
+		public Class<? extends IPrint.Renderer> getRenderer()
+		{
+			return PictureRenderer.class;
+		}
+	}
+
+	public static class PictureRenderer implements IPrint.Renderer
+	{
+		public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/model/paper.png");
+
+		@Override
+		public boolean render(NBTTagCompound data)
+		{
+			if(data.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) && data.hasKey("resolution", Constants.NBT.TAG_INT))
+			{
+				int[] pixels = data.getIntArray("pixels");
+				int resolution = data.getInteger("resolution");
+				boolean cut = data.getBoolean("cut");
+
+				if(pixels.length != resolution * resolution)
+					return false;
+
+				GlStateManager.translate(0, 1.0 - (1.0 / resolution), 0);
+
+				GlStateManager.enableBlend();
+				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+				GlStateManager.disableLighting();
+				Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+
+				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
+				Tessellator tessellator = Tessellator.getInstance();
+				BufferBuilder buffer = tessellator.getBuffer();
+				double scale = 1 / (double) resolution;
+
+				GlStateManager.enableRescaleNormal();
+				GL11.glNormal3f(0.0f, 0.0F, 1.0f);
+				for(int i = 0; i < resolution; i++)
+				{
+					double pixelY = i / (double) resolution;
+					for(int j = 0; j < resolution; j++)
+					{
+						float a = (float) Math.floor((pixels[j + i * resolution] >> 24 & 255) / 255.0F);
+						if(a < 1.0F)
+						{
+							if(cut) continue;
+							GlStateManager.color(1.0F, 1.0F, 1.0F);
+						}
+						else
+						{
+							float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
+							float g = (float) (pixels[j + i * resolution] >> 8 & 255) / 255.0F;
+							float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
+							GlStateManager.color(r, g, b, a);
+						}
+
+						double pixelX = j / (double) resolution;
+						buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+						buffer.pos(pixelX, -pixelY, 0).tex(pixelX, pixelY).endVertex();
+						buffer.pos(pixelX + scale, -pixelY, 0).tex(pixelX + scale, pixelY).endVertex();
+						buffer.pos(pixelX + scale, -pixelY + scale, 0).tex(pixelX + scale, pixelY + scale).endVertex();
+						buffer.pos(pixelX, -pixelY + scale, 0).tex(pixelX, pixelY + scale).endVertex();
+						tessellator.draw();
+					}
+				}
+				GlStateManager.disableRescaleNormal();
+				GlStateManager.disableBlend();
+				GlStateManager.enableLighting();
+
+				return true;
+			}
+			return false;
+		}
 	}
 }
