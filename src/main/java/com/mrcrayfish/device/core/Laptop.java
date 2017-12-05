@@ -85,7 +85,7 @@ public class Laptop extends GuiScreen implements System
 			this.currentWallpaper = 0;
 		}
 		Laptop.system = this;
-		pos = laptop.getPos();
+		Laptop.pos = laptop.getPos();
 	}
 
 	@Nullable
