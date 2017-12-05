@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.core.Settings;
+
 /**
  * Author: MrCrayfish
  */
@@ -21,4 +23,11 @@ public interface System
      * Closes the current context on screen
      */
     void closeContext();
+
+    /**
+     * Gets the system settings
+     *
+     * @return the system settings
+     */
+    Settings getSettings();
 }

@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core;
 
+import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
@@ -45,7 +46,6 @@ public class Laptop extends GuiScreen implements System
 
 	private static final List<Application> APPLICATIONS = new ArrayList<>();
 	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
-	private static int currentWallpaper;
 
 	private static final int BORDER = 10;
 	private static final int DEVICE_WIDTH = 384;
@@ -65,6 +65,7 @@ public class Laptop extends GuiScreen implements System
 	private NBTTagCompound appData;
 	private NBTTagCompound systemData;
 
+	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
 	
@@ -73,11 +74,11 @@ public class Laptop extends GuiScreen implements System
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
 		this.windows = new Window[5];
-		this.settings = Settings.fromTag(systemData.getCompoundTag("settings"));
+		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
 		this.bar = new TaskBar(APPLICATIONS);
-		Laptop.currentWallpaper = systemData.getInteger("CurrentWallpaper");
+		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
-			Laptop.currentWallpaper = 0;
+			this.currentWallpaper = 0;
 		}
 		Laptop.system = this;
 		pos = laptop.getPos();
@@ -115,6 +116,7 @@ public class Laptop extends GuiScreen implements System
 		/* Send system data */
         NBTTagCompound systemData = new NBTTagCompound();
         systemData.setInteger("CurrentWallpaper", currentWallpaper);
+        systemData.setTag("Settings", settings.toTag());
         TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
 
 		Laptop.pos = null;
@@ -182,11 +184,11 @@ public class Laptop extends GuiScreen implements System
 
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
 		{
-			drawString(fontRendererObj, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+			drawString(fontRenderer, "Alpha v" + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 		else
 		{
-			drawString(fontRendererObj, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
+			drawString(fontRenderer, "Developer Version - " + Reference.VERSION, posX + BORDER + 5, posY + BORDER + 5, Color.WHITE.getRGB());
 		}
 
 		boolean insideContext = false;
@@ -232,6 +234,7 @@ public class Laptop extends GuiScreen implements System
 			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
 				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
+				this.dragging = true;
 				return;
 			}
 			else
@@ -280,7 +283,16 @@ public class Laptop extends GuiScreen implements System
 	{
 		super.mouseReleased(mouseX, mouseY, state);
 		this.dragging = false;
-		if(windows[0] != null)
+		if(this.context != null)
+		{
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
+			{
+				this.context.handleMouseRelease(mouseX, mouseY, state);
+			}
+		}
+		else if(windows[0] != null)
 		{
 			windows[0].handleMouseRelease(mouseX, mouseY, state);
 		}
@@ -317,6 +329,21 @@ public class Laptop extends GuiScreen implements System
 	{
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
+
+		if(this.context != null)
+		{
+			if(dragging)
+			{
+				int dropdownX = context.xPosition;
+				int dropdownY = context.yPosition;
+				if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
+				{
+					this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
+				}
+			}
+			return;
+		}
+
 		if(windows[0] != null)
 		{
 			Window<Application> window = windows[0];
@@ -532,7 +559,7 @@ public class Laptop extends GuiScreen implements System
 		return false;
 	}
 
-	public static void nextWallpaper()
+	public void nextWallpaper()
 	{
 		if(currentWallpaper + 1 < WALLPAPERS.size())
 		{
@@ -540,20 +567,30 @@ public class Laptop extends GuiScreen implements System
 		}
 	}
 	
-	public static void prevWallpaper()
+	public void prevWallpaper()
 	{
 		if(currentWallpaper - 1 >= 0)
 		{
 			currentWallpaper--;
 		}
 	}
-	
+
+	public int getCurrentWallpaper()
+	{
+		return currentWallpaper;
+	}
+
 	public static void addWallpaper(ResourceLocation wallpaper)
 	{
 		if(wallpaper != null)
 		{
 			WALLPAPERS.add(wallpaper);
 		}
+	}
+
+	public List<ResourceLocation> getWallapapers()
+	{
+		return ImmutableList.copyOf(WALLPAPERS);
 	}
 
 	@Nullable

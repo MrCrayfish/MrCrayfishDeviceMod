@@ -37,7 +37,7 @@ public class Text extends Component
         {
 			for(int i = 0; i < lines.size(); i++)
 			{
-				mc.fontRendererObj.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, shadow);
+				mc.fontRenderer.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, shadow);
 			}
         }
 	}
@@ -49,7 +49,7 @@ public class Text extends Component
 	 */
 	public void setText(String text)
 	{
-		this.lines = Minecraft.getMinecraft().fontRendererObj.listFormattedStringToWidth(text, width);
+		this.lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(text, width);
 	}
 	
 	/**
