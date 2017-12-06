@@ -29,9 +29,9 @@ Source pack installation information:
 For eclipse, run `gradlew eclipse` (`./gradlew eclipse` if you are on Mac/Linux)
 
 	>**If you preffer to use IntelliJ, steps are a little different:**
-	>1. Open IDEA, and import project.
-	>2. Select your build.gradle file and have it import.
-	>3. Once it's finished you must close IntelliJ and run the following command:
+	> 1. Open IDEA, and import project.
+	> 2. Select your build.gradle file and have it import.
+	> 3. Once it's finished you must close IntelliJ and run the following command:
 	>
 	>	| Operating System | Command                 |
 	>	| ---------------- | :---------------------: |
