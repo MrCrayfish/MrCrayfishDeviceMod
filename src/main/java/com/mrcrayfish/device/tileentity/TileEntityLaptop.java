@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.io.drive.AbstractDrive;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.util.TileEntityUtil;
 
@@ -18,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.reflect.internal.Trees.This;
 
 public class TileEntityLaptop extends TileEntity implements ITickable
 {
@@ -38,6 +38,9 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 
 	@SideOnly(Side.CLIENT)
 	private boolean hasExternalDrive;
+	
+	@SideOnly(Side.CLIENT)
+	private EnumDyeColor externalDriveColor;
 
 	public void openClose()
 	{
@@ -102,6 +105,9 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 			this.hasExternalDrive = compound.getBoolean("has_external_drive");
 		}
 		
+		if(compound.hasKey("external_drive_color")) {
+			this.externalDriveColor = EnumDyeColor.byMetadata(compound.getInteger("external_drive_color"));
+		}
 
 		if(compound.hasKey("color")) {
 			int ord = compound.getInteger("color");
@@ -170,7 +176,12 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 			tag.setTag("application_data", applicationData);
 		}
 
-		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
+		AbstractDrive drive = getFileSystem().getAttachedDrive();
+		EnumDyeColor col = this.getFileSystem().getAttachedDriveColor();
+		tag.setBoolean("has_external_drive", drive != null);
+		if(drive != null && col != null) {
+			tag.setInteger("external_drive_color", col.ordinal());
+		}
 		
 		if(this.color != null) {
 			tag.setInteger("color", this.color.ordinal());
@@ -233,6 +244,10 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public boolean isExternalDriveAttached()
 	{
 		return hasExternalDrive;
+	}
+	
+	public EnumDyeColor getExternalDriveColor() {
+		return this.externalDriveColor;
 	}
 	
 	@Override

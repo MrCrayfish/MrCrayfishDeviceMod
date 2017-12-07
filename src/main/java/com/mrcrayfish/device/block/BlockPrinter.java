@@ -1,30 +1,40 @@
 package com.mrcrayfish.device.block;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import com.mrcrayfish.device.util.CollisionHelper;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -135,7 +145,9 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        return state.withProperty(FACING, placer.getHorizontalFacing());
+        ItemStack stack = placer.getHeldItem(hand);
+        EnumDyeColor color = EnumDyeColor.byMetadata(stack.getItemDamage());
+        return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(BlockColored.COLOR, color);
     }
 
     @Override
@@ -153,7 +165,7 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, FACING, BlockColored.COLOR);
     }
 
     @Override
@@ -162,6 +174,37 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
         TileEntity tileentity = worldIn.getTileEntity(pos);
         return tileentity != null && tileentity.receiveClientEvent(id, param);
     }
+    
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+    	if(!worldIn.isRemote) {
+	    	ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+	    	TileEntity tileentity = worldIn.getTileEntity(pos);
+	    	stacks.add(new ItemStack(DeviceBlocks.PRINTER));
+	    	if(tileentity != null && tileentity instanceof TileEntityPrinter) {
+	    		TileEntityPrinter printer = (TileEntityPrinter) tileentity;
+	    		ItemStack stack = stacks.get(0);
+    			stack.setItemDamage(printer.getColor().getMetadata());
+	    		if(printer.getName() != "Printer") {
+	    			stack.setStackDisplayName(printer.getName());
+	    		}
+	    		stacks.add(new ItemStack(Items.PAPER, printer.getPaperCount()));
+	    	}
+	    	
+	    	for(ItemStack stack: stacks) {
+	    		worldIn.spawnEntity(new EntityItem(worldIn, pos.getX(), pos.getY(), pos.getZ(), stack));
+	    	}
+    	}
+    }
+    
+    @Override
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if(tab == MrCrayfishDeviceMod.tabDevice || tab == CreativeTabs.SEARCH) {
+			for(EnumDyeColor color : EnumDyeColor.values()) {
+				list.add(new ItemStack(this, 1, color.getMetadata()));
+			}
+		}
+	}
 
     @Nullable
     @Override
