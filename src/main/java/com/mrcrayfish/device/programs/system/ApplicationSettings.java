@@ -1,10 +1,12 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.*;
+import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.ComboBox;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -96,20 +98,50 @@ public class ApplicationSettings extends SystemApplication
 			GlStateManager.color(1.0F, 1.0F, 1.0F);
 			List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
 			mc.getTextureManager().bindTexture(wallpapers.get(getLaptop().getCurrentWallpaper()));
-			RenderUtil.drawRectWithTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68, 256, 144);
+			RenderUtil.drawRectWithFullTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
 			mc.fontRenderer.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColourScheme().getTextColour(), true);
 		});
 
 		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
 		buttonWallpaperLeft.setSize(25, 20);
+		buttonWallpaperLeft.setClickListener((c, mouseButton) ->
+		{
+			if(mouseButton != 0)
+				return;
+
+			Laptop laptop = getLaptop();
+			if(laptop != null)
+			{
+				laptop.prevWallpaper();
+			}
+        });
 		layoutPersonalise.addComponent(buttonWallpaperLeft);
 
 		buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
 		buttonWallpaperRight.setSize(25, 20);
+		buttonWallpaperRight.setClickListener((c, mouseButton) ->
+		{
+			if(mouseButton != 0)
+				return;
+
+			Laptop laptop = getLaptop();
+			if(laptop != null)
+			{
+				laptop.nextWallpaper();
+			}
+		});
 		layoutPersonalise.addComponent(buttonWallpaperRight);
 
 		buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
 		buttonWallpaperUrl.setSize(55, 20);
+		buttonWallpaperUrl.setClickListener((c, mouseButton) ->
+		{
+			if(mouseButton != 0)
+				return;
+
+			Dialog dialog = new Dialog.Message("This feature has not be added yet!");
+			openDialog(dialog);
+        });
 		layoutPersonalise.addComponent(buttonWallpaperUrl);
 
 		layoutColourScheme = new Menu("UI Colours");

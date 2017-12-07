@@ -15,6 +15,7 @@ import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
 import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
+import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
@@ -134,19 +135,20 @@ public class MrCrayfishDeviceMod
 		if(!DEVELOPER_MODE)
 		{
 			// Applications (Normal)
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
+			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
+			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
 			// Tasks (Normal)
-			TaskManager.registerTask(TaskAddAuction.class);
-			TaskManager.registerTask(TaskGetAuctions.class);
-			TaskManager.registerTask(TaskBuyItem.class);
+			//TaskManager.registerTask(TaskAddAuction.class);
+			//TaskManager.registerTask(TaskGetAuctions.class);
+			//TaskManager.registerTask(TaskBuyItem.class);
 		}
 		else
 		{
 			// Applications (Developers)
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 		}
 

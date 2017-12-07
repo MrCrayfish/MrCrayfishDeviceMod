@@ -174,6 +174,7 @@ public class Layout extends Component
 		for(Component c : components)
 		{
 			GlStateManager.disableDepth();
+			GLHelper.scissor(x, y, width, height);
 			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
 		}
 
