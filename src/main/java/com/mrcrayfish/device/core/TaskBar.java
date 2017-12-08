@@ -83,32 +83,24 @@ public class TaskBar
 		btnLeft.setPadding(1);
 		btnLeft.xPosition = posX + 3;
 		btnLeft.yPosition = posY + 3;
-		btnLeft.setClickListener(new ClickListener()
+		btnLeft.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(offset > 0)
-				{
-					offset--;
-				}
-			}
-		});
+            if(offset > 0)
+            {
+                offset--;
+            }
+        });
 		btnRight = new Button(0, 0, Icons.CHEVRON_RIGHT);
 		btnRight.setPadding(1);
 		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
 		btnRight.yPosition = posY + 3;
-		btnRight.setClickListener(new ClickListener()
+		btnRight.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(offset + APPS_DISPLAYED < applications.size())
-				{
-					offset++;
-				}
-			}
-		});
+            if(offset + APPS_DISPLAYED < applications.size())
+            {
+                offset++;
+            }
+        });
 	}
 	
 	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)

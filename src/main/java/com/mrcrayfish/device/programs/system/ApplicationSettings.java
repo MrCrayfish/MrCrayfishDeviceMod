@@ -44,7 +44,7 @@ public class ApplicationSettings extends SystemApplication
 	{
 		buttonPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		buttonPrevious.setVisible(false);
-		buttonPrevious.setClickListener((c, mouseButton) ->
+		buttonPrevious.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -64,7 +64,7 @@ public class ApplicationSettings extends SystemApplication
 		Button buttonColourScheme = new Button(5, 26, "Personalise", Icons.EDIT);
 		buttonColourScheme.setSize(90, 20);
 		buttonColourScheme.setToolTip("Personalise", "Change the wallpaper, UI colours, and more!");
-		buttonColourScheme.setClickListener((c, mouseButton) ->
+		buttonColourScheme.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -78,7 +78,7 @@ public class ApplicationSettings extends SystemApplication
 
 		checkBoxShowApps = new CheckBox("Show All Apps", 5, 5);
 		checkBoxShowApps.setSelected(Settings.isShowAllApps());
-		checkBoxShowApps.setClickListener((c, mouseButton) ->
+		checkBoxShowApps.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			Settings.setShowAllApps(checkBoxShowApps.isSelected());
 			Laptop laptop = getLaptop();
@@ -139,7 +139,7 @@ public class ApplicationSettings extends SystemApplication
 		buttonColourSchemeApply = new Button(5, 79, Icons.CHECK);
 		buttonColourSchemeApply.setEnabled(false);
 		buttonColourSchemeApply.setToolTip("Apply", "Set these colours as the new colour scheme");
-		buttonColourSchemeApply.setClickListener((c, mouseButton) ->
+		buttonColourSchemeApply.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{

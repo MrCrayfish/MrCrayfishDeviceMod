@@ -2,8 +2,12 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+
+import java.util.Arrays;
 
 public class ButtonToggle extends Button implements RadioGroup.Item
 {
@@ -78,18 +82,18 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 		this.group = group;
 		this.group.add(this);
 	}
-	
+
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton) 
 	{
 		if(!this.visible || !this.enabled)
 			return;
-		
+
 		if(super.isInside(mouseX, mouseY))
 		{
 			if(clickListener != null)
 			{
-				clickListener.onClick(this, mouseButton);
+				clickListener.onClick(mouseX, mouseY, mouseButton);
 			}
 			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 			if(group != null)
@@ -103,11 +107,15 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 			}
 		}
 	}
-	
+
 	@Override
-	public boolean isInside(int mouseX, int mouseY) 
+	protected int getHoverState(boolean mouseOver)
 	{
-		return super.isInside(mouseX, mouseY) || toggle;
+		if(toggle)
+		{
+			return 2;
+		}
+		return super.getHoverState(mouseOver);
 	}
 
 	@Override
