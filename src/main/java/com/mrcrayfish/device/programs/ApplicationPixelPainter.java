@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
@@ -22,17 +23,23 @@ import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.RenderTexture;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.lang.System;
+import java.lang.reflect.Field;
+import java.net.URL;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -594,54 +601,26 @@ public class ApplicationPixelPainter extends Application
 				if(pixels.length != resolution * resolution)
 					return false;
 
-				GlStateManager.translate(0, 1.0 - (1.0 / resolution), 0);
-
 				GlStateManager.enableBlend();
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 				GlStateManager.disableLighting();
 				Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
 
-				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder buffer = tessellator.getBuffer();
-				double scale = 1 / (double) resolution;
-
-				GlStateManager.enableRescaleNormal();
-				GL11.glNormal3f(0.0f, 0.0F, 1.0f);
-				for(int i = 0; i < resolution; i++)
-				{
-					double pixelY = i / (double) resolution;
-					for(int j = 0; j < resolution; j++)
-					{
-						float a = (float) Math.floor((pixels[j + i * resolution] >> 24 & 255) / 255.0F);
-						if(a < 1.0F)
-						{
-							if(cut) continue;
-							GlStateManager.color(1.0F, 1.0F, 1.0F);
-						}
-						else
-						{
-							float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
-							float g = (float) (pixels[j + i * resolution] >> 8 & 255) / 255.0F;
-							float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
-							GlStateManager.color(r, g, b, a);
-						}
-
-						double pixelX = j / (double) resolution;
-						buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-						buffer.pos(pixelX, -pixelY, 0).tex(pixelX, pixelY).endVertex();
-						buffer.pos(pixelX + scale, -pixelY, 0).tex(pixelX + scale, pixelY).endVertex();
-						buffer.pos(pixelX + scale, -pixelY + scale, 0).tex(pixelX + scale, pixelY + scale).endVertex();
-						buffer.pos(pixelX, -pixelY + scale, 0).tex(pixelX, pixelY + scale).endVertex();
-						tessellator.draw();
+				BufferedImage bufferedImage = new BufferedImage(resolution, resolution, BufferedImage.TYPE_INT_ARGB);
+				for (int i = 0; i < resolution; i++) {
+					for (int j = 0; j < resolution; j++) {
+						bufferedImage.setRGB(resolution - i - 1, resolution - j - 1, pixels[i + j*resolution]);
 					}
 				}
+				DynamicTexture texture = new DynamicTexture(bufferedImage);
+				texture.updateDynamicTexture();
+				GlStateManager.rotate(180, 0, 1, 0);
+				GlStateManager.bindTexture(texture.getGlTextureId());
+				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
+
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.disableBlend();
 				GlStateManager.enableLighting();
-
 				return true;
 			}
 			return false;
