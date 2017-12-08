@@ -45,21 +45,4 @@ public class ItemFlashDrive extends Item implements HasSubModels
 		}
     }
     
-    @Override
-	public ArrayList<ResourceLocation> getSubModels() {
-		ArrayList<ResourceLocation> subModels = new ArrayList<ResourceLocation>();
-		for(EnumDyeColor color : EnumDyeColor.values()) {
-			subModels.add(new ResourceLocation(Reference.MOD_ID, "flash_drive/" + color.getName()));
-		}
-		return subModels;
-	}
-    
-    @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-    	if(tab == MrCrayfishDeviceMod.tabDevice || tab == CreativeTabs.SEARCH) {
-			for(EnumDyeColor color : EnumDyeColor.values()) {
-				subItems.add(new ItemStack(this, 1, color.getMetadata()));
-			}
-		}
-    }
 }
