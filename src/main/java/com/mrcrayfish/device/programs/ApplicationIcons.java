@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Icon;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -12,17 +12,17 @@ public class ApplicationIcons extends Application
 {
     public ApplicationIcons()
     {
-        this.setDefaultWidth(278);
+        this.setDefaultWidth(332);
         this.setDefaultHeight(150);
     }
 
     @Override
     public void init()
     {
-        for(Icon icon : Icon.values())
+        for(Icons icon : Icons.values())
         {
-            int posX = (icon.ordinal() % 15) * 18;
-            int posY = (icon.ordinal() / 15) * 18;
+            int posX = (icon.ordinal() % 18) * 18;
+            int posY = (icon.ordinal() / 18) * 18;
             Button button = new Button(5 + posX, 5 + posY, icon);
             button.setToolTip("Icon", icon.name());
             super.addComponent(button);

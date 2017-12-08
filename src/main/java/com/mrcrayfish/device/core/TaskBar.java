@@ -1,20 +1,13 @@
 package com.mrcrayfish.device.core;
 
-import java.awt.Color;
-import java.util.List;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
-import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.system.ApplicationAppStore;
-import com.mrcrayfish.device.programs.system.ApplicationSettings;
-
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,14 +15,16 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 
-	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
+	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 20;
 	public static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;
@@ -75,7 +70,8 @@ public class TaskBar
 
 	public void init(int posX, int posY)
 	{
-		btnLeft = new ButtonArrow(0, 0, Type.LEFT);
+		btnLeft = new Button(0, 0, Icons.CHEVRON_LEFT);
+		btnLeft.setPadding(1);
 		btnLeft.xPosition = posX + 3;
 		btnLeft.yPosition = posY + 3;
 		btnLeft.setClickListener(new ClickListener()
@@ -89,7 +85,8 @@ public class TaskBar
 				}
 			}
 		});
-		btnRight = new ButtonArrow(0, 0, Type.RIGHT);
+		btnRight = new Button(0, 0, Icons.CHEVRON_RIGHT);
+		btnRight.setPadding(1);
 		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
 		btnRight.yPosition = posY + 3;
 		btnRight.setClickListener(new ClickListener()
@@ -130,13 +127,9 @@ public class TaskBar
 			}
 		}
 
-		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
+		mc.fontRenderer.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		
-		/* Settings App */
-		gui.drawTexturedModalRect(x + 316, y + 2, 14, 30, 14, 14);
-		gui.drawTexturedModalRect(x + 300, y + 2, 28, 30, 14, 14);
 
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))

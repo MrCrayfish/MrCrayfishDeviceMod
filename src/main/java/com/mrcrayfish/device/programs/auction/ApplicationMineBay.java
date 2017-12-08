@@ -165,13 +165,13 @@ public class ApplicationMineBay extends Application
 				{
 					GlStateManager.translate(x + 24, y + 4, 0);
 					GlStateManager.scale(0.666, 0.666, 0);
-					mc.fontRendererObj.drawString(e.getStack().getDisplayName(), 0, 0, Color.WHITE.getRGB(), false);
-					mc.fontRendererObj.drawString(TimeUtil.getTotalRealTime(e.getTimeLeft()), 0, 11, Color.LIGHT_GRAY.getRGB(), false);
+					mc.fontRenderer.drawString(e.getStack().getDisplayName(), 0, 0, Color.WHITE.getRGB(), false);
+					mc.fontRenderer.drawString(TimeUtil.getTotalRealTime(e.getTimeLeft()), 0, 11, Color.LIGHT_GRAY.getRGB(), false);
 				}
 				GlStateManager.popMatrix();
 				
 				String price = "$" + e.getPrice();
-				mc.fontRendererObj.drawString(price, x - mc.fontRendererObj.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
+				mc.fontRenderer.drawString(price, x - mc.fontRenderer.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
 			}
 		});
 		super.addComponent(items);
@@ -221,7 +221,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
 		
@@ -288,7 +288,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 				
 				int offsetX = 14;
 				int offsetY = 40;
@@ -382,7 +382,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
 		
