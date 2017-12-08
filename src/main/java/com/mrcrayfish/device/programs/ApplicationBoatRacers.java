@@ -57,62 +57,33 @@ public class ApplicationBoatRacers extends Application
 		layoutLevelEditor.addComponent(labelLayer);
 		
 		btnNextLayer = new Button(266, 106, Icons.CHEVRON_RIGHT);
-		btnNextLayer.setClickListener(new ClickListener()
+		btnNextLayer.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				game.nextLayer();
-				labelLayer.setText(Integer.toString(game.getCurrentLayer().layer + 1));
-			}
-		});
+            game.nextLayer();
+            labelLayer.setText(Integer.toString(game.getCurrentLayer().layer + 1));
+        });
 		layoutLevelEditor.addComponent(btnNextLayer);
 		
 		btnPrevLayer = new Button(314, 106, Icons.CHEVRON_LEFT);
-		btnPrevLayer.setClickListener(new ClickListener()
+		btnPrevLayer.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				game.prevLayer();
-				labelLayer.setText(Integer.toString(game.getCurrentLayer().layer + 1));
-			}
-		});
+            game.prevLayer();
+            labelLayer.setText(Integer.toString(game.getCurrentLayer().layer + 1));
+        });
 		layoutLevelEditor.addComponent(btnPrevLayer);
 		
 		checkBoxBackground = new CheckBox("Background", 3, 151);
-		checkBoxBackground.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				game.setRenderBackground(checkBoxBackground.isSelected());
-			}
-		});
+		checkBoxBackground.setClickListener((mouseX, mouseY, mouseButton) -> game.setRenderBackground(checkBoxBackground.isSelected()));
 		checkBoxBackground.setSelected(true);
 		layoutLevelEditor.addComponent(checkBoxBackground);
 		
 		checkBoxForeground = new CheckBox("Foreground", 80, 151);
-		checkBoxForeground.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				game.setRenderForeground(checkBoxForeground.isSelected());
-			}
-		});
+		checkBoxForeground.setClickListener((mouseX, mouseY, mouseButton) -> game.setRenderForeground(checkBoxForeground.isSelected()));
 		checkBoxForeground.setSelected(true);
 		layoutLevelEditor.addComponent(checkBoxForeground);
 		
 		checkBoxPlayer = new CheckBox("Player", 160, 151);
-		checkBoxPlayer.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				game.setRenderPlayer(checkBoxPlayer.isSelected());
-			}
-		});
+		checkBoxPlayer.setClickListener((mouseX, mouseY, mouseButton) -> game.setRenderPlayer(checkBoxPlayer.isSelected()));
 		layoutLevelEditor.addComponent(checkBoxPlayer);
 		
 		setCurrentLayout(layoutLevelEditor);
