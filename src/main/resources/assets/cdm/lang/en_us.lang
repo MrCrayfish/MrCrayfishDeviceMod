@@ -1,6 +1,7 @@
 itemGroup.cdmTabDevice=MrCrayfish's Device Mod
 
 tile.laptop.name=Laptop
+tile.router.name=Router
 
 item.flash_drive.name=Flash Drive
 
