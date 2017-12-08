@@ -1,25 +1,18 @@
 package com.mrcrayfish.device.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.ArrayList;
-
-import javax.annotation.Nullable;
 
 import com.mrcrayfish.device.HasSubModels;
 import com.mrcrayfish.device.Reference;
 
-/**
- * Author: MrCrayfish
- */
-public class ItemLaptop extends ItemBlock implements HasSubModels
-{
-    public ItemLaptop(Block block)
+import net.minecraft.block.Block;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
+
+public class ItemPrinter extends ItemBlock implements HasSubModels {
+
+	public ItemPrinter(Block block)
     {
         super(block);
         this.setMaxStackSize(1);
@@ -27,18 +20,13 @@ public class ItemLaptop extends ItemBlock implements HasSubModels
         this.setHasSubtypes(true);
     }
 
-    @Override
-    public boolean getShareTag()
-    {
-        return false;
-    }
-
 	@Override
 	public ArrayList<ResourceLocation> getSubModels() {
 		ArrayList<ResourceLocation> subModels = new ArrayList<ResourceLocation>();
 		for(EnumDyeColor color : EnumDyeColor.values()) {
-			subModels.add(new ResourceLocation(Reference.MOD_ID, "laptop/" + color.getName()));
+			subModels.add(new ResourceLocation(Reference.MOD_ID, "printer/" + color.getName()));
 		}
 		return subModels;
 	}
+
 }

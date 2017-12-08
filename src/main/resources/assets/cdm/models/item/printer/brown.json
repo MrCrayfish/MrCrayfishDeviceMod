@@ -1,0 +1,6 @@
+{
+	"parent": "cdm:item/printer",
+	"textures": {
+		"2": "blocks/wool_colored_brown"
+	}
+}

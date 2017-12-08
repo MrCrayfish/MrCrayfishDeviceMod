@@ -1,12 +1,80 @@
+// Original block state //
+//{
+//	"variants": {
+//		"facing=north,type=base":   { "model": "cdm:laptop_base"             },
+//		"facing=east,type=base":    { "model": "cdm:laptop_base",   "y": 90  },
+//		"facing=south,type=base":   { "model": "cdm:laptop_base",   "y": 180 },
+//		"facing=west,type=base":    { "model": "cdm:laptop_base",   "y": 270 },
+//		"facing=north,type=screen": { "model": "cdm:laptop_screen"           },
+//		"facing=east,type=screen":  { "model": "cdm:laptop_screen", "y": 90  },
+//		"facing=south,type=screen": { "model": "cdm:laptop_screen", "y": 180 },
+//		"facing=west,type=screen":  { "model": "cdm:laptop_screen", "y": 270 }
+//	}
+//}
+
 {
+	"forge_marker": 1,
+	"defaults": {},
 	"variants": {
-		"facing=north,type=base":   { "model": "cdm:laptop_base"             },
-		"facing=east,type=base":    { "model": "cdm:laptop_base",   "y": 90  },
-		"facing=south,type=base":   { "model": "cdm:laptop_base",   "y": 180 },
-		"facing=west,type=base":    { "model": "cdm:laptop_base",   "y": 270 },
-		"facing=north,type=screen": { "model": "cdm:laptop_screen"           },
-        "facing=east,type=screen":  { "model": "cdm:laptop_screen", "y": 90  },
-        "facing=south,type=screen": { "model": "cdm:laptop_screen", "y": 180 },
-        "facing=west,type=screen":  { "model": "cdm:laptop_screen", "y": 270 }
+		"type": {
+			"base": { "model": "cdm:laptop_base" },
+			"screen": { "model": "cdm:laptop_screen" }
+		},
+		"facing": {
+			"north": { "y":   0 },
+			"south": { "y": 180 },
+			"east":  { "y":  90 },
+			"west":  { "y": 270 }
+		},
+		"color": {
+			"white": {
+				"textures": { "2": "blocks/wool_colored_white" }
+			},
+			"orange": {
+				"textures": { "2": "blocks/wool_colored_orange" }
+			},
+			"magenta": {
+				"textures": { "2": "blocks/wool_colored_magenta" }
+			},
+			"light_blue": {
+				"textures": { "2": "blocks/wool_colored_light_blue" }
+			},
+			"yellow": {
+				"textures": { "2": "blocks/wool_colored_yellow" }
+			},
+			"lime": {
+				"textures": { "2": "blocks/wool_colored_lime" }
+			},
+			"pink": {
+				"textures": { "2": "blocks/wool_colored_pink" }
+			},
+			"gray": {
+				"textures": { "2": "blocks/wool_colored_gray" }
+			},
+			"silver": {
+				"textures": { "2": "blocks/wool_colored_silver" }
+			},
+			"cyan": {
+				"textures": { "2": "blocks/wool_colored_cyan" }
+			},
+			"purple": {
+				"textures": { "2": "blocks/wool_colored_purple" }
+			},
+			"blue": {
+				"textures": { "2": "blocks/wool_colored_blue" }
+			},
+			"brown": {
+				"textures": { "2": "blocks/wool_colored_brown" }
+			},
+			"green": {
+				"textures": { "2": "blocks/wool_colored_green" }
+			},
+			"red": {
+				"textures": { "2": "blocks/wool_colored_red" }
+			},
+			"black": {
+				"textures": { "2": "blocks/wool_colored_black" }
+			}
+		}
 	}
 }
