@@ -79,6 +79,10 @@ public class FileSystem
 		{
 			attachedDrive = ExternalDrive.fromTag(fileSystemTag.getCompoundTag("external_drive"));
 		}
+		
+		if(fileSystemTag.hasKey("external_drive_color", Constants.NBT.TAG_INT)) {
+			this.attachedDriveCol = EnumDyeColor.byMetadata(fileSystemTag.getInteger("external_drive_color"));
+		}
 
 		setupDefault();
 	}
@@ -199,7 +203,7 @@ public class FileSystem
 	{
 		if(attachedDrive != null)
 		{
-			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE);
+			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE, 1, this.attachedDriveCol.getMetadata());
 			stack.setStackDisplayName(attachedDrive.getName());
 			stack.getTagCompound().setTag("drive", attachedDrive.toTag());
 			attachedDrive = null;

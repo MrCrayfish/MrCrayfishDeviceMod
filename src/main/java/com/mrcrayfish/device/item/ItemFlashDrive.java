@@ -23,6 +23,8 @@ public class ItemFlashDrive extends Item implements HasSubModels
         this.setUnlocalizedName("flash_drive");
         this.setRegistryName("flash_drive");
         this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
     }
     
     @Override
