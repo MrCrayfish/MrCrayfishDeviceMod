@@ -25,21 +25,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.client.config.GuiUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.RenderTexture;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.lang.System;
 import java.lang.reflect.Field;
-import java.net.URL;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -604,19 +595,39 @@ public class ApplicationPixelPainter extends Application
 				GlStateManager.enableBlend();
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 				GlStateManager.disableLighting();
-				Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+				GlStateManager.rotate(180, 0, 1, 0);
 
-				BufferedImage bufferedImage = new BufferedImage(resolution, resolution, BufferedImage.TYPE_INT_ARGB);
+				// This is for the paper background
+				if (!cut) {
+					Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+					RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
+				}
+
+				// This creates an flipped copy of the pixel array
+				// as it otherwise would be mirrored
+				int[] pixels2 = new int[pixels.length];
 				for (int i = 0; i < resolution; i++) {
 					for (int j = 0; j < resolution; j++) {
-						bufferedImage.setRGB(resolution - i - 1, resolution - j - 1, pixels[i + j*resolution]);
+						pixels2[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j*resolution];
 					}
 				}
-				DynamicTexture texture = new DynamicTexture(bufferedImage);
-				texture.updateDynamicTexture();
-				GlStateManager.rotate(180, 0, 1, 0);
+
+				// Creating a DynamicTexture to represent the picture
+				DynamicTexture texture = new DynamicTexture(resolution, resolution);
+				// This is actually more efficient than providing an BufferedImage
+				// as BIs can lead to a memory leak or similar
+				try {
+					Field textureDataField = texture.getClass().getDeclaredField("dynamicTextureData");
+					textureDataField.setAccessible(true);
+					textureDataField.set(texture, pixels2);
+					texture.updateDynamicTexture();
+				} catch (NoSuchFieldException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				// Rendering the texture
 				GlStateManager.bindTexture(texture.getGlTextureId());
 				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
+				GlStateManager.deleteTexture(texture.getGlTextureId());
 
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.disableBlend();

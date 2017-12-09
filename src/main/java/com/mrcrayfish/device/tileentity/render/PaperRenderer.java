@@ -48,7 +48,7 @@ public class PaperRenderer extends TileEntitySpecialRenderer<TileEntityPaper>
                         drawCuboid(0, 0, 0, 16, 16, 1);
                     }
 
-                    GlStateManager.translate(0, 0, DeviceConfig.isRenderPrinted3D() ? 0.0625 : 0.005);
+                    GlStateManager.translate(0, 0, DeviceConfig.isRenderPrinted3D() ? 0.0625 : 0.001);
 
                     GlStateManager.pushMatrix();
                     {
