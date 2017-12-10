@@ -16,6 +16,8 @@ import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import com.mrcrayfish.device.init.DeviceItems;
+
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -44,6 +46,7 @@ public class FileSystem
 	private AbstractDrive mainDrive = null;
 	private Map<UUID, AbstractDrive> additionalDrives = new HashMap<>();
 	private AbstractDrive attachedDrive = null;
+	private EnumDyeColor attachedDriveCol = null;
 
 	private TileEntity tileEntity;
 	
@@ -75,6 +78,10 @@ public class FileSystem
 		if(fileSystemTag.hasKey("external_drive", Constants.NBT.TAG_COMPOUND))
 		{
 			attachedDrive = ExternalDrive.fromTag(fileSystemTag.getCompoundTag("external_drive"));
+		}
+		
+		if(fileSystemTag.hasKey("external_drive_color", Constants.NBT.TAG_INT)) {
+			this.attachedDriveCol = EnumDyeColor.byMetadata(fileSystemTag.getInteger("external_drive_color"));
 		}
 
 		setupDefault();
@@ -175,6 +182,7 @@ public class FileSystem
 			{
 				drive.setName(flashDrive.getDisplayName());
 				attachedDrive = drive;
+				attachedDriveCol = EnumDyeColor.byMetadata(flashDrive.getItemDamage());
 				return true;
 			}
 		}
@@ -185,16 +193,21 @@ public class FileSystem
 	{
 		return attachedDrive;
 	}
+	
+	public EnumDyeColor getAttachedDriveColor() {
+		return this.attachedDriveCol;
+	}
 
 	@Nullable
 	public ItemStack removeAttachedDrive()
 	{
 		if(attachedDrive != null)
 		{
-			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE);
+			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE, 1, this.attachedDriveCol.getMetadata());
 			stack.setStackDisplayName(attachedDrive.getName());
 			stack.getTagCompound().setTag("drive", attachedDrive.toTag());
 			attachedDrive = null;
+			attachedDriveCol = null;
 			return stack;
 		}
 		return null;
@@ -312,8 +325,12 @@ public class FileSystem
 		additionalDrives.forEach((k, v) -> tagList.appendTag(v.toTag()));
 		fileSystemTag.setTag("drives", tagList);
 
-		if(attachedDrive != null)
+		if(attachedDrive != null) {
 			fileSystemTag.setTag("external_drive", attachedDrive.toTag());
+			if(this.attachedDriveCol != null) {
+				fileSystemTag.setInteger("external_drive_color", this.attachedDriveCol.ordinal());
+			}
+		}
 
 		return fileSystemTag;
 	}
@@ -379,4 +396,5 @@ public class FileSystem
 		public static final int FILE_INVALID_DATA = 6;
 		public static final int DRIVE_UNAVAILABLE = 7;
 	}
+	
 }
