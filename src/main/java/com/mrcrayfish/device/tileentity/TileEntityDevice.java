@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public abstract class TileEntityDevice extends TileEntity implements ITickable
+public abstract class TileEntityDevice extends TileEntitySync implements ITickable
 {
     private int counter;
     private UUID deviceId;
@@ -40,8 +40,7 @@ public abstract class TileEntityDevice extends TileEntity implements ITickable
             connection = null;
             return;
         }
-        connection = new Connection(router.getId());
-        connection.setDevicePos(pos);
+        connection = new Connection(router.getId(), this);
         connection.updateConnection(world);
         this.markDirty();
     }
@@ -73,6 +72,12 @@ public abstract class TileEntityDevice extends TileEntity implements ITickable
     {
         super.writeToNBT(compound);
         compound.setString("deviceId", getId().toString());
+
+        if(connection != null)
+        {
+            compound.setTag("connection", connection.toTag());
+        }
+
         return compound;
     }
 
@@ -83,6 +88,10 @@ public abstract class TileEntityDevice extends TileEntity implements ITickable
         if(compound.hasKey("deviceId", Constants.NBT.TAG_STRING))
         {
             deviceId = UUID.fromString(compound.getString("deviceId"));
+        }
+        if(compound.hasKey("connection", Constants.NBT.TAG_COMPOUND))
+        {
+            connection = Connection.fromTag(this, compound.getCompoundTag("connection"));
         }
     }
 }

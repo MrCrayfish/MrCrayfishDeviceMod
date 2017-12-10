@@ -1,13 +1,12 @@
 package com.mrcrayfish.device.core.network;
 
+import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
@@ -44,24 +43,24 @@ public class Router implements IDevice
         this.pos = pos;
     }
 
-    public void connectDevice(NetworkClient device)
+    public void addDevice(TileEntityDevice device)
     {
-        if(NETWORK_DEVICES.containsKey(device.getUUID()))
+        if(NETWORK_DEVICES.containsKey(device.getId()))
         {
-            NETWORK_DEVICES.get(device.getUUID()).update(device);
+            NETWORK_DEVICES.get(device.getId()).update(device);
             return;
         }
-        NETWORK_DEVICES.put(device.getUUID(), new NetworkDevice(device));
+        NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
     }
 
-    public void forgetDevice(NetworkClient device)
+    public void removeDevice(TileEntityDevice device)
     {
-        NETWORK_DEVICES.remove(device.getUUID());
+        NETWORK_DEVICES.remove(device.getId());
     }
 
-    public boolean isClientConnected(NetworkClient device)
+    public Collection<NetworkDevice> getNetworkDevices()
     {
-        return NETWORK_DEVICES.containsKey(device.getUUID());
+        return NETWORK_DEVICES.values();
     }
 
     public NBTTagCompound toTag()

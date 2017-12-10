@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
@@ -13,17 +14,18 @@ import java.util.UUID;
  */
 public class NetworkDevice
 {
+    private Router router;
     private UUID id;
     private String name;
     private BlockPos pos;
 
     private NetworkDevice() {}
 
-    public NetworkDevice(NetworkClient device)
+    public NetworkDevice(TileEntityDevice device, Router router)
     {
-        this.id = device.getUUID();
-        //this.name = device.getDeviceName();
-        //this.pos = device.getPos();
+        this.router = router;
+        this.id = device.getId();
+        update(device);
     }
 
     public UUID getUUID()
@@ -36,6 +38,7 @@ public class NetworkDevice
         return name;
     }
 
+    @Nullable
     public BlockPos getPos()
     {
         return pos;
@@ -43,18 +46,23 @@ public class NetworkDevice
 
     public boolean isConnected(World world)
     {
+        if(pos == null)
+            return false;
+
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof TileEntityDevice)
         {
             TileEntityDevice device = (TileEntityDevice) tileEntity;
-            return device.getId().equals(id);
+            Router router = device.getRouter();
+            return router != null && router.getId().equals(router.getId());
         }
         return false;
     }
 
-    public void update(NetworkClient device)
+    public void update(TileEntityDevice device)
     {
-        //this.pos = device.getPos();
+        name = device.getDeviceName();
+        pos = device.getPos();
     }
 
     public NBTTagCompound toTag()
@@ -62,7 +70,6 @@ public class NetworkDevice
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("id", id.toString());
         tag.setString("name", name);
-        tag.setLong("pos", pos.toLong());
         return tag;
     }
 
@@ -71,7 +78,6 @@ public class NetworkDevice
         NetworkDevice device = new NetworkDevice();
         device.id = UUID.fromString(tag.getString("id"));
         device.name = tag.getString("name");
-        device.pos = BlockPos.fromLong(tag.getLong("pos"));
         return device;
     }
 }

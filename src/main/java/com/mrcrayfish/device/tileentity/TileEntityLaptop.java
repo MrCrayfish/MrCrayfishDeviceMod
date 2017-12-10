@@ -22,8 +22,6 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
 
-	private Router connectedRouter;
-
 	@SideOnly(Side.CLIENT)
 	public float rotation;
 
@@ -67,28 +65,26 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	public void readFromNBT(NBTTagCompound compound) 
 	{
 		super.readFromNBT(compound);
-		this.open = compound.getBoolean("open");
-
+		if(compound.hasKey("open"))
+		{
+			this.open = compound.getBoolean("open");
+		}
 		if(compound.hasKey("device_name", Constants.NBT.TAG_STRING))
 		{
 			this.name = compound.getString("device_name");
 		}
-
 		if(compound.hasKey("system_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.systemData = compound.getCompoundTag("system_data");
 		}
-
 		if(compound.hasKey("application_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.applicationData = compound.getCompoundTag("application_data");
 		}
-
 		if(compound.hasKey("file_system"))
 		{
 			this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
 		}
-
 		if(compound.hasKey("has_external_drive"))
 		{
 			this.hasExternalDrive = compound.getBoolean("has_external_drive");
@@ -120,35 +116,13 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+	public NBTTagCompound writeSyncTag()
 	{
-		this.readFromNBT(pkt.getNbtCompound());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag()
-	{
-		NBTTagCompound tag = super.getUpdateTag();
-		tag.setBoolean("open", this.open);
-
-		if(systemData != null)
-		{
-			tag.setTag("system_data", systemData);
-		}
-
-		if(applicationData != null)
-		{
-			tag.setTag("application_data", applicationData);
-		}
-
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setBoolean("open", open);
+		tag.setString("device_name", name);
 		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
 		return tag;
-	}
-
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket()
-	{
-		return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
 	}
 
 	@Override
@@ -167,8 +141,8 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	public void openClose()
 	{
 		open = !open;
-		markDirty();
-		TileEntityUtil.markBlockForUpdate(world, pos);
+		pipeline.setBoolean("open", open);
+		sync();
 	}
 
 	public boolean isOpen()
