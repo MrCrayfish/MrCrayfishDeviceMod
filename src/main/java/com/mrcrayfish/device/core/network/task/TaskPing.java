@@ -3,14 +3,11 @@ package com.mrcrayfish.device.core.network.task;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
-import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -43,7 +40,8 @@ public class TaskPing extends Task
         if(tileEntity instanceof TileEntityDevice)
         {
             TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            if(tileEntityDevice.isConnected(world))
+            Router router = tileEntityDevice.getRouter();
+            if(router != null && router.ping(tileEntityDevice))
             {
                 this.setSuccessful();
             }

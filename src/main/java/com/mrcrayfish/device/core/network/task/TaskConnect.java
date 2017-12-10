@@ -49,7 +49,9 @@ public class TaskConnect extends Task
             TileEntity tileEntity1 = world.getTileEntity(BlockPos.fromLong(nbt.getLong("devicePos")));
             if(tileEntity1 instanceof TileEntityDevice)
             {
-                ((TileEntityDevice) tileEntity1).connect(router);
+                TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
+                tileEntityDevice.connect(router);
+                router.addDevice(tileEntityDevice);
                 this.setSuccessful();
             }
         }

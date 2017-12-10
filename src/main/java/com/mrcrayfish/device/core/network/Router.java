@@ -45,12 +45,10 @@ public class Router implements IDevice
 
     public void addDevice(TileEntityDevice device)
     {
-        if(NETWORK_DEVICES.containsKey(device.getId()))
+        if(!NETWORK_DEVICES.containsKey(device.getId()))
         {
-            NETWORK_DEVICES.get(device.getId()).update(device);
-            return;
+            NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
         }
-        NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
     }
 
     public void removeDevice(TileEntityDevice device)
@@ -63,10 +61,20 @@ public class Router implements IDevice
         return NETWORK_DEVICES.values();
     }
 
+    public boolean ping(TileEntityDevice source)
+    {
+        if(NETWORK_DEVICES.containsKey(source.getId()))
+        {
+            NETWORK_DEVICES.get(source.getId()).update(source);
+            return true;
+        }
+        return false;
+    }
+
     public NBTTagCompound toTag()
     {
         NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("id", getId().toString());
+        tag.setUniqueId("id", getId());
 
         NBTTagList deviceList = new NBTTagList();
         NETWORK_DEVICES.forEach((id, device) -> {
@@ -80,7 +88,7 @@ public class Router implements IDevice
     public static Router fromTag(BlockPos pos, NBTTagCompound tag)
     {
         Router router = new Router(pos);
-        router.routerId = UUID.fromString(tag.getString("id"));
+        router.routerId = tag.getUniqueId("id");
 
         NBTTagList deviceList = tag.getTagList("network_devices", Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i < deviceList.tagCount(); i++)

@@ -16,6 +16,7 @@ public class TileEntityRouter extends TileEntity
         if(router == null)
         {
             router = new Router(pos);
+            markDirty();
         }
         return router;
     }
