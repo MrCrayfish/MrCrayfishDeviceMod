@@ -24,12 +24,17 @@ import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class ApplicationPixelPainter extends Application
@@ -598,36 +603,30 @@ public class ApplicationPixelPainter extends Application
 				GlStateManager.rotate(180, 0, 1, 0);
 
 				// This is for the paper background
-				if (!cut) {
+				if (!cut)
+				{
 					Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
 					RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
 				}
 
 				// This creates an flipped copy of the pixel array
 				// as it otherwise would be mirrored
-				int[] pixels2 = new int[pixels.length];
-				for (int i = 0; i < resolution; i++) {
-					for (int j = 0; j < resolution; j++) {
-						pixels2[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j*resolution];
+				int[] flippedPixels = new int[pixels.length];
+				for (int i = 0; i < resolution; i++)
+				{
+					for (int j = 0; j < resolution; j++)
+					{
+						flippedPixels[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j * resolution];
 					}
 				}
 
-				// Creating a DynamicTexture to represent the picture
-				DynamicTexture texture = new DynamicTexture(resolution, resolution);
-				// This is actually more efficient than providing an BufferedImage
-				// as BIs can lead to a memory leak or similar
-				try {
-					Field textureDataField = texture.getClass().getDeclaredField("dynamicTextureData");
-					textureDataField.setAccessible(true);
-					textureDataField.set(texture, pixels2);
-					texture.updateDynamicTexture();
-				} catch (NoSuchFieldException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				// Rendering the texture
-				GlStateManager.bindTexture(texture.getGlTextureId());
-				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
-				GlStateManager.deleteTexture(texture.getGlTextureId());
+				int textureId = TextureUtil.glGenTextures();
+				TextureUtil.allocateTexture(textureId, resolution, resolution);
+				TextureUtil.uploadTexture(textureId, flippedPixels, resolution, resolution);
+
+				GlStateManager.bindTexture(textureId);
+				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution, resolution, resolution, resolution);
+				GlStateManager.deleteTexture(textureId);
 
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.disableBlend();
