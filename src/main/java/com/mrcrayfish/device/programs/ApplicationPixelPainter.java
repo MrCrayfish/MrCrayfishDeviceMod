@@ -461,8 +461,19 @@ public class ApplicationPixelPainter extends Application
 		public PicturePrint(String name, int[] pixels, int resolution)
 		{
 			this.name = name;
-			this.pixels = pixels;
+			this.setPicture(pixels);
+		}
+
+		private void setPicture(int[] pixels)
+		{
+			int resolution = (int) Math.sqrt(pixels.length);
+			Size size = Size.getFromSize(resolution);
+			if(size == null)
+			{
+				throw new IllegalArgumentException("Invalid pixels");
+			}
 			this.resolution = resolution;
+			this.pixels = pixels;
 		}
 
 		@Override
@@ -508,9 +519,8 @@ public class ApplicationPixelPainter extends Application
 		public void fromTag(NBTTagCompound tag)
 		{
 			name = tag.getString("name");
-			pixels = tag.getIntArray("pixels");
-			resolution = tag.getInteger("resolution");
 			cut = tag.getBoolean("cut");
+			setPicture(tag.getIntArray("pixels"));
 		}
 
 		@Override

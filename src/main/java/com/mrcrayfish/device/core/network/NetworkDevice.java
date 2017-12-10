@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.core.network;
 
-import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
+import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,6 +16,8 @@ public class NetworkDevice
     private UUID id;
     private String name;
     private BlockPos pos;
+
+    private NetworkDevice() {}
 
     public NetworkDevice(NetworkClient device)
     {
@@ -41,10 +44,10 @@ public class NetworkDevice
     public boolean isConnected(World world)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityNetworkDevice)
+        if(tileEntity instanceof TileEntityDevice)
         {
-            TileEntityNetworkDevice device = (TileEntityNetworkDevice) tileEntity;
-            return device.getUUID().equals(id);
+            TileEntityDevice device = (TileEntityDevice) tileEntity;
+            return device.getId().equals(id);
         }
         return false;
     }
@@ -52,5 +55,23 @@ public class NetworkDevice
     public void update(NetworkClient device)
     {
         //this.pos = device.getPos();
+    }
+
+    public NBTTagCompound toTag()
+    {
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("id", id.toString());
+        tag.setString("name", name);
+        tag.setLong("pos", pos.toLong());
+        return tag;
+    }
+
+    public static NetworkDevice fromTag(NBTTagCompound tag)
+    {
+        NetworkDevice device = new NetworkDevice();
+        device.id = UUID.fromString(tag.getString("id"));
+        device.name = tag.getString("name");
+        device.pos = BlockPos.fromLong(tag.getLong("pos"));
+        return device;
     }
 }

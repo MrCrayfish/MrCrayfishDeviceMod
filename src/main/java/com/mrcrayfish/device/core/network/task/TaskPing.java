@@ -10,46 +10,41 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.UUID;
+
 /**
  * Author: MrCrayfish
  */
-public class TaskConnect extends Task
+public class TaskPing extends Task
 {
-    private BlockPos devicePos;
-    private BlockPos routerPos;
+    private BlockPos sourceDevicePos;
 
-    public TaskConnect()
+    private TaskPing()
     {
-        super("connect");
+        super("ping");
     }
 
-    public TaskConnect(BlockPos devicePos, BlockPos routerPos)
+    public TaskPing(BlockPos sourceDevicePos)
     {
         this();
-        this.devicePos = devicePos;
-        this.routerPos = routerPos;
+        this.sourceDevicePos = sourceDevicePos;
     }
 
     @Override
     public void prepareRequest(NBTTagCompound nbt)
     {
-        nbt.setLong("devicePos", devicePos.toLong());
-        nbt.setLong("routerPos", routerPos.toLong());
+        nbt.setLong("sourceDevicePos", sourceDevicePos.toLong());
     }
 
     @Override
     public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
     {
-        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("routerPos")));
-        if(tileEntity instanceof TileEntityRouter)
+        TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("sourceDevicePos")));
+        if(tileEntity instanceof TileEntityDevice)
         {
-            TileEntityRouter tileEntityRouter = (TileEntityRouter) tileEntity;
-            Router router = tileEntityRouter.getRouter();
-
-            TileEntity tileEntity1 = world.getTileEntity(BlockPos.fromLong(nbt.getLong("devicePos")));
-            if(tileEntity1 instanceof TileEntityDevice)
+            TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
+            if(tileEntityDevice.isConnected(world))
             {
-                ((TileEntityDevice) tileEntity1).connect(router);
                 this.setSuccessful();
             }
         }

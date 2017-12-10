@@ -1,17 +1,19 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickable
+public class TileEntityLaptop extends TileEntityDevice implements ITickable
 {
 	private String name = "Laptop";
 	private boolean open = false;
@@ -19,6 +21,8 @@ public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickab
 	private NBTTagCompound applicationData;
 	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
+
+	private Router connectedRouter;
 
 	@SideOnly(Side.CLIENT)
 	public float rotation;
@@ -38,6 +42,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickab
 	@Override
 	public void update() 
 	{
+		super.update();
 		if(world.isRemote)
 		{
 			prevRotation = rotation;
