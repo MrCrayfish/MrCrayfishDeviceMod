@@ -83,7 +83,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
 
     public boolean isConnected(World world)
     {
-        return connection != null && connection.isConnected(this, world);
+        return connection != null && connection.getRouterPos() != null;
     }
 
     public boolean receiveBeacon(Router router)
