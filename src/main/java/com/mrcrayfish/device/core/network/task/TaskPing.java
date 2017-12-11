@@ -40,7 +40,7 @@ public class TaskPing extends Task
         if(tileEntity instanceof TileEntityDevice)
         {
             TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            if(tileEntityDevice.isConnected(world))
+            if(tileEntityDevice.isConnected())
             {
                 this.strength = tileEntityDevice.getSignalStrength();
                 this.setSuccessful();

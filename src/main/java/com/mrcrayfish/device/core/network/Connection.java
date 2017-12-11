@@ -61,19 +61,9 @@ public class Connection
         return null;
     }
 
-    public boolean isConnected(TileEntityDevice device, World world)
+    public boolean isConnected()
     {
-        if(routerPos == null)
-            return false;
-
-        TileEntity tileEntity = world.getTileEntity(routerPos);
-        if(tileEntity instanceof TileEntityRouter)
-        {
-            TileEntityRouter tileEntityRouter = (TileEntityRouter) tileEntity;
-            Router router = tileEntityRouter.getRouter();
-            return router.hasDevice(device);
-        }
-        return false;
+        return routerPos != null;
     }
 
     public NBTTagCompound toTag()
