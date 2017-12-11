@@ -78,7 +78,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	{
 		btnUp = new Button(left + width - 12, top, Icons.CHEVRON_UP);
 		btnUp.setEnabled(false);
-		btnUp.setClickListener((c, mouseButton) ->
+		btnUp.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0) scrollUp();
         });
@@ -86,7 +86,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		layout.addComponent(btnUp);
 
 		btnDown = new Button(left + width - 12, top + getHeight() - 12, Icons.CHEVRON_DOWN);
-		btnDown.setClickListener((c, mouseButton) ->
+		btnDown.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0) scrollDown();
         });

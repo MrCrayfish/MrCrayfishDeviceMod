@@ -150,14 +150,7 @@ public class ApplicationEmail extends Application
 
 		btnRegisterAccount = new Button(5, 50, "Register");
 		btnRegisterAccount.setSize(90, 20);
-		btnRegisterAccount.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutRegisterAccount);
-			}
-		});
+		btnRegisterAccount.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutRegisterAccount));
 		btnRegisterAccount.setVisible(false);
 		layoutMainMenu.addComponent(btnRegisterAccount);
 
@@ -177,29 +170,25 @@ public class ApplicationEmail extends Application
 
 		btnRegister = new Button(5, 35, "Register");
 		btnRegister.setSize(157, 20);
-		btnRegister.setClickListener(new ClickListener()
+		btnRegister.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			int length = fieldEmail.getText().length();
+			if(length > 0 && length <= 10)
 			{
-				int length = fieldEmail.getText().length();
-				if (length > 0 && length <= 10)
+				TaskRegisterEmailAccount taskRegisterAccount = new TaskRegisterEmailAccount(fieldEmail.getText());
+				taskRegisterAccount.setCallback((nbt, success) ->
 				{
-					TaskRegisterEmailAccount taskRegisterAccount = new TaskRegisterEmailAccount(fieldEmail.getText());
-					taskRegisterAccount.setCallback((nbt, success) ->
+					if(success)
 					{
-                        if (success)
-                        {
-                            currentName = fieldEmail.getText();
-                            setCurrentLayout(layoutInbox);
-                        }
-                        else
-                        {
-                            fieldEmail.setTextColour(Color.RED);
-                        }
-                    });
-					TaskManager.sendTask(taskRegisterAccount);
-				}
+						currentName = fieldEmail.getText();
+						setCurrentLayout(layoutInbox);
+					}
+					else
+					{
+						fieldEmail.setTextColour(Color.RED);
+					}
+				});
+				TaskManager.sendTask(taskRegisterAccount);
 			}
 		});
 		layoutRegisterAccount.addComponent(btnRegister);
@@ -256,103 +245,80 @@ public class ApplicationEmail extends Application
 		layoutInbox.addComponent(listEmails);
 
 		btnViewEmail = new Button(5, 5, ENDER_MAIL_ICONS, 30, 0, 10, 10);
-		btnViewEmail.setClickListener(new ClickListener()
+		btnViewEmail.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				int index = listEmails.getSelectedIndex();
-				if (index != -1)
-				{
-					TaskManager.sendTask(new TaskViewEmail(index));
-					Email email = listEmails.getSelectedItem();
-					email.setRead(true);
-					textMessage.setText(email.message);
-					labelViewSubject.setText(email.subject);
-					labelFrom.setText(email.author + "@endermail.com");
-					attachedFile = email.getAttachment();
-					if(attachedFile != null)
-					{
-						btnSaveAttachment.setVisible(true);
-						labelAttachmentName.setVisible(true);
-						labelAttachmentName.setText(attachedFile.getName());
-					}
-					setCurrentLayout(layoutViewEmail);
-				}
-			}
-		});
+            int index = listEmails.getSelectedIndex();
+            if (index != -1)
+            {
+                TaskManager.sendTask(new TaskViewEmail(index));
+                Email email = listEmails.getSelectedItem();
+                email.setRead(true);
+                textMessage.setText(email.message);
+                labelViewSubject.setText(email.subject);
+                labelFrom.setText(email.author + "@endermail.com");
+                attachedFile = email.getAttachment();
+                if(attachedFile != null)
+                {
+                    btnSaveAttachment.setVisible(true);
+                    labelAttachmentName.setVisible(true);
+                    labelAttachmentName.setText(attachedFile.getName());
+                }
+                setCurrentLayout(layoutViewEmail);
+            }
+        });
 		btnViewEmail.setToolTip("View", "Opens the currently selected email");
 		layoutInbox.addComponent(btnViewEmail);
 
 		btnNewEmail = new Button(25, 5, ENDER_MAIL_ICONS, 0, 0, 10, 10);
-		btnNewEmail.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutNewEmail);
-			}
-		});
+		btnNewEmail.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutNewEmail));
 		btnNewEmail.setToolTip("New Email", "Send an email to a player");
 		layoutInbox.addComponent(btnNewEmail);
 
 		btnReplyEmail = new Button(45, 5, ENDER_MAIL_ICONS, 60, 0, 10, 10);
-		btnReplyEmail.setClickListener(new ClickListener()
+		btnReplyEmail.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				Email email = listEmails.getSelectedItem();
-				if (email != null)
-				{
-					setCurrentLayout(layoutNewEmail);
-					fieldRecipient.setText(email.author + "@endermail.com");
-					fieldSubject.setText("RE: " + email.subject);
-				}
-			}
-		});
+            Email email = listEmails.getSelectedItem();
+            if (email != null)
+            {
+                setCurrentLayout(layoutNewEmail);
+                fieldRecipient.setText(email.author + "@endermail.com");
+                fieldSubject.setText("RE: " + email.subject);
+            }
+        });
 		btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
 		layoutInbox.addComponent(btnReplyEmail);
 
 		btnDeleteEmail = new Button(65, 5, ENDER_MAIL_ICONS, 10, 0, 10, 10);
-		btnDeleteEmail.setClickListener(new ClickListener()
+		btnDeleteEmail.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			final int index = listEmails.getSelectedIndex();
+			if(index != -1)
 			{
-				final int index = listEmails.getSelectedIndex();
-				if (index != -1)
+				TaskDeleteEmail taskDeleteEmail = new TaskDeleteEmail(index);
+				taskDeleteEmail.setCallback((nbt, success) ->
 				{
-					TaskDeleteEmail taskDeleteEmail = new TaskDeleteEmail(index);
-					taskDeleteEmail.setCallback((nbt, success) ->
-					{
-                        listEmails.removeItem(index);
-                        EmailManager.INSTANCE.getInbox().remove(index);
-                    });
-					TaskManager.sendTask(taskDeleteEmail);
-				}
+					listEmails.removeItem(index);
+					EmailManager.INSTANCE.getInbox().remove(index);
+				});
+				TaskManager.sendTask(taskDeleteEmail);
 			}
 		});
 		btnDeleteEmail.setToolTip("Trash Email", "Deletes the currently select email");
 		layoutInbox.addComponent(btnDeleteEmail);
 
 		btnRefresh = new Button(85, 5, ENDER_MAIL_ICONS, 20, 0, 10, 10);
-		btnRefresh.setClickListener(new ClickListener()
+		btnRefresh.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
+			taskUpdateInbox.setCallback((nbt, success) ->
 			{
-				TaskUpdateInbox taskUpdateInbox = new TaskUpdateInbox();
-				taskUpdateInbox.setCallback((nbt, success) ->
+				listEmails.removeAll();
+				for(Email email : EmailManager.INSTANCE.getInbox())
 				{
-                    listEmails.removeAll();
-                    for (Email email : EmailManager.INSTANCE.getInbox())
-                    {
-                        listEmails.addItem(email);
-                    }
-                });
-				TaskManager.sendTask(taskUpdateInbox);
-			}
+					listEmails.addItem(email);
+				}
+			});
+			TaskManager.sendTask(taskUpdateInbox);
 		});
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
 		layoutInbox.addComponent(btnRefresh);
@@ -383,52 +349,44 @@ public class ApplicationEmail extends Application
 		layoutNewEmail.addComponent(textAreaMessage);
 
 		btnSendEmail = new Button(5, 5, ENDER_MAIL_ICONS, 50, 0, 10, 10);
-		btnSendEmail.setClickListener(new ClickListener()
+		btnSendEmail.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				Matcher matcher = EMAIL.matcher(fieldRecipient.getText());
-				if (!matcher.matches()) return;
+			Matcher matcher = EMAIL.matcher(fieldRecipient.getText());
+			if(!matcher.matches()) return;
 
-				Email email = new Email(fieldSubject.getText(), textAreaMessage.getText(), attachedFile);
-				TaskSendEmail taskSendEmail = new TaskSendEmail(email, matcher.group(1));
-				taskSendEmail.setCallback((nbt, success) ->
+			Email email = new Email(fieldSubject.getText(), textAreaMessage.getText(), attachedFile);
+			TaskSendEmail taskSendEmail = new TaskSendEmail(email, matcher.group(1));
+			taskSendEmail.setCallback((nbt, success) ->
+			{
+				if(success)
 				{
-                    if (success)
-                    {
-                        setCurrentLayout(layoutInbox);
-                        textAreaMessage.clear();
-                        fieldSubject.clear();
-                        fieldRecipient.clear();
-						resetAttachedFile();
-                    }
-                });
-				TaskManager.sendTask(taskSendEmail);
-			}
+					setCurrentLayout(layoutInbox);
+					textAreaMessage.clear();
+					fieldSubject.clear();
+					fieldRecipient.clear();
+					resetAttachedFile();
+				}
+			});
+			TaskManager.sendTask(taskSendEmail);
 		});
 		btnSendEmail.setToolTip("Send", "Send email to recipient");
 		layoutNewEmail.addComponent(btnSendEmail);
 
 		btnCancelEmail = new Button(5, 25, ENDER_MAIL_ICONS, 40, 0, 10, 10);
-		btnCancelEmail.setClickListener(new ClickListener()
+		btnCancelEmail.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutInbox);
-				textAreaMessage.clear();
-				fieldSubject.clear();
-				fieldRecipient.clear();
-				resetAttachedFile();
-			}
-		});
+            setCurrentLayout(layoutInbox);
+            textAreaMessage.clear();
+            fieldSubject.clear();
+            fieldRecipient.clear();
+            resetAttachedFile();
+        });
 		btnCancelEmail.setToolTip("Cancel", "Go back to Inbox");
 		layoutNewEmail.addComponent(btnCancelEmail);
 
 		btnAttachedFile = new Button(26, 129, ENDER_MAIL_ICONS, 70, 0, 10, 10);
 		btnAttachedFile.setToolTip("Attach File", "Select a file from computer to attach to this email");
-		btnAttachedFile.setClickListener((c, mouseButton) ->
+		btnAttachedFile.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0)
 			{
@@ -459,7 +417,7 @@ public class ApplicationEmail extends Application
 		btnRemoveAttachedFile = new Button(26, 129, ENDER_MAIL_ICONS, 40, 0, 10, 10);
 		btnRemoveAttachedFile.setToolTip("Remove Attachment", "Delete the attached file from this email");
 		btnRemoveAttachedFile.setVisible(false);
-		btnRemoveAttachedFile.setClickListener((c, mouseButton) ->
+		btnRemoveAttachedFile.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0)
 			{
@@ -498,7 +456,7 @@ public class ApplicationEmail extends Application
 		layoutViewEmail.addComponent(labelFrom);
 
 		btnCancelViewEmail = new Button(5, 3, ENDER_MAIL_ICONS, 40, 0, 10, 10);
-		btnCancelViewEmail.setClickListener((c, mouseButton) ->
+		btnCancelViewEmail.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -519,7 +477,7 @@ public class ApplicationEmail extends Application
 		btnSaveAttachment = new Button(219, 3, ENDER_MAIL_ICONS, 80, 0, 10, 10);
 		btnSaveAttachment.setToolTip("Save Attachment", "Save the file attached to this email");
 		btnSaveAttachment.setVisible(false);
-		btnSaveAttachment.setClickListener((c, mouseButton) ->
+		btnSaveAttachment.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0 && attachedFile != null)
             {

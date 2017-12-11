@@ -46,7 +46,7 @@ public class NumberSelector extends Component
 	{
 		btnUp = new Button(left, top, COMPONENTS_GUI, 111, 12, 8, 5);
 		btnUp.setSize(width, 11);
-		btnUp.setClickListener((c, mouseButton) ->
+		btnUp.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(current < max)
             {
@@ -64,7 +64,7 @@ public class NumberSelector extends Component
 		
 		btnDown = new Button(left, top + 24, COMPONENTS_GUI, 119, 12, 8, 5);
 		btnDown.setSize(width, 11);
-		btnDown.setClickListener((c, mouseButton) ->
+		btnDown.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(current > min)
             {

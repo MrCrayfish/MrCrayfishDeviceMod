@@ -1,6 +1,7 @@
 itemGroup.cdmTabDevice=MrCrayfish's Device Mod
 
 tile.laptop.name=Laptop
+tile.router.name=Router
 tile.printer.name=Printer
 tile.paper.name=Paper
 

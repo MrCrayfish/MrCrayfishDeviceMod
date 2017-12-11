@@ -47,7 +47,7 @@ public class TileGrid extends Component
 		btnNextCategory.setClickListener(new ClickListener()
 		{
 			@Override
-			public void onClick(Component c, int mouseButton)
+			public void onClick(int mouseX, int mouseY, int mouseButton)
 			{
 				if(currentCategory < Tile.Category.values().length - 1)
 				{
@@ -63,7 +63,7 @@ public class TileGrid extends Component
 		btnPrevCategory.setClickListener(new ClickListener()
 		{
 			@Override
-			public void onClick(Component c, int mouseButton)
+			public void onClick(int mouseX, int mouseY, int mouseButton)
 			{
 				if(currentCategory > 0)
 				{

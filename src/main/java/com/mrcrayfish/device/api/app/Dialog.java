@@ -226,18 +226,14 @@ public abstract class Dialog extends Wrappable
 			
 			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
 			buttonPositive.setSize(36, 15);
-			buttonPositive.setClickListener(new ClickListener()
+			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
-				@Override
-				public void onClick(Component c, int mouseButton)
-				{
-					if(positiveListener != null)
-					{
-						positiveListener.onClick(c, mouseButton);
-					}
-					close();
-				}
-			});
+                if(positiveListener != null)
+                {
+                    positiveListener.onClick(mouseX, mouseY, mouseButton);
+                }
+                close();
+            });
 			this.addComponent(buttonPositive);
 		}
 	}
@@ -293,34 +289,26 @@ public abstract class Dialog extends Wrappable
 			
 			buttonPositive = new Button(getWidth() - 35, getHeight() - 20, positiveText);
 			buttonPositive.setSize(30, 15);
-			buttonPositive.setClickListener(new ClickListener()
+			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
-				@Override
-				public void onClick(Component c, int mouseButton)
-				{
-					if(positiveListener != null)
-					{
-						positiveListener.onClick(c, mouseButton);
-					}
-					close();
-				}
-			});
+                if(positiveListener != null)
+                {
+                    positiveListener.onClick(mouseX, mouseY, mouseButton);
+                }
+                close();
+            });
 			this.addComponent(buttonPositive);
 			
 			buttonNegative = new Button(getWidth() - 70, getHeight() - 20, negativeText);
 			buttonPositive.setSize(30, 15);
-			buttonNegative.setClickListener(new ClickListener()
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
-				@Override
-				public void onClick(Component c, int mouseButton)
-				{
-					if(negativeListener != null)
-					{
-						negativeListener.onClick(c, mouseButton);
-					}
-					close();
-				}
-			});
+                if(negativeListener != null)
+                {
+                    negativeListener.onClick(mouseX, mouseY, mouseButton);
+                }
+                close();
+            });
 			this.addComponent(buttonNegative);
 		}
 
@@ -422,7 +410,7 @@ public abstract class Dialog extends Wrappable
 			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
 			buttonPositive = new Button(getWidth() - positiveWidth - 15, getHeight() - 20, positiveText);
 			buttonPositive.setSize(positiveWidth + 10, 15);
-			buttonPositive.setClickListener((c, mouseButton) ->
+			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(!textFieldInput.getText().isEmpty())
                 {
@@ -439,7 +427,7 @@ public abstract class Dialog extends Wrappable
 			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
 			buttonNegative = new Button(getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeText);
 			buttonNegative.setSize(negativeWidth + 10, 15);
-			buttonNegative.setClickListener((c, mouseButton) -> close());
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			this.addComponent(buttonNegative);
 		}
 
@@ -550,7 +538,7 @@ public abstract class Dialog extends Wrappable
 			buttonPositive = new Button(172, 105, positiveText);
 			buttonPositive.setSize(positiveWidth + 10, 15);
 			buttonPositive.setEnabled(false);
-			buttonPositive.setClickListener((c, mouseButton) ->
+			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
@@ -571,7 +559,7 @@ public abstract class Dialog extends Wrappable
 			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
 			buttonNegative = new Button(125, 105, negativeText);
 			buttonNegative.setSize(negativeWidth + 10, 15);
-			buttonNegative.setClickListener((c, mouseButton) -> close());
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
 			this.setLayout(main);
@@ -668,7 +656,7 @@ public abstract class Dialog extends Wrappable
 
 			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
 			buttonPositive = new Button(172, 123, positiveText);
-			buttonPositive.setClickListener((c, mouseButton) ->
+			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
@@ -697,7 +685,7 @@ public abstract class Dialog extends Wrappable
 							{
 								Dialog.Confirmation dialog = new Dialog.Confirmation("A file with that name already exists. Are you sure you want to override it?");
 								dialog.setPositiveText("Override");
-								dialog.setPositiveListener((c1, mouseButton1) ->
+								dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
 								{
 									browser.removeFile(file.getName());
 									browser.addFile(file);
@@ -728,7 +716,7 @@ public abstract class Dialog extends Wrappable
 
 			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
 			buttonNegative = new Button(126, 123, negativeText);
-			buttonNegative.setClickListener((c, mouseButton) -> close());
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
 			textFieldFileName = new TextField(26, 105, 180);
@@ -818,7 +806,7 @@ public abstract class Dialog extends Wrappable
 			buttonRefresh = new Button(131, 2, Icons.RELOAD);
 			buttonRefresh.setPadding(2);
 			buttonRefresh.setToolTip("Refresh", "Retrieve an updated list of printers");
-			buttonRefresh.setClickListener((c, mouseButton) ->
+			buttonRefresh.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(mouseButton == 0)
 				{
@@ -866,7 +854,7 @@ public abstract class Dialog extends Wrappable
 			buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
 			buttonPrint.setPadding(5);
 			buttonPrint.setEnabled(false);
-			buttonPrint.setClickListener((c, mouseButton) ->
+			buttonPrint.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
@@ -889,7 +877,7 @@ public abstract class Dialog extends Wrappable
 
 			buttonCancel = new Button(74, 108, Icons.CROSS);
 			buttonCancel.setPadding(5);
-			buttonCancel.setClickListener((c, mouseButton) ->
+			buttonCancel.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
@@ -901,7 +889,7 @@ public abstract class Dialog extends Wrappable
 			buttonInfo = new Button(5, 108, Icons.HELP);
 			buttonInfo.setEnabled(false);
 			buttonInfo.setPadding(5);
-			buttonInfo.setClickListener((c, mouseButton) ->
+			buttonInfo.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(mouseButton == 0)
 				{
@@ -1016,7 +1004,7 @@ public abstract class Dialog extends Wrappable
 				layoutMain.addComponent(labelPosition);
 
 				buttonClose = new Button(5, 49, "Close");
-				buttonClose.setClickListener((c, mouseButton) ->
+				buttonClose.setClickListener((mouseX, mouseY, mouseButton) ->
 				{
                     if(mouseButton == 0)
 					{
