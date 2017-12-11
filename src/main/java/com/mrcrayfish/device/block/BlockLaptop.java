@@ -182,7 +182,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!world.isRemote)
+		if(!world.isRemote && !player.capabilities.isCreativeMode)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity instanceof TileEntityLaptop)
@@ -196,12 +196,6 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 				tileEntityTag.removeTag("z");
 				tileEntityTag.removeTag("id");
 				tileEntityTag.removeTag("open");
-
-				if(player.capabilities.isCreativeMode)
-				{
-					tileEntityTag.removeTag("deviceId");
-					tileEntityTag.removeTag("connection");
-				}
 
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setTag("BlockEntityTag", tileEntityTag);

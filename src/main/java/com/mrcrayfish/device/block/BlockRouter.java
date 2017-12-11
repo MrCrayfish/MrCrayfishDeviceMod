@@ -2,6 +2,7 @@ package com.mrcrayfish.device.block;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.object.Bounds;
+import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.util.CollisionHelper;
 import net.minecraft.block.Block;
@@ -12,6 +13,11 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -22,6 +28,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Author: MrCrayfish
@@ -73,6 +80,41 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
     {
         Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()]);
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    {
+        return null;
+    }
+
+    @Override
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+    {
+        if(!world.isRemote && !player.capabilities.isCreativeMode)
+        {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityRouter)
+            {
+                TileEntityRouter router = (TileEntityRouter) tileEntity;
+
+                NBTTagCompound tileEntityTag = new NBTTagCompound();
+                router.writeToNBT(tileEntityTag);
+                tileEntityTag.removeTag("x");
+                tileEntityTag.removeTag("y");
+                tileEntityTag.removeTag("z");
+                tileEntityTag.removeTag("id");
+
+                NBTTagCompound compound = new NBTTagCompound();
+                compound.setTag("BlockEntityTag", tileEntityTag);
+
+                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+                drop.setTagCompound(compound);
+
+                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+            }
+        }
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
     @Override
