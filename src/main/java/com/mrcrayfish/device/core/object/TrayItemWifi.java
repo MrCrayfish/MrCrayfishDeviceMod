@@ -72,7 +72,6 @@ public class TrayItemWifi extends TrayItem
 
     private void runPingTask()
     {
-        MrCrayfishDeviceMod.getLogger().info("Sending ping!");
         TaskPing task = new TaskPing(Laptop.getPos());
         task.setCallback((tagCompound, success) ->
         {
