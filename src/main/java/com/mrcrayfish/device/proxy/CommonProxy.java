@@ -5,6 +5,7 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
+import com.mrcrayfish.device.network.task.MessageSyncConfig;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -72,6 +73,7 @@ public class CommonProxy
 		{
 			PacketHandler.INSTANCE.sendTo(new MessageSyncApplications(allowedApps), (EntityPlayerMP) event.player);
 		}
+		PacketHandler.INSTANCE.sendTo(new MessageSyncConfig(), (EntityPlayerMP) event.player);
 	}
 
 	@SubscribeEvent

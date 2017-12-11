@@ -4,6 +4,7 @@ import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.network.task.MessageRequest;
 import com.mrcrayfish.device.network.task.MessageResponse;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
+import com.mrcrayfish.device.network.task.MessageSyncConfig;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,5 +18,6 @@ public class PacketHandler
 		INSTANCE.registerMessage(MessageRequest.class, MessageRequest.class, 1, Side.SERVER);
 		INSTANCE.registerMessage(MessageResponse.class, MessageResponse.class, 2, Side.CLIENT);
 		INSTANCE.registerMessage(MessageSyncApplications.class, MessageSyncApplications.class, 3, Side.CLIENT);
+		INSTANCE.registerMessage(MessageSyncConfig.class, MessageSyncConfig.class, 4, Side.CLIENT);
 	}
 }

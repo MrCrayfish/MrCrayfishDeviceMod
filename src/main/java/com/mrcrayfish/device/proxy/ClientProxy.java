@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.proxy;
 
+import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
@@ -38,12 +39,6 @@ import java.util.Map;
 
 public class ClientProxy extends CommonProxy
 {
-    @Override
-    public void preInit()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
     @Override
     public void init()
     {
@@ -208,5 +203,6 @@ public class ClientProxy extends CommonProxy
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         allowedApps = null;
+        DeviceConfig.restore();
     }
 }
