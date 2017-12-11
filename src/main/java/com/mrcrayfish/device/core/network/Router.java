@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core.network;
 
+import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
@@ -35,7 +36,7 @@ public class Router
 
     public void update(World world)
     {
-        if(++timer >= 20)
+        if(++timer >= DeviceConfig.getBeaconInterval())
         {
             sendBeacon(world);
             timer = 0;
@@ -97,7 +98,7 @@ public class Router
     private void sendBeacon(World world)
     {
         NETWORK_DEVICES.forEach((id, device) -> device.setPos(null));
-        int range = 30;
+        int range = DeviceConfig.getSignalRange();
         for(int y = -range; y < range + 1; y++)
         {
             for(int z = -range; z < range + 1; z++)

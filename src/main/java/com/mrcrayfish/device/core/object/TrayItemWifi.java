@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core.object;
 
+import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ItemList;
@@ -62,7 +63,7 @@ public class TrayItemWifi extends TrayItem
     @Override
     public void tick()
     {
-        if(++pingTimer >= 20)
+        if(++pingTimer >= DeviceConfig.getPingRate())
         {
             runPingTask();
             pingTimer = 0;
@@ -174,7 +175,7 @@ public class TrayItemWifi extends TrayItem
 
         World world = Minecraft.getMinecraft().world;
         BlockPos laptopPos = Laptop.getPos();
-        int range = 20; //TODO change to config
+        int range = DeviceConfig.getSignalRange();
 
         for(int y = -range; y < range + 1; y++)
         {

@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Connection;
 import com.mrcrayfish.device.core.network.IDevice;
@@ -31,7 +32,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
 
         if(connection != null && connection.getRouterPos() != null)
         {
-            if(++counter >= 40)
+            if(++counter >= DeviceConfig.getBeaconInterval() * 2)
             {
                 connection.setRouterPos(null);
             }
@@ -102,7 +103,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         if(routerPos != null)
         {
             double distance = Math.sqrt(pos.distanceSqToCenter(routerPos.getX() + 0.5, routerPos.getY() + 0.5, routerPos.getZ() + 0.5));
-            double level = 20.0 / 3.0; //TODO change to config
+            double level = DeviceConfig.getSignalRange() / 3.0;
             return distance > level * 2 ? 2 : distance > level ? 1 : 0;
         }
         return -1;
