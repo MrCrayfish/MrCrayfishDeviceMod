@@ -1,11 +1,9 @@
 package com.mrcrayfish.device.core.network;
 
 import com.mrcrayfish.device.DeviceConfig;
-import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
+import com.mrcrayfish.device.tileentity.TileEntityRouter;
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -14,7 +12,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -102,6 +103,9 @@ public class Router
 
     private void sendBeacon(World world)
     {
+        if(world.isRemote)
+            return;
+
         NETWORK_DEVICES.forEach((id, device) -> device.setPos(null));
         int range = DeviceConfig.getSignalRange();
         for(int y = -range; y < range + 1; y++)
@@ -150,14 +154,14 @@ public class Router
         this.pos = pos;
     }
 
-    public NBTTagCompound toTag()
+    public NBTTagCompound toTag(boolean includePos)
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setUniqueId("id", getId());
 
         NBTTagList deviceList = new NBTTagList();
         NETWORK_DEVICES.forEach((id, device) -> {
-            deviceList.appendTag(device.toTag());
+            deviceList.appendTag(device.toTag(includePos));
         });
         tag.setTag("network_devices", deviceList);
 

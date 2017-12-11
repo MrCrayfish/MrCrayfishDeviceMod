@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -88,11 +89,15 @@ public class NetworkDevice
         return null;
     }
 
-    public NBTTagCompound toTag()
+    public NBTTagCompound toTag(boolean includePos)
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("id", id.toString());
         tag.setString("name", name);
+        if(includePos && pos != null)
+        {
+            tag.setLong("pos", pos.toLong());
+        }
         return tag;
     }
 
@@ -101,6 +106,10 @@ public class NetworkDevice
         NetworkDevice device = new NetworkDevice();
         device.id = UUID.fromString(tag.getString("id"));
         device.name = tag.getString("name");
+        if(tag.hasKey("pos", Constants.NBT.TAG_LONG))
+        {
+            device.pos = BlockPos.fromLong(tag.getLong("pos"));
+        }
         return device;
     }
 }

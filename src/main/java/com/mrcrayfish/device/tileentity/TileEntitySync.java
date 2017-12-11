@@ -13,11 +13,9 @@ public abstract class TileEntitySync extends TileEntity
 {
     protected NBTTagCompound pipeline = new NBTTagCompound();
 
-    protected void sync()
+    public void sync()
     {
-        if(pipeline.hasNoTags()) return;
         TileEntityUtil.markBlockForUpdate(world, pos);
-        pipeline = new NBTTagCompound();
         markDirty();
     }
 
@@ -28,7 +26,7 @@ public abstract class TileEntitySync extends TileEntity
     }
 
     @Override
-    public NBTTagCompound getUpdateTag()
+    public final NBTTagCompound getUpdateTag()
     {
         if(!pipeline.hasNoTags())
         {

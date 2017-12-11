@@ -1,8 +1,9 @@
 package com.mrcrayfish.device.block;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.network.PacketHandler;
+import com.mrcrayfish.device.network.task.MessageSyncBlock;
 import com.mrcrayfish.device.object.Bounds;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.util.CollisionHelper;
 import net.minecraft.block.Block;
@@ -80,6 +81,26 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
     {
         Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()]);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if(worldIn.isRemote && playerIn.capabilities.isCreativeMode)
+        {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityRouter)
+            {
+                TileEntityRouter tileEntityRouter = (TileEntityRouter) tileEntity;
+                tileEntityRouter.setDebug();
+                if(tileEntityRouter.isDebug())
+                {
+                    PacketHandler.INSTANCE.sendToServer(new MessageSyncBlock(pos));
+                }
+            }
+            return true;
+        }
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
