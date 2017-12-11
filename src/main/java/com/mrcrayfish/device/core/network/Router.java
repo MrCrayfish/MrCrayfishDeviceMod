@@ -43,12 +43,17 @@ public class Router
         }
     }
 
-    public void addDevice(TileEntityDevice device)
+    public boolean addDevice(TileEntityDevice device)
     {
+        if(NETWORK_DEVICES.size() >= DeviceConfig.getMaxDevices())
+        {
+            return NETWORK_DEVICES.containsKey(device.getId());
+        }
         if(!NETWORK_DEVICES.containsKey(device.getId()))
         {
             NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
         }
+        return true;
     }
 
     public boolean hasDevice(TileEntityDevice device)

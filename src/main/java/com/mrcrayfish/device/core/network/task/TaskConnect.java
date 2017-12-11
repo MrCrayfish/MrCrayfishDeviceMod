@@ -50,9 +50,11 @@ public class TaskConnect extends Task
             if(tileEntity1 instanceof TileEntityDevice)
             {
                 TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
-                tileEntityDevice.connect(router);
-                router.addDevice(tileEntityDevice);
-                this.setSuccessful();
+                if(router.addDevice(tileEntityDevice))
+                {
+                    tileEntityDevice.connect(router);
+                    this.setSuccessful();
+                }
             }
         }
     }
