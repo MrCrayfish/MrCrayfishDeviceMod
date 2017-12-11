@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.core.object;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ItemList;
@@ -17,7 +16,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,22 @@ public class TrayItemWifi extends TrayItem
         {
             if(success)
             {
-                setIcon(Icons.WIFI_HIGH);
+                int strength = tagCompound.getInteger("strength");
+                switch(strength)
+                {
+                    case 2:
+                        setIcon(Icons.WIFI_LOW);
+                        break;
+                    case 1:
+                        setIcon(Icons.WIFI_MED);
+                        break;
+                    case 0:
+                        setIcon(Icons.WIFI_HIGH);
+                        break;
+                    default:
+                        setIcon(Icons.WIFI_NONE);
+                        break;
+                }
             }
             else
             {
@@ -160,7 +174,7 @@ public class TrayItemWifi extends TrayItem
 
         World world = Minecraft.getMinecraft().world;
         BlockPos laptopPos = Laptop.getPos();
-        int range = 30;
+        int range = 20; //TODO change to config
 
         for(int y = -range; y < range + 1; y++)
         {

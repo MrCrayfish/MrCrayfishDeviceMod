@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 public class TaskPing extends Task
 {
     private BlockPos sourceDevicePos;
+    private int strength;
 
     private TaskPing()
     {
@@ -41,6 +42,7 @@ public class TaskPing extends Task
             TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
             if(tileEntityDevice.isConnected(world))
             {
+                this.strength = tileEntityDevice.getSignalStrength();
                 this.setSuccessful();
             }
         }
@@ -49,7 +51,10 @@ public class TaskPing extends Task
     @Override
     public void prepareResponse(NBTTagCompound nbt)
     {
-
+        if(this.isSucessful())
+        {
+            nbt.setInteger("strength", strength);
+        }
     }
 
     @Override

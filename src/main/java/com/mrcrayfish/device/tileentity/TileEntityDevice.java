@@ -7,6 +7,7 @@ import com.mrcrayfish.device.core.network.Router;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -93,6 +94,18 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
             return true;
         }
         return false;
+    }
+
+    public int getSignalStrength()
+    {
+        BlockPos routerPos = connection.getRouterPos();
+        if(routerPos != null)
+        {
+            double distance = Math.sqrt(pos.distanceSqToCenter(routerPos.getX() + 0.5, routerPos.getY() + 0.5, routerPos.getZ() + 0.5));
+            double level = 20.0 / 3.0; //TODO change to config
+            return distance > level * 2 ? 2 : distance > level ? 1 : 0;
+        }
+        return -1;
     }
 
     @Override
