@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.core.network.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,8 +39,7 @@ public class TaskPing extends Task
         if(tileEntity instanceof TileEntityDevice)
         {
             TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            Router router = tileEntityDevice.getRouter();
-            if(router != null && router.ping(tileEntityDevice))
+            if(tileEntityDevice.isConnected(world))
             {
                 this.setSuccessful();
             }

@@ -28,7 +28,7 @@ public class NetworkDevice
         update(device);
     }
 
-    public UUID getUUID()
+    public UUID getId()
     {
         return id;
     }
@@ -42,6 +42,11 @@ public class NetworkDevice
     public BlockPos getPos()
     {
         return pos;
+    }
+
+    public void setPos(BlockPos pos)
+    {
+        this.pos = pos;
     }
 
     public boolean isConnected(World world)
@@ -63,6 +68,24 @@ public class NetworkDevice
     {
         name = device.getDeviceName();
         pos = device.getPos();
+    }
+
+    @Nullable
+    public TileEntityDevice getDevice(World world)
+    {
+        if(pos == null)
+            return null;
+
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if(tileEntity instanceof TileEntityDevice)
+        {
+            TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
+            if(tileEntityDevice.getId().equals(getId()))
+            {
+                return tileEntityDevice;
+            }
+        }
+        return null;
     }
 
     public NBTTagCompound toTag()

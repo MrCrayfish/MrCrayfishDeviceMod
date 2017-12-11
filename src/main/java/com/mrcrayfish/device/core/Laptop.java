@@ -144,6 +144,8 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void updateScreen()
 	{
+		bar.onTick();
+
 		for(Window window : windows)
 		{
 			if(window != null)

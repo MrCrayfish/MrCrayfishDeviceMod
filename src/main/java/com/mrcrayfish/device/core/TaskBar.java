@@ -2,40 +2,25 @@ package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ItemList;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.network.task.TaskConnect;
-import com.mrcrayfish.device.core.network.task.TaskPing;
-import com.mrcrayfish.device.init.DeviceBlocks;
+import com.mrcrayfish.device.core.object.TrayItemWifi;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.SystemApplication;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TaskBar
@@ -49,6 +34,7 @@ public class TaskBar
 	private Button btnRight;
 	
 	private int offset = 0;
+	private int pingTimer = 0;
 
 	private List<Application> applications;
 	private List<TrayItem> trayItems = new ArrayList<>();
@@ -56,46 +42,17 @@ public class TaskBar
 	public TaskBar(List<Application> applications)
 	{
 		setupApplications(applications);
+		trayItems.add(new TrayItemWifi());
 	}
 
 	public void init()
 	{
-		TrayItem itemWifi = new TrayItem(Icons.WIFI_NONE);
-		itemWifi.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(Laptop.getSystem().hasContext())
-			{
-				Laptop.getSystem().closeContext();
-			}
-			else
-			{
-				Laptop.getSystem().openContext(createWifiMenu(itemWifi), mouseX - 100, mouseY - 100);
-			}
-        });
-		trayItems.add(itemWifi);
-
-		BlockPos laptopPos = Laptop.getPos();
-		if(laptopPos != null)
-		{
-			TaskPing task = new TaskPing(Laptop.getPos());
-			task.setCallback((tagCompound, success) ->
-			{
-                if(success)
-				{
-					itemWifi.setIcon(Icons.WIFI_HIGH);
-				}
-				else
-				{
-					itemWifi.setIcon(Icons.WIFI_NONE);
-				}
-            });
-			TaskManager.sendTask(task);
-		}
+		trayItems.forEach(TrayItem::init);
 	}
 
 	public void setupApplications(List<Application> applications)
 	{
-		this.applications = applications.stream().filter(app ->
+		final Predicate<Application> VALID_APPS = app ->
 		{
 			if(app instanceof SystemApplication)
 			{
@@ -105,11 +62,7 @@ public class TaskBar
 			{
 				if(MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
 				{
-					if(MrCrayfishDeviceMod.DEVELOPER_MODE)
-					{
-						return Settings.isShowAllApps();
-					}
-					return true;
+					return !MrCrayfishDeviceMod.DEVELOPER_MODE || Settings.isShowAllApps();
 				}
 				return false;
 			}
@@ -118,8 +71,8 @@ public class TaskBar
 				return Settings.isShowAllApps();
 			}
 			return true;
-		}).collect(Collectors.toList());
-
+		};
+		this.applications = applications.stream().filter(VALID_APPS).collect(Collectors.toList());
 	}
 
 	public void init(int posX, int posY)
@@ -147,6 +100,11 @@ public class TaskBar
             }
         });
 		init();
+	}
+
+	public void onTick()
+	{
+		trayItems.forEach(TrayItem::tick);
 	}
 	
 	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)
@@ -245,98 +203,5 @@ public class TaskBar
 	    int hours = (int) ((Math.floor(time / 1000.0) + 7) % 24);
 	    int minutes = (int) Math.floor((time % 1000) / 1000.0 * 60);
 	    return String.format("%02d:%02d", hours, minutes);
-	}
-
-	private static Layout createWifiMenu(TrayItem item)
-	{
-		Layout layout = new Layout.Context(100, 100);
-		layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-		{
-			Gui.drawRect(x, y, x + width, y + height, new Color(0.65F, 0.65F, 0.65F, 0.9F).getRGB());
-		});
-
-		ItemList<BlockPos> itemListRouters = new ItemList<>(5, 5, 90, 4);
-		itemListRouters.setItems(getRouters());
-		itemListRouters.setListItemRenderer(new ListItemRenderer<BlockPos>(16)
-		{
-			@Override
-			public void render(BlockPos blockPos, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
-			{
-				Gui.drawRect(x, y, x + width, y + height, selected ? Color.DARK_GRAY.getRGB() : Color.GRAY.getRGB());
-				gui.drawString(mc.fontRenderer, "Router", x + 16, y + 4, Color.WHITE.getRGB());
-
-				BlockPos laptopPos = Laptop.getPos();
-				double distance = Math.sqrt(blockPos.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
-				if(distance > 20)
-				{
-					Icons.WIFI_LOW.draw(mc, x + 3, y + 3);
-				}
-				else if(distance > 10)
-				{
-					Icons.WIFI_MED.draw(mc, x + 3, y + 3);
-				}
-				else
-				{
-					Icons.WIFI_HIGH.draw(mc, x + 3, y + 3);
-				}
-			}
-		});
-		itemListRouters.sortBy((o1, o2) -> {
-			BlockPos laptopPos = Laptop.getPos();
-			double distance1 = Math.sqrt(o1.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
-			double distance2 = Math.sqrt(o2.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
-			return distance1 == distance2 ? 0 : distance1 > distance2 ? 1 : -1;
-		});
-		layout.addComponent(itemListRouters);
-
-		Button buttonConnect = new Button(79, 79, Icons.CHECK);
-		buttonConnect.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if(mouseButton == 0)
-			{
-				if(itemListRouters.getSelectedItem() != null)
-				{
-					TaskConnect connect = new TaskConnect(Laptop.getPos(), itemListRouters.getSelectedItem());
-					connect.setCallback((tagCompound, success) ->
-					{
-                        if(success)
-						{
-							item.setIcon(Icons.WIFI_HIGH);
-							Laptop.getSystem().closeContext();
-						}
-                    });
-					TaskManager.sendTask(connect);
-				}
-			}
-        });
-		layout.addComponent(buttonConnect);
-
-		return layout;
-	}
-
-	private static List<BlockPos> getRouters()
-	{
-		List<BlockPos> routers = new ArrayList<>();
-
-		World world = Minecraft.getMinecraft().world;
-		BlockPos laptopPos = Laptop.getPos();
-		int range = 30;
-
-		for(int y = -range; y < range + 1; y++)
-		{
-			for(int z = -range; z < range + 1; z++)
-			{
-				for(int x = -range; x < range + 1; x++)
-				{
-					BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
-					IBlockState state = world.getBlockState(pos);
-					if(state.getBlock() == DeviceBlocks.ROUTER)
-					{
-						routers.add(pos);
-					}
-				}
-			}
-		}
-		return routers;
 	}
 }

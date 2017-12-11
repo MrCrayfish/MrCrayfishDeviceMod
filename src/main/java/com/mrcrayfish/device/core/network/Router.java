@@ -1,20 +1,30 @@
 package com.mrcrayfish.device.core.network;
 
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class Router implements IDevice
+public class Router
 {
     private final Map<UUID, NetworkDevice> NETWORK_DEVICES = new HashMap<>();
 
+    private int timer;
     private UUID routerId;
     private BlockPos pos;
 
@@ -23,7 +33,98 @@ public class Router implements IDevice
         this.pos = pos;
     }
 
-    @Override
+    public void update(World world)
+    {
+        if(++timer >= 20)
+        {
+            sendBeacon(world);
+            timer = 0;
+        }
+    }
+
+    public void addDevice(TileEntityDevice device)
+    {
+        if(!NETWORK_DEVICES.containsKey(device.getId()))
+        {
+            NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
+        }
+    }
+
+    public boolean hasDevice(TileEntityDevice device)
+    {
+        return NETWORK_DEVICES.containsKey(device.getId());
+    }
+
+    public void removeDevice(TileEntityDevice device)
+    {
+        NETWORK_DEVICES.remove(device.getId());
+    }
+
+    @Nullable
+    public TileEntityDevice getDevice(World world, UUID id)
+    {
+        return NETWORK_DEVICES.containsKey(id) ? NETWORK_DEVICES.get(id).getDevice(world) : null;
+    }
+
+    public Collection<NetworkDevice> getNetworkDevices()
+    {
+        return NETWORK_DEVICES.values();
+    }
+
+    public Collection<NetworkDevice> getConnectedDevices(World world)
+    {
+        sendBeacon(world);
+        return NETWORK_DEVICES.values().stream().filter(networkDevice -> networkDevice.getPos() != null).collect(Collectors.toList());
+    }
+
+    public Collection<NetworkDevice> getConnectedDevices(final World world, Class<? extends TileEntityDevice> type)
+    {
+        final Predicate<NetworkDevice> DEVICE_TYPE = networkDevice ->
+        {
+            if(networkDevice.getPos() == null)
+                return false;
+
+            TileEntity tileEntity = world.getTileEntity(networkDevice.getPos());
+            if(tileEntity instanceof TileEntityDevice)
+            {
+                return tileEntity.getClass().isAssignableFrom(type);
+            }
+            return false;
+        };
+        return getConnectedDevices(world).stream().filter(DEVICE_TYPE).collect(Collectors.toList());
+    }
+
+    private void sendBeacon(World world)
+    {
+        NETWORK_DEVICES.forEach((id, device) -> device.setPos(null));
+        int range = 30;
+        for(int y = -range; y < range + 1; y++)
+        {
+            for(int z = -range; z < range + 1; z++)
+            {
+                for(int x = -range; x < range + 1; x++)
+                {
+                    BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+                    TileEntity tileEntity = world.getTileEntity(currentPos);
+                    if(tileEntity instanceof TileEntityDevice)
+                    {
+                        TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
+                        if(!NETWORK_DEVICES.containsKey(tileEntityDevice.getId()))
+                            continue;
+                        if(tileEntityDevice.receiveBeacon(this))
+                        {
+                            NETWORK_DEVICES.get(tileEntityDevice.getId()).setPos(currentPos);
+                        }
+                        else
+                        {
+                            NETWORK_DEVICES.remove(tileEntityDevice.getId());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public UUID getId()
     {
         if(routerId == null)
@@ -41,34 +142,6 @@ public class Router implements IDevice
     public void setPos(BlockPos pos)
     {
         this.pos = pos;
-    }
-
-    public void addDevice(TileEntityDevice device)
-    {
-        if(!NETWORK_DEVICES.containsKey(device.getId()))
-        {
-            NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
-        }
-    }
-
-    public void removeDevice(TileEntityDevice device)
-    {
-        NETWORK_DEVICES.remove(device.getId());
-    }
-
-    public Collection<NetworkDevice> getNetworkDevices()
-    {
-        return NETWORK_DEVICES.values();
-    }
-
-    public boolean ping(TileEntityDevice source)
-    {
-        if(NETWORK_DEVICES.containsKey(source.getId()))
-        {
-            NETWORK_DEVICES.get(source.getId()).update(source);
-            return true;
-        }
-        return false;
     }
 
     public NBTTagCompound toTag()
@@ -94,7 +167,7 @@ public class Router implements IDevice
         for(int i = 0; i < deviceList.tagCount(); i++)
         {
             NetworkDevice device = NetworkDevice.fromTag(deviceList.getCompoundTagAt(i));
-            router.NETWORK_DEVICES.put(device.getUUID(), device);
+            router.NETWORK_DEVICES.put(device.getId(), device);
         }
         return router;
     }

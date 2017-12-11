@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.tileentity;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Connection;
+import com.mrcrayfish.device.core.network.IDevice;
 import com.mrcrayfish.device.core.network.Router;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,12 +25,14 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
     @Override
     public void update()
     {
-        if(connection != null)
+        if(world.isRemote)
+            return;
+
+        if(connection != null && connection.getRouterPos() != null)
         {
-            if(++counter >= 100)
+            if(++counter >= 40)
             {
-                connection.updateConnection(world);
-                counter = 0;
+                connection.setRouterPos(null);
             }
         }
     }
@@ -37,12 +41,25 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
     {
         if(router == null)
         {
+            if(connection != null)
+            {
+                Router connectedRouter = connection.getRouter(world);
+                if(connectedRouter != null)
+                {
+                    connectedRouter.removeDevice(this);
+                }
+            }
             connection = null;
             return;
         }
-        connection = new Connection(router.getId(), this);
-        connection.updateConnection(world);
+        connection = new Connection(router);
+        counter = 0;
         this.markDirty();
+    }
+
+    public Connection getConnection()
+    {
+        return connection;
     }
 
     @Nullable
@@ -60,12 +77,23 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         return deviceId;
     }
 
+    public abstract String getDeviceName();
+
     public boolean isConnected(World world)
     {
-        return connection != null && connection.isActive(world);
+        return connection != null && connection.isConnected(this, world);
     }
 
-    public abstract String getDeviceName();
+    public boolean receiveBeacon(Router router)
+    {
+        if(connection.getRouterId().equals(router.getId()))
+        {
+            connection.setRouterPos(router.getPos());
+            counter = 0;
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)

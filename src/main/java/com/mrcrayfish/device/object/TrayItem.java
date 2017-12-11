@@ -16,6 +16,10 @@ public class TrayItem
         this.icon = icon;
     }
 
+    public void init() {}
+
+    public void tick() {}
+
     public void setIcon(IIcon icon)
     {
         this.icon = icon;
