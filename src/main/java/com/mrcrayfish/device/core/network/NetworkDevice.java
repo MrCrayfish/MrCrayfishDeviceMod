@@ -29,6 +29,13 @@ public class NetworkDevice
         update(device);
     }
 
+    public NetworkDevice(UUID id, String name, Router router)
+    {
+        this.id = id;
+        this.name = name;
+        this.router = router;
+    }
+
     public UUID getId()
     {
         return id;

@@ -17,3 +17,10 @@ app.cdm.pixel_painter.name=Pixel Painter
 app.cdm.ender_mail.name=EnderMail
 app.cdm.boat_racers.name=Boat Racers
 app.cdm.mine_bay.name=MineBay
+
+message.select_router=Now select a router to connect this device to.
+message.invalid_cable=Please select a device first before adding it to this router.
+message.router_max_devices=The maximum amount of devices has been reached for this router.
+message.device_already_connected=The selected device is already connected to this router.
+message.successful_connection=Successfully connected the selected device to this router.
+message.successful_registered=Successfully registered the selected device to this router.
