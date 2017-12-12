@@ -6,6 +6,7 @@ tile.printer.name=Printer
 
 item.flash_drive.name=Flash Drive
 item.printed_paper.name=Printed Paper
+item.ethernet_cable.name=Ethernet Cable
 
 app.cdm.settings.name=Settings
 app.cdm.bank.name=Bank
