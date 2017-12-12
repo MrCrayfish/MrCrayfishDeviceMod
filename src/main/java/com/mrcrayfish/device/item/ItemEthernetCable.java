@@ -5,6 +5,8 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -153,6 +155,7 @@ public class ItemEthernetCable extends Item
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
         if(stack.hasTagCompound())
@@ -170,6 +173,22 @@ public class ItemEthernetCable extends Item
                 builder.append(TextFormatting.RED.toString() + TextFormatting.BOLD.toString() + "Z: " + TextFormatting.RESET.toString() + devicePos.getZ());
                 tooltip.add(builder.toString());
             }
+        }
+        else
+        {
+            if(!GuiScreen.isShiftKeyDown())
+            {
+                tooltip.add(TextFormatting.GRAY.toString() + "Use this cable to connect");
+                tooltip.add(TextFormatting.GRAY.toString() + "a device to a router.");
+                tooltip.add(TextFormatting.YELLOW.toString() + "Hold SHIFT for How-To");
+                return;
+            }
+
+            tooltip.add(TextFormatting.GRAY.toString() + "Start by right clicking a");
+            tooltip.add(TextFormatting.GRAY.toString() + "device with this cable");
+            tooltip.add(TextFormatting.GRAY.toString() + "then right click the ");
+            tooltip.add(TextFormatting.GRAY.toString() + "router you want to");
+            tooltip.add(TextFormatting.GRAY.toString() + "connect this device to.");
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
