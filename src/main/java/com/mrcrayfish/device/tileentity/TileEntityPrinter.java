@@ -5,7 +5,6 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
-import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
@@ -13,9 +12,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
@@ -23,17 +19,15 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Queue;
 
 import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 
 /**
  * Author: MrCrayfish
  */
-public class TileEntityPrinter extends TileEntity implements ITickable
+public class TileEntityPrinter extends TileEntityDevice implements ITickable
 {
     private String name = "Printer";
     private State state = IDLE;
@@ -45,8 +39,6 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     private int remainingPrintTime;
     private int paperCount = 0;
 
-    private NBTTagCompound bufferTag = new NBTTagCompound();
-
     @Override
     public void update()
     {
@@ -56,8 +48,8 @@ public class TileEntityPrinter extends TileEntity implements ITickable
             {
                 if(remainingPrintTime % 20 == 0 || state == LOADING_PAPER)
                 {
-                    bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
-                    TileEntityUtil.markBlockForUpdate(world, pos);
+                    pipeline.setInteger("remainingPrintTime", remainingPrintTime);
+                    sync();
                     if(remainingPrintTime != 0 && state == PRINTING)
                     {
                         world.playSound(null, pos, DeviceSounds.PRINTER_PRINTING, SoundCategory.BLOCKS, 0.5F, 1.0F);
@@ -90,6 +82,12 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         {
             print(printQueue.poll());
         }
+    }
+
+    @Override
+    public String getDeviceName()
+    {
+        return "Printer";
     }
 
     @Override
@@ -157,28 +155,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+    public NBTTagCompound writeSyncTag()
     {
-        NBTTagCompound tag = pkt.getNbtCompound();
-        this.readFromNBT(tag);
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        if(!bufferTag.hasNoTags())
-        {
-            NBTTagCompound updateTag = super.writeToNBT(bufferTag);
-            bufferTag = new NBTTagCompound();
-            return updateTag;
-        }
-        return this.writeToNBT(new NBTTagCompound());
-    }
-
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
+        return new NBTTagCompound();
     }
 
     public void setState(State newState)
@@ -204,12 +183,10 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         }
         totalPrintTime = remainingPrintTime;
 
-        bufferTag.setInteger("state", state.ordinal());
-        bufferTag.setInteger("totalPrintTime", totalPrintTime);
-        bufferTag.setInteger("remainingPrintTime", remainingPrintTime);
-
-        TileEntityUtil.markBlockForUpdate(world, pos);
-        markDirty();
+        pipeline.setInteger("state", state.ordinal());
+        pipeline.setInteger("totalPrintTime", totalPrintTime);
+        pipeline.setInteger("remainingPrintTime", remainingPrintTime);
+        sync();
     }
 
     public void addToQueue(IPrint print)
@@ -225,11 +202,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
         currentPrint = print;
         paperCount--;
 
-        bufferTag.setInteger("paperCount", paperCount);
-        bufferTag.setTag("currentPrint", IPrint.writeToTag(currentPrint));
-
-        TileEntityUtil.markBlockForUpdate(world, pos);
-        markDirty();
+        pipeline.setInteger("paperCount", paperCount);
+        pipeline.setTag("currentPrint", IPrint.writeToTag(currentPrint));
+        sync();
     }
 
     public boolean isLoading()
@@ -267,10 +242,9 @@ public class TileEntityPrinter extends TileEntity implements ITickable
                 stack.setCount(Math.max(0, paperCount - 64));
                 paperCount = Math.min(64, paperCount);
             }
-            bufferTag.setInteger("paperCount", paperCount);
+            pipeline.setInteger("paperCount", paperCount);
+            sync();
             world.playSound(null, pos, SoundEvents.ENTITY_ITEMFRAME_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            TileEntityUtil.markBlockForUpdate(world, pos);
-            markDirty();
             return true;
         }
         return false;
