@@ -2,8 +2,6 @@ package com.mrcrayfish.device.core.network;
 
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
-import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -42,6 +40,20 @@ public class Router
             sendBeacon(world);
             timer = 0;
         }
+    }
+
+    public boolean addDevice(UUID id, String name)
+    {
+        if(NETWORK_DEVICES.size() >= DeviceConfig.getMaxDevices())
+        {
+            return NETWORK_DEVICES.containsKey(id);
+        }
+        if(!NETWORK_DEVICES.containsKey(id))
+        {
+            NETWORK_DEVICES.put(id, new NetworkDevice(id, name, this));
+        }
+        timer += DeviceConfig.getBeaconInterval();
+        return true;
     }
 
     public boolean addDevice(TileEntityDevice device)
