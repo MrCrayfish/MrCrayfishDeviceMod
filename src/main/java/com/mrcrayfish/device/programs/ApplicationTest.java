@@ -19,7 +19,7 @@ public class ApplicationTest extends Application
     public void init()
     {
         Button button = new Button(5, 5, "Print", Icons.PRINTER);
-        button.setClickListener((c, mouseButton) ->
+        button.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {

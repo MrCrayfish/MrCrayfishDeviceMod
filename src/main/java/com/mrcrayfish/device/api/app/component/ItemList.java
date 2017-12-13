@@ -1,18 +1,16 @@
 package com.mrcrayfish.device.api.app.component;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
@@ -20,11 +18,8 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 
 
 public class ItemList<E> extends Component implements Iterable<E>
@@ -37,6 +32,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	protected boolean showAll = true;
 	protected boolean resized = false;
 	protected boolean initialized = false;
+	protected boolean loading = false;
 
 	protected List<E> items = NonNullList.create();
 	protected ListItemRenderer<E> renderer = null;
@@ -44,10 +40,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 	
 	protected Button btnUp;
 	protected Button btnDown;
+	protected Layout layoutLoading;
 	
 	protected int textColour = Color.WHITE.getRGB();
 	protected int backgroundColour = Color.GRAY.getRGB();
 	protected int borderColour = Color.BLACK.getRGB();
+	private static final int LOADING_BACKGROUND = new Color(0F, 0F, 0F, 0.5F).getRGB();
 
 	private Comparator<E> sorter = null;
 
@@ -93,6 +91,15 @@ public class ItemList<E> extends Component implements Iterable<E>
 		btnDown.setEnabled(false);
 		btnDown.setVisible(false);
 		layout.addComponent(btnDown);
+
+		layoutLoading = new Layout(left, top, getWidth(), getHeight());
+		layoutLoading.setVisible(loading);
+		layoutLoading.addComponent(new Spinner((layoutLoading.width - 12) / 2, (layoutLoading.height - 12) / 2));
+		layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+			Gui.drawRect(x, y, x + width, y + height, LOADING_BACKGROUND);
+		});
+		layout.addComponent(layoutLoading);
 
 		updateButtons();
 		updateComponent();
@@ -169,7 +176,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
-		if(!this.visible || !this.enabled)
+		if(!this.visible || !this.enabled || this.loading)
 			return;
 
 		int height = renderer != null ? renderer.getHeight() : 13;
@@ -193,7 +200,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	@Override
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
-		if(!this.visible || !this.enabled)
+		if(!this.visible || !this.enabled || this.loading)
 			return;
 
 		int height = renderer != null ? renderer.getHeight() : 13;
@@ -442,6 +449,15 @@ public class ItemList<E> extends Component implements Iterable<E>
 		this.borderColour = color.getRGB();
 	}
 
+	public void setLoading(boolean loading)
+	{
+		this.loading = loading;
+		if(initialized)
+		{
+			layoutLoading.setVisible(loading);
+		}
+	}
+
 	/**
 	 * Sets the sorter for this item list and updates straight away
 	 * @param sorter the comparator to sort the list by
@@ -462,7 +478,6 @@ public class ItemList<E> extends Component implements Iterable<E>
 			Collections.sort(items, sorter);
 		}
 	}
-
 
 	@Override
 	public Iterator<E> iterator() 

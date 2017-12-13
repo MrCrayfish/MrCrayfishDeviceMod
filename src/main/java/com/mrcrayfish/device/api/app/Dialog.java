@@ -806,7 +806,7 @@ public abstract class Dialog extends Wrappable
 			buttonRefresh = new Button(131, 2, Icons.RELOAD);
 			buttonRefresh.setPadding(2);
 			buttonRefresh.setToolTip("Refresh", "Retrieve an updated list of printers");
-			buttonRefresh.setClickListener((c, mouseButton) ->
+			buttonRefresh.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(mouseButton == 0)
 				{
@@ -854,7 +854,7 @@ public abstract class Dialog extends Wrappable
 			buttonPrint = new Button(98, 108, "Print", Icons.CHECK);
 			buttonPrint.setPadding(5);
 			buttonPrint.setEnabled(false);
-			buttonPrint.setClickListener((c, mouseButton) ->
+			buttonPrint.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
@@ -877,7 +877,7 @@ public abstract class Dialog extends Wrappable
 
 			buttonCancel = new Button(74, 108, Icons.CROSS);
 			buttonCancel.setPadding(5);
-			buttonCancel.setClickListener((c, mouseButton) ->
+			buttonCancel.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
 				{
@@ -889,7 +889,7 @@ public abstract class Dialog extends Wrappable
 			buttonInfo = new Button(5, 108, Icons.HELP);
 			buttonInfo.setEnabled(false);
 			buttonInfo.setPadding(5);
-			buttonInfo.setClickListener((c, mouseButton) ->
+			buttonInfo.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(mouseButton == 0)
 				{
@@ -1004,7 +1004,7 @@ public abstract class Dialog extends Wrappable
 				layoutMain.addComponent(labelPosition);
 
 				buttonClose = new Button(5, 49, "Close");
-				buttonClose.setClickListener((c, mouseButton) ->
+				buttonClose.setClickListener((mouseX, mouseY, mouseButton) ->
 				{
                     if(mouseButton == 0)
 					{

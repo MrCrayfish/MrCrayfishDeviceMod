@@ -304,7 +304,7 @@ public class ApplicationPixelPainter extends Application
 		layoutDraw.addComponent(btnEyeDropper);
 
 		Button button = new Button(138, 81, Icons.PRINTER);
-		button.setClickListener((c, mouseButton) ->
+		button.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0)
 			{

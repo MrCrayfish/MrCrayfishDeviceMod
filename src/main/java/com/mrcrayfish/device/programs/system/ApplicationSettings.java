@@ -104,7 +104,7 @@ public class ApplicationSettings extends SystemApplication
 
 		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
 		buttonWallpaperLeft.setSize(25, 20);
-		buttonWallpaperLeft.setClickListener((c, mouseButton) ->
+		buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton != 0)
 				return;
@@ -119,7 +119,7 @@ public class ApplicationSettings extends SystemApplication
 
 		buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
 		buttonWallpaperRight.setSize(25, 20);
-		buttonWallpaperRight.setClickListener((c, mouseButton) ->
+		buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton != 0)
 				return;
@@ -134,7 +134,7 @@ public class ApplicationSettings extends SystemApplication
 
 		buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
 		buttonWallpaperUrl.setSize(55, 20);
-		buttonWallpaperUrl.setClickListener((c, mouseButton) ->
+		buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton != 0)
 				return;
