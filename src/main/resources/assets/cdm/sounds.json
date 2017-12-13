@@ -1,0 +1,8 @@
+{
+  "printing_ink": {
+    "sounds": [ {"name": "cdm:printing_ink"}]
+  },
+  "printing_paper": {
+    "sounds": [ {"name": "cdm:printing_paper"}]
+  }
+}

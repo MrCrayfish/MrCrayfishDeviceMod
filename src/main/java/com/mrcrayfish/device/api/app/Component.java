@@ -151,6 +151,7 @@ public abstract class Component extends Gui
 	 */
 	protected void handleMouseRelease(int mouseX, int mouseY, int mouseButton) {}
 
+	//TODO document this plz
 	protected void handleMouseScroll(int mouseX, int mouseY, boolean direction) {}
 	
 	/**

@@ -1,9 +1,9 @@
 package com.mrcrayfish.device.programs;
 
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Image;
@@ -13,6 +13,8 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
@@ -21,10 +23,14 @@ import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -297,6 +303,17 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEyeDropper);
 
+		Button button = new Button(138, 81, Icons.PRINTER);
+		button.setClickListener((c, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				Dialog.Print dialog = new Dialog.Print(new PicturePrint(canvas.picture.getName(), canvas.getPixels(), canvas.picture.getWidth()));
+				openDialog(dialog);
+			}
+        });
+		layoutDraw.addComponent(button);
+
 		btnCancel = new Button(138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
 		btnCancel.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
@@ -428,5 +445,138 @@ public class ApplicationPixelPainter extends Application
 	{
 		super.onClose();
 		listPictures.removeAll();
+	}
+
+	public static class PicturePrint implements IPrint
+	{
+		private String name;
+		private int[] pixels;
+		private int resolution;
+		private boolean cut;
+
+		public PicturePrint() {}
+
+		public PicturePrint(String name, int[] pixels, int resolution)
+		{
+			this.name = name;
+			this.pixels = pixels;
+			this.resolution = resolution;
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+
+		@Override
+		public int speed()
+		{
+			return resolution;
+		}
+
+		@Override
+		public boolean requiresColor()
+		{
+			for(int pixel : pixels)
+			{
+				int r = (pixel >> 16 & 255);
+				int g = (pixel >> 8 & 255);
+				int b = (pixel & 255);
+				if(r != g || r != b)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public NBTTagCompound toTag()
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("name", name);
+			tag.setIntArray("pixels", pixels);
+			tag.setInteger("resolution", resolution);
+			if(cut) tag.setBoolean("cut", cut);
+			return tag;
+		}
+
+		@Override
+		public void fromTag(NBTTagCompound tag)
+		{
+			name = tag.getString("name");
+			pixels = tag.getIntArray("pixels");
+			resolution = tag.getInteger("resolution");
+			cut = tag.getBoolean("cut");
+		}
+
+		@Override
+		public Class<? extends IPrint.Renderer> getRenderer()
+		{
+			return PictureRenderer.class;
+		}
+	}
+
+	public static class PictureRenderer implements IPrint.Renderer
+	{
+		public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/model/paper.png");
+
+		@Override
+		public boolean render(NBTTagCompound data)
+		{
+			if(data.hasKey("pixels", Constants.NBT.TAG_INT_ARRAY) && data.hasKey("resolution", Constants.NBT.TAG_INT))
+			{
+				int[] pixels = data.getIntArray("pixels");
+				int resolution = data.getInteger("resolution");
+				boolean cut = data.getBoolean("cut");
+
+				if(pixels.length != resolution * resolution)
+					return false;
+
+				GlStateManager.enableBlend();
+				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+				GlStateManager.disableLighting();
+				GlStateManager.rotate(180, 0, 1, 0);
+
+				// This is for the paper background
+				if (!cut) {
+					Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+					RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
+				}
+
+				// This creates an flipped copy of the pixel array
+				// as it otherwise would be mirrored
+				int[] pixels2 = new int[pixels.length];
+				for (int i = 0; i < resolution; i++) {
+					for (int j = 0; j < resolution; j++) {
+						pixels2[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j*resolution];
+					}
+				}
+
+				// Creating a DynamicTexture to represent the picture
+				DynamicTexture texture = new DynamicTexture(resolution, resolution);
+				// This is actually more efficient than providing an BufferedImage
+				// as BIs can lead to a memory leak or similar
+				try {
+					Field textureDataField = texture.getClass().getDeclaredField("dynamicTextureData");
+					textureDataField.setAccessible(true);
+					textureDataField.set(texture, pixels2);
+					texture.updateDynamicTexture();
+				} catch (NoSuchFieldException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				// Rendering the texture
+				GlStateManager.bindTexture(texture.getGlTextureId());
+				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
+				GlStateManager.deleteTexture(texture.getGlTextureId());
+
+				GlStateManager.disableRescaleNormal();
+				GlStateManager.disableBlend();
+				GlStateManager.enableLighting();
+				return true;
+			}
+			return false;
+		}
 	}
 }

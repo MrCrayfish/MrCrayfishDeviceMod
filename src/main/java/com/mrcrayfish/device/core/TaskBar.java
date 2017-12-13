@@ -24,7 +24,7 @@ public class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 
-	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
+	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 20;
 	public static final int BAR_HEIGHT = 18;
 	
 	private Button btnLeft;
@@ -122,10 +122,6 @@ public class TaskBar
 		mc.fontRenderer.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
 		
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		
-		/* Settings App */
-		gui.drawTexturedModalRect(x + 316, y + 2, 14, 30, 14, 14);
-		gui.drawTexturedModalRect(x + 300, y + 2, 28, 30, 14, 14);
 
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
