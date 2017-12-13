@@ -73,6 +73,10 @@ public class TileEntityPaper extends TileEntitySync
     public NBTTagCompound writeSyncTag()
     {
         NBTTagCompound tag = new NBTTagCompound();
+        if(print != null)
+        {
+            tag.setTag("print", IPrint.writeToTag(print));
+        }
         tag.setByte("rotation", rotation);
         return tag;
     }
