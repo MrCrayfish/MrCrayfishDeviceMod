@@ -158,6 +158,7 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     public NBTTagCompound writeSyncTag()
     {
         NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("name", name);
         tag.setInteger("paperCount", paperCount);
         return tag;
     }
