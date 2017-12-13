@@ -87,7 +87,7 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     @Override
     public String getDeviceName()
     {
-        return "Printer";
+        return name;
     }
 
     @Override
@@ -157,7 +157,9 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     @Override
     public NBTTagCompound writeSyncTag()
     {
-        return new NBTTagCompound();
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setInteger("paperCount", paperCount);
+        return tag;
     }
 
     public void setState(State newState)

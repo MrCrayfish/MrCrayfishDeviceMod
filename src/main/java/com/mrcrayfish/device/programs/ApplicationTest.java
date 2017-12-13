@@ -6,8 +6,15 @@ import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.network.task.TaskGetDevices;
+import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -29,6 +36,24 @@ public class ApplicationTest extends Application
             }
         });
         super.addComponent(button);
+
+        Button getDevices = new Button(50, 5, "Get Devices", Icons.NETWORK_DRIVE);
+        button.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
+                Task task = new TaskGetDevices(Laptop.getPos(), TileEntityPrinter.class);
+                task.setCallback((tagCompound, success) ->
+                {
+                    if(success)
+                    {
+                        System.out.println(tagCompound);
+                    }
+                });
+                TaskManager.sendTask(task);
+            }
+        });
+        super.addComponent(getDevices);
     }
 
     @Override

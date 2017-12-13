@@ -69,9 +69,14 @@ public class Router
         return true;
     }
 
-    public boolean hasDevice(TileEntityDevice device)
+    public boolean isDeviceRegistered(TileEntityDevice device)
     {
         return NETWORK_DEVICES.containsKey(device.getId());
+    }
+
+    public boolean isDeviceConnected(TileEntityDevice device)
+    {
+        return isDeviceRegistered(device) && NETWORK_DEVICES.get(device.getId()).getPos() != null;
     }
 
     public void removeDevice(TileEntityDevice device)
@@ -135,7 +140,7 @@ public class Router
                             continue;
                         if(tileEntityDevice.receiveBeacon(this))
                         {
-                            NETWORK_DEVICES.get(tileEntityDevice.getId()).setPos(currentPos);
+                            NETWORK_DEVICES.get(tileEntityDevice.getId()).update(tileEntityDevice);
                         }
                         else
                         {

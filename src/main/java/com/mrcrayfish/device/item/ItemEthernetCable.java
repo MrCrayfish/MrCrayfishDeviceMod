@@ -5,7 +5,6 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -70,7 +69,7 @@ public class ItemEthernetCable extends Item
                 if(tileEntity1 instanceof TileEntityDevice)
                 {
                     TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
-                    if(!router.hasDevice(tileEntityDevice))
+                    if(!router.isDeviceRegistered(tileEntityDevice))
                     {
                         if(router.addDevice(tileEntityDevice))
                         {
