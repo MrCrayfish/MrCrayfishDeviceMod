@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
@@ -9,7 +10,6 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -19,28 +19,22 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
-import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.object.ColourScheme;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
 import java.util.function.Predicate;
 
 public abstract class Dialog extends Wrappable
@@ -915,6 +909,8 @@ public abstract class Dialog extends Wrappable
 
 		private void getPrinters(ItemList<NetworkDevice> itemList)
 		{
+			itemList.removeAll();
+			itemList.setLoading(true);
 			Task task = new TaskGetDevices(Laptop.getPos(), TileEntityPrinter.class);
 			task.setCallback((tagCompound, success) ->
 			{
@@ -925,6 +921,7 @@ public abstract class Dialog extends Wrappable
 					{
 						itemList.addItem(NetworkDevice.fromTag(tagList.getCompoundTagAt(i)));
 					}
+					itemList.setLoading(false);
 				}
 			});
 			TaskManager.sendTask(task);
