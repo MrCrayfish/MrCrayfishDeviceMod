@@ -4,6 +4,9 @@ import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.io.task.*;
+import com.mrcrayfish.device.core.network.task.TaskConnect;
+import com.mrcrayfish.device.core.network.task.TaskGetDevices;
+import com.mrcrayfish.device.core.network.task.TaskPing;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
@@ -108,6 +111,9 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
 		TaskManager.registerTask(TaskPrint.class);
 		TaskManager.registerTask(TaskUpdateSystemData.class);
+		TaskManager.registerTask(TaskConnect.class);
+		TaskManager.registerTask(TaskPing.class);
+		TaskManager.registerTask(TaskGetDevices.class);
 
 		//Bank
 		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);
