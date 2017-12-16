@@ -11,13 +11,10 @@ import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.*;
+import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.init.RegistrationHandler;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
-import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
-import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
-import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
-import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
 import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
@@ -116,8 +113,8 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskGetDevices.class);
 
 		//Bank
-		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);
-		TaskManager.registerTask(ApplicationBank.TaskWithdraw.class);
+		TaskManager.registerTask(TaskDeposit.class);
+		TaskManager.registerTask(TaskWithdraw.class);
 		TaskManager.registerTask(TaskGetBalance.class);
 		TaskManager.registerTask(TaskPay.class);
 		TaskManager.registerTask(TaskAdd.class);
