@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.proxy;
 
+import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
@@ -8,18 +9,18 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import com.mrcrayfish.device.tileentity.TileEntityPaper;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
 import com.mrcrayfish.device.tileentity.render.PaperRenderer;
 import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
+import com.mrcrayfish.device.tileentity.render.RouterRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -39,17 +40,12 @@ import java.util.Map;
 public class ClientProxy extends CommonProxy
 {
     @Override
-    public void preInit()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @Override
     public void init()
     {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRouter.class, new RouterRenderer());
 
         if(MrCrayfishDeviceMod.DEVELOPER_MODE)
         {
@@ -208,5 +204,6 @@ public class ClientProxy extends CommonProxy
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         allowedApps = null;
+        DeviceConfig.restore();
     }
 }

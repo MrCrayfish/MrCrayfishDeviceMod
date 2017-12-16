@@ -144,6 +144,8 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void updateScreen()
 	{
+		bar.onTick();
+
 		for(Window window : windows)
 		{
 			if(window != null)
@@ -648,6 +650,7 @@ public class Laptop extends GuiScreen implements System
 	{
 		layout.updateComponents(x, y);
 		context = layout;
+		layout.init();
 	}
 
 	@Override

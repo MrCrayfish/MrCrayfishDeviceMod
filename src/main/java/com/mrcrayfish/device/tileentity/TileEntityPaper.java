@@ -69,6 +69,18 @@ public class TileEntityPaper extends TileEntitySync
         return compound;
     }
 
+    @Override
+    public NBTTagCompound writeSyncTag()
+    {
+        NBTTagCompound tag = new NBTTagCompound();
+        if(print != null)
+        {
+            tag.setTag("print", IPrint.writeToTag(print));
+        }
+        tag.setByte("rotation", rotation);
+        return tag;
+    }
+
     private void playSound(SoundEvent sound)
     {
         world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);

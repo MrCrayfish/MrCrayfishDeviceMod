@@ -265,7 +265,7 @@ I	 * @param top how many pixels from the top
 		{
 			if(clickListener != null)
 			{
-				clickListener.onClick(this, mouseButton);
+				clickListener.onClick(mouseX, mouseY, mouseButton);
 			}
 			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 		}

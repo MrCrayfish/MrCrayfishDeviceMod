@@ -77,13 +77,13 @@ public class ApplicationNoteStash extends Application
 		
 		btnNew = new Button(124, 5, "New");
 		btnNew.setSize(50, 20);
-		btnNew.setClickListener((c, mouseButton) -> setCurrentLayout(layoutAddNote));
+		btnNew.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutAddNote));
 		layoutMain.addComponent(btnNew);
 		
 		btnView = new Button(124, 30, "View");
 		btnView.setSize(50, 20);
 		btnView.setEnabled(false);
-		btnView.setClickListener((c, mouseButton) ->
+		btnView.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(notes.getSelectedIndex() != -1)
             {
@@ -98,7 +98,7 @@ public class ApplicationNoteStash extends Application
 		btnDelete = new Button(124, 55, "Delete");
 		btnDelete.setSize(50, 20);
 		btnDelete.setEnabled(false);
-		btnDelete.setClickListener((c, mouseButton) ->
+		btnDelete.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(notes.getSelectedIndex() != -1)
             {
@@ -146,7 +146,7 @@ public class ApplicationNoteStash extends Application
 		
 		btnSave = new Button(124, 5, "Save");
 		btnSave.setSize(50, 20);
-		btnSave.setClickListener((c, mouseButton) ->
+		btnSave.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             NBTTagCompound data = new NBTTagCompound();
             data.setString("title", title.getText());
@@ -167,7 +167,7 @@ public class ApplicationNoteStash extends Application
 		
 		btnCancel = new Button(124, 30, "Cancel");
 		btnCancel.setSize(50, 20);
-		btnCancel.setClickListener((c, mouseButton) ->
+		btnCancel.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             title.clear();
             textArea.clear();
@@ -188,7 +188,7 @@ public class ApplicationNoteStash extends Application
 		
 		btnBack = new Button(124, 5, "Back");
 		btnBack.setSize(50, 20);
-		btnBack.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMain));
+		btnBack.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutMain));
 		layoutViewNote.addComponent(btnBack);
 		
 		setCurrentLayout(layoutMain);

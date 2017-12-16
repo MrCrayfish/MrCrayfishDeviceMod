@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
@@ -22,17 +23,19 @@ import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -103,26 +106,12 @@ public class ApplicationPixelPainter extends Application
 
 		btnNewPicture = new Button(5, 50, "New");
 		btnNewPicture.setSize(90, 20);
-		btnNewPicture.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutNewPicture);
-			}
-		});
+		btnNewPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutNewPicture));
 		layoutMainMenu.addComponent(btnNewPicture);
 
 		btnLoadPicture = new Button(5, 75, "Load");
 		btnLoadPicture.setSize(90, 20);
-		btnLoadPicture.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutLoadPicture);
-			}
-		});
+		btnLoadPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutLoadPicture));
 		layoutMainMenu.addComponent(btnLoadPicture);
 
 		
@@ -158,15 +147,11 @@ public class ApplicationPixelPainter extends Application
 
 		btnCreatePicture = new Button(110, 40, "Create");
 		btnCreatePicture.setSize(65, 20);
-		btnCreatePicture.setClickListener(new ClickListener()
+		btnCreatePicture.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutDraw);
-				canvas.createPicture(fieldName.getText(), fieldAuthor.getText(), checkBox16x.isSelected() ? Size.X16 : Size.X32);
-			}
-		});
+            setCurrentLayout(layoutDraw);
+            canvas.createPicture(fieldName.getText(), fieldAuthor.getText(), checkBox16x.isSelected() ? Size.X16 : Size.X32);
+        });
 		layoutNewPicture.addComponent(btnCreatePicture);
 
 		
@@ -213,7 +198,7 @@ public class ApplicationPixelPainter extends Application
 		btnLoadSavedPicture = new Button(110, 5, "Load");
 		btnLoadSavedPicture.setSize(50, 20);
 		btnLoadSavedPicture.setEnabled(false);
-		btnLoadSavedPicture.setClickListener((c, mouseButton) ->
+		btnLoadSavedPicture.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if (listPictures.getSelectedIndex() != -1)
             {
@@ -225,7 +210,7 @@ public class ApplicationPixelPainter extends Application
 
 		btnBrowseSavedPicture = new Button(110, 30, "Browse");
 		btnBrowseSavedPicture.setSize(50, 20);
-		btnBrowseSavedPicture.setClickListener((c, mouseButton) ->
+		btnBrowseSavedPicture.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			Dialog.OpenFile dialog = new Dialog.OpenFile(this);
 			dialog.setResponseHandler((success, file) ->
@@ -251,7 +236,7 @@ public class ApplicationPixelPainter extends Application
 		btnDeleteSavedPicture = new Button(110, 55, "Delete");
 		btnDeleteSavedPicture.setSize(50, 20);
 		btnDeleteSavedPicture.setEnabled(false);
-		btnDeleteSavedPicture.setClickListener((c, mouseButton) ->
+		btnDeleteSavedPicture.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(listPictures.getSelectedIndex() != -1)
 			{
@@ -283,7 +268,7 @@ public class ApplicationPixelPainter extends Application
 
 		btnBackSavedPicture = new Button(110, 80, "Back");
 		btnBackSavedPicture.setSize(50, 20);
-		btnBackSavedPicture.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMainMenu));
+		btnBackSavedPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutMainMenu));
 		layoutLoadPicture.addComponent(btnBackSavedPicture);
 
 		
@@ -297,59 +282,34 @@ public class ApplicationPixelPainter extends Application
 		RadioGroup toolGroup = new RadioGroup();
 
 		btnPencil = new ButtonToggle(138, 5, PIXEL_PAINTER_ICONS, 0, 0, 10, 10);
-		btnPencil.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				canvas.setCurrentTool(Canvas.PENCIL);
-			}
-		});
+		btnPencil.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setCurrentTool(Canvas.PENCIL));
 		btnPencil.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnPencil);
 
 		btnBucket = new ButtonToggle(138, 24, PIXEL_PAINTER_ICONS, 10, 0, 10, 10);
-		btnBucket.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				canvas.setCurrentTool(Canvas.BUCKET);
-			}
-		});
+		btnBucket.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setCurrentTool(Canvas.BUCKET));
 		btnBucket.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnBucket);
 
 		btnEraser = new ButtonToggle(138, 43, PIXEL_PAINTER_ICONS, 20, 0, 10, 10);
-		btnEraser.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				canvas.setCurrentTool(Canvas.ERASER);
-			}
-		});
+		btnEraser.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setCurrentTool(Canvas.ERASER));
 		btnEraser.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEraser);
 
 		btnEyeDropper = new ButtonToggle(138, 62, PIXEL_PAINTER_ICONS, 30, 0, 10, 10);
-		btnEyeDropper.setClickListener(new ClickListener()
+		btnEyeDropper.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				canvas.setCurrentTool(Canvas.EYE_DROPPER);
-				Color color = new Color(canvas.getCurrentColour());
-				redSlider.setPercentage(color.getRed() / 255F);
-				greenSlider.setPercentage(color.getGreen() / 255F);
-				blueSlider.setPercentage(color.getBlue() / 255F);
-			}
-		});
+            canvas.setCurrentTool(Canvas.EYE_DROPPER);
+            Color color = new Color(canvas.getCurrentColour());
+            redSlider.setPercentage(color.getRed() / 255F);
+            greenSlider.setPercentage(color.getGreen() / 255F);
+            blueSlider.setPercentage(color.getBlue() / 255F);
+        });
 		btnEyeDropper.setRadioGroup(toolGroup);
 		layoutDraw.addComponent(btnEyeDropper);
 
 		Button button = new Button(138, 81, Icons.PRINTER);
-		button.setClickListener((c, mouseButton) ->
+		button.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0)
 			{
@@ -360,69 +320,61 @@ public class ApplicationPixelPainter extends Application
 		layoutDraw.addComponent(button);
 
 		btnCancel = new Button(138, 100, PIXEL_PAINTER_ICONS, 50, 0, 10, 10);
-		btnCancel.setClickListener(new ClickListener()
+		btnCancel.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if (canvas.isExistingImage())
-					setCurrentLayout(layoutLoadPicture);
-				else
-					setCurrentLayout(layoutMainMenu);
-				canvas.clear();
-			}
-		});
+            if (canvas.isExistingImage())
+                setCurrentLayout(layoutLoadPicture);
+            else
+                setCurrentLayout(layoutMainMenu);
+            canvas.clear();
+        });
 		layoutDraw.addComponent(btnCancel);
 
 		btnSave = new Button(138, 119, PIXEL_PAINTER_ICONS, 40, 0, 10, 10);
-		btnSave.setClickListener(new ClickListener()
+		btnSave.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
+			canvas.picture.pixels = canvas.copyPixels();
+
+			NBTTagCompound pictureTag = new NBTTagCompound();
+			canvas.picture.writeToNBT(pictureTag);
+
+			if(canvas.isExistingImage())
 			{
-				canvas.picture.pixels = canvas.copyPixels();
-
-				NBTTagCompound pictureTag = new NBTTagCompound();
-				canvas.picture.writeToNBT(pictureTag);
-
-				if(canvas.isExistingImage())
+				File file = canvas.picture.getSource();
+				if(file != null)
 				{
-					File file = canvas.picture.getSource();
-					if(file != null)
+					file.setData(pictureTag, (response, success) ->
 					{
-						file.setData(pictureTag, (response, success) ->
-						{
-                            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-							{
-								canvas.clear();
-								setCurrentLayout(layoutLoadPicture);
-							}
-							else
-							{
-								//TODO error dialog
-							}
-                        });
-					}
-				}
-				else
-				{
-					Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationPixelPainter.this, pictureTag);
-					dialog.setResponseHandler((success, file) ->
-					{
-						if(success)
+						if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
 						{
 							canvas.clear();
 							setCurrentLayout(layoutLoadPicture);
-							return true;
 						}
 						else
 						{
 							//TODO error dialog
 						}
-						return false;
 					});
-					openDialog(dialog);
 				}
+			}
+			else
+			{
+				Dialog.SaveFile dialog = new Dialog.SaveFile(ApplicationPixelPainter.this, pictureTag);
+				dialog.setResponseHandler((success, file) ->
+				{
+					if(success)
+					{
+						canvas.clear();
+						setCurrentLayout(layoutLoadPicture);
+						return true;
+					}
+					else
+					{
+						//TODO error dialog
+					}
+					return false;
+				});
+				openDialog(dialog);
 			}
 		});
 		layoutDraw.addComponent(btnSave);
@@ -475,14 +427,7 @@ public class ApplicationPixelPainter extends Application
 		layoutDraw.addComponent(colourGrid);
 
 		displayGrid = new CheckBox("Grid", 166, 120);
-		displayGrid.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				canvas.setShowGrid(displayGrid.isSelected());
-			}
-		});
+		displayGrid.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setShowGrid(displayGrid.isSelected()));
 		layoutDraw.addComponent(displayGrid);
 
 		setCurrentLayout(layoutMainMenu);
@@ -519,8 +464,19 @@ public class ApplicationPixelPainter extends Application
 		public PicturePrint(String name, int[] pixels, int resolution)
 		{
 			this.name = name;
-			this.pixels = pixels;
+			this.setPicture(pixels);
+		}
+
+		private void setPicture(int[] pixels)
+		{
+			int resolution = (int) Math.sqrt(pixels.length);
+			Size size = Size.getFromSize(resolution);
+			if(size == null)
+			{
+				throw new IllegalArgumentException("Invalid pixels");
+			}
 			this.resolution = resolution;
+			this.pixels = pixels;
 		}
 
 		@Override
@@ -566,9 +522,8 @@ public class ApplicationPixelPainter extends Application
 		public void fromTag(NBTTagCompound tag)
 		{
 			name = tag.getString("name");
-			pixels = tag.getIntArray("pixels");
-			resolution = tag.getInteger("resolution");
 			cut = tag.getBoolean("cut");
+			setPicture(tag.getIntArray("pixels"));
 		}
 
 		@Override
@@ -594,54 +549,40 @@ public class ApplicationPixelPainter extends Application
 				if(pixels.length != resolution * resolution)
 					return false;
 
-				GlStateManager.translate(0, 1.0 - (1.0 / resolution), 0);
-
 				GlStateManager.enableBlend();
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 				GlStateManager.disableLighting();
-				Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+				GlStateManager.rotate(180, 0, 1, 0);
 
-				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-				GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder buffer = tessellator.getBuffer();
-				double scale = 1 / (double) resolution;
-
-				GlStateManager.enableRescaleNormal();
-				GL11.glNormal3f(0.0f, 0.0F, 1.0f);
-				for(int i = 0; i < resolution; i++)
+				// This is for the paper background
+				if (!cut)
 				{
-					double pixelY = i / (double) resolution;
-					for(int j = 0; j < resolution; j++)
-					{
-						float a = (float) Math.floor((pixels[j + i * resolution] >> 24 & 255) / 255.0F);
-						if(a < 1.0F)
-						{
-							if(cut) continue;
-							GlStateManager.color(1.0F, 1.0F, 1.0F);
-						}
-						else
-						{
-							float r = (float) (pixels[j + i * resolution] >> 16 & 255) / 255.0F;
-							float g = (float) (pixels[j + i * resolution] >> 8 & 255) / 255.0F;
-							float b = (float) (pixels[j + i * resolution] & 255) / 255.0F;
-							GlStateManager.color(r, g, b, a);
-						}
+					Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+					RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
+				}
 
-						double pixelX = j / (double) resolution;
-						buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-						buffer.pos(pixelX, -pixelY, 0).tex(pixelX, pixelY).endVertex();
-						buffer.pos(pixelX + scale, -pixelY, 0).tex(pixelX + scale, pixelY).endVertex();
-						buffer.pos(pixelX + scale, -pixelY + scale, 0).tex(pixelX + scale, pixelY + scale).endVertex();
-						buffer.pos(pixelX, -pixelY + scale, 0).tex(pixelX, pixelY + scale).endVertex();
-						tessellator.draw();
+				// This creates an flipped copy of the pixel array
+				// as it otherwise would be mirrored
+				int[] flippedPixels = new int[pixels.length];
+				for (int i = 0; i < resolution; i++)
+				{
+					for (int j = 0; j < resolution; j++)
+					{
+						flippedPixels[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j * resolution];
 					}
 				}
+
+				int textureId = TextureUtil.glGenTextures();
+				TextureUtil.allocateTexture(textureId, resolution, resolution);
+				TextureUtil.uploadTexture(textureId, flippedPixels, resolution, resolution);
+
+				GlStateManager.bindTexture(textureId);
+				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution, resolution, resolution, resolution);
+				GlStateManager.deleteTexture(textureId);
+
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.disableBlend();
 				GlStateManager.enableLighting();
-
 				return true;
 			}
 			return false;
