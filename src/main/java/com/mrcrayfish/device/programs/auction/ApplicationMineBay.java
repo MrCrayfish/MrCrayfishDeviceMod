@@ -103,12 +103,12 @@ public class ApplicationMineBay extends Application
 		
 		Button btnAddItem = new Button(70, 5, "Add Item");
 		btnAddItem.setSize(60, 15);
-		btnAddItem.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutSelectItem));
+		btnAddItem.setClickListener((c, mouseButton) -> setCurrentLayout(layoutSelectItem));
 		super.addComponent(btnAddItem);
 
 		Button btnViewItem = new Button(135, 5, "Your Auctions");
 		btnViewItem.setSize(80, 15);
-		btnViewItem.setClickListener((mouseX, mouseY, mouseButton) -> {
+		btnViewItem.setClickListener((c, mouseButton) -> {
 			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
 			task.setCallback((nbt, success) -> {
                 items.removeAll();
@@ -178,32 +178,36 @@ public class ApplicationMineBay extends Application
 		
 		Button btnBuy = new Button(100, 127, "Buy");
 		btnBuy.setSize(50, 15);
-		btnBuy.setClickListener((mouseX, mouseY, mouseButton) ->
+		btnBuy.setClickListener(new ClickListener()
 		{
-            final Dialog.Confirmation dialog = new Dialog.Confirmation();
-            dialog.setPositiveText("Buy");
-            dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) -> {
-                final int index = items.getSelectedIndex();
-                if(index == -1) return;
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				final Dialog.Confirmation dialog = new Dialog.Confirmation();
+				dialog.setPositiveText("Buy");
+				dialog.setPositiveListener((c13, mouseButton13) -> {
+                    final int index = items.getSelectedIndex();
+                    if(index == -1) return;
 
-                AuctionItem item = items.getItem(index);
-                if(item != null)
-                {
-                    TaskBuyItem task = new TaskBuyItem(item.getId());
-                    task.setCallback((nbt, success) ->
+                    AuctionItem item = items.getItem(index);
+                    if(item != null)
                     {
-                        if(success)
-                        {
-                            items.removeItem(index);
-                        }
-                    });
-                    TaskManager.sendTask(task);
-                }
-            });
-            dialog.setNegativeText("Cancel");
-            dialog.setNegativeListener((mouseX1, mouseY1, mouseButton1) -> dialog.close());
-            ApplicationMineBay.this.openDialog(dialog);
-        });
+                        TaskBuyItem task = new TaskBuyItem(item.getId());
+                        task.setCallback((nbt, success) ->
+						{
+                            if(success)
+                            {
+                                items.removeItem(index);
+                            }
+                        });
+                        TaskManager.sendTask(task);
+                    }
+                });
+				dialog.setNegativeText("Cancel");
+				dialog.setNegativeListener((c12, mouseButton12) -> dialog.close());
+				ApplicationMineBay.this.openDialog(dialog);
+			}
+		});
 		super.addComponent(btnBuy);
 		
 		/* Select Item Layout */
@@ -222,39 +226,54 @@ public class ApplicationMineBay extends Application
 		});
 		
 		inventory = new Inventory(5, 28);
-		inventory.setClickListener((mouseX, mouseY, mouseButton) ->
+		inventory.setClickListener(new ClickListener()
 		{
-            if(inventory.getSelectedSlotIndex() != -1)
-            {
-                ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-                if(!stack.isEmpty())
-                {
-                    buttonAddNext.setEnabled(true);
-                    selectorAmount.setMax(stack.getCount());
-                    selectorAmount.setNumber(stack.getCount());
-                }
-                else
-                {
-                    buttonAddNext.setEnabled(false);
-                }
-            }
-        });
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				if(inventory.getSelectedSlotIndex() != -1)
+				{
+					ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+					if(!stack.isEmpty())
+					{
+						buttonAddNext.setEnabled(true);
+						selectorAmount.setMax(stack.getCount());
+						selectorAmount.setNumber(stack.getCount());
+					}
+					else
+					{
+						buttonAddNext.setEnabled(false);
+					}
+				}
+			}
+		});
 		layoutSelectItem.addComponent(inventory);
 
 		buttonAddCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
 		buttonAddCancel.setToolTip("Cancel", "Go back to main page");
-		buttonAddCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
+		buttonAddCancel.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				restoreDefaultLayout();
+			}
+		});
 		layoutSelectItem.addComponent(buttonAddCancel);
 		
 		buttonAddNext = new Button(154, 4, MINEBAY_ASSESTS, 16, 12, 8, 8);
 		buttonAddNext.setToolTip("Next Page", "Set price and amount");
 		buttonAddNext.setEnabled(false);
-		buttonAddNext.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonAddNext.setClickListener(new ClickListener()
 		{
-            selectorAmount.updateButtons();
-            selectorPrice.updateButtons();
-            setCurrentLayout(layoutAmountAndPrice);
-        });
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				selectorAmount.updateButtons();
+				selectorPrice.updateButtons();
+				setCurrentLayout(layoutAmountAndPrice);
+			}
+		});
 		layoutSelectItem.addComponent(buttonAddNext);
 		
 		
@@ -306,15 +325,36 @@ public class ApplicationMineBay extends Application
 		});
 		
 		buttonAmountAndPriceBack = new Button(122, 4, MINEBAY_ASSESTS, 8, 12, 8, 8);
-		buttonAmountAndPriceBack.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutSelectItem));
+		buttonAmountAndPriceBack.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				setCurrentLayout(layoutSelectItem);
+			}
+		});
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceBack);		
 		
 		buttonAmountAndPriceCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
-		buttonAmountAndPriceCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
+		buttonAmountAndPriceCancel.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				restoreDefaultLayout();
+			}
+		});
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceCancel);
 		
 		buttonAmountAndPriceNext = new Button(154, 4, MINEBAY_ASSESTS, 16, 12, 8, 8);
-		buttonAmountAndPriceNext.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutDuration));
+		buttonAmountAndPriceNext.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				setCurrentLayout(layoutDuration);
+			}
+		});
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceNext);	
 		
 		labelAmount = new Label("Amount", 16, 30);
@@ -350,7 +390,7 @@ public class ApplicationMineBay extends Application
 		buttonDurationBack.setClickListener(new ClickListener()
 		{
 			@Override
-			public void onClick(int mouseX, int mouseY, int mouseButton)
+			public void onClick(Component c, int mouseButton)
 			{
 				setCurrentLayout(layoutAmountAndPrice);
 			}
@@ -358,33 +398,44 @@ public class ApplicationMineBay extends Application
 		layoutDuration.addComponent(buttonDurationBack);		
 		
 		buttonDurationCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
-		buttonDurationCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
+		buttonDurationCancel.setClickListener(new ClickListener()
+		{
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				restoreDefaultLayout();
+			}
+		});
 		layoutDuration.addComponent(buttonDurationCancel);
 		
 		buttonDurationAdd = new Button(154, 4, MINEBAY_ASSESTS, 24, 12, 8, 8);
-		buttonDurationAdd.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonDurationAdd.setClickListener(new ClickListener()
 		{
-            final Dialog.Confirmation dialog = new Dialog.Confirmation();
-            dialog.setMessageText("Are you sure you want to auction this item?");
-            dialog.setPositiveText("Yes");
-            dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
-            {
-int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
-TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
-task.setCallback((nbt, success) ->
-                {
-if(success)
-{
-List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
-items.addItem(auctionItems.get(auctionItems.size() - 1));
-}
-});
-TaskManager.sendTask(task);
-dialog.close();
-restoreDefaultLayout();
-});
-            openDialog(dialog);
-        });
+			@Override
+			public void onClick(Component c, int mouseButton)
+			{
+				final Dialog.Confirmation dialog = new Dialog.Confirmation();
+				dialog.setMessageText("Are you sure you want to auction this item?");
+				dialog.setPositiveText("Yes");
+				dialog.setPositiveListener((c1, mouseButton1) ->
+				{
+                    int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
+                    TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
+                    task.setCallback((nbt, success) ->
+					{
+                        if(success)
+                        {
+                            List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
+                            items.addItem(auctionItems.get(auctionItems.size() - 1));
+                        }
+                    });
+                    TaskManager.sendTask(task);
+                    dialog.close();
+                    restoreDefaultLayout();
+                });
+				openDialog(dialog);
+			}
+		});
 		layoutDuration.addComponent(buttonDurationAdd);
 		
 		labelHours = new Label("Hrs", 45, 30);

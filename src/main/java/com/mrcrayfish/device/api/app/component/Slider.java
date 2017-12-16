@@ -64,7 +64,7 @@ public class Slider extends Component
 			this.clickX = mouseX;
 			if(clickListener != null)
 			{
-				clickListener.onClick(mouseX, mouseY, mouseButton);
+				clickListener.onClick(this, mouseButton);
 			}
 		}
 	}

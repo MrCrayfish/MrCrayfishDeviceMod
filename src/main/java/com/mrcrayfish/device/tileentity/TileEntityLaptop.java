@@ -1,23 +1,29 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.util.TileEntityUtil;
+
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityDevice implements ITickable
-{
-	private String name = "Laptop";
-	private boolean open = false;
+import javax.annotation.Nullable;
 
+public class TileEntityLaptop extends TileEntity implements ITickable
+{
+	public boolean open = false;
+	
 	private NBTTagCompound applicationData;
 	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
@@ -31,16 +37,16 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	@SideOnly(Side.CLIENT)
 	private boolean hasExternalDrive;
 
-	@Override
-	public String getDeviceName()
+	public void openClose()
 	{
-		return name;
+		open = !open;
+		markDirty();
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
-
+	
 	@Override
 	public void update() 
 	{
-		super.update();
 		if(world.isRemote)
 		{
 			prevRotation = rotation;
@@ -65,26 +71,23 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	public void readFromNBT(NBTTagCompound compound) 
 	{
 		super.readFromNBT(compound);
-		if(compound.hasKey("open"))
-		{
-			this.open = compound.getBoolean("open");
-		}
-		if(compound.hasKey("device_name", Constants.NBT.TAG_STRING))
-		{
-			this.name = compound.getString("device_name");
-		}
+		this.open = compound.getBoolean("open");
+
 		if(compound.hasKey("system_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.systemData = compound.getCompoundTag("system_data");
 		}
+
 		if(compound.hasKey("application_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.applicationData = compound.getCompoundTag("application_data");
 		}
+
 		if(compound.hasKey("file_system"))
 		{
 			this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
 		}
+
 		if(compound.hasKey("has_external_drive"))
 		{
 			this.hasExternalDrive = compound.getBoolean("has_external_drive");
@@ -96,7 +99,6 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
-		compound.setString("device_name", name);
 
 		if(systemData != null)
 		{
@@ -116,13 +118,35 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	}
 
 	@Override
-	public NBTTagCompound writeSyncTag()
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setBoolean("open", open);
-		tag.setString("device_name", name);
+		this.readFromNBT(pkt.getNbtCompound());
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		NBTTagCompound tag = super.getUpdateTag();
+		tag.setBoolean("open", this.open);
+
+		if(systemData != null)
+		{
+			tag.setTag("system_data", systemData);
+		}
+
+		if(applicationData != null)
+		{
+			tag.setTag("application_data", applicationData);
+		}
+
 		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
 		return tag;
+	}
+
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket()
+	{
+		return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
 	}
 
 	@Override
@@ -138,19 +162,7 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		return INFINITE_EXTENT_AABB;
 	}
 
-	public void openClose()
-	{
-		open = !open;
-		pipeline.setBoolean("open", open);
-		sync();
-	}
-
-	public boolean isOpen()
-	{
-		return open;
-	}
-
-	public NBTTagCompound getApplicationData()
+    public NBTTagCompound getApplicationData()
     {
 		return applicationData != null ? applicationData : new NBTTagCompound();
     }

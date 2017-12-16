@@ -74,7 +74,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		if(tileEntity instanceof TileEntityLaptop)
 		{
 			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-			if(laptop.isOpen())
+			if(laptop.open)
 			{
 				return SELECTION_BOX_OPEN;
 			}
@@ -93,7 +93,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		if(tileEntity instanceof TileEntityLaptop)
 		{
 			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-			if(laptop.isOpen())
+			if(laptop.open)
 			{
 				Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_OPEN_BOX);
 				Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, SCREEN_BOXES[state.getValue(FACING).getHorizontalIndex()]);
@@ -164,7 +164,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 					return true;
 				}
 
-				if(laptop.isOpen() && worldIn.isRemote)
+				if(laptop.open && worldIn.isRemote)
 				{
 					playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
 				}
@@ -180,33 +180,30 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
 	{
-		if(!world.isRemote && !player.capabilities.isCreativeMode)
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if(tileEntity instanceof TileEntityLaptop)
 		{
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof TileEntityLaptop)
-			{
-				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
+			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
 
-				NBTTagCompound tileEntityTag = new NBTTagCompound();
-				laptop.writeToNBT(tileEntityTag);
-				tileEntityTag.removeTag("x");
-				tileEntityTag.removeTag("y");
-				tileEntityTag.removeTag("z");
-				tileEntityTag.removeTag("id");
-				tileEntityTag.removeTag("open");
+			NBTTagCompound tileEntityTag = new NBTTagCompound();
+			laptop.writeToNBT(tileEntityTag);
+			tileEntityTag.removeTag("x");
+			tileEntityTag.removeTag("y");
+			tileEntityTag.removeTag("z");
+			tileEntityTag.removeTag("id");
+			tileEntityTag.removeTag("open");
 
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setTag("BlockEntityTag", tileEntityTag);
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setTag("BlockEntityTag", tileEntityTag);
 
-				ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-				drop.setTagCompound(compound);
+			ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+			drop.setTagCompound(compound);
 
-				world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-			}
+			worldIn.spawnEntity(new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
 		}
-		return super.removedByPlayer(state, world, pos, player, willHarvest);
+		super.breakBlock(worldIn, pos, state);
 	}
 	
 	@Override

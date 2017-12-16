@@ -97,7 +97,7 @@ public class ApplicationTextArea extends Application
 
         ButtonToggle buttonWordWrap = new ButtonToggle(5, 5, Icons.ALIGN_JUSTIFY);
         buttonWordWrap.setToolTip("Word Wrap", "Break the lines to fit in the view");
-        buttonWordWrap.setClickListener((mouseX, mouseY, mouseButton) ->
+        buttonWordWrap.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
             {
@@ -108,7 +108,7 @@ public class ApplicationTextArea extends Application
 
         ButtonToggle buttonDebug = new ButtonToggle(24, 5, Icons.HELP);
         buttonDebug.setToolTip("Debug Mode", "Show invisible characters");
-        buttonDebug.setClickListener((mouseX, mouseY, mouseButton) ->
+        buttonDebug.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
             {
@@ -119,7 +119,7 @@ public class ApplicationTextArea extends Application
 
         ButtonToggle buttonHighlight = new ButtonToggle(43, 5, Icons.FONT);
         buttonHighlight.setToolTip("Highlight", "Set text highlighting to Java");
-        buttonHighlight.setClickListener((mouseX, mouseY, mouseButton) ->
+        buttonHighlight.setClickListener((c, mouseButton) ->
         {
             if(mouseButton == 0)
             {

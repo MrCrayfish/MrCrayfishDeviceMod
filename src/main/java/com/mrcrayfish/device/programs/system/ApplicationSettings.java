@@ -46,7 +46,7 @@ public class ApplicationSettings extends SystemApplication
 	{
 		buttonPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		buttonPrevious.setVisible(false);
-		buttonPrevious.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonPrevious.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -66,7 +66,7 @@ public class ApplicationSettings extends SystemApplication
 		Button buttonColourScheme = new Button(5, 26, "Personalise", Icons.EDIT);
 		buttonColourScheme.setSize(90, 20);
 		buttonColourScheme.setToolTip("Personalise", "Change the wallpaper, UI colours, and more!");
-		buttonColourScheme.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonColourScheme.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -80,7 +80,7 @@ public class ApplicationSettings extends SystemApplication
 
 		checkBoxShowApps = new CheckBox("Show All Apps", 5, 5);
 		checkBoxShowApps.setSelected(Settings.isShowAllApps());
-		checkBoxShowApps.setClickListener((mouseX, mouseY, mouseButton) ->
+		checkBoxShowApps.setClickListener((c, mouseButton) ->
 		{
 			Settings.setShowAllApps(checkBoxShowApps.isSelected());
 			Laptop laptop = getLaptop();
@@ -104,7 +104,7 @@ public class ApplicationSettings extends SystemApplication
 
 		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
 		buttonWallpaperLeft.setSize(25, 20);
-		buttonWallpaperLeft.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonWallpaperLeft.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton != 0)
 				return;
@@ -119,7 +119,7 @@ public class ApplicationSettings extends SystemApplication
 
 		buttonWallpaperRight = new Button(165, 27, Icons.ARROW_RIGHT);
 		buttonWallpaperRight.setSize(25, 20);
-		buttonWallpaperRight.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonWallpaperRight.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton != 0)
 				return;
@@ -134,7 +134,7 @@ public class ApplicationSettings extends SystemApplication
 
 		buttonWallpaperUrl = new Button(135, 52, "Load", Icons.EARTH);
 		buttonWallpaperUrl.setSize(55, 20);
-		buttonWallpaperUrl.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonWallpaperUrl.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton != 0)
 				return;
@@ -171,7 +171,7 @@ public class ApplicationSettings extends SystemApplication
 		buttonColourSchemeApply = new Button(5, 79, Icons.CHECK);
 		buttonColourSchemeApply.setEnabled(false);
 		buttonColourSchemeApply.setToolTip("Apply", "Set these colours as the new colour scheme");
-		buttonColourSchemeApply.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonColourSchemeApply.setClickListener((c, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{

@@ -97,7 +97,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 			this.checked = !checked;
 			if(listener != null)
 			{
-				listener.onClick(mouseX, mouseY, mouseButton);
+				listener.onClick(this, mouseButton);
 			}
 		}
 	}
