@@ -5,7 +5,6 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -70,7 +69,7 @@ public class ItemEthernetCable extends Item
                 if(tileEntity1 instanceof TileEntityDevice)
                 {
                     TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
-                    if(!router.hasDevice(tileEntityDevice))
+                    if(!router.isDeviceRegistered(tileEntityDevice))
                     {
                         if(router.addDevice(tileEntityDevice))
                         {
@@ -113,15 +112,11 @@ public class ItemEthernetCable extends Item
             if(tileEntity instanceof TileEntityDevice)
             {
                 TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-                if(!heldItem.hasTagCompound())
-                {
-                    heldItem.setTagCompound(new NBTTagCompound());
-                }
+                heldItem.setStackDisplayName(TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + I18n.format("item.ethernet_cable.name"));
                 NBTTagCompound tag = heldItem.getTagCompound();
                 tag.setUniqueId("id", tileEntityDevice.getId());
                 tag.setString("name", tileEntityDevice.getDeviceName());
                 tag.setLong("pos", tileEntityDevice.getPos().toLong());
-                heldItem.setStackDisplayName(TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + I18n.format("item.ethernet_cable.name"));
 
                 sendGameInfoMessage(player, "message.select_router");
                 return EnumActionResult.SUCCESS;

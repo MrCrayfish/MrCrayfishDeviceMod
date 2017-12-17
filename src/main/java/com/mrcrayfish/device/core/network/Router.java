@@ -52,7 +52,7 @@ public class Router
         {
             NETWORK_DEVICES.put(id, new NetworkDevice(id, name, this));
         }
-        timer += DeviceConfig.getBeaconInterval();
+        timer = DeviceConfig.getBeaconInterval();
         return true;
     }
 
@@ -69,7 +69,7 @@ public class Router
         return true;
     }
 
-    public boolean hasDevice(TileEntityDevice device)
+    public boolean isDeviceRegistered(TileEntityDevice device)
     {
         return NETWORK_DEVICES.containsKey(device.getId());
     }
