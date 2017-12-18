@@ -15,6 +15,7 @@ public class DeviceItems
 
     public static final Item COMPONENT_CPU;
     public static final Item COMPONENT_HARD_DRIVE;
+    public static final Item COMPONENT_RAM;
 
     static
     {
@@ -22,6 +23,7 @@ public class DeviceItems
         ETHERNET_CABLE = new ItemEthernetCable();
         COMPONENT_CPU = new ItemComponent("cpu");
         COMPONENT_HARD_DRIVE = new ItemComponent("hard_drive");
+        COMPONENT_RAM = new ItemComponent("ram");
     }
 
     public static void register()
@@ -30,6 +32,7 @@ public class DeviceItems
         register(ETHERNET_CABLE);
         register(COMPONENT_CPU);
         register(COMPONENT_HARD_DRIVE);
+        register(COMPONENT_RAM);
     }
 
     private static void register(Item item)

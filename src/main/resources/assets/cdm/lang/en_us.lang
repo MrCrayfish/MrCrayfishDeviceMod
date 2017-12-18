@@ -10,6 +10,7 @@ item.printed_paper.name=Printed Paper
 item.ethernet_cable.name=Ethernet Cable
 item.cpu.name=Central Processing Unit
 item.hard_drive.name=Hard Disk Drive
+item.ram.name=Random Access Memory
 
 app.cdm.settings.name=Settings
 app.cdm.bank.name=Bank
