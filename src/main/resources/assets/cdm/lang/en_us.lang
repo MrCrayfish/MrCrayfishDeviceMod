@@ -8,6 +8,7 @@ tile.paper.name=Paper
 item.flash_drive.name=Flash Drive
 item.printed_paper.name=Printed Paper
 item.ethernet_cable.name=Ethernet Cable
+item.cpu.name=Core Processing Unit
 
 app.cdm.settings.name=Settings
 app.cdm.bank.name=Bank
