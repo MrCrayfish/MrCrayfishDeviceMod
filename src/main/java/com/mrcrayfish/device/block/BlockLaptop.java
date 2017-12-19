@@ -1,16 +1,14 @@
 package com.mrcrayfish.device.block;
 
-import java.util.List;
-import java.util.Random;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-
+import com.mrcrayfish.device.util.Colorable;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -35,6 +33,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 
 public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 {
@@ -107,13 +107,6 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, FULL_BLOCK_AABB);
 	}
 
-	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-	{
-		IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-		return state.withProperty(FACING, placer.getHorizontalFacing());
-	}
-	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -212,7 +205,20 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) 
 	{
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if(tileEntity instanceof Colorable)
+		{
+			Colorable colorable = (Colorable) tileEntity;
+			state = state.withProperty(BlockColored.COLOR, colorable.getColor());
+		}
 		return state.withProperty(TYPE, Type.BASE);
+	}
+
+	@Override
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+	{
+		IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
+		return state.withProperty(FACING, placer.getHorizontalFacing());
 	}
 	
 	@Override
@@ -236,7 +242,10 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer(this, FACING, TYPE);
+		BlockStateContainer.Builder builder = new BlockStateContainer.Builder(this);
+		builder.add(FACING, TYPE);
+		builder.add(BlockColored.COLOR);
+		return builder.build();
 	}
 
 	@Override

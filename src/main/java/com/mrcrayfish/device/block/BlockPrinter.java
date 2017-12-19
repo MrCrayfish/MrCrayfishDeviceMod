@@ -4,7 +4,9 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import com.mrcrayfish.device.util.CollisionHelper;
+import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -91,6 +93,18 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof Colorable)
+        {
+            Colorable colorable = (Colorable) tileEntity;
+            state = state.withProperty(BlockColored.COLOR, colorable.getColor());
+        }
+        return state;
+    }
+
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         ItemStack heldItem = playerIn.getHeldItem(hand);
@@ -153,7 +167,7 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING);
+        return new BlockStateContainer(this, FACING, BlockColored.COLOR);
     }
 
     @Override

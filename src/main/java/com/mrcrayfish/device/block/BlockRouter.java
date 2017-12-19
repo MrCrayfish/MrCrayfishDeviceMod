@@ -6,7 +6,9 @@ import com.mrcrayfish.device.network.task.MessageSyncBlock;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.util.CollisionHelper;
+import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -86,6 +88,18 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
         {
             Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_BOUNDING_BOX[state.getValue(FACING).getHorizontalIndex()]);
         }
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof Colorable)
+        {
+            Colorable colorable = (Colorable) tileEntity;
+            state = state.withProperty(BlockColored.COLOR, colorable.getColor());
+        }
+        return state;
     }
 
     @Override
@@ -178,6 +192,6 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING, VERTICAL);
+        return new BlockStateContainer(this, FACING, VERTICAL, BlockColored.COLOR);
     }
 }
