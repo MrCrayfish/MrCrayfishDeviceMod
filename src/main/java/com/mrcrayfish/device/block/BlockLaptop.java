@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -173,6 +174,17 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+	{
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		if(tileEntity instanceof Colorable)
+		{
+			Colorable colorable = (Colorable) tileEntity;
+			colorable.setColor(EnumDyeColor.byMetadata(stack.getMetadata()));
+		}
+	}
+
+	@Override
 	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		if(!world.isRemote && !player.capabilities.isCreativeMode)
@@ -189,11 +201,12 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 				tileEntityTag.removeTag("z");
 				tileEntityTag.removeTag("id");
 				tileEntityTag.removeTag("open");
+				tileEntityTag.removeTag("color");
 
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setTag("BlockEntityTag", tileEntityTag);
 
-				ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+				ItemStack drop = new ItemStack(Item.getItemFromBlock(this), 1, laptop.getColor().getMetadata());
 				drop.setTagCompound(compound);
 
 				world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
@@ -218,7 +231,9 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
 	{
 		IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-		return state.withProperty(FACING, placer.getHorizontalFacing());
+		ItemStack stack = placer.getHeldItem(hand);
+		EnumDyeColor color = EnumDyeColor.byMetadata(stack.getItemDamage());
+		return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(BlockColored.COLOR, color);
 	}
 	
 	@Override
