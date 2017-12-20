@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -47,6 +48,17 @@ public class BlockDevice extends BlockHorizontal
     public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {
         return null;
+    }
+
+    @Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if(tileEntity instanceof Colorable)
+        {
+            return new ItemStack(Item.getItemFromBlock(this), 1, ((Colorable) tileEntity).getColor().getMetadata());
+        }
+        return super.getPickBlock(state, target, world, pos, player);
     }
 
     @Override
