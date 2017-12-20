@@ -135,7 +135,6 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 							if(laptop.getFileSystem().setAttachedDrive(heldItem.copy()))
 							{
 								heldItem.shrink(1);
-								TileEntityUtil.markBlockForUpdate(worldIn, pos);
 							}
 							else
 							{
