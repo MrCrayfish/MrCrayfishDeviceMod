@@ -42,7 +42,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 					GlStateManager.translate(0.5, 0, 0.5);
 					GlStateManager.rotate(te.getBlockMetadata() * -90F - 90F, 0, 1, 0);
 					GlStateManager.translate(-0.5, 0, -0.5);
-					GlStateManager.translate(0.6, -0.21, -0.005);
+					GlStateManager.translate(0.595, -0.2075, -0.005);
 					entityItem.hoverStart = 0.0F;
 					entityItem.setItem(new ItemStack(DeviceItems.FLASH_DRIVE, 1, te.getExternalDriveColor().getMetadata()));
 					Minecraft.getMinecraft().getRenderManager().renderEntity(entityItem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F, false);
