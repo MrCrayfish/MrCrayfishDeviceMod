@@ -44,4 +44,9 @@ public abstract class TileEntitySync extends TileEntity
     {
         return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
     }
+
+    public NBTTagCompound getPipeline()
+    {
+        return pipeline;
+    }
 }

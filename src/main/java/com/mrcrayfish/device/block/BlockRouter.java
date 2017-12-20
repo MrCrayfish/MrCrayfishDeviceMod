@@ -6,7 +6,9 @@ import com.mrcrayfish.device.network.task.MessageSyncBlock;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.util.CollisionHelper;
+import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -17,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +38,7 @@ import java.util.Random;
 /**
  * Author: MrCrayfish
  */
-public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
+public class BlockRouter extends BlockDevice implements ITileEntityProvider
 {
     public static final PropertyBool VERTICAL = PropertyBool.create("vertical");
 
@@ -51,18 +54,6 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
         this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
         this.setUnlocalizedName("router");
         this.setRegistryName("router");
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
     }
 
     @Override
@@ -89,6 +80,18 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof Colorable)
+        {
+            Colorable colorable = (Colorable) tileEntity;
+            state = state.withProperty(BlockColored.COLOR, colorable.getColor());
+        }
+        return state;
+    }
+
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if(worldIn.isRemote && playerIn.capabilities.isCreativeMode)
@@ -109,45 +112,10 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
-    {
-        return null;
-    }
-
-    @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-    {
-        if(!world.isRemote && !player.capabilities.isCreativeMode)
-        {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityRouter)
-            {
-                TileEntityRouter router = (TileEntityRouter) tileEntity;
-
-                NBTTagCompound tileEntityTag = new NBTTagCompound();
-                router.writeToNBT(tileEntityTag);
-                tileEntityTag.removeTag("x");
-                tileEntityTag.removeTag("y");
-                tileEntityTag.removeTag("z");
-                tileEntityTag.removeTag("id");
-
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setTag("BlockEntityTag", tileEntityTag);
-
-                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-                drop.setTagCompound(compound);
-
-                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-            }
-        }
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
-    }
-
-    @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(VERTICAL, facing.getHorizontalIndex() != -1);
+        return state.withProperty(VERTICAL, facing.getHorizontalIndex() != -1);
     }
 
     @Override
@@ -172,12 +140,12 @@ public class BlockRouter extends BlockHorizontal implements ITileEntityProvider
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(VERTICAL, meta - 4 >= 0);
+        return super.getStateFromMeta(meta).withProperty(VERTICAL, meta - 4 >= 0);
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING, VERTICAL);
+        return new BlockStateContainer(this, FACING, VERTICAL, BlockColored.COLOR);
     }
 }

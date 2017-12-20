@@ -3,12 +3,8 @@ package com.mrcrayfish.device.init;
 import com.mrcrayfish.device.block.BlockLaptop;
 
 import com.mrcrayfish.device.block.BlockRouter;
-import com.mrcrayfish.device.block.BlockRouter;
-import com.mrcrayfish.device.item.ItemLaptop;
+import com.mrcrayfish.device.item.ItemDevice;
 
-import com.mrcrayfish.device.block.BlockPaper;
-import com.mrcrayfish.device.block.BlockPrinter;
-import com.mrcrayfish.device.item.ItemPaper;
 import com.mrcrayfish.device.block.BlockPaper;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.item.ItemPaper;
@@ -33,9 +29,9 @@ public class DeviceBlocks
 
 	public static void register()
 	{
-		registerBlock(LAPTOP, new ItemLaptop(LAPTOP));
-        registerBlock(ROUTER);
-		registerBlock(PRINTER);
+		registerBlock(LAPTOP, new ItemDevice(LAPTOP));
+        registerBlock(ROUTER, new ItemDevice(ROUTER));
+		registerBlock(PRINTER, new ItemDevice(PRINTER));
 		registerBlock(PAPER, new ItemPaper(PAPER));
 	}
 

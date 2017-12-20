@@ -3,8 +3,11 @@ package com.mrcrayfish.device.block;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.util.CollisionHelper;
+import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -12,7 +15,10 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -25,11 +31,12 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Author: MrCrayfish
  */
-public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
+public class BlockPrinter extends BlockDevice implements ITileEntityProvider
 {
     private static final Bounds BODY_BOUNDS = new Bounds(5 * 0.0625, 0.0, 1 * 0.0625, 14 * 0.0625, 5 * 0.0625, 15 * 0.0625);
     private static final AxisAlignedBB BODY_BOX_NORTH = CollisionHelper.getBlockBounds(EnumFacing.NORTH, BODY_BOUNDS);
@@ -64,18 +71,6 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         return SELECTION_BOUNDING_BOX;
@@ -91,6 +86,18 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof Colorable)
+        {
+            Colorable colorable = (Colorable) tileEntity;
+            state = state.withProperty(BlockColored.COLOR, colorable.getColor());
+        }
+        return state;
+    }
+
+    @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         ItemStack heldItem = playerIn.getHeldItem(hand);
@@ -103,64 +110,6 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
             }
         }
         return false;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-    {
-        if(stack.hasTagCompound())
-        {
-            TileEntity printer = new TileEntityPrinter();
-            if(stack.hasTagCompound())
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setInteger("x", pos.getX());
-                tag.setInteger("y", pos.getY());
-                tag.setInteger("z", pos.getZ());
-                tag.setString("id", "cdm:printer");
-
-                if(stack.hasDisplayName())
-                {
-                    tag.setString("name", stack.getDisplayName());
-                }
-
-                printer.readFromNBT(tag);
-                printer.validate();
-                worldIn.setTileEntity(pos, printer);
-            }
-        }
-    }
-
-
-    @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        return state.withProperty(FACING, placer.getHorizontalFacing());
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        return state.getValue(FACING).getHorizontalIndex();
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
-    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
-    {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
-        return tileentity != null && tileentity.receiveClientEvent(id, param);
     }
 
     @Nullable

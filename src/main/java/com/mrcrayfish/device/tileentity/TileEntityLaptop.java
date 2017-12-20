@@ -2,21 +2,27 @@ package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.network.Router;
+import com.mrcrayfish.device.util.Colorable;
 import com.mrcrayfish.device.util.TileEntityUtil;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityDevice implements ITickable
+public class TileEntityLaptop extends TileEntityDevice implements ITickable, Colorable
 {
 	private String name = "Laptop";
 	private boolean open = false;
+	private EnumDyeColor color = EnumDyeColor.RED;
 
 	private NBTTagCompound applicationData;
 	private NBTTagCompound systemData;
@@ -29,7 +35,7 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	public float prevRotation;
 
 	@SideOnly(Side.CLIENT)
-	private boolean hasExternalDrive;
+	private EnumDyeColor externalDriveColor;
 
 	@Override
 	public String getDeviceName()
@@ -85,9 +91,17 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		{
 			this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
 		}
-		if(compound.hasKey("has_external_drive"))
+		if(compound.hasKey("external_drive_color", Constants.NBT.TAG_BYTE))
 		{
-			this.hasExternalDrive = compound.getBoolean("has_external_drive");
+			this.externalDriveColor = null;
+			if(compound.getByte("external_drive_color") != -1)
+			{
+				this.externalDriveColor = EnumDyeColor.byMetadata(compound.getByte("external_drive_color"));
+			}
+		}
+		if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+		{
+			this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
 		}
 	}
 	
@@ -97,6 +111,7 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
 		compound.setString("device_name", name);
+		compound.setByte("color", (byte) color.getMetadata());
 
 		if(systemData != null)
 		{
@@ -121,7 +136,17 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setBoolean("open", open);
 		tag.setString("device_name", name);
-		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
+		tag.setByte("color", (byte) color.getMetadata());
+
+		if(getFileSystem().getAttachedDrive() != null)
+		{
+			tag.setByte("external_drive_color", (byte) getFileSystem().getAttachedDriveColor().getMetadata());
+		}
+		else
+		{
+			tag.setByte("external_drive_color", (byte) -1);
+		}
+
 		return tag;
 	}
 
@@ -183,8 +208,25 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 
+	@SideOnly(Side.CLIENT)
 	public boolean isExternalDriveAttached()
 	{
-		return hasExternalDrive;
+		return externalDriveColor != null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public EnumDyeColor getExternalDriveColor()
+	{
+		return externalDriveColor;
+	}
+
+	public void setColor(EnumDyeColor color)
+	{
+		this.color = color;
+	}
+
+	public EnumDyeColor getColor()
+	{
+		return color;
 	}
 }
