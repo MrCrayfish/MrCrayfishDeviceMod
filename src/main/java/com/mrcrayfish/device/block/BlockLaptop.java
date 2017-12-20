@@ -163,19 +163,7 @@ public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) 
 	{
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		if(tileEntity instanceof Colorable)
-		{
-			Colorable colorable = (Colorable) tileEntity;
-			state = state.withProperty(BlockColored.COLOR, colorable.getColor());
-		}
-		return state.withProperty(TYPE, Type.BASE);
-	}
-	
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) 
-	{
-		return new TileEntityLaptop();
+		return super.getActualState(state, worldIn, pos).withProperty(TYPE, Type.BASE);
 	}
 
 	@Override
@@ -188,6 +176,12 @@ public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateContainer(this, FACING, TYPE, BlockColored.COLOR);
+	}
+	
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta)
+	{
+		return new TileEntityLaptop();
 	}
 	
 	public enum Type implements IStringSerializable
