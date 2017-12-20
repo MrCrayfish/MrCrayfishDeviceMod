@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
+public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 {
 	public static final PropertyEnum TYPE = PropertyEnum.create("type", Type.class);
 
@@ -55,19 +55,7 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		this.setUnlocalizedName("laptop");
 		this.setRegistryName("laptop");
 	}
-	
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}
 
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) 
 	{
@@ -167,51 +155,9 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune)
+	protected void removeTagsForDrop(NBTTagCompound tileEntityTag)
 	{
-		return null;
-	}
-
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-	{
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		if(tileEntity instanceof Colorable)
-		{
-			Colorable colorable = (Colorable) tileEntity;
-			colorable.setColor(EnumDyeColor.byMetadata(stack.getMetadata()));
-		}
-	}
-
-	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-	{
-		if(!world.isRemote && !player.capabilities.isCreativeMode)
-		{
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof TileEntityLaptop)
-			{
-				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-
-				NBTTagCompound tileEntityTag = new NBTTagCompound();
-				laptop.writeToNBT(tileEntityTag);
-				tileEntityTag.removeTag("x");
-				tileEntityTag.removeTag("y");
-				tileEntityTag.removeTag("z");
-				tileEntityTag.removeTag("id");
-				tileEntityTag.removeTag("open");
-				tileEntityTag.removeTag("color");
-
-				NBTTagCompound compound = new NBTTagCompound();
-				compound.setTag("BlockEntityTag", tileEntityTag);
-
-				ItemStack drop = new ItemStack(Item.getItemFromBlock(this), 1, laptop.getColor().getMetadata());
-				drop.setTagCompound(compound);
-
-				world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-			}
-		}
-		return super.removedByPlayer(state, world, pos, player, willHarvest);
+		tileEntityTag.removeTag("open");
 	}
 	
 	@Override
@@ -225,51 +171,26 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		}
 		return state.withProperty(TYPE, Type.BASE);
 	}
-
-	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-	{
-		IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-		ItemStack stack = placer.getHeldItem(hand);
-		EnumDyeColor color = EnumDyeColor.byMetadata(stack.getItemDamage());
-		return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(BlockColored.COLOR, color);
-	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) 
 	{
 		return new TileEntityLaptop();
 	}
-	
-	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
-	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(TYPE, Type.BASE);
+		return super.getStateFromMeta(meta).withProperty(TYPE, Type.BASE);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		BlockStateContainer.Builder builder = new BlockStateContainer.Builder(this);
-		builder.add(FACING, TYPE);
-		builder.add(BlockColored.COLOR);
-		return builder.build();
-	}
-
-	@Override
-	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
-	{
-		TileEntity tileentity = worldIn.getTileEntity(pos);
-		return tileentity != null && tileentity.receiveClientEvent(id, param);
+		return new BlockStateContainer(this, FACING, TYPE, BlockColored.COLOR);
 	}
 	
-	public static enum Type implements IStringSerializable 
+	public enum Type implements IStringSerializable
 	{
 		BASE, SCREEN;
 

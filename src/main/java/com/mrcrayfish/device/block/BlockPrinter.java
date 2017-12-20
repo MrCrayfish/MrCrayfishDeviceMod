@@ -36,7 +36,7 @@ import java.util.Random;
 /**
  * Author: MrCrayfish
  */
-public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
+public class BlockPrinter extends BlockDevice implements ITileEntityProvider
 {
     private static final Bounds BODY_BOUNDS = new Bounds(5 * 0.0625, 0.0, 1 * 0.0625, 14 * 0.0625, 5 * 0.0625, 15 * 0.0625);
     private static final AxisAlignedBB BODY_BOX_NORTH = CollisionHelper.getBlockBounds(EnumFacing.NORTH, BODY_BOUNDS);
@@ -68,18 +68,6 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
         this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
         this.setUnlocalizedName("printer");
         this.setRegistryName("printer");
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
     }
 
     @Override
@@ -122,86 +110,6 @@ public class BlockPrinter extends BlockHorizontal implements ITileEntityProvider
             }
         }
         return false;
-    }
-
-    @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
-    {
-        return null;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-    {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof Colorable)
-        {
-            Colorable colorable = (Colorable) tileEntity;
-            colorable.setColor(EnumDyeColor.byMetadata(stack.getMetadata()));
-        }
-    }
-
-    @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-    {
-        if(!world.isRemote && !player.capabilities.isCreativeMode)
-        {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityPrinter)
-            {
-                TileEntityPrinter printer = (TileEntityPrinter) tileEntity;
-
-                NBTTagCompound tileEntityTag = new NBTTagCompound();
-                printer.writeToNBT(tileEntityTag);
-                tileEntityTag.removeTag("x");
-                tileEntityTag.removeTag("y");
-                tileEntityTag.removeTag("z");
-                tileEntityTag.removeTag("id");
-
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setTag("BlockEntityTag", tileEntityTag);
-
-                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-                drop.setTagCompound(compound);
-
-                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-            }
-        }
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
-    }
-
-    @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-    {
-        IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        ItemStack stack = placer.getHeldItem(hand);
-        EnumDyeColor color = EnumDyeColor.byMetadata(stack.getItemDamage());
-        return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(BlockColored.COLOR, color);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        return state.getValue(FACING).getHorizontalIndex();
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, FACING, BlockColored.COLOR);
-    }
-
-    @Override
-    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
-    {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
-        return tileentity != null && tileentity.receiveClientEvent(id, param);
     }
 
     @Nullable
