@@ -20,6 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityLaptop extends TileEntityDevice implements ITickable, Colorable
 {
+	private static final int OPENED_ANGLE = 102;
+
 	private String name = "Laptop";
 	private boolean open = false;
 	private EnumDyeColor color = EnumDyeColor.RED;
@@ -29,10 +31,10 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable, Col
 	private FileSystem fileSystem;
 
 	@SideOnly(Side.CLIENT)
-	public float rotation;
+	private int rotation;
 
 	@SideOnly(Side.CLIENT)
-	public float prevRotation;
+	private int prevRotation;
 
 	@SideOnly(Side.CLIENT)
 	private EnumDyeColor externalDriveColor;
@@ -59,7 +61,7 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable, Col
 			}
 			else
 			{
-				if(rotation < 110)
+				if(rotation < OPENED_ANGLE)
 				{
 					rotation += 10F;
 				}
@@ -206,6 +208,12 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable, Col
 		this.systemData = systemData;
 		markDirty();
 		TileEntityUtil.markBlockForUpdate(world, pos);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public float getScreenAngle(float partialTicks)
+	{
+		return -OPENED_ANGLE * ((prevRotation + (rotation - prevRotation) * partialTicks) / OPENED_ANGLE);
 	}
 
 	@SideOnly(Side.CLIENT)

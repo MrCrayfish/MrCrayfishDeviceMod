@@ -57,8 +57,7 @@ public class LaptopRenderer extends TileEntitySpecialRenderer<TileEntityLaptop>
 				GlStateManager.rotate(te.getBlockMetadata() * -90F + 180F, 0, 1, 0);
 				GlStateManager.translate(-0.5, 0, -0.5);
 				GlStateManager.translate(0, 0.0625, 0.25);
-				float f = te.prevRotation + (te.rotation - te.prevRotation) * partialTicks;
-				GlStateManager.rotate(-f, 1, 0, 0);
+				GlStateManager.rotate(te.getScreenAngle(partialTicks), 1, 0, 0);
 
 				GlStateManager.disableLighting();
 				Tessellator tessellator = Tessellator.getInstance();
