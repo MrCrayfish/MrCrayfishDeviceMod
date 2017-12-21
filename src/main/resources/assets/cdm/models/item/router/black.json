@@ -1,0 +1,6 @@
+{
+    "parent": "cdm:item/router",
+    "textures": {
+        "1": "blocks/wool_colored_black"
+    }
+}

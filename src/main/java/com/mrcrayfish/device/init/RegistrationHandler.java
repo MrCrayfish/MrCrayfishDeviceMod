@@ -2,10 +2,13 @@ package com.mrcrayfish.device.init;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.item.SubItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
@@ -83,12 +86,23 @@ public class RegistrationHandler
         public static void register(ModelRegistryEvent event)
         {
             MrCrayfishDeviceMod.getLogger().info("Registering models");
-            Items.ITEMS.forEach(item -> registerRender(item));
+            Items.ITEMS.forEach(Models::registerRender);
         }
 
         private static void registerRender(Item item)
         {
-            ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+            if(item instanceof SubItems)
+            {
+                NonNullList<ResourceLocation> modelLocations = ((SubItems) item).getModels();
+                for(int i = 0; i < modelLocations.size(); i++)
+                {
+                    ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(modelLocations.get(i), "inventory"));
+                }
+            }
+            else
+            {
+                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+            }
         }
     }
 

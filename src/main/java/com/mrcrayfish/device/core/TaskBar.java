@@ -5,7 +5,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.object.TrayItemWifi;
+import com.mrcrayfish.device.core.network.TrayItemWifi;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.SystemApplication;
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -134,12 +134,8 @@ public class TaskBar
 		}
 
 		mc.fontRenderer.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
-		
-		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
 		/* Settings App */
-
-
 		int startX = x + 317;
 		for(int i = 0; i < trayItems.size(); i++)
 		{
@@ -150,6 +146,8 @@ public class TaskBar
 			}
 			trayItems.get(i).getIcon().draw(mc, posX + 2, y + 4);
 		}
+
+		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))

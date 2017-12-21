@@ -9,14 +9,8 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-import com.mrcrayfish.device.tileentity.TileEntityPaper;
-import com.mrcrayfish.device.tileentity.TileEntityPrinter;
-import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
-import com.mrcrayfish.device.tileentity.render.PaperRenderer;
-import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
-import com.mrcrayfish.device.tileentity.render.RouterRenderer;
+import com.mrcrayfish.device.tileentity.*;
+import com.mrcrayfish.device.tileentity.render.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -46,6 +40,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRouter.class, new RouterRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityOfficeChair.class, new OfficeChairRenderer());
 
         if(MrCrayfishDeviceMod.DEVELOPER_MODE)
         {

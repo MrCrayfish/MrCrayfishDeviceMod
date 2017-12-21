@@ -39,7 +39,7 @@ public class ItemEthernetCable extends Item
     {
         this.setUnlocalizedName("ethernet_cable");
         this.setRegistryName("ethernet_cable");
-        this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
         this.setMaxStackSize(1);
     }
 
@@ -112,15 +112,11 @@ public class ItemEthernetCable extends Item
             if(tileEntity instanceof TileEntityDevice)
             {
                 TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-                if(!heldItem.hasTagCompound())
-                {
-                    heldItem.setTagCompound(new NBTTagCompound());
-                }
+                heldItem.setStackDisplayName(TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + I18n.format("item.ethernet_cable.name"));
                 NBTTagCompound tag = heldItem.getTagCompound();
                 tag.setUniqueId("id", tileEntityDevice.getId());
                 tag.setString("name", tileEntityDevice.getDeviceName());
                 tag.setLong("pos", tileEntityDevice.getPos().toLong());
-                heldItem.setStackDisplayName(TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + I18n.format("item.ethernet_cable.name"));
 
                 sendGameInfoMessage(player, "message.select_router");
                 return EnumActionResult.SUCCESS;

@@ -8,16 +8,14 @@ import com.mrcrayfish.device.core.network.task.TaskConnect;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.core.network.task.TaskPing;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
+import com.mrcrayfish.device.entity.EntitySeat;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.*;
+import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.init.RegistrationHandler;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
-import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
-import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
-import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
-import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
 import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
@@ -38,6 +36,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
@@ -49,7 +48,7 @@ public class MrCrayfishDeviceMod
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
 	public static CommonProxy proxy;
 	
-	public static CreativeTabs tabDevice = new DeviceTab("cdmTabDevice");
+	public static final CreativeTabs TAB_DEVICE = new DeviceTab("cdmTabDevice");
 
 	private static Logger logger;
 
@@ -77,6 +76,8 @@ public class MrCrayfishDeviceMod
 	{
 		/* Tile Entity Registering */
 		DeviceTileEntites.register();
+
+		EntityRegistry.registerModEntity(new ResourceLocation("cdmSeat"), EntitySeat.class, "cdmSeat", 0, this, 80, 1, false);
 
 		/* Packet Registering */
 		PacketHandler.init();
@@ -116,8 +117,8 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskGetDevices.class);
 
 		//Bank
-		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);
-		TaskManager.registerTask(ApplicationBank.TaskWithdraw.class);
+		TaskManager.registerTask(TaskDeposit.class);
+		TaskManager.registerTask(TaskWithdraw.class);
 		TaskManager.registerTask(TaskGetBalance.class);
 		TaskManager.registerTask(TaskPay.class);
 		TaskManager.registerTask(TaskAdd.class);

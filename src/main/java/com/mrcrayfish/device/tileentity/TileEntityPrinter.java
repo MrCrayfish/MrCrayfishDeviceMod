@@ -5,10 +5,12 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
+import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,10 +29,11 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityPrinter extends TileEntityDevice implements ITickable
+public class TileEntityPrinter extends TileEntityDevice implements ITickable, Colorable
 {
     private String name = "Printer";
     private State state = IDLE;
+    private EnumDyeColor color = EnumDyeColor.RED;
 
     private Deque<IPrint> printQueue = new ArrayDeque<>();
     private IPrint currentPrint;
@@ -128,6 +131,10 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
                 printQueue.offer(print);
             }
         }
+        if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+        {
+            this.color = EnumDyeColor.byDyeDamage(compound.getByte("color"));
+        }
     }
 
     @Override
@@ -139,6 +146,7 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
         compound.setInteger("remainingPrintTime", remainingPrintTime);
         compound.setInteger("state", state.ordinal());
         compound.setInteger("paperCount", paperCount);
+        compound.setByte("color", (byte) color.getDyeDamage());
         if(currentPrint != null)
         {
             compound.setTag("currentPrint", IPrint.writeToTag(currentPrint));
@@ -160,6 +168,7 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("name", name);
         tag.setInteger("paperCount", paperCount);
+        tag.setByte("color", (byte) color.getDyeDamage());
         return tag;
     }
 
@@ -283,6 +292,16 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     public ITextComponent getDisplayName()
     {
         return new TextComponentString(name);
+    }
+
+    public void setColor(EnumDyeColor color)
+    {
+        this.color = color;
+    }
+
+    public EnumDyeColor getColor()
+    {
+        return color;
     }
 
     public enum State
