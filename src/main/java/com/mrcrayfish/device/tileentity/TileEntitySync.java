@@ -9,14 +9,14 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Author: MrCrayfish
  */
-public class TileEntitySync extends TileEntity
+public abstract class TileEntitySync extends TileEntity
 {
     protected NBTTagCompound pipeline = new NBTTagCompound();
 
-    protected void sync()
+    public void sync()
     {
         TileEntityUtil.markBlockForUpdate(world, pos);
-        pipeline = new NBTTagCompound();
+        markDirty();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class TileEntitySync extends TileEntity
     }
 
     @Override
-    public NBTTagCompound getUpdateTag()
+    public final NBTTagCompound getUpdateTag()
     {
         if(!pipeline.hasNoTags())
         {
@@ -34,8 +34,10 @@ public class TileEntitySync extends TileEntity
             pipeline = new NBTTagCompound();
             return updateTag;
         }
-        return this.writeToNBT(new NBTTagCompound());
+        return super.writeToNBT(writeSyncTag());
     }
+
+    public abstract NBTTagCompound writeSyncTag();
 
     @Override
     public SPacketUpdateTileEntity getUpdatePacket()

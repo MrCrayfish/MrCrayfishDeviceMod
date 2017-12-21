@@ -115,19 +115,13 @@ public class ApplicationBank extends SystemApplication
 		
 		btnDepositWithdraw = new Button(54, 74, "View Account");
 		btnDepositWithdraw.setSize(76, 20);
-		btnDepositWithdraw.setClickListener(new ClickListener() {
-			@Override
-			public void onClick(Component c, int mouseButton) {
-				
-			}
-		});
 		btnDepositWithdraw.setToolTip("View Account", "Shows your balance");
 		layoutStart.addComponent(btnDepositWithdraw);
 		
 		btnTransfer = new Button(133, 74, "Transfer");
 		btnTransfer.setSize(58, 20);
 		btnTransfer.setToolTip("Transfer", "Withdraw and deposit emeralds");
-		btnTransfer.setClickListener((c, mouseButton) ->
+		btnTransfer.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -189,7 +183,7 @@ public class ApplicationBank extends SystemApplication
 		
 		btnClear = new Button(24, 122, "Clr");
 		btnClear.setSize(35, 16);
-		btnClear.setClickListener((c, mouseButton) ->
+		btnClear.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -200,7 +194,7 @@ public class ApplicationBank extends SystemApplication
 		
 		buttonDeposit = new Button(62, 65, "Deposit");
 		buttonDeposit.setSize(53, 16);
-		buttonDeposit.setClickListener((c, mouseButton) ->
+		buttonDeposit.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -225,7 +219,7 @@ public class ApplicationBank extends SystemApplication
 		
 		buttonWithdraw = new Button(62, 84, "Withdraw");
 		buttonWithdraw.setSize(53, 16);
-		buttonWithdraw.setClickListener((c, mouseButton) ->
+		buttonWithdraw.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
@@ -266,7 +260,7 @@ public class ApplicationBank extends SystemApplication
 	
 	public void addNumberClickListener(Button btn, final TextField field, final int number) 
 	{
-		btn.setClickListener((c, mouseButton) ->
+		btn.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
