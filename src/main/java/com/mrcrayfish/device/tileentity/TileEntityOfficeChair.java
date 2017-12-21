@@ -65,18 +65,18 @@ public class TileEntityOfficeChair extends TileEntitySync implements Colorable
         if(!seats.isEmpty())
         {
             EntitySeat seat = seats.get(0);
-            if(seat.getRidingEntity() != null)
+            if(seat.getControllingPassenger() != null)
             {
-                if(seat.getRidingEntity() instanceof EntityLivingBase)
+                if(seat.getControllingPassenger() instanceof EntityLivingBase)
                 {
-                    EntityLivingBase living = (EntityLivingBase) seat.getRidingEntity();
+                    EntityLivingBase living = (EntityLivingBase) seat.getControllingPassenger();
                     living.renderYawOffset = living.rotationYaw;
                     living.prevRenderYawOffset = living.rotationYaw;
-                    return living.rotationYaw - 90F;
+                    return living.rotationYaw;
                 }
-                return seat.getRidingEntity().rotationYaw - 90F;
+                return seat.getControllingPassenger().rotationYaw;
             }
         }
-        return getBlockMetadata() * 90F + 90F;
+        return getBlockMetadata() * 90F + 180F;
     }
 }

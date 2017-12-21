@@ -1,6 +1,6 @@
 {
     "parent": "cdm:item/office_chair",
     "textures": {
-        "4": "blocks/wool_colored_blue"
+        "chair_color": "blocks/wool_colored_blue"
     }
 }

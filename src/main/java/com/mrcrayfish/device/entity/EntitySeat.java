@@ -5,6 +5,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 /**
  * Author: MrCrayfish
  */
@@ -36,6 +39,13 @@ public class EntitySeat extends Entity
         {
             this.setDead();
         }
+    }
+
+    @Nullable
+    public Entity getControllingPassenger()
+    {
+        List<Entity> list = this.getPassengers();
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -33,7 +34,7 @@ public class BlockOfficeChair extends BlockColorable
         this.setUnlocalizedName("office_chair");
         this.setRegistryName("office_chair");
         this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(BlockColored.COLOR, EnumDyeColor.RED).withProperty(TYPE, Type.LEGS));
     }
 
     @Override
