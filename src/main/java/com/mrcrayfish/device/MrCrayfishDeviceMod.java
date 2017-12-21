@@ -77,7 +77,7 @@ public class MrCrayfishDeviceMod
 		/* Tile Entity Registering */
 		DeviceTileEntites.register();
 
-		EntityRegistry.registerModEntity(new ResourceLocation("cdmSeat"), EntitySeat.class, "cdmSeat", 0, this, 80, 1, false);
+		EntityRegistry.registerModEntity(new ResourceLocation("cdm:seat"), EntitySeat.class, "Seat", 0, this, 80, 1, false);
 
 		/* Packet Registering */
 		PacketHandler.init();
