@@ -18,7 +18,7 @@ public class ItemFlashDrive extends Item implements SubItems
     {
         this.setUnlocalizedName("flash_drive");
         this.setRegistryName("flash_drive");
-        this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
         this.setMaxStackSize(1);
         this.setMaxDamage(0);
         this.setHasSubtypes(true);

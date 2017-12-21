@@ -46,7 +46,7 @@ public class MrCrayfishDeviceMod
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
 	public static CommonProxy proxy;
 	
-	public static CreativeTabs tabDevice = new DeviceTab("cdmTabDevice");
+	public static final CreativeTabs TAB_DEVICE = new DeviceTab("cdmTabDevice");
 
 	private static Logger logger;
 
