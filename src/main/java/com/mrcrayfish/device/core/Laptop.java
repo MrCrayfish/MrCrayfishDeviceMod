@@ -85,7 +85,7 @@ public class Laptop extends GuiScreen implements System
 			this.currentWallpaper = 0;
 		}
 		Laptop.system = this;
-		pos = laptop.getPos();
+		Laptop.pos = laptop.getPos();
 	}
 
 	@Nullable
@@ -184,7 +184,7 @@ public class Laptop extends GuiScreen implements System
 		
 		/* Wallpaper */
 		this.mc.getTextureManager().bindTexture(WALLPAPERS.get(currentWallpaper));
-		RenderUtil.drawRectWithTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 256, 144);
+		RenderUtil.drawRectWithFullTexture(posX + 10, posY + 10, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		if(!MrCrayfishDeviceMod.DEVELOPER_MODE)
 		{

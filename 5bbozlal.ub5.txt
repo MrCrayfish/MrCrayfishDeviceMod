@@ -1,0 +1,78 @@
+﻿Revert "Merge remote-tracking branch 'refs/remotes/origin/printer'"
+
+This reverts commit 17bf92c5dbb3c8ac2fc9cf910283e0a858d5a9b5, reversing
+changes made to 1c256da6e350c58c225bf7cc14cb6c36438e1d4a.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is ahead of 'origin/master' by 45 commits.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   README.md
+#	modified:   src/main/java/com/mrcrayfish/device/DeviceConfig.java
+#	modified:   src/main/java/com/mrcrayfish/device/MrCrayfishDeviceMod.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/Dialog.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/Layout.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/Button.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/ButtonToggle.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/CheckBox.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/Inventory.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/ItemList.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/NumberSelector.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/component/Slider.java
+#	modified:   src/main/java/com/mrcrayfish/device/api/app/listener/ClickListener.java
+#	modified:   src/main/java/com/mrcrayfish/device/block/BlockLaptop.java
+#	deleted:    src/main/java/com/mrcrayfish/device/block/BlockRouter.java
+#	modified:   src/main/java/com/mrcrayfish/device/core/Laptop.java
+#	modified:   src/main/java/com/mrcrayfish/device/core/TaskBar.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/Connection.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/IDevice.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/NetworkDevice.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/Router.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/task/TaskConnect.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/task/TaskGetDevices.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/network/task/TaskPing.java
+#	deleted:    src/main/java/com/mrcrayfish/device/core/object/TrayItemWifi.java
+#	modified:   src/main/java/com/mrcrayfish/device/core/print/task/TaskPrint.java
+#	modified:   src/main/java/com/mrcrayfish/device/init/DeviceBlocks.java
+#	modified:   src/main/java/com/mrcrayfish/device/init/DeviceItems.java
+#	modified:   src/main/java/com/mrcrayfish/device/init/DeviceTileEntites.java
+#	deleted:    src/main/java/com/mrcrayfish/device/item/ItemEthernetCable.java
+#	modified:   src/main/java/com/mrcrayfish/device/network/PacketHandler.java
+#	deleted:    src/main/java/com/mrcrayfish/device/network/task/MessageSyncBlock.java
+#	deleted:    src/main/java/com/mrcrayfish/device/network/task/MessageSyncConfig.java
+#	modified:   src/main/java/com/mrcrayfish/device/object/Bounds.java
+#	modified:   src/main/java/com/mrcrayfish/device/object/Picture.java
+#	modified:   src/main/java/com/mrcrayfish/device/object/TileGrid.java
+#	deleted:    src/main/java/com/mrcrayfish/device/object/TrayItem.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/ApplicationBoatRacers.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/ApplicationNoteStash.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/ApplicationPixelPainter.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/ApplicationTest.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/auction/ApplicationMineBay.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/debug/ApplicationTextArea.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/email/ApplicationEmail.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/system/ApplicationBank.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/system/ApplicationSettings.java
+#	modified:   src/main/java/com/mrcrayfish/device/programs/system/component/FileBrowser.java
+#	modified:   src/main/java/com/mrcrayfish/device/proxy/ClientProxy.java
+#	modified:   src/main/java/com/mrcrayfish/device/proxy/CommonProxy.java
+#	deleted:    src/main/java/com/mrcrayfish/device/tileentity/TileEntityDevice.java
+#	modified:   src/main/java/com/mrcrayfish/device/tileentity/TileEntityLaptop.java
+#	modified:   src/main/java/com/mrcrayfish/device/tileentity/TileEntityPaper.java
+#	modified:   src/main/java/com/mrcrayfish/device/tileentity/TileEntityPrinter.java
+#	deleted:    src/main/java/com/mrcrayfish/device/tileentity/TileEntityRouter.java
+#	modified:   src/main/java/com/mrcrayfish/device/tileentity/TileEntitySync.java
+#	deleted:    src/main/java/com/mrcrayfish/device/tileentity/render/RouterRenderer.java
+#	modified:   src/main/java/com/mrcrayfish/device/util/CollisionHelper.java
+#	deleted:    src/main/resources/assets/cdm/blockstates/router.json
+#	modified:   src/main/resources/assets/cdm/lang/en_us.lang
+#	deleted:    src/main/resources/assets/cdm/models/block/router.json
+#	deleted:    src/main/resources/assets/cdm/models/block/router_vertical.json
+#	deleted:    src/main/resources/assets/cdm/models/item/ethernet_cable.json
+#	deleted:    src/main/resources/assets/cdm/models/item/router.json
+#	deleted:    src/main/resources/assets/cdm/textures/items/ethernet_cable.png
+#
+

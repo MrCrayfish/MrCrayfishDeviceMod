@@ -135,13 +135,13 @@ public class MrCrayfishDeviceMod
 		if(!DEVELOPER_MODE)
 		{
 			// Applications (Normal)
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
+			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
+			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
 			// Tasks (Normal)
-			TaskManager.registerTask(TaskAddAuction.class);
-			TaskManager.registerTask(TaskGetAuctions.class);
-			TaskManager.registerTask(TaskBuyItem.class);
+			//TaskManager.registerTask(TaskAddAuction.class);
+			//TaskManager.registerTask(TaskGetAuctions.class);
+			//TaskManager.registerTask(TaskBuyItem.class);
 		}
 		else
 		{
