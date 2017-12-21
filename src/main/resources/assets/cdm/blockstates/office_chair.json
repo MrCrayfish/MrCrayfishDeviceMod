@@ -4,6 +4,17 @@
 		"model": "cdm:office_chair"
 	},
 	"variants": {
+		"type": {
+			"legs": {
+
+			},
+			"seat": {
+
+			},
+			"full": {
+
+			}
+		},
 		"facing": {
 			"north": { "y": 0   },
 			"east":  { "y": 90  },
