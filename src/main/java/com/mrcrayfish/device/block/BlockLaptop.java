@@ -3,13 +3,15 @@ package com.mrcrayfish.device.block;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-
 import com.mrcrayfish.device.util.TileEntityUtil;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -34,52 +36,44 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider {
+	public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
 
-public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
-{
-	public static final PropertyEnum TYPE = PropertyEnum.create("type", Type.class);
-
-	private static final AxisAlignedBB[] SCREEN_BOXES = new Bounds(13 * 0.0625, 0.0625, 1 * 0.0625, 1.0, 12 * 0.0625, 0.9375).getRotatedBounds();
-	private static final AxisAlignedBB BODY_OPEN_BOX = new AxisAlignedBB(1 * 0.0625, 0.0, 1 * 0.0625, 13 * 0.0625, 1 * 0.0625, 15 * 0.0625);
-	private static final AxisAlignedBB BODY_CLOSED_BOX = new AxisAlignedBB(1 * 0.0625, 0.0, 1 * 0.0625, 13 * 0.0625, 2 * 0.0625, 15 * 0.0625);
+	private static final AxisAlignedBB[] SCREEN_BOXES = new Bounds(13 * 0.0625, 0.0625, 1 * 0.0625, 1.0, 12 * 0.0625,
+			0.9375).getRotatedBounds();
+	private static final AxisAlignedBB BODY_OPEN_BOX = new AxisAlignedBB(1 * 0.0625, 0.0, 1 * 0.0625, 13 * 0.0625,
+			1 * 0.0625, 15 * 0.0625);
+	private static final AxisAlignedBB BODY_CLOSED_BOX = new AxisAlignedBB(1 * 0.0625, 0.0, 1 * 0.0625, 13 * 0.0625,
+			2 * 0.0625, 15 * 0.0625);
 	private static final AxisAlignedBB SELECTION_BOX_OPEN = new AxisAlignedBB(0, 0, 0, 1, 12 * 0.0625, 1);
 	private static final AxisAlignedBB SELECTION_BOX_CLOSED = new AxisAlignedBB(0, 0, 0, 1, 3 * 0.0625, 1);
 
-	public BlockLaptop() 
-	{
+	public BlockLaptop() {
 		super(Material.ANVIL);
-		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.BASE));
-		this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
-		this.setUnlocalizedName("laptop");
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, Type.BASE));
+		setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+		setUnlocalizedName("laptop");
 		this.setRegistryName("laptop");
 	}
-	
+
 	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state)
-	{
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) 
-	{
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		TileEntity tileEntity = source.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityLaptop)
-		{
+		if (tileEntity instanceof TileEntityLaptop) {
 			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-			if(laptop.open)
-			{
+			if (laptop.open) {
 				return SELECTION_BOX_OPEN;
-			}
-			else
-			{
+			} else {
 				return SELECTION_BOX_CLOSED;
 			}
 		}
@@ -87,19 +81,16 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_)
-	{
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
+			List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean p_185477_7_) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityLaptop)
-		{
+		if (tileEntity instanceof TileEntityLaptop) {
 			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
-			if(laptop.open)
-			{
+			if (laptop.open) {
 				Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_OPEN_BOX);
-				Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, SCREEN_BOXES[state.getValue(FACING).getHorizontalIndex()]);
-			}
-			else
-			{
+				Block.addCollisionBoxToList(pos, entityBox, collidingBoxes,
+						SCREEN_BOXES[state.getValue(FACING).getHorizontalIndex()]);
+			} else {
 				Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, BODY_CLOSED_BOX);
 			}
 			return;
@@ -108,65 +99,53 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-	{
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
+			float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
 		IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
 		return state.withProperty(FACING, placer.getHorizontalFacing());
 	}
-	
+
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+			EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityLaptop)
-		{
+		if (tileEntity instanceof TileEntityLaptop) {
 			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
 
-			if(playerIn.isSneaking())
-			{
-				if(!worldIn.isRemote)
-				{
+			if (playerIn.isSneaking()) {
+				if (!worldIn.isRemote) {
 					laptop.openClose();
 				}
-			}
-			else
-			{
-				if(side == state.getValue(FACING).rotateYCCW())
-				{
+			} else {
+				if (side == state.getValue(FACING).rotateYCCW()) {
 					ItemStack heldItem = playerIn.getHeldItem(hand);
-					if(!heldItem.isEmpty() && heldItem.getItem() == DeviceItems.FLASH_DRIVE)
-					{
-						if(!worldIn.isRemote)
-						{
-							if(laptop.getFileSystem().setAttachedDrive(heldItem.copy()))
-							{
+					if (!heldItem.isEmpty() && (heldItem.getItem() == DeviceItems.FLASH_DRIVE)) {
+						if (!worldIn.isRemote) {
+							if (laptop.getFileSystem().setAttachedDrive(heldItem.copy())) {
 								heldItem.shrink(1);
 								TileEntityUtil.markBlockForUpdate(worldIn, pos);
-							}
-							else
-							{
+							} else {
 								playerIn.sendMessage(new TextComponentString("No more available USB slots!"));
 							}
 						}
 						return true;
 					}
 
-					if(!worldIn.isRemote)
-					{
+					if (!worldIn.isRemote) {
 						ItemStack stack = laptop.getFileSystem().removeAttachedDrive();
-						if(stack != null)
-						{
+						if (stack != null) {
 							BlockPos summonPos = pos.offset(state.getValue(FACING).rotateYCCW());
-							worldIn.spawnEntity(new EntityItem(worldIn, summonPos.getX() + 0.5, summonPos.getY(), summonPos.getZ() + 0.5, stack));
+							worldIn.spawnEntity(new EntityItem(worldIn, summonPos.getX() + 0.5, summonPos.getY(),
+									summonPos.getZ() + 0.5, stack));
 							TileEntityUtil.markBlockForUpdate(worldIn, pos);
 						}
 					}
 					return true;
 				}
 
-				if(laptop.open && worldIn.isRemote)
-				{
-					playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				if (laptop.open && worldIn.isRemote) {
+					playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(),
+							pos.getZ());
 				}
 			}
 		}
@@ -174,17 +153,14 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune)
-	{
+	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 		return null;
 	}
 
 	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
-	{
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityLaptop)
-		{
+		if (tileEntity instanceof TileEntityLaptop) {
 			TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
 
 			NBTTagCompound tileEntityTag = new NBTTagCompound();
@@ -205,53 +181,45 @@ public class BlockLaptop extends BlockHorizontal implements ITileEntityProvider
 		}
 		super.breakBlock(worldIn, pos, state);
 	}
-	
+
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) 
-	{
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		return state.withProperty(TYPE, Type.BASE);
-	}
-	
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) 
-	{
-		return new TileEntityLaptop();
-	}
-	
-	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
-	}
-	
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(TYPE, Type.BASE);
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState()
-	{
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntityLaptop();
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(FACING).getHorizontalIndex();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(TYPE, Type.BASE);
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, FACING, TYPE);
 	}
 
 	@Override
-	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param)
-	{
+	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param) {
 		TileEntity tileentity = worldIn.getTileEntity(pos);
-		return tileentity != null && tileentity.receiveClientEvent(id, param);
+		return (tileentity != null) && tileentity.receiveClientEvent(id, param);
 	}
-	
-	public static enum Type implements IStringSerializable 
-	{
+
+	public static enum Type implements IStringSerializable {
 		BASE, SCREEN;
 
 		@Override
-		public String getName() 
-		{
+		public String getName() {
 			return name().toLowerCase();
 		}
-		
+
 	}
 }

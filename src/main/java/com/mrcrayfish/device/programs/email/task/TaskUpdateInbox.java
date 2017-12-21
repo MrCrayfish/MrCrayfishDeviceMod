@@ -12,32 +12,27 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
-public class TaskUpdateInbox extends Task
-{
+public class TaskUpdateInbox extends Task {
 	private List<ApplicationEmail.Email> emails;
-	
-	public TaskUpdateInbox() 
-	{
+
+	public TaskUpdateInbox() {
 		super("update_inbox");
 	}
 
 	@Override
-	public void prepareRequest(NBTTagCompound nbt) {}
-
-	@Override
-	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
-	{
-		this.emails = EmailManager.INSTANCE.getEmailsForAccount(player);
+	public void prepareRequest(NBTTagCompound nbt) {
 	}
 
 	@Override
-	public void prepareResponse(NBTTagCompound nbt) 
-	{
+	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) {
+		emails = EmailManager.INSTANCE.getEmailsForAccount(player);
+	}
+
+	@Override
+	public void prepareResponse(NBTTagCompound nbt) {
 		NBTTagList tagList = new NBTTagList();
-		if(emails != null)
-		{
-			for(ApplicationEmail.Email email : emails)
-			{
+		if (emails != null) {
+			for (ApplicationEmail.Email email : emails) {
 				NBTTagCompound emailTag = new NBTTagCompound();
 				email.writeToNBT(emailTag);
 				tagList.appendTag(emailTag);
@@ -47,12 +42,10 @@ public class TaskUpdateInbox extends Task
 	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) 
-	{
+	public void processResponse(NBTTagCompound nbt) {
 		EmailManager.INSTANCE.getInbox().clear();
 		NBTTagList emails = (NBTTagList) nbt.getTag("emails");
-		for(int i = 0; i < emails.tagCount(); i++)
-		{
+		for (int i = 0; i < emails.tagCount(); i++) {
 			NBTTagCompound emailTag = emails.getCompoundTagAt(i);
 			Email email = Email.readFromNBT(emailTag);
 			EmailManager.INSTANCE.getInbox().add(email);

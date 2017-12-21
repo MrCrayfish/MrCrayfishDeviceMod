@@ -9,22 +9,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
-public class GuiHandler implements IGuiHandler
-{
+public class GuiHandler implements IGuiHandler {
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
-	{
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		return null;
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
-	{
-		if(ID == Laptop.ID)
-		{
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		if (ID == Laptop.ID) {
 			TileEntity tileEntity = player.world.getTileEntity(new BlockPos(x, y, z));
-			if(tileEntity instanceof TileEntityLaptop)
-			{
+			if (tileEntity instanceof TileEntityLaptop) {
 				TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;
 				return new Laptop(laptop);
 			}
