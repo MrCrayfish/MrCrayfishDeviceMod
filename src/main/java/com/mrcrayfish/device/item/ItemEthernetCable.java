@@ -39,7 +39,7 @@ public class ItemEthernetCable extends Item
     {
         this.setUnlocalizedName("ethernet_cable");
         this.setRegistryName("ethernet_cable");
-        this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
         this.setMaxStackSize(1);
     }
 
