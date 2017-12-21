@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.core.object;
+package com.mrcrayfish.device.core.network;
 
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.api.app.Icons;
@@ -48,16 +48,7 @@ public class TrayItemWifi extends TrayItem
             }
         });
 
-        BlockPos laptopPos = Laptop.getPos();
-        if(laptopPos != null)
-        {
-            TaskPing task = new TaskPing(Laptop.getPos());
-            task.setCallback((tagCompound, success) ->
-            {
-                runPingTask();
-            });
-            TaskManager.sendTask(task);
-        }
+        runPingTask();
     }
 
     @Override

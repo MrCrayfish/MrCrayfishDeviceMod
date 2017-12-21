@@ -52,7 +52,7 @@ public class Router
         {
             NETWORK_DEVICES.put(id, new NetworkDevice(id, name, this));
         }
-        timer += DeviceConfig.getBeaconInterval();
+        timer = DeviceConfig.getBeaconInterval();
         return true;
     }
 
