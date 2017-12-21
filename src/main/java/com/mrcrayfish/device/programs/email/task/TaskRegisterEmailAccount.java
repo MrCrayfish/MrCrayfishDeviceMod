@@ -7,40 +7,36 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TaskRegisterEmailAccount extends Task
-{
+public class TaskRegisterEmailAccount extends Task {
 	private String name;
-	
-	public TaskRegisterEmailAccount() 
-	{
+
+	public TaskRegisterEmailAccount() {
 		super("register_email_account");
 	}
-	
-	public TaskRegisterEmailAccount(String name) 
-	{
+
+	public TaskRegisterEmailAccount(String name) {
 		this();
 		this.name = name;
 	}
 
 	@Override
-	public void prepareRequest(NBTTagCompound nbt) 
-	{
-		nbt.setString("AccountName", this.name);
+	public void prepareRequest(NBTTagCompound nbt) {
+		nbt.setString("AccountName", name);
 	}
 
 	@Override
-	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
-	{
-		if(EmailManager.INSTANCE.addAccount(player, nbt.getString("AccountName")))
-		{
-			this.setSuccessful();
-		}	
+	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) {
+		if (EmailManager.INSTANCE.addAccount(player, nbt.getString("AccountName"))) {
+			setSuccessful();
+		}
 	}
 
 	@Override
-	public void prepareResponse(NBTTagCompound nbt) {}
+	public void prepareResponse(NBTTagCompound nbt) {
+	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) {}
+	public void processResponse(NBTTagCompound nbt) {
+	}
 
 }

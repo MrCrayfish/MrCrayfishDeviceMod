@@ -3,14 +3,12 @@ package com.mrcrayfish.device.object;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
-public class AppInfo 
-{
+public class AppInfo {
 	private final ResourceLocation APP_ID;
 	private int iconU = 0, iconV = 0;
 
-	public AppInfo(ResourceLocation identifier)
-	{
-		this.APP_ID = identifier;
+	public AppInfo(ResourceLocation identifier) {
+		APP_ID = identifier;
 	}
 
 	/**
@@ -18,8 +16,7 @@ public class AppInfo
 	 *
 	 * @return the app resource location
 	 */
-	public ResourceLocation getId()
-	{
+	public ResourceLocation getId() {
 		return APP_ID;
 	}
 
@@ -28,8 +25,7 @@ public class AppInfo
 	 *
 	 * @return a formatted id
 	 */
-	public String getFormattedId()
-	{
+	public String getFormattedId() {
 		return APP_ID.getResourceDomain() + "." + APP_ID.getResourcePath();
 	}
 
@@ -38,37 +34,35 @@ public class AppInfo
 	 *
 	 * @return the application name
 	 */
-	public String getName() 
-	{
-		return I18n.format("app." + this.getFormattedId() + ".name");
-	}
-	
-	public String getAuthor() 
-	{
-		return I18n.format("app." + this.getFormattedId() + ".author");
-	}
-	
-	public String getDescription() 
-	{
-		return I18n.format("app." + this.getFormattedId() + ".desc");
+	public String getName() {
+		return I18n.format("app." + getFormattedId() + ".name");
 	}
 
-	public int getIconU()
-	{
+	public String getAuthor() {
+		return I18n.format("app." + getFormattedId() + ".author");
+	}
+
+	public String getDescription() {
+		return I18n.format("app." + getFormattedId() + ".desc");
+	}
+
+	public int getIconU() {
 		return iconU;
 	}
 
-	public int getIconV()
-	{
+	public int getIconV() {
 		return iconV;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null) return false;
-		if(!(obj instanceof AppInfo)) return false;
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof AppInfo)) {
+			return false;
+		}
 		AppInfo info = (AppInfo) obj;
-		return this == info || getFormattedId().equals(info.getFormattedId());
+		return (this == info) || getFormattedId().equals(info.getFormattedId());
 	}
 }

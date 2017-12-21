@@ -26,7 +26,6 @@ public class Canvas extends Component
 	private int red, green, blue;
 	private int currentColour = Color.BLACK.getRGB();
 	
-	private boolean drawing = false;
 	private boolean showGrid = false;
 	private boolean existingImage = false;
 	
@@ -87,7 +86,6 @@ public class Canvas extends Component
 		int endY = startY + picture.getHeight() * picture.getPixelHeight() - 1;
 		if(GuiHelper.isMouseInside(mouseX, mouseY, startX, startY, endX, endY))
 		{
-			this.drawing = true;
 			int pixelX = (mouseX - startX) / picture.getPixelWidth();
 			int pixelY = (mouseY - startY) / picture.getPixelHeight();
 			this.currentTool.handleClick(this, pixelX, pixelY);
@@ -97,8 +95,6 @@ public class Canvas extends Component
 	@Override
 	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton) 
 	{
-		this.drawing = false;
-		
 		int startX = xPosition + 1;
 		int startY = yPosition + 1;
 		int endX = startX + picture.getWidth() * picture.getPixelWidth() - 1;

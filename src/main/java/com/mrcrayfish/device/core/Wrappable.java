@@ -1,16 +1,16 @@
 package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.api.app.Dialog;
+
 import net.minecraft.client.Minecraft;
 
-public abstract class Wrappable
-{
-	private Window window;
+public abstract class Wrappable {
+	private Window<?> window;
 
 	/**
 	 * The default initialization method. Clears any components in the default
-	 * layout and sets it as the current layout. If you override this method and
-	 * are using the default layout, make sure you call it using
+	 * layout and sets it as the current layout. If you override this method and are
+	 * using the default layout, make sure you call it using
 	 * <code>super.init()</code>
 	 */
 	public abstract void init();
@@ -24,7 +24,7 @@ public abstract class Wrappable
 	/**
 	 * The main render loop. Note if you override, make sure you call this super
 	 * method.
-	 * 
+	 *
 	 * @param laptop
 	 *            laptop instance
 	 * @param mc
@@ -42,12 +42,13 @@ public abstract class Wrappable
 	 * @param partialTicks
 	 *            time passed since tick
 	 */
-	public abstract void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks);
+	public abstract void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active,
+			float partialTicks);
 
 	/**
 	 * Called when a key is typed from your keyboard. Note if you override, make
 	 * sure you call this super method.
-	 * 
+	 *
 	 * @param character
 	 *            the typed character
 	 * @param code
@@ -57,7 +58,7 @@ public abstract class Wrappable
 
 	/**
 	 * Called when a key is released from your keyboard.
-	 * 
+	 *
 	 * @param character
 	 *            the released character
 	 * @param code
@@ -67,7 +68,7 @@ public abstract class Wrappable
 
 	/**
 	 * Called when you press a mouse button.
-	 * 
+	 *
 	 * @param mouseX
 	 *            the current x position of the mouse
 	 * @param mouseY
@@ -79,7 +80,7 @@ public abstract class Wrappable
 
 	/**
 	 * Called when you drag the mouse with a button pressed down.
-	 * 
+	 *
 	 * @param mouseX
 	 *            the current x position of the mouse
 	 * @param mouseY
@@ -91,7 +92,7 @@ public abstract class Wrappable
 
 	/**
 	 * Called when you release the currently pressed mouse button.
-	 * 
+	 *
 	 * @param mouseX
 	 *            the x position of the release
 	 * @param mouseY
@@ -103,7 +104,7 @@ public abstract class Wrappable
 
 	/**
 	 * Called when you scroll the wheel on your mouse.
-	 * 
+	 *
 	 * @param mouseX
 	 *            the x position of the mouse
 	 * @param mouseY
@@ -115,7 +116,7 @@ public abstract class Wrappable
 
 	/**
 	 * Gets the text in the title bar.
-	 * 
+	 *
 	 * @return The display name
 	 */
 	public abstract String getWindowTitle();
@@ -128,9 +129,8 @@ public abstract class Wrappable
 	public abstract int getWidth();
 
 	/**
-	 * Gets the height of the content (application/dialog) including the title
-	 * bar.
-	 * 
+	 * Gets the height of the content (application/dialog) including the title bar.
+	 *
 	 * @return the height
 	 */
 	public abstract int getHeight();
@@ -142,7 +142,7 @@ public abstract class Wrappable
 
 	/**
 	 * Gets if this content's layout is currently pending a update
-	 * 
+	 *
 	 * @return if pending layout update
 	 */
 	public abstract boolean isPendingLayoutUpdate();
@@ -154,7 +154,7 @@ public abstract class Wrappable
 
 	/**
 	 * Updates the components of this content
-	 * 
+	 *
 	 * @param x
 	 *            the starting rendering x position (left)
 	 * @param y
@@ -165,17 +165,18 @@ public abstract class Wrappable
 	/**
 	 * Called when this content is closed
 	 */
-	public void onClose() {}
+	public void onClose() {
+	}
 
 	/**
 	 * Sets the Window instance. Used by the core.
 	 *
 	 * @param window
 	 */
-	public final void setWindow(Window window)
-	{
-		if (window == null)
+	public final void setWindow(Window<?> window) {
+		if (window == null) {
 			throw new IllegalArgumentException("You can't set a null window instance");
+		}
 		this.window = window;
 	}
 
@@ -184,13 +185,11 @@ public abstract class Wrappable
 	 *
 	 * @return the window
 	 */
-	public final Window getWindow()
-	{
+	public final Window<?> getWindow() {
 		return window;
 	}
 
-	public final void openDialog(Dialog dialog)
-	{
+	public final void openDialog(Dialog dialog) {
 		window.openDialog(dialog);
 	}
 

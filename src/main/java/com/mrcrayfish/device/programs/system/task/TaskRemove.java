@@ -1,7 +1,5 @@
 package com.mrcrayfish.device.programs.system.task;
 
-import java.util.UUID;
-
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
@@ -10,48 +8,41 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TaskRemove extends Task 
-{
+public class TaskRemove extends Task {
 	private int amount;
-	
-	public TaskRemove()
-	{
+
+	public TaskRemove() {
 		super("bank_remove");
 	}
-	
-	public TaskRemove(int amount)
-	{
+
+	public TaskRemove(int amount) {
 		this();
 		this.amount = amount;
 	}
 
 	@Override
-	public void prepareRequest(NBTTagCompound nbt)
-	{
-		nbt.setInteger("amount", this.amount);
+	public void prepareRequest(NBTTagCompound nbt) {
+		nbt.setInteger("amount", amount);
 	}
 
 	@Override
-	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-	{
-		this.amount = nbt.getInteger("amount");
+	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) {
+		amount = nbt.getInteger("amount");
 		Account sender = BankUtil.INSTANCE.getAccount(player);
-		if(sender.hasAmount(amount))
-		{
+		if (sender.hasAmount(amount)) {
 			sender.remove(amount);
-			this.setSuccessful();
+			setSuccessful();
 		}
 	}
 
 	@Override
-	public void prepareResponse(NBTTagCompound nbt) 
-	{
-		if(isSucessful())
-		{
-			nbt.setInteger("balance", this.amount);
+	public void prepareResponse(NBTTagCompound nbt) {
+		if (isSucessful()) {
+			nbt.setInteger("balance", amount);
 		}
 	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) {}
+	public void processResponse(NBTTagCompound nbt) {
+	}
 }

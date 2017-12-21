@@ -9,22 +9,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class TaskAddAuction extends Task
-{
+public class TaskAddAuction extends Task {
 	private int slot;
 	private int amount;
 	private int price;
 	private int duration;
-	
+
 	private AuctionItem item;
-	
-	public TaskAddAuction()
-	{
+
+	public TaskAddAuction() {
 		super("minebay_add_auction");
 	}
-	
-	public TaskAddAuction(int slot, int amount, int price, int duration)
-	{
+
+	public TaskAddAuction(int slot, int amount, int price, int duration) {
 		this();
 		this.slot = slot;
 		this.amount = amount;
@@ -33,8 +30,7 @@ public class TaskAddAuction extends Task
 	}
 
 	@Override
-	public void prepareRequest(NBTTagCompound nbt) 
-	{
+	public void prepareRequest(NBTTagCompound nbt) {
 		nbt.setInteger("slot", slot);
 		nbt.setInteger("amount", amount);
 		nbt.setInteger("price", price);
@@ -42,46 +38,39 @@ public class TaskAddAuction extends Task
 	}
 
 	@Override
-	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) 
-	{
+	public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player) {
 		int slot = nbt.getInteger("slot");
 		int amount = nbt.getInteger("amount");
 		int price = nbt.getInteger("price");
 		int duration = nbt.getInteger("duration");
-		
-		if(slot >= 0 && price >= 0 && slot < player.inventory.getSizeInventory())
-		{
+
+		if ((slot >= 0) && (price >= 0) && (slot < player.inventory.getSizeInventory())) {
 			ItemStack real = player.inventory.getStackInSlot(slot);
-			if(real != null)
-			{
+			if (real != null) {
 				ItemStack stack = real.copy();
 				stack.setCount(amount);
 				real.shrink(amount);
-				//TODO Test this
-				
+				// TODO Test this
+
 				item = new AuctionItem(stack, price, duration, player.getUniqueID());
-				
+
 				AuctionManager.INSTANCE.addItem(item);
-				
-				this.setSuccessful();
+
+				setSuccessful();
 			}
 		}
 	}
 
 	@Override
-	public void prepareResponse(NBTTagCompound nbt)
-	{
-		if(isSucessful())
-		{
+	public void prepareResponse(NBTTagCompound nbt) {
+		if (isSucessful()) {
 			item.writeToNBT(nbt);
 		}
 	}
 
 	@Override
-	public void processResponse(NBTTagCompound nbt) 
-	{
-		if(isSucessful())
-		{
+	public void processResponse(NBTTagCompound nbt) {
+		if (isSucessful()) {
 			AuctionManager.INSTANCE.addItem(AuctionItem.readFromNBT(nbt));
 		}
 	}
