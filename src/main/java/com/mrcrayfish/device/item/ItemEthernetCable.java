@@ -6,12 +6,12 @@ import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketChat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
@@ -25,7 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -112,7 +111,7 @@ public class ItemEthernetCable extends Item
             if(tileEntity instanceof TileEntityDevice)
             {
                 TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-                heldItem.setStackDisplayName(TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + I18n.format("item.ethernet_cable.name"));
+                heldItem.setTagCompound(new NBTTagCompound());
                 NBTTagCompound tag = heldItem.getTagCompound();
                 tag.setUniqueId("id", tileEntityDevice.getId());
                 tag.setString("name", tileEntityDevice.getDeviceName());
@@ -197,5 +196,15 @@ public class ItemEthernetCable extends Item
     private static double getDistance(BlockPos source, BlockPos target)
     {
         return Math.sqrt(source.distanceSqToCenter(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5));
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        if(stack.hasTagCompound())
+        {
+            return TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + super.getItemStackDisplayName(stack);
+        }
+        return super.getItemStackDisplayName(stack);
     }
 }
