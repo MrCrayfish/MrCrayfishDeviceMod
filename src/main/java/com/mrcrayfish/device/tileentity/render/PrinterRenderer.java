@@ -4,6 +4,7 @@ import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.block.BlockPrinter;
+import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,10 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
     @Override
     public void render(TileEntityPrinter te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
+        IBlockState state = te.getWorld().getBlockState(te.getPos());
+        if(state.getBlock() != DeviceBlocks.PRINTER)
+            return;
+
         GlStateManager.pushMatrix();
         {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -36,7 +41,6 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0.5, 0.5, 0.5);
-                    IBlockState state = te.getWorld().getBlockState(te.getPos());
                     GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(22.5F, 1, 0, 0);
                     GlStateManager.translate(0, 0, 0.4);
@@ -51,8 +55,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 if(te.isLoading())
                 {
                     GlStateManager.translate(0.5, 0.5, 0.5);
-                    IBlockState state1 = te.getWorld().getBlockState(te.getPos());
-                    GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
+                    GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(22.5F, 1, 0, 0);
                     double progress = Math.max(-0.4, -0.4 + (0.4 * ((double) (te.getRemainingPrintTime() - 10) / 20)));
                     GlStateManager.translate(0, progress, 0.36875);
@@ -62,8 +65,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                 else if(te.isPrinting())
                 {
                     GlStateManager.translate(0.5, 0.078125, 0.5);
-                    IBlockState state1 = te.getWorld().getBlockState(te.getPos());
-                    GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
+                    GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                     GlStateManager.rotate(90F, 1, 0, 0);
                     double progress = -0.35 + (0.50 * ((double) (te.getRemainingPrintTime() - 20) / te.getTotalPrintTime()));
                     GlStateManager.translate(0, progress, 0);
@@ -85,8 +87,7 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.translate(0.5, 0.5, 0.5);
-                IBlockState state1 = te.getWorld().getBlockState(te.getPos());
-                GlStateManager.rotate(state1.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
+                GlStateManager.rotate(state.getValue(BlockPrinter.FACING).getHorizontalIndex() * -90F, 0, 1, 0);
                 GlStateManager.rotate(180F, 0, 1, 0);
                 GlStateManager.translate(0.0675, 0.005, -0.032);
                 GlStateManager.translate(-6.5 * 0.0625, -3.5 * 0.0625, 3.01 * 0.0625);
