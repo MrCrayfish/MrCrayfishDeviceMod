@@ -1,13 +1,8 @@
 package com.mrcrayfish.device.init;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.item.ItemEthernetCable;
 import com.mrcrayfish.device.item.ItemFlashDrive;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -15,15 +10,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class DeviceItems
 {
     public static final Item FLASH_DRIVE;
+    public static final Item ETHERNET_CABLE;
 
     static
     {
         FLASH_DRIVE = new ItemFlashDrive();
+        ETHERNET_CABLE = new ItemEthernetCable();
     }
 
     public static void register()
     {
         register(FLASH_DRIVE);
+        register(ETHERNET_CABLE);
     }
 
     private static void register(Item item)

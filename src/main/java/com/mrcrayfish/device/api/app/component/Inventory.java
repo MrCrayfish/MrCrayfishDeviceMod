@@ -117,7 +117,7 @@ public class Inventory extends Component
 					this.selected = (i * 9) + j + 9;
 					if(clickListener != null)
 					{
-						clickListener.onClick(this, mouseButton);
+						clickListener.onClick(mouseX, mouseY, mouseButton);
 					}
 					return;
 				}

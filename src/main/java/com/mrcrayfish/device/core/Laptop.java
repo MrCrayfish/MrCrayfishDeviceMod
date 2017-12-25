@@ -88,6 +88,12 @@ public class Laptop extends GuiScreen implements System
 		Laptop.pos = laptop.getPos();
 	}
 
+	/**
+	 * Returns the position of the laptop the player is currently using. This method can ONLY be
+	 * called when the laptop GUI is open, otherwise it will return a null position.
+	 *
+	 * @return the position of the laptop currently in use
+	 */
 	@Nullable
 	public static BlockPos getPos()
 	{
@@ -144,6 +150,8 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void updateScreen()
 	{
+		bar.onTick();
+
 		for(Window window : windows)
 		{
 			if(window != null)
@@ -648,6 +656,7 @@ public class Laptop extends GuiScreen implements System
 	{
 		layout.updateComponents(x, y);
 		context = layout;
+		layout.init();
 	}
 
 	@Override

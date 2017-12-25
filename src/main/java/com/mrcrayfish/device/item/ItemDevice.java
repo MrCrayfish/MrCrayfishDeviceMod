@@ -1,18 +1,13 @@
 package com.mrcrayfish.device.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class ItemLaptop extends ItemBlock
+public class ItemDevice extends ItemColorable
 {
-    public ItemLaptop(Block block)
+    public ItemDevice(Block block)
     {
         super(block);
         this.setMaxStackSize(1);
