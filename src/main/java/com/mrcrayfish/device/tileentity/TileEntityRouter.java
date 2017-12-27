@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityRouter extends TileEntitySync implements ITickable, Colorable
+public class TileEntityRouter extends TileEntityDevice implements ITickable, Colorable
 {
     private EnumDyeColor color = EnumDyeColor.RED;
 
@@ -64,6 +64,12 @@ public class TileEntityRouter extends TileEntitySync implements ITickable, Color
     }
 
     @Override
+    public String getDeviceName()
+    {
+        return "Router";
+    }
+
+    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
@@ -89,7 +95,7 @@ public class TileEntityRouter extends TileEntitySync implements ITickable, Color
     @Override
     public NBTTagCompound writeSyncTag()
     {
-        NBTTagCompound tag = new NBTTagCompound();
+        NBTTagCompound tag = super.writeSyncTag();
         tag.setByte("color", (byte) color.getDyeDamage());
         return tag;
     }
