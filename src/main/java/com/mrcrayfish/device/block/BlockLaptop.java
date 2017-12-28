@@ -2,9 +2,13 @@ package com.mrcrayfish.device.block;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.entity.EntitySeat;
+import com.mrcrayfish.device.gui.GuiHandler;
 import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import com.mrcrayfish.device.tileentity.TileEntityOfficeChair;
+import com.mrcrayfish.device.util.SeatUtil;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -25,9 +29,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.config.GuiUtils;
+import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 {
@@ -102,8 +109,15 @@ public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 				{
 					laptop.openClose();
 				}
-			}
-			else
+			}else if(playerIn.isRiding()){
+			    if(worldIn.isRemote) {
+                    if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && laptop.isOpen()) {
+                        playerIn.openGui(MrCrayfishDeviceMod.instance, Laptop.ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                    } else {
+                        laptop.openClose();
+                    }
+                }
+            }else
 			{
 				if(side == state.getValue(FACING).rotateYCCW())
 				{
