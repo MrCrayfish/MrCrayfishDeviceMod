@@ -42,14 +42,14 @@ public final class NetworkDrive extends AbstractDrive
     }
 
     @Override
-    public FileSystem.Response handleFileAction(FileAction action, World world)
+    public FileSystem.Response handleFileAction(FileSystem fileSystem, FileAction action, World world)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof Interface)
         {
             Interface impl = (Interface) tileEntity;
             AbstractDrive drive = impl.getDrive();
-            if(drive.handleFileAction(action, world).getStatus() == FileSystem.Status.SUCCESSFUL)
+            if(drive.handleFileAction(fileSystem, action, world).getStatus() == FileSystem.Status.SUCCESSFUL)
             {
                 tileEntity.markDirty();
                 return FileSystem.createSuccessResponse();

@@ -75,13 +75,15 @@ public class ApplicationNoteStash extends Application
         });
 		layoutMain.addComponent(notes);
 		
-		btnNew = new Button("New", 124, 5, 50, 20);
-		btnNew.setClickListener((c, mouseButton) -> setCurrentLayout(layoutAddNote));
+		btnNew = new Button(124, 5, "New");
+		btnNew.setSize(50, 20);
+		btnNew.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutAddNote));
 		layoutMain.addComponent(btnNew);
 		
-		btnView = new Button("View", 124, 30, 50, 20);
+		btnView = new Button(124, 30, "View");
+		btnView.setSize(50, 20);
 		btnView.setEnabled(false);
-		btnView.setClickListener((c, mouseButton) ->
+		btnView.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(notes.getSelectedIndex() != -1)
             {
@@ -93,9 +95,10 @@ public class ApplicationNoteStash extends Application
         });
 		layoutMain.addComponent(btnView);
 		
-		btnDelete = new Button("Delete", 124, 55, 50, 20);
+		btnDelete = new Button(124, 55, "Delete");
+		btnDelete.setSize(50, 20);
 		btnDelete.setEnabled(false);
-		btnDelete.setClickListener((c, mouseButton) ->
+		btnDelete.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(notes.getSelectedIndex() != -1)
             {
@@ -141,8 +144,9 @@ public class ApplicationNoteStash extends Application
 		textArea.setPadding(2);
 		layoutAddNote.addComponent(textArea);
 		
-		btnSave = new Button("Save", 124, 5, 50, 20);
-		btnSave.setClickListener((c, mouseButton) ->
+		btnSave = new Button(124, 5, "Save");
+		btnSave.setSize(50, 20);
+		btnSave.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             NBTTagCompound data = new NBTTagCompound();
             data.setString("title", title.getText());
@@ -161,8 +165,9 @@ public class ApplicationNoteStash extends Application
         });
 		layoutAddNote.addComponent(btnSave);
 		
-		btnCancel = new Button("Cancel", 124, 30, 50, 20);
-		btnCancel.setClickListener((c, mouseButton) ->
+		btnCancel = new Button(124, 30, "Cancel");
+		btnCancel.setSize(50, 20);
+		btnCancel.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             title.clear();
             textArea.clear();
@@ -181,8 +186,9 @@ public class ApplicationNoteStash extends Application
 		noteContent = new Text("", 5, 18, 110);
 		layoutViewNote.addComponent(noteContent);
 		
-		btnBack = new Button("Back", 124, 5, 50, 20);
-		btnBack.setClickListener((c, mouseButton) -> setCurrentLayout(layoutMain));
+		btnBack = new Button(124, 5, "Back");
+		btnBack.setSize(50, 20);
+		btnBack.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutMain));
 		layoutViewNote.addComponent(btnBack);
 		
 		setCurrentLayout(layoutMain);

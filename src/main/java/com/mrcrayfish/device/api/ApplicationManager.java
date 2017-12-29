@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
@@ -26,35 +27,16 @@ public class ApplicationManager
 	 * @param identifier the
 	 * @param clazz
 	 */
-	public static void registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
+	@Nullable
+	public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{
-		if("minecraft".equals(identifier.getResourceDomain()))
+		Application application = MrCrayfishDeviceMod.proxy.registerApplication(identifier, clazz);
+		if(application != null)
 		{
-			throw new IllegalArgumentException("Invalid identifier domain");
+			APP_INFO.put(identifier, application.getInfo());
+			return application;
 		}
-
-		try
-		{
-			Application application = clazz.newInstance();
-			List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
-			APPS.add(application);
-
-			AppInfo info = new AppInfo(identifier);
-			APP_INFO.put(identifier, info);
-
-			Field field = Application.class.getDeclaredField("info");
-			field.setAccessible(true);
-
-			Field modifiers = Field.class.getDeclaredField("modifiers");
-			modifiers.setAccessible(true);
-			modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-			field.set(application, info);
-		}
-		catch(InstantiationException | IllegalAccessException | NoSuchFieldException e)
-		{
-			e.printStackTrace();
-		}
+		return null;
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.core.io;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.Folder;
@@ -15,7 +16,8 @@ import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,7 +27,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +35,8 @@ import java.util.regex.Pattern;
 
 public class FileSystem
 {
-	public static final Pattern PATTERN_DIRECTORY = Pattern.compile("^(/)|(/[\\w. ]{1,32})*$");
+	public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[\\w'. ]{1,32}$");
+	public static final Pattern PATTERN_DIRECTORY = Pattern.compile("^(/)|(/[\\w'. ]{1,32})*$");
 
 	public static final String DIR_ROOT = "/";
 	public static final String DIR_APPLICATION_DATA = DIR_ROOT + "Application Data";
@@ -44,10 +46,11 @@ public class FileSystem
 	private AbstractDrive mainDrive = null;
 	private Map<UUID, AbstractDrive> additionalDrives = new HashMap<>();
 	private AbstractDrive attachedDrive = null;
+	private EnumDyeColor attachedDriveColor = EnumDyeColor.RED;
 
-	private TileEntity tileEntity;
+	private TileEntityLaptop tileEntity;
 	
-	public FileSystem(TileEntity tileEntity, NBTTagCompound fileSystemTag)
+	public FileSystem(TileEntityLaptop tileEntity, NBTTagCompound fileSystemTag)
 	{
 		this.tileEntity = tileEntity;
 
@@ -75,6 +78,11 @@ public class FileSystem
 		if(fileSystemTag.hasKey("external_drive", Constants.NBT.TAG_COMPOUND))
 		{
 			attachedDrive = ExternalDrive.fromTag(fileSystemTag.getCompoundTag("external_drive"));
+		}
+
+		if(fileSystemTag.hasKey("external_drive_color", Constants.NBT.TAG_BYTE))
+		{
+			attachedDriveColor = EnumDyeColor.byMetadata(fileSystemTag.getByte("external_drive_color"));
 		}
 
 		setupDefault();
@@ -121,7 +129,7 @@ public class FileSystem
 			{
 				if(callback != null)
 				{
-					callback.execute(Response.fromTag(nbt), success);
+					callback.execute(Response.fromTag(nbt.getCompoundTag("response")), success);
 				}
             });
 			TaskManager.sendTask(task);
@@ -134,7 +142,7 @@ public class FileSystem
 		AbstractDrive drive = getAvailableDrives(world, true).get(uuid);
 		if(drive != null)
 		{
-			Response response = drive.handleFileAction(action, world);
+			Response response = drive.handleFileAction(this, action, world);
 			if(response.getStatus() == Status.SUCCESSFUL)
 			{
 				tileEntity.markDirty();
@@ -175,6 +183,11 @@ public class FileSystem
 			{
 				drive.setName(flashDrive.getDisplayName());
 				attachedDrive = drive;
+				attachedDriveColor = EnumDyeColor.byMetadata(flashDrive.getMetadata());
+
+				tileEntity.getPipeline().setByte("external_drive_color", (byte) attachedDriveColor.getMetadata());
+				tileEntity.sync();
+
 				return true;
 			}
 		}
@@ -186,12 +199,17 @@ public class FileSystem
 		return attachedDrive;
 	}
 
+	public EnumDyeColor getAttachedDriveColor()
+	{
+		return attachedDriveColor;
+	}
+
 	@Nullable
 	public ItemStack removeAttachedDrive()
 	{
 		if(attachedDrive != null)
 		{
-			ItemStack stack = new ItemStack(DeviceItems.flash_drive);
+			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE, 1, getAttachedDriveColor().getMetadata());
 			stack.setStackDisplayName(attachedDrive.getName());
 			stack.getTagCompound().setTag("drive", attachedDrive.toTag());
 			attachedDrive = null;
@@ -218,6 +236,14 @@ public class FileSystem
 
 	public static void getApplicationFolder(Application app, Callback<Folder> callback)
 	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+			{
+				callback.execute(null, false);
+				return;
+			}
+		}
 		if(Laptop.getMainDrive() == null)
 		{
 			Task task = new TaskGetMainDrive(Laptop.getPos());
@@ -229,7 +255,7 @@ public class FileSystem
 				}
 				else
 				{
-					//TODO error dialog
+					callback.execute(null, false);
 				}
 			});
 			TaskManager.sendTask(task);
@@ -261,12 +287,12 @@ public class FileSystem
 						{
 							NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
 							appFolder.syncFiles(files);
+							callback.execute(appFolder, true);
 						}
 						else
 						{
-							//TODO error dialog
+							callback.execute(null, false);
 						}
-						callback.execute(appFolder, success);
 					});
 					TaskManager.sendTask(task);
 				}
@@ -276,13 +302,20 @@ public class FileSystem
 				Folder appFolder = new Folder(app.getInfo().getFormattedId());
 				folder.add(appFolder, (response, success) ->
 				{
-					callback.execute(appFolder, response.getStatus() == FileSystem.Status.SUCCESSFUL);
+					if(response != null && response.getStatus() == Status.SUCCESSFUL)
+					{
+						callback.execute(appFolder, true);
+					}
+					else
+					{
+						callback.execute(null, false);
+					}
 				});
 			}
 		}
 		else
 		{
-			//TODO error dialog
+			callback.execute(null, false);
 		}
 	}
 
@@ -298,7 +331,10 @@ public class FileSystem
 		fileSystemTag.setTag("drives", tagList);
 
 		if(attachedDrive != null)
+		{
 			fileSystemTag.setTag("external_drive", attachedDrive.toTag());
+			fileSystemTag.setByte("external_drive_color", (byte) attachedDriveColor.getMetadata());
+		}
 
 		return fileSystemTag;
 	}

@@ -78,7 +78,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 				mc.getTextureManager().bindTexture(COMPONENTS_GUI);
 				drawTexturedModalRect(xPosition, yPosition, checked ? 10 : 0, 60, 10, 10);
 			}
-			drawString(mc.fontRendererObj, name, xPosition + 12, yPosition + 1, textColour);
+			drawString(mc.fontRenderer, name, xPosition + 12, yPosition + 1, textColour);
         }
 	}
 	
@@ -97,7 +97,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 			this.checked = !checked;
 			if(listener != null)
 			{
-				listener.onClick(this, mouseButton);
+				listener.onClick(mouseX, mouseY, mouseButton);
 			}
 		}
 	}

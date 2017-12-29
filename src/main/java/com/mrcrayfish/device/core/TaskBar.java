@@ -1,29 +1,29 @@
 package com.mrcrayfish.device.core;
 
-import java.awt.Color;
-import java.util.List;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.ButtonArrow;
-import com.mrcrayfish.device.api.app.component.ButtonArrow.Type;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.core.network.TrayItemWifi;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.system.ApplicationAppStore;
-import com.mrcrayfish.device.programs.system.ApplicationSettings;
-
+import com.mrcrayfish.device.object.TrayItem;
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-class TaskBar
+public class TaskBar
 {
 	public static final ResourceLocation APP_BAR_GUI = new ResourceLocation("cdm:textures/gui/application_bar.png");
 
@@ -34,44 +34,77 @@ class TaskBar
 	private Button btnRight;
 	
 	private int offset = 0;
+	private int pingTimer = 0;
 
 	private List<Application> applications;
+	private List<TrayItem> trayItems = new ArrayList<>();
 
 	public TaskBar(List<Application> applications)
 	{
-		this.applications = applications;
+		setupApplications(applications);
+		trayItems.add(new TrayItemWifi());
+	}
+
+	public void init()
+	{
+		trayItems.forEach(TrayItem::init);
+	}
+
+	public void setupApplications(List<Application> applications)
+	{
+		final Predicate<Application> VALID_APPS = app ->
+		{
+			if(app instanceof SystemApplication)
+			{
+				return true;
+			}
+			if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+			{
+				if(MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
+				{
+					return !MrCrayfishDeviceMod.DEVELOPER_MODE || Settings.isShowAllApps();
+				}
+				return false;
+			}
+			else if(MrCrayfishDeviceMod.DEVELOPER_MODE)
+			{
+				return Settings.isShowAllApps();
+			}
+			return true;
+		};
+		this.applications = applications.stream().filter(VALID_APPS).collect(Collectors.toList());
 	}
 
 	public void init(int posX, int posY)
 	{
-		btnLeft = new ButtonArrow(0, 0, Type.LEFT);
+		btnLeft = new Button(0, 0, Icons.CHEVRON_LEFT);
+		btnLeft.setPadding(1);
 		btnLeft.xPosition = posX + 3;
 		btnLeft.yPosition = posY + 3;
-		btnLeft.setClickListener(new ClickListener()
+		btnLeft.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(offset > 0)
-				{
-					offset--;
-				}
-			}
-		});
-		btnRight = new ButtonArrow(0, 0, Type.RIGHT);
+            if(offset > 0)
+            {
+                offset--;
+            }
+        });
+		btnRight = new Button(0, 0, Icons.CHEVRON_RIGHT);
+		btnRight.setPadding(1);
 		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
 		btnRight.yPosition = posY + 3;
-		btnRight.setClickListener(new ClickListener()
+		btnRight.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(offset + APPS_DISPLAYED < applications.size())
-				{
-					offset++;
-				}
-			}
-		});
+            if(offset + APPS_DISPLAYED < applications.size())
+            {
+                offset++;
+            }
+        });
+		init();
+	}
+
+	public void onTick()
+	{
+		trayItems.forEach(TrayItem::tick);
 	}
 	
 	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)
@@ -80,13 +113,14 @@ class TaskBar
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 		gui.drawTexturedModalRect(x, y, 0, 0, 1, 18);
-		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 34, 18, 1, 18);
-		gui.drawTexturedModalRect(x + Laptop.SCREEN_WIDTH - 33, y, 2, 0, 33, 18);
+		int trayItemsWidth = trayItems.size() * 14;
+		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 36 - trayItemsWidth, 18, 1, 18);
+		RenderUtil.drawRectWithTexture(x + Laptop.SCREEN_WIDTH - 35 - trayItemsWidth, y, 2, 0, 35 + trayItemsWidth, 18, 1, 18);
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		btnLeft.render(gui, mc, btnLeft.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
-		btnRight.render(gui, mc, btnRight.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
+		//btnRight.render(gui, mc, btnRight.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
 
 		for(int i = 0; i < APPS_DISPLAYED && i < applications.size(); i++)
 		{
@@ -99,13 +133,21 @@ class TaskBar
 			}
 		}
 
-		mc.fontRendererObj.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
-		
-		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		
+		mc.fontRenderer.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
+
 		/* Settings App */
-		gui.drawTexturedModalRect(x + 316, y + 2, 14, 30, 14, 14);
-		gui.drawTexturedModalRect(x + 300, y + 2, 28, 30, 14, 14);
+		int startX = x + 317;
+		for(int i = 0; i < trayItems.size(); i++)
+		{
+			int posX = startX - (trayItems.size() - 1 - i) * 14;
+			if(isMouseInside(mouseX, mouseY, posX, y + 2, posX + 13, y + 15))
+			{
+				Gui.drawRect(posX, y + 2, posX + 14, y + 16, new Color(1.0F, 1.0F, 1.0F, 0.1F).getRGB());
+			}
+			trayItems.get(i).getIcon().draw(mc, posX + 2, y + 4);
+		}
+
+		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
@@ -134,6 +176,17 @@ class TaskBar
 			{
 				laptop.open(applications.get(appIndex));
 				return;
+			}
+		}
+
+		int startX = x + 317;
+		for(int i = 0; i < trayItems.size(); i++)
+		{
+			int posX = startX - (trayItems.size() - 1 - i) * 14;
+			if(isMouseInside(mouseX, mouseY, posX, y + 2, posX + 13, y + 15))
+			{
+				trayItems.get(i).handleClick(mouseX, mouseY, mouseButton);
+				break;
 			}
 		}
 	}

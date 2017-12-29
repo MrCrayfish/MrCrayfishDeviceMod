@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.programs.auction;
 
-import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
@@ -11,7 +10,6 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -103,12 +101,14 @@ public class ApplicationMineBay extends Application
 			}
 		});
 		
-		Button btnAddItem = new Button("Add Item", 70, 5, 60, 15);
-		btnAddItem.setClickListener((c, mouseButton) -> setCurrentLayout(layoutSelectItem));
+		Button btnAddItem = new Button(70, 5, "Add Item");
+		btnAddItem.setSize(60, 15);
+		btnAddItem.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutSelectItem));
 		super.addComponent(btnAddItem);
 
-		Button btnViewItem = new Button("Your Auctions", 135, 5, 80, 15);
-		btnViewItem.setClickListener((c, mouseButton) -> {
+		Button btnViewItem = new Button(135, 5, "Your Auctions");
+		btnViewItem.setSize(80, 15);
+		btnViewItem.setClickListener((mouseX, mouseY, mouseButton) -> {
 			TaskGetAuctions task = new TaskGetAuctions(Minecraft.getMinecraft().player.getUniqueID());
 			task.setCallback((nbt, success) -> {
                 items.removeAll();
@@ -165,48 +165,45 @@ public class ApplicationMineBay extends Application
 				{
 					GlStateManager.translate(x + 24, y + 4, 0);
 					GlStateManager.scale(0.666, 0.666, 0);
-					mc.fontRendererObj.drawString(e.getStack().getDisplayName(), 0, 0, Color.WHITE.getRGB(), false);
-					mc.fontRendererObj.drawString(TimeUtil.getTotalRealTime(e.getTimeLeft()), 0, 11, Color.LIGHT_GRAY.getRGB(), false);
+					mc.fontRenderer.drawString(e.getStack().getDisplayName(), 0, 0, Color.WHITE.getRGB(), false);
+					mc.fontRenderer.drawString(TimeUtil.getTotalRealTime(e.getTimeLeft()), 0, 11, Color.LIGHT_GRAY.getRGB(), false);
 				}
 				GlStateManager.popMatrix();
 				
 				String price = "$" + e.getPrice();
-				mc.fontRendererObj.drawString(price, x - mc.fontRendererObj.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
+				mc.fontRenderer.drawString(price, x - mc.fontRenderer.getStringWidth(price) + width - 5, y + 6, Color.YELLOW.getRGB());
 			}
 		});
 		super.addComponent(items);
 		
-		Button btnBuy = new Button("Buy", 100, 127, 50, 15);
-		btnBuy.setClickListener(new ClickListener()
+		Button btnBuy = new Button(100, 127, "Buy");
+		btnBuy.setSize(50, 15);
+		btnBuy.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				final Dialog.Confirmation dialog = new Dialog.Confirmation();
-				dialog.setPositiveText("Buy");
-				dialog.setPositiveListener((c13, mouseButton13) -> {
-                    final int index = items.getSelectedIndex();
-                    if(index == -1) return;
+            final Dialog.Confirmation dialog = new Dialog.Confirmation();
+            dialog.setPositiveText("Buy");
+            dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) -> {
+                final int index = items.getSelectedIndex();
+                if(index == -1) return;
 
-                    AuctionItem item = items.getItem(index);
-                    if(item != null)
+                AuctionItem item = items.getItem(index);
+                if(item != null)
+                {
+                    TaskBuyItem task = new TaskBuyItem(item.getId());
+                    task.setCallback((nbt, success) ->
                     {
-                        TaskBuyItem task = new TaskBuyItem(item.getId());
-                        task.setCallback((nbt, success) ->
-						{
-                            if(success)
-                            {
-                                items.removeItem(index);
-                            }
-                        });
-                        TaskManager.sendTask(task);
-                    }
-                });
-				dialog.setNegativeText("Cancel");
-				dialog.setNegativeListener((c12, mouseButton12) -> dialog.close());
-				ApplicationMineBay.this.openDialog(dialog);
-			}
-		});
+                        if(success)
+                        {
+                            items.removeItem(index);
+                        }
+                    });
+                    TaskManager.sendTask(task);
+                }
+            });
+            dialog.setNegativeText("Cancel");
+            dialog.setNegativeListener((mouseX1, mouseY1, mouseButton1) -> dialog.close());
+            ApplicationMineBay.this.openDialog(dialog);
+        });
 		super.addComponent(btnBuy);
 		
 		/* Select Item Layout */
@@ -220,59 +217,44 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Select an Item...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
 		
 		inventory = new Inventory(5, 28);
-		inventory.setClickListener(new ClickListener()
+		inventory.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				if(inventory.getSelectedSlotIndex() != -1)
-				{
-					ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
-					if(!stack.isEmpty())
-					{
-						buttonAddNext.setEnabled(true);
-						selectorAmount.setMax(stack.getCount());
-						selectorAmount.setNumber(stack.getCount());
-					}
-					else
-					{
-						buttonAddNext.setEnabled(false);
-					}
-				}
-			}
-		});
+            if(inventory.getSelectedSlotIndex() != -1)
+            {
+                ItemStack stack = Minecraft.getMinecraft().player.inventory.getStackInSlot(inventory.getSelectedSlotIndex());
+                if(!stack.isEmpty())
+                {
+                    buttonAddNext.setEnabled(true);
+                    selectorAmount.setMax(stack.getCount());
+                    selectorAmount.setNumber(stack.getCount());
+                }
+                else
+                {
+                    buttonAddNext.setEnabled(false);
+                }
+            }
+        });
 		layoutSelectItem.addComponent(inventory);
 
 		buttonAddCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
 		buttonAddCancel.setToolTip("Cancel", "Go back to main page");
-		buttonAddCancel.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				restoreDefaultLayout();
-			}
-		});
+		buttonAddCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
 		layoutSelectItem.addComponent(buttonAddCancel);
 		
 		buttonAddNext = new Button(154, 4, MINEBAY_ASSESTS, 16, 12, 8, 8);
 		buttonAddNext.setToolTip("Next Page", "Set price and amount");
 		buttonAddNext.setEnabled(false);
-		buttonAddNext.setClickListener(new ClickListener()
+		buttonAddNext.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				selectorAmount.updateButtons();
-				selectorPrice.updateButtons();
-				setCurrentLayout(layoutAmountAndPrice);
-			}
-		});
+            selectorAmount.updateButtons();
+            selectorPrice.updateButtons();
+            setCurrentLayout(layoutAmountAndPrice);
+        });
 		layoutSelectItem.addComponent(buttonAddNext);
 		
 		
@@ -287,7 +269,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Set amount and price...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 				
 				int offsetX = 14;
 				int offsetY = 40;
@@ -324,36 +306,15 @@ public class ApplicationMineBay extends Application
 		});
 		
 		buttonAmountAndPriceBack = new Button(122, 4, MINEBAY_ASSESTS, 8, 12, 8, 8);
-		buttonAmountAndPriceBack.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutSelectItem);
-			}
-		});
+		buttonAmountAndPriceBack.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutSelectItem));
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceBack);		
 		
 		buttonAmountAndPriceCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
-		buttonAmountAndPriceCancel.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				restoreDefaultLayout();
-			}
-		});
+		buttonAmountAndPriceCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceCancel);
 		
 		buttonAmountAndPriceNext = new Button(154, 4, MINEBAY_ASSESTS, 16, 12, 8, 8);
-		buttonAmountAndPriceNext.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				setCurrentLayout(layoutDuration);
-			}
-		});
+		buttonAmountAndPriceNext.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutDuration));
 		layoutAmountAndPrice.addComponent(buttonAmountAndPriceNext);	
 		
 		labelAmount = new Label("Amount", 16, 30);
@@ -381,7 +342,7 @@ public class ApplicationMineBay extends Application
 			{
 				Gui.drawRect(x, y, x + width, y + 22, Color.LIGHT_GRAY.getRGB());
 				Gui.drawRect(x, y + 22, x + width, y + 23, Color.DARK_GRAY.getRGB());
-				mc.fontRendererObj.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
+				mc.fontRenderer.drawString("Set duration...", x + 5, y + 7, Color.WHITE.getRGB(), true);
 			}
 		});
 		
@@ -389,7 +350,7 @@ public class ApplicationMineBay extends Application
 		buttonDurationBack.setClickListener(new ClickListener()
 		{
 			@Override
-			public void onClick(Component c, int mouseButton)
+			public void onClick(int mouseX, int mouseY, int mouseButton)
 			{
 				setCurrentLayout(layoutAmountAndPrice);
 			}
@@ -397,44 +358,33 @@ public class ApplicationMineBay extends Application
 		layoutDuration.addComponent(buttonDurationBack);		
 		
 		buttonDurationCancel = new Button(138, 4, MINEBAY_ASSESTS, 0, 12, 8, 8);
-		buttonDurationCancel.setClickListener(new ClickListener()
-		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				restoreDefaultLayout();
-			}
-		});
+		buttonDurationCancel.setClickListener((mouseX, mouseY, mouseButton) -> restoreDefaultLayout());
 		layoutDuration.addComponent(buttonDurationCancel);
 		
 		buttonDurationAdd = new Button(154, 4, MINEBAY_ASSESTS, 24, 12, 8, 8);
-		buttonDurationAdd.setClickListener(new ClickListener()
+		buttonDurationAdd.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			@Override
-			public void onClick(Component c, int mouseButton)
-			{
-				final Dialog.Confirmation dialog = new Dialog.Confirmation();
-				dialog.setMessageText("Are you sure you want to auction this item?");
-				dialog.setPositiveText("Yes");
-				dialog.setPositiveListener((c1, mouseButton1) ->
-				{
-                    int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
-                    TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
-                    task.setCallback((nbt, success) ->
-					{
-                        if(success)
-                        {
-                            List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
-                            items.addItem(auctionItems.get(auctionItems.size() - 1));
-                        }
-                    });
-                    TaskManager.sendTask(task);
-                    dialog.close();
-                    restoreDefaultLayout();
-                });
-				openDialog(dialog);
-			}
-		});
+            final Dialog.Confirmation dialog = new Dialog.Confirmation();
+            dialog.setMessageText("Are you sure you want to auction this item?");
+            dialog.setPositiveText("Yes");
+            dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
+            {
+int ticks = (int) TimeUtil.getRealTimeToTicks(selectorHours.getNumber(), selectorMinutes.getNumber(), selectorSeconds.getNumber());
+TaskAddAuction task = new TaskAddAuction(inventory.getSelectedSlotIndex(), selectorAmount.getNumber(), selectorPrice.getNumber(), ticks);
+task.setCallback((nbt, success) ->
+                {
+if(success)
+{
+List<AuctionItem> auctionItems = AuctionManager.INSTANCE.getItems();
+items.addItem(auctionItems.get(auctionItems.size() - 1));
+}
+});
+TaskManager.sendTask(task);
+dialog.close();
+restoreDefaultLayout();
+});
+            openDialog(dialog);
+        });
 		layoutDuration.addComponent(buttonDurationAdd);
 		
 		labelHours = new Label("Hrs", 45, 30);

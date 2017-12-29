@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
  */
 public class ServerFile
 {
-    public static final Pattern PATTERN_FILE_NAME = Pattern.compile("^[\\w. ]{1,32}$");
-
     public static final Comparator<ServerFile> SORT_BY_NAME = (f1, f2) -> {
         if(f1.isFolder() && !f2.isFolder()) return -1;
         if(!f1.isFolder() && f2.isFolder()) return 1;
@@ -57,7 +55,7 @@ public class ServerFile
         if(this.protect)
             return FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Cannot rename a protected file");
 
-        if(!PATTERN_FILE_NAME.matcher(name).matches())
+        if(!FileSystem.PATTERN_FILE_NAME.matcher(name).matches())
             return FileSystem.createResponse(FileSystem.Status.FILE_INVALID_NAME, "Invalid file name");
 
         this.name = name;

@@ -1,14 +1,17 @@
 package com.mrcrayfish.device.api.app;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.core.Laptop;
 
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * The Layout class is the main implementation for displaying
@@ -24,7 +27,7 @@ import net.minecraft.client.renderer.GlStateManager;
  * 
  * @author MrCrayfish
  */
-public final class Layout extends Component
+public class Layout extends Component
 {
 	/**
 	 * The list of components in the layout
@@ -159,6 +162,9 @@ public final class Layout extends Component
 		if(!this.visible)
 			return;
 
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		GLHelper.scissor(x, y, width, height);
+
 		if(background != null)
 		{
 			background.render(laptop, mc, x, y, width, height, mouseX, mouseY, windowActive);
@@ -168,8 +174,11 @@ public final class Layout extends Component
 		for(Component c : components)
 		{
 			GlStateManager.disableDepth();
+			GLHelper.scissor(x, y, width, height);
 			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
 		}
+
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
 	@Override
@@ -330,4 +339,31 @@ public final class Layout extends Component
 		void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive);
 	}
 
+	public static class Context extends Layout
+	{
+		private boolean borderVisible = true;
+
+		public Context(int width, int height)
+		{
+			super(width, height);
+		}
+
+		@Override
+		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
+		{
+			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
+			if(borderVisible)
+			{
+				drawHorizontalLine(x, x + width - 1, y, Color.DARK_GRAY.getRGB());
+				drawHorizontalLine(x, x + width - 1, y + height - 1, Color.DARK_GRAY.getRGB());
+				drawVerticalLine(x, y, y + height - 1, Color.DARK_GRAY.getRGB());
+				drawVerticalLine(x + width - 1, y, y + height - 1, Color.DARK_GRAY.getRGB());
+			}
+		}
+
+		public void setBorderVisible(boolean visible)
+		{
+			this.borderVisible = visible;
+		}
+	}
 }

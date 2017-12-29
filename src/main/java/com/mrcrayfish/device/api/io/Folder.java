@@ -1,8 +1,12 @@
 package com.mrcrayfish.device.api.io;
 
 import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,7 +21,7 @@ import java.util.function.Predicate;
 
 public class Folder extends File
 {
-	private List<File> files = new ArrayList<>();
+	protected List<File> files = new ArrayList<>();
 
 	private boolean synced = false;
 
@@ -90,7 +94,7 @@ public class Folder extends File
 			return;
 		}
 
-		if(!PATTERN_FILE_NAME.matcher(file.name).matches())
+		if(!FileSystem.PATTERN_FILE_NAME.matcher(file.name).matches())
 		{
 			if(callback != null)
 			{
@@ -121,9 +125,9 @@ public class Folder extends File
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeNew(this, file, override), (response, success) ->
 		{
-            if(success)
+			if(success)
 			{
-				file.drive = drive;
+				file.setDrive(drive);
 				file.valid = true;
 				file.parent = this;
 				files.add(file);
@@ -133,7 +137,7 @@ public class Folder extends File
 			{
 				callback.execute(response, success);
 			}
-        });
+		});
 	}
 
 	/**
@@ -219,20 +223,72 @@ public class Folder extends File
 		}
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (response, success) ->
-        {
-            if(success)
-            {
-                file.drive = null;
-                file.valid = false;
-                file.parent = null;
-                files.remove(file);
-                FileBrowser.refreshList = true;
-            }
-            if(callback != null)
-            {
-                callback.execute(response, success);
-            }
-        });
+		{
+			if(success)
+			{
+				file.drive = null;
+				file.valid = false;
+				file.parent = null;
+				files.remove(file);
+				FileBrowser.refreshList = true;
+			}
+			if(callback != null)
+			{
+				callback.execute(response, success);
+			}
+		});
+	}
+
+	public void copyInto(File file, boolean override, boolean cut, @Nullable Callback<FileSystem.Response> callback)
+	{
+		if(file == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Illegal file"), false);
+			}
+			return;
+		}
+
+		if(!file.valid || file.drive == null)
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Source file is invalid"), false);
+			}
+			return;
+		}
+
+		if(hasFile(file.name))
+		{
+			if(!override)
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_EXISTS, "A file with that name already exists"), true);
+				}
+				return;
+			}
+			else if(getFile(file.name).isProtected())
+			{
+				if(callback != null)
+				{
+					callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_IS_PROTECTED, "Unable to override protected files"), true);
+				}
+				return;
+			}
+		}
+
+		FileSystem.sendAction(file.drive, FileAction.Factory.makeCopyCut(file, this, false, cut), (response, success) ->
+		{
+			if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+			{
+				if(file.isFolder())
+				{
+					((Folder)file).copy();
+				}
+			}
+		});
 	}
 
 	/**
@@ -243,7 +299,7 @@ public class Folder extends File
 	 */
 	public boolean hasFile(String name)
 	{
-		return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
+		return valid && files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
 	}
 
 	/**
@@ -267,7 +323,7 @@ public class Folder extends File
 	 */
 	public boolean hasFolder(String name)
 	{
-		return files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
+		return valid && files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
 	}
 
 	/**
@@ -281,6 +337,40 @@ public class Folder extends File
 	public Folder getFolder(String name)
 	{
 		return (Folder) files.stream().filter(file -> file.isFolder() && file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
+	public void getFolder(String name, Callback<Folder> callback)
+	{
+		Folder folder = getFolder(name);
+
+		if(folder == null)
+		{
+			callback.execute(null, false);
+			return;
+		}
+
+		if(!folder.isSynced())
+		{
+			Task task = new TaskGetFiles(folder, Laptop.getPos());
+			task.setCallback((nbt, success) ->
+			{
+				if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
+				{
+					NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
+					folder.syncFiles(files);
+					callback.execute(folder, true);
+				}
+				else
+				{
+					callback.execute(null, false);
+				}
+			});
+			TaskManager.sendTask(task);
+		}
+		else
+		{
+			callback.execute(folder, true);
+		}
 	}
 
 	/**
@@ -388,6 +478,11 @@ public class Folder extends File
 	public boolean isSynced()
 	{
 		return synced;
+	}
+
+	public void refresh()
+	{
+		synced = false;
 	}
 
 	/**

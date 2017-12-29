@@ -1,36 +1,31 @@
 package com.mrcrayfish.device.init;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.Reference;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import com.mrcrayfish.device.item.ItemEthernetCable;
+import com.mrcrayfish.device.item.ItemFlashDrive;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Author: MrCrayfish
  */
 public class DeviceItems
 {
-    public static Item flash_drive;
+    public static final Item FLASH_DRIVE;
+    public static final Item ETHERNET_CABLE;
 
-    public static void init()
+    static
     {
-        flash_drive = new Item().setUnlocalizedName("flash_drive").setRegistryName("flash_drive").setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        FLASH_DRIVE = new ItemFlashDrive();
+        ETHERNET_CABLE = new ItemEthernetCable();
     }
 
     public static void register()
     {
-        GameRegistry.register(flash_drive);
+        register(FLASH_DRIVE);
+        register(ETHERNET_CABLE);
     }
 
-    public static void registerRenders()
+    private static void register(Item item)
     {
-        registerRender(flash_drive);
-    }
-
-    private static void registerRender(Item item)
-    {
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+        RegistrationHandler.Items.add(item);
     }
 }
