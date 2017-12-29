@@ -79,6 +79,7 @@ public abstract class Application extends Wrappable
         this.height = layout.height;
         this.pendingLayoutUpdate = true;
         this.currentLayout.init();
+        this.currentLayout.handleOnLoad();
     }
 
 	/**
