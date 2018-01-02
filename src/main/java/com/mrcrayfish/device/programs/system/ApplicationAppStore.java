@@ -1,22 +1,21 @@
 package com.mrcrayfish.device.programs.system;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.Image;
-import com.mrcrayfish.device.api.app.component.ItemList;
-import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 
-public class ApplicationAppStore extends Application
+public class ApplicationAppStore extends SystemApplication
 {
 	private Layout layoutMain;
 
@@ -35,7 +34,14 @@ public class ApplicationAppStore extends Application
 		{
             if(mouseButton == 0)
 			{
-				this.setCurrentLayout(new LayoutAppPage(ApplicationManager.getApplication("cdm:bank")));
+				Layout layout = new LayoutAppPage(getLaptop(), ApplicationManager.getApplication("cdm:note_stash"));
+				this.setCurrentLayout(layout);
+				Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
+				btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
+				{
+					this.setCurrentLayout(layoutMain);
+				});
+				layout.addComponent(btnPrevious);
 			}
         });
 		layoutMain.addComponent(button);

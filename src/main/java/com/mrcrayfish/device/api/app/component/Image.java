@@ -31,6 +31,7 @@ public class Image extends Component
 
     protected ImageLoader loader;
     protected CachedImage image;
+    protected boolean initialized = false;
     protected boolean drawFull = false;
 
     protected int imageU, imageV;
@@ -42,6 +43,13 @@ public class Image extends Component
     private boolean hasBorder = false;
     private int borderColour = Color.BLACK.getRGB();
     private int borderThickness = 1;
+
+    public Image(int left, int top, int width, int height)
+    {
+        super(left, top);
+        this.componentWidth = width;
+        this.componentHeight = height;
+    }
 
     /**
      * Creates a new Image using a ResourceLocation. This automatically sets the width and height of
@@ -140,6 +148,7 @@ public class Image extends Component
     {
         spinner = new Spinner(left + (componentWidth / 2) - 6, top + (componentHeight / 2) - 6);
         layout.addComponent(spinner);
+        initialized = true;
     }
 
     @Override
@@ -153,11 +162,16 @@ public class Image extends Component
     {
         if(this.visible)
         {
-            if(loader.setup)
+            if(loader != null && loader.setup)
             {
                 image = loader.load(this);
                 spinner.setVisible(false);
                 loader.setup = false;
+            }
+
+            if(hasBorder)
+            {
+                drawRect(x, y, x + componentWidth, y + componentHeight, borderColour);
             }
 
             if(image != null && image.textureId != -1)
@@ -169,32 +183,38 @@ public class Image extends Component
 
                 if(hasBorder)
                 {
-                    drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColour);
                     GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
                     if(drawFull)
                     {
-                        RenderUtil.drawRectWithFullTexture(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
+                        RenderUtil.drawRectWithFullTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
                     }
                 }
                 else
                 {
                     if(drawFull)
                     {
-                        RenderUtil.drawRectWithFullTexture(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight);
+                        RenderUtil.drawRectWithFullTexture(x, y, imageU, imageV, componentWidth, componentHeight);
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
                     }
                 }
             }
             else
             {
-                drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, Color.LIGHT_GRAY.getRGB());
+                if(hasBorder)
+                {
+                    drawRect(x + borderThickness, y + borderThickness, x + componentWidth - borderThickness, y + componentHeight - borderThickness, Color.LIGHT_GRAY.getRGB());
+                }
+                else
+                {
+                    drawRect(x, y, x + componentWidth, y + componentHeight, Color.LIGHT_GRAY.getRGB());
+                }
             }
         }
 
@@ -226,8 +246,11 @@ public class Image extends Component
     private void setLoader(ImageLoader loader)
     {
         this.loader = loader;
-        loader.setup(this);
-        spinner.setVisible(true);
+        if(initialized)
+        {
+            loader.setup(this);
+            spinner.setVisible(true);
+        }
     }
 
     /**
@@ -279,6 +302,11 @@ public class Image extends Component
     public void setBorderThickness(int thickness)
     {
         this.borderThickness = thickness;
+    }
+
+    public void setDrawFull(boolean drawFull)
+    {
+        this.drawFull = drawFull;
     }
 
     /**
