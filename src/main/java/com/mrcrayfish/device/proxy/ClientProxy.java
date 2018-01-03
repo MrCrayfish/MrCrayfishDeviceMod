@@ -14,6 +14,9 @@ import com.mrcrayfish.device.tileentity.render.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,16 +26,22 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy extends CommonProxy implements IResourceManagerReloadListener
 {
+    @Override
+    public void preInit()
+    {
+        super.preInit();
+        ((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+    }
+
     @Override
     public void init()
     {
@@ -74,7 +83,7 @@ public class ClientProxy extends CommonProxy
 
         try
         {
-            BufferedImage icon = TextureUtil.readBufferedImage(ClientProxy.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/icon/missing.png"));
+            BufferedImage icon = TextureUtil.readBufferedImage(ClientProxy.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png"));
             g.drawImage(icon, 0, 0, ICON_SIZE, ICON_SIZE, null);
         }
         catch(IOException e)
@@ -86,8 +95,12 @@ public class ClientProxy extends CommonProxy
 
         for(AppInfo info : ApplicationManager.getAvailableApps())
         {
+            if(info.getIcon() == null)
+                continue;
+
             ResourceLocation identifier = info.getId();
-            String path = "/assets/" + identifier.getResourceDomain() + "/textures/icon/" + identifier.getResourcePath() + ".png";
+            ResourceLocation iconResource = new ResourceLocation(info.getIcon());
+            String path = "/assets/" + iconResource.getResourceDomain() + "/" + iconResource.getResourcePath();
             try
             {
                 InputStream input = ClientProxy.class.getResourceAsStream(path);
@@ -141,8 +154,6 @@ public class ClientProxy extends CommonProxy
             java.util.List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
             APPS.add(application);
 
-            AppInfo info = new AppInfo(identifier);
-
             Field field = Application.class.getDeclaredField("info");
             field.setAccessible(true);
 
@@ -150,7 +161,7 @@ public class ClientProxy extends CommonProxy
             modifiers.setAccessible(true);
             modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-            field.set(application, info);
+            field.set(application, generateAppInfo(identifier));
 
             return application;
         }
@@ -160,6 +171,14 @@ public class ClientProxy extends CommonProxy
         }
 
         return null;
+    }
+
+    @Nullable
+    private AppInfo generateAppInfo(ResourceLocation identifier)
+    {
+        AppInfo info = new AppInfo(identifier);
+        info.reload();
+        return info;
     }
 
     @Override
@@ -193,6 +212,16 @@ public class ClientProxy extends CommonProxy
             MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
         }
         return false;
+    }
+
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager)
+    {
+        if(ApplicationManager.getAvailableApps().size() > 0)
+        {
+            ApplicationManager.getAvailableApps().forEach(AppInfo::reload);
+            generateIconAtlas();
+        }
     }
 
     @SubscribeEvent

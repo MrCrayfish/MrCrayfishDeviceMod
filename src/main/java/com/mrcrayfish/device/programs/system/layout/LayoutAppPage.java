@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.system.layout;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
@@ -17,6 +18,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -60,27 +65,42 @@ public class LayoutAppPage extends Layout
         labelTitle.setScale(2);
         this.addComponent(labelTitle);
 
-        labelVersion = new Label("v0.2.0 - " + info.getAuthor(), 38, 50);
+        labelVersion = new Label("v" + info.getVersion() + " - " + info.getAuthor(), 38, 50);
         this.addComponent(labelVersion);
 
         textDescription = new Text(info.getDescription(), 130, 70, 115);
         this.addComponent(textDescription);
 
         SlideShow slideShow = new SlideShow(5, 67, 120, 78);
-        slideShow.addImage("https://i.imgur.com/7CzbiA7.png");
-        slideShow.addImage("https://static.boredpanda.com/blog/wp-content/uploads/2015/11/reflection-landscape-photography-jaewoon-u-fb.jpg");
-        slideShow.addImage("https://i.imgur.com/4AiXzf8.jpg");
-        slideShow.addImage("https://i.imgur.com/C7k2UDw.jpg");
+        if(info.getScreenshots() != null)
+        {
+            for(String image : info.getScreenshots())
+            {
+                if(image.startsWith("http://") || image.startsWith("https://"))
+                {
+                    slideShow.addImage(image);
+                }
+                else
+                {
+                    slideShow.addImage(new ResourceLocation(info.getId().getResourceDomain(), image));
+                }
+            }
+        }
         this.addComponent(slideShow);
 
-        Button btnDonate = new Button(174, 44, Icons.COIN);
-        btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
-        btnDonate.setSize(14, 14);
-        this.addComponent(btnDonate);
+        if(info.getSupport() != null)
+        {
+            Button btnDonate = new Button(174, 44, Icons.COIN);
+            btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
+            btnDonate.setSize(14, 14);
+            this.addComponent(btnDonate);
+        }
 
         Button btnInstall = new Button(190, 44, "Install", Icons.IMPORT);
         btnInstall.setSize(55, 14);
         this.addComponent(btnInstall);
+
+        loadScreenshots();
     }
 
     @Override
@@ -90,5 +110,23 @@ public class LayoutAppPage extends Layout
         Minecraft.getMinecraft().getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
         RenderUtil.drawRectWithTexture(xPosition + 5, yPosition + 26, info.getIconU(), info.getIconV(), 28, 28, 14, 14, 224, 224);
         super.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
+    }
+
+    private void loadScreenshots()
+    {
+        String screenshots = "assets/" + info.getId().getResourceDomain() + "/textures/app/screenshots/" + info.getId().getResourcePath();
+        URL url = LayoutAppPage.class.getResource(screenshots);
+        try
+        {
+            if(url != null)
+            {
+                File file = new File(url.toURI());
+                MrCrayfishDeviceMod.getLogger().info(file.exists() + " is true");
+            }
+        }
+        catch(URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,12 +1,33 @@
 package com.mrcrayfish.device.object;
 
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.proxy.ClientProxy;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class AppInfo 
 {
-	private final ResourceLocation APP_ID;
-	private int iconU = 0, iconV = 0;
+	private transient final ResourceLocation APP_ID;
+	private transient int iconU = 0;
+	private transient int iconV = 0;
+
+	private String name;
+	private String author;
+	private String description;
+	private String version;
+	private String icon;
+	private String[] screenshots;
+	private Support support;
 
 	public AppInfo(ResourceLocation identifier)
 	{
@@ -38,19 +59,29 @@ public class AppInfo
 	 *
 	 * @return the application name
 	 */
-	public String getName() 
+	public String getName()
 	{
-		return I18n.format("app." + this.getFormattedId() + ".name");
+		return name;
 	}
 	
 	public String getAuthor() 
 	{
-		return I18n.format("app." + this.getFormattedId() + ".author");
+		return author;
 	}
 	
 	public String getDescription() 
 	{
-		return I18n.format("app." + this.getFormattedId() + ".desc");
+		return description;
+	}
+
+	public String getVersion()
+	{
+		return version;
+	}
+
+	public String getIcon()
+	{
+		return icon;
 	}
 
 	public int getIconU()
@@ -63,6 +94,16 @@ public class AppInfo
 		return iconV;
 	}
 
+	public String[] getScreenshots()
+	{
+		return screenshots;
+	}
+
+	public Support getSupport()
+	{
+		return support;
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -70,5 +111,113 @@ public class AppInfo
 		if(!(obj instanceof AppInfo)) return false;
 		AppInfo info = (AppInfo) obj;
 		return this == info || getFormattedId().equals(info.getFormattedId());
+	}
+
+	public void reload()
+	{
+		resetInfo();
+		InputStream stream = ClientProxy.class.getResourceAsStream("/assets/" + APP_ID.getResourceDomain() + "/apps/" + APP_ID.getResourcePath() + ".json");
+
+		if(stream == null)
+			throw new RuntimeException("Missing app info json for '" + APP_ID + "'");
+
+		Reader reader = new InputStreamReader(stream);
+		JsonParser parser = new JsonParser();
+		JsonElement obj = parser.parse(reader);
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(AppInfo.class, new AppInfo.Deserializer(this));
+		Gson gson = builder.create();
+		gson.fromJson(obj, AppInfo.class);
+	}
+
+	private void resetInfo()
+	{
+		name = null;
+		author = null;
+		description = null;
+		version = null;
+		icon = null;
+		screenshots = null;
+		support = null;
+	}
+
+	private static class Support
+	{
+		private String paypal;
+		private String patreon;
+		private String twitter;
+		private String youtube;
+	}
+
+	public static class Deserializer implements JsonDeserializer<AppInfo>
+	{
+		private static final Pattern LANG = Pattern.compile("\\$\\{[a-z]+}");
+
+		private AppInfo info;
+
+		public Deserializer(AppInfo info)
+		{
+			this.info = info;
+		}
+
+		@Override
+		public AppInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+		{
+			try
+			{
+				info.name = parse(json.getAsJsonObject().get("name").getAsString());
+				info.author = parse(json.getAsJsonObject().get("author").getAsString());
+				info.description = parse(json.getAsJsonObject().get("description").getAsString());
+				info.version = json.getAsJsonObject().get("version").getAsString();
+				info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>(){}.getType());
+
+				if(json.getAsJsonObject().has("icon"))
+				{
+					info.icon = json.getAsJsonObject().get("icon").getAsString();
+				}
+
+				if(json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0)
+				{
+					JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+					Support support = new Support();
+
+					if(supportObj.has("paypal"))
+					{
+						support.paypal = supportObj.get("paypal").getAsString();
+					}
+					if(supportObj.has("patreon"))
+					{
+						support.patreon = supportObj.get("patreon").getAsString();
+					}
+					if(supportObj.has("twitter"))
+					{
+						support.twitter = supportObj.get("twitter").getAsString();
+					}
+					if(supportObj.has("youtube"))
+					{
+						support.youtube = supportObj.get("youtube").getAsString();
+					}
+
+					info.support = support;
+				}
+			}
+			catch(JsonParseException e)
+			{
+				MrCrayfishDeviceMod.getLogger().error("Malformed app info json for '" + info.getFormattedId() + "'");
+			}
+
+			return info;
+		}
+
+		private String parse(String s)
+		{
+			Matcher m = LANG.matcher(s);
+			while(m.find())
+			{
+				String found = m.group();
+				s = s.replace(found, I18n.format("app." + info.getFormattedId() + "." + found.substring(2, found.length() - 1)));
+			}
+			return s;
+		}
 	}
 }
