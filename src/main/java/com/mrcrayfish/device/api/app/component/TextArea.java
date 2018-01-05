@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
+import com.mrcrayfish.device.api.app.listener.KeyListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -63,6 +64,7 @@ public class TextArea extends Component
 	private boolean wrapText = false;
 	private int maxLineWidth;
 	private IHighlight highlight = null;
+	private KeyListener keyListener = null;
 
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
@@ -296,6 +298,14 @@ public class TextArea extends Component
 		}
 		else
 		{
+			if(keyListener != null)
+			{
+				if(!keyListener.onKeyTyped(character))
+				{
+					return;
+				}
+			}
+
 			switch (code)
 			{
 				case Keyboard.KEY_BACK:
@@ -1094,6 +1104,11 @@ public class TextArea extends Component
 	{
 		if(maxLines < 0) maxLines = 0;
 		this.maxLines = maxLines;
+	}
+
+	public void setKeyListener(KeyListener keyListener)
+	{
+		this.keyListener = keyListener;
 	}
 
 	private enum ScrollBar
