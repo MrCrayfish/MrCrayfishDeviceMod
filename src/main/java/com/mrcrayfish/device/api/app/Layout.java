@@ -45,6 +45,7 @@ public class Layout extends Component
 	public int height;
 	
 	private String title;
+	private boolean initialized = false;
 	
 	private InitListener initListener;
 	private Background background;
@@ -126,6 +127,12 @@ public class Layout extends Component
 	@Override
 	protected void handleOnLoad()
 	{
+		if(!initialized)
+		{
+			this.init();
+			initialized = true;
+		}
+
 		if(initListener != null)
 		{
 			initListener.onInit();
@@ -317,7 +324,17 @@ public class Layout extends Component
 	{
 		this.title = title;
 	}
-	
+
+	public boolean isInitialized()
+	{
+		return initialized;
+	}
+
+	public void setInitialized()
+	{
+		this.initialized = initialized;
+	}
+
 	/**
 	 * The background interface
 	 * 
