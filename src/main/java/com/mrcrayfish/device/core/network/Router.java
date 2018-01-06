@@ -142,10 +142,6 @@ public class Router
                         {
                             NETWORK_DEVICES.get(tileEntityNetworkDevice.getId()).update(tileEntityNetworkDevice);
                         }
-                        else
-                        {
-                            NETWORK_DEVICES.remove(tileEntityNetworkDevice.getId());
-                        }
                     }
                 }
             }

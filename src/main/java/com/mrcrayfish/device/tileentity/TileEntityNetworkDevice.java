@@ -32,11 +32,12 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
         if(world.isRemote)
             return;
 
-        if(connection != null && connection.getRouterPos() != null)
+        if(connection != null)
         {
             if(++counter >= DeviceConfig.getBeaconInterval() * 2)
             {
                 connection.setRouterPos(null);
+                counter = 0;
             }
         }
     }
@@ -79,7 +80,12 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
 
     public boolean receiveBeacon(Router router)
     {
-        if(connection.getRouterId().equals(router.getId()))
+        if(counter >= DeviceConfig.getBeaconInterval() * 2)
+        {
+            connect(router);
+            return true;
+        }
+        if(connection != null && connection.getRouterId().equals(router.getId()))
         {
             connection.setRouterPos(router.getPos());
             counter = 0;
