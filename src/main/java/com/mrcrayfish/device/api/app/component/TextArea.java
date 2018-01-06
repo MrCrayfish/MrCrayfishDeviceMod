@@ -194,10 +194,8 @@ public class TextArea extends Component
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
-		if(!this.visible || !this.enabled || !this.editable)
+		if(!this.visible || !this.enabled)
 			return;
-
-		this.isFocused = GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height);
 
 		ScrollBar scrollBar = isMouseInsideScrollBar(mouseX, mouseY);
 		if(scrollBar != null)
@@ -214,6 +212,11 @@ public class TextArea extends Component
 			}
 			return;
 		}
+
+		if(!this.editable)
+			return;
+
+		this.isFocused = GuiHelper.isMouseInside(mouseX, mouseY, xPosition, yPosition, xPosition + width, yPosition + height);
 
 		if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + padding, yPosition + padding, width - padding * 2, height - padding * 2))
 		{
@@ -383,7 +386,7 @@ public class TextArea extends Component
 	/**
 	 * Performs a backspace at the current cursor position
 	 */
-	public void performBackspace()
+	private void performBackspace()
 	{
 		if(cursorY == 0 && cursorX == 0)
 			return;
@@ -427,7 +430,7 @@ public class TextArea extends Component
 	/**
 	 * Performs a return at the current cursor position
 	 */
-	public void performReturn()
+	private void performReturn()
 	{
 		if(maxLines > 0)
 		{

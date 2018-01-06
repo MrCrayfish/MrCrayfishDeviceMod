@@ -1,52 +1,46 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
+import com.mrcrayfish.device.util.Colorable;
 import com.mrcrayfish.device.util.TileEntityUtil;
-
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
-public class TileEntityLaptop extends TileEntity implements ITickable
+public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickable, Colorable
 {
-	public boolean open = false;
-	
+	private static final int OPENED_ANGLE = 102;
+
+	private boolean open = false;
+	private EnumDyeColor color = EnumDyeColor.RED;
+
 	private NBTTagCompound applicationData;
 	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
 
 	@SideOnly(Side.CLIENT)
-	public float rotation;
+	private int rotation;
 
 	@SideOnly(Side.CLIENT)
-	public float prevRotation;
+	private int prevRotation;
 
 	@SideOnly(Side.CLIENT)
-	private boolean hasExternalDrive;
+	private EnumDyeColor externalDriveColor;
 
-	public void openClose()
+	@Override
+	public String getDeviceName()
 	{
-		open = !open;
-		markDirty();
-		TileEntityUtil.markBlockForUpdate(world, pos);
+		return "Laptop";
 	}
-	
+
 	@Override
 	public void update() 
 	{
+		super.update();
 		if(world.isRemote)
 		{
 			prevRotation = rotation;
@@ -59,7 +53,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 			}
 			else
 			{
-				if(rotation < 110)
+				if(rotation < OPENED_ANGLE)
 				{
 					rotation += 10F;
 				}
@@ -71,26 +65,33 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	public void readFromNBT(NBTTagCompound compound) 
 	{
 		super.readFromNBT(compound);
-		this.open = compound.getBoolean("open");
-
+		if(compound.hasKey("open"))
+		{
+			this.open = compound.getBoolean("open");
+		}
 		if(compound.hasKey("system_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.systemData = compound.getCompoundTag("system_data");
 		}
-
 		if(compound.hasKey("application_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.applicationData = compound.getCompoundTag("application_data");
 		}
-
 		if(compound.hasKey("file_system"))
 		{
 			this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
 		}
-
-		if(compound.hasKey("has_external_drive"))
+		if(compound.hasKey("external_drive_color", Constants.NBT.TAG_BYTE))
 		{
-			this.hasExternalDrive = compound.getBoolean("has_external_drive");
+			this.externalDriveColor = null;
+			if(compound.getByte("external_drive_color") != -1)
+			{
+				this.externalDriveColor = EnumDyeColor.byMetadata(compound.getByte("external_drive_color"));
+			}
+		}
+		if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+		{
+			this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
 		}
 	}
 	
@@ -99,6 +100,7 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
+		compound.setByte("color", (byte) color.getMetadata());
 
 		if(systemData != null)
 		{
@@ -118,35 +120,22 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+	public NBTTagCompound writeSyncTag()
 	{
-		this.readFromNBT(pkt.getNbtCompound());
-	}
+		NBTTagCompound tag = super.writeSyncTag();
+		tag.setBoolean("open", open);
+		tag.setByte("color", (byte) color.getMetadata());
 
-	@Override
-	public NBTTagCompound getUpdateTag()
-	{
-		NBTTagCompound tag = super.getUpdateTag();
-		tag.setBoolean("open", this.open);
-
-		if(systemData != null)
+		if(getFileSystem().getAttachedDrive() != null)
 		{
-			tag.setTag("system_data", systemData);
+			tag.setByte("external_drive_color", (byte) getFileSystem().getAttachedDriveColor().getMetadata());
+		}
+		else
+		{
+			tag.setByte("external_drive_color", (byte) -1);
 		}
 
-		if(applicationData != null)
-		{
-			tag.setTag("application_data", applicationData);
-		}
-
-		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
 		return tag;
-	}
-
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket()
-	{
-		return new SPacketUpdateTileEntity(pos, 3, getUpdateTag());
 	}
 
 	@Override
@@ -162,7 +151,19 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		return INFINITE_EXTENT_AABB;
 	}
 
-    public NBTTagCompound getApplicationData()
+	public void openClose()
+	{
+		open = !open;
+		pipeline.setBoolean("open", open);
+		sync();
+	}
+
+	public boolean isOpen()
+	{
+		return open;
+	}
+
+	public NBTTagCompound getApplicationData()
     {
 		return applicationData != null ? applicationData : new NBTTagCompound();
     }
@@ -195,8 +196,31 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 
+	@SideOnly(Side.CLIENT)
+	public float getScreenAngle(float partialTicks)
+	{
+		return -OPENED_ANGLE * ((prevRotation + (rotation - prevRotation) * partialTicks) / OPENED_ANGLE);
+	}
+
+	@SideOnly(Side.CLIENT)
 	public boolean isExternalDriveAttached()
 	{
-		return hasExternalDrive;
+		return externalDriveColor != null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public EnumDyeColor getExternalDriveColor()
+	{
+		return externalDriveColor;
+	}
+
+	public void setColor(EnumDyeColor color)
+	{
+		this.color = color;
+	}
+
+	public EnumDyeColor getColor()
+	{
+		return color;
 	}
 }

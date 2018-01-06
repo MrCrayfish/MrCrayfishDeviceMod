@@ -120,8 +120,11 @@ public class Picture
 		
 		public static Size getFromSize(int size)
 		{
-			if(size == 16) return X16;
-			return X32;
+			if(size == 16)
+				return X16;
+			if(size == 32)
+				return X32;
+			return null;
 		}
 	}
 }
