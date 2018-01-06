@@ -6,7 +6,6 @@ import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
@@ -44,7 +43,7 @@ public class LayoutSearchApps extends StandardLayout
         super.init();
 
         ItemList<AppInfo> itemListResults = new ItemList<>(5, 48, ApplicationAppStore.LAYOUT_WIDTH - 10, 5, true);
-        itemListResults.setItems(new ArrayList<>(ApplicationManager.getAvailableApps()));
+        itemListResults.setItems(new ArrayList<>(ApplicationManager.getAvailableApplications()));
         itemListResults.setListItemRenderer(new ListItemRenderer<AppInfo>(18)
         {
             @Override
@@ -80,7 +79,7 @@ public class LayoutSearchApps extends StandardLayout
         textFieldSearch.setKeyListener(c ->
         {
             Predicate<AppInfo> FILTERED = info -> StringUtils.containsIgnoreCase(info.getName(), textFieldSearch.getText()) || StringUtils.containsIgnoreCase(info.getDescription(), textFieldSearch.getText());
-            List<AppInfo> filteredItems = ApplicationManager.getAvailableApps().stream().filter(FILTERED).collect(Collectors.toList());
+            List<AppInfo> filteredItems = ApplicationManager.getAvailableApplications().stream().filter(FILTERED).collect(Collectors.toList());
             itemListResults.setItems(filteredItems);
             return false;
         });

@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.tileentity.*;
 import com.mrcrayfish.device.tileentity.render.*;
 import net.minecraft.client.Minecraft;
@@ -93,7 +94,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
 
         index++;
 
-        for(AppInfo info : ApplicationManager.getAvailableApps())
+        for(AppInfo info : ApplicationManager.getAvailableApplications())
         {
             if(info.getIcon() == null)
                 continue;
@@ -161,7 +162,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
             modifiers.setAccessible(true);
             modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-            field.set(application, generateAppInfo(identifier));
+            field.set(application, generateAppInfo(identifier, clazz));
 
             return application;
         }
@@ -174,9 +175,17 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     }
 
     @Nullable
-    private AppInfo generateAppInfo(ResourceLocation identifier)
+    private AppInfo generateAppInfo(ResourceLocation identifier, Class<? extends Application> clazz)
     {
-        AppInfo info = new AppInfo(identifier);
+        AppInfo info = null;
+        if(SystemApplication.class.isAssignableFrom(clazz))
+        {
+            info = new AppInfo(identifier, true);
+        }
+        else
+        {
+            info = new AppInfo(identifier, false);
+        }
         info.reload();
         return info;
     }
@@ -217,9 +226,9 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager)
     {
-        if(ApplicationManager.getAvailableApps().size() > 0)
+        if(ApplicationManager.getAvailableApplications().size() > 0)
         {
-            ApplicationManager.getAvailableApps().forEach(AppInfo::reload);
+            ApplicationManager.getAvailableApplications().forEach(AppInfo::reload);
             generateIconAtlas();
         }
     }

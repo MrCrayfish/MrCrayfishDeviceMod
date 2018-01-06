@@ -20,6 +20,7 @@ public class AppInfo
 	private transient final ResourceLocation APP_ID;
 	private transient int iconU = 0;
 	private transient int iconV = 0;
+	private transient boolean systemApp;
 
 	private String name;
 	private String author;
@@ -29,9 +30,10 @@ public class AppInfo
 	private String[] screenshots;
 	private Support support;
 
-	public AppInfo(ResourceLocation identifier)
+	public AppInfo(ResourceLocation identifier, boolean isSystemApp)
 	{
 		this.APP_ID = identifier;
+		this.systemApp = isSystemApp;
 	}
 
 	/**
@@ -102,6 +104,11 @@ public class AppInfo
 	public Support getSupport()
 	{
 		return support;
+	}
+
+	public boolean isSystemApp()
+	{
+		return systemApp;
 	}
 
 	@Override
