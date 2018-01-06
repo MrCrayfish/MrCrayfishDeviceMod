@@ -298,14 +298,6 @@ public class TextArea extends Component
 		}
 		else
 		{
-			if(keyListener != null)
-			{
-				if(!keyListener.onKeyTyped(character))
-				{
-					return;
-				}
-			}
-
 			switch (code)
 			{
 				case Keyboard.KEY_BACK:
@@ -334,6 +326,11 @@ public class TextArea extends Component
 					{
 						writeText(character);
 					}
+			}
+
+			if(keyListener != null)
+			{
+				keyListener.onKeyTyped(character);
 			}
 		}
 		updateScroll();
