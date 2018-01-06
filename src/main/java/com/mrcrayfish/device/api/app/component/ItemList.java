@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
@@ -75,12 +76,13 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public void init(Layout layout)
 	{
 		btnUp = new Button(left + width - 12, top, Icons.CHEVRON_UP);
-		btnUp.setEnabled(false);
 		btnUp.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-            if(mouseButton == 0) scrollUp();
-        });
+			if(mouseButton == 0) scrollUp();
+		});
+		btnUp.setEnabled(false);
 		btnUp.setVisible(false);
+		btnUp.setSize(12, 12);
 		layout.addComponent(btnUp);
 
 		btnDown = new Button(left + width - 12, top + getHeight() - 12, Icons.CHEVRON_DOWN);
@@ -90,6 +92,7 @@ public class ItemList<E> extends Component implements Iterable<E>
         });
 		btnDown.setEnabled(false);
 		btnDown.setVisible(false);
+		btnDown.setSize(12, 12);
 		layout.addComponent(btnDown);
 
 		layoutLoading = new Layout(left, top, getWidth(), getHeight());
@@ -275,6 +278,14 @@ public class ItemList<E> extends Component implements Iterable<E>
 		}
 	}
 
+	private void updateScroll()
+	{
+		if(offset + visibleItems > items.size())
+		{
+			offset = Math.max(0, items.size() - visibleItems);
+		}
+	}
+
 	/**
 	 * Sets the custom item list renderer.
 	 * 
@@ -323,6 +334,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 		sort();
 		if(initialized)
 		{
+			offset = 0;
 			updateButtons();
 			updateComponent();
 		}
@@ -344,6 +356,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 			{
 				updateButtons();
 				updateComponent();
+				updateScroll();
 			}
 			return e;
 		}
@@ -402,7 +415,8 @@ public class ItemList<E> extends Component implements Iterable<E>
 	}
 	
 	/**
-	 * Gets all items from the list
+	 * Gets all items from the list. Do not use this to remove items from the item list, instead use
+	 * {@link #removeItem(int)} otherwise it will cause scroll issues.
 	 * 
 	 * @return the items
 	 */
@@ -417,6 +431,9 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public void removeAll()
 	{
 		this.items.clear();
+		updateButtons();
+		updateComponent();
+		updateScroll();
 	}
 	
 	/**
