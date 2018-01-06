@@ -75,21 +75,23 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public void init(Layout layout)
 	{
 		btnUp = new Button(left + width - 12, top, Icons.CHEVRON_UP);
+		btnUp.setSize(12, 12);
 		btnUp.setEnabled(false);
+		btnUp.setVisible(false);
 		btnUp.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0) scrollUp();
         });
-		btnUp.setVisible(false);
 		layout.addComponent(btnUp);
 
 		btnDown = new Button(left + width - 12, top + getHeight() - 12, Icons.CHEVRON_DOWN);
-		btnDown.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            if(mouseButton == 0) scrollDown();
-        });
+		btnDown.setSize(12, 12);
 		btnDown.setEnabled(false);
 		btnDown.setVisible(false);
+		btnDown.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			if(mouseButton == 0) scrollDown();
+		});
 		layout.addComponent(btnDown);
 
 		layoutLoading = new Layout(left, top, getWidth(), getHeight());
