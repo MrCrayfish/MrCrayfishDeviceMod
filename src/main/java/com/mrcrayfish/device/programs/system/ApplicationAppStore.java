@@ -1,53 +1,43 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
+import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-
-import java.awt.*;
 
 public class ApplicationAppStore extends SystemApplication
 {
-	private Layout layoutMain;
+	public static final int LAYOUT_WIDTH = 250;
+	public static final int LAYOUT_HEIGHT = 150;
+
+	private StandardLayout layoutMain;
 
 	@Override
 	public void init()
 	{
-		layoutMain = new Layout(250, 150);
-		layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
-		{
-			Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
-			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
-        });
+		layoutMain = new StandardLayout("Home", LAYOUT_WIDTH, LAYOUT_HEIGHT, this, null);
+		layoutMain.setIcon(Icons.HOME);
 
-		Button button = new Button(5, 5, "Henlo");
-		button.setClickListener((mouseX, mouseY, mouseButton) ->
+		Button btnSearch = new Button(214, 2, Icons.SEARCH);
+		btnSearch.setToolTip("Search", "Find a specific application");
+		btnSearch.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             if(mouseButton == 0)
 			{
-				Layout layout = new LayoutAppPage(getLaptop(), ApplicationManager.getApplication("cdm:note_stash"));
-				this.setCurrentLayout(layout);
-				Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
-				btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
-				{
-					this.setCurrentLayout(layoutMain);
-				});
-				layout.addComponent(btnPrevious);
+				this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
 			}
         });
-		layoutMain.addComponent(button);
+		layoutMain.addComponent(btnSearch);
+
+		Button btnManageApps = new Button(232, 2, Icons.HAMMER);
+		btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
+		layoutMain.addComponent(btnManageApps);
 
 		this.setCurrentLayout(layoutMain);
-
 	}
 
 	@Override
@@ -60,5 +50,17 @@ public class ApplicationAppStore extends SystemApplication
 	public void save(NBTTagCompound tagCompound) 
 	{
 		
+	}
+
+	private void openApplication(AppInfo info)
+	{
+		Layout layout = new LayoutAppPage(getLaptop(), info);
+		this.setCurrentLayout(layout);
+		Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
+		btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
+		{
+			this.setCurrentLayout(layoutMain);
+		});
+		layout.addComponent(btnPrevious);
 	}
 }
