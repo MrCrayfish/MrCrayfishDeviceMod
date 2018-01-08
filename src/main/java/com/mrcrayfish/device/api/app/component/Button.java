@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Arrays;
 
 public class Button extends Component
@@ -201,8 +203,12 @@ I	 * @param top how many pixels from the top
 		if (this.visible)
         {
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = isInside(mouseX, mouseY) && windowActive;
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			Color bgColor = new Color(getColourScheme().getBackgroundColour()).brighter().brighter();
+			float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
+			bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1.0F));
+			GL11.glColor4f(bgColor.getRed() / 255F, bgColor.getGreen() / 255F, bgColor.getBlue() / 255F, 1.0F);
+			this.hovered = isInside(mouseX, mouseY) && windowActive;
             int i = this.getHoverState(this.hovered);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -224,6 +230,7 @@ I	 * @param top how many pixels from the top
             RenderUtil.drawRectWithTexture(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
             
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             int contentWidth = (iconResource != null ? iconWidth: 0) + getTextWidth(text);
             if(iconResource != null && text != null) contentWidth += 3;

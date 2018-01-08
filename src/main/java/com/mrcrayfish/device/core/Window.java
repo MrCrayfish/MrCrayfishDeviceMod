@@ -84,7 +84,7 @@ public class Window<T extends Wrappable>
 			content.clearPendingLayout();
 		}
 		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(WINDOW_GUI);
 

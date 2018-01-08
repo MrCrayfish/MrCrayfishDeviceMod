@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
+import java.awt.*;
+
 public class TextField extends TextArea
 {
 	private IIcon icon;
@@ -30,8 +32,9 @@ public class TextField extends TextArea
 		if(icon != null)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(x, y, x + 15, y + 16, borderColour);
-			Gui.drawRect(x + 1, y + 1, x + 15, y + 15, secondaryBackgroundColour);
+			Color bgColor = new Color(color(backgroundColour, getColourScheme().getBackgroundColour()));
+			Gui.drawRect(x, y, x + 15, y + 16, bgColor.darker().darker().getRGB());
+			Gui.drawRect(x + 1, y + 1, x + 15, y + 15, bgColor.brighter().getRGB());
 			icon.draw(mc, x + 3, y + 3);
 		}
 		super.render(laptop, mc, x + (icon != null ? 15 : 0), y, mouseX, mouseY, windowActive, partialTicks);

@@ -111,4 +111,9 @@ public class RenderUtil
 	{
 		return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 	}
+
+	public static int color(int color, int defaultColor)
+	{
+		return color != -1 && color > 0 ? color : defaultColor;
+	}
 }

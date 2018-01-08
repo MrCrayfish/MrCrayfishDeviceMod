@@ -66,10 +66,10 @@ public class TextArea extends Component
 
 	/* Personalisation */
 	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
-	protected int textColour = Color.WHITE.getRGB();
-	protected int backgroundColour = Color.DARK_GRAY.getRGB();
-	protected int secondaryBackgroundColour = Color.GRAY.getRGB();
-	protected int borderColour = Color.BLACK.getRGB();
+	protected int textColour = -1;
+	protected int backgroundColour = -1;
+	protected int secondaryBackgroundColour = -1;
+	protected int borderColour = -1;
 
 	/**
 	 * Default text area constructor
@@ -101,8 +101,10 @@ public class TextArea extends Component
 		if (this.visible)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(x, y, x + width, y + height, borderColour);
-			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, backgroundColour);
+
+			Color bgColor = new Color(color(backgroundColour, getColourScheme().getBackgroundColour()));
+			Gui.drawRect(x, y, x + width, y + height, bgColor.darker().darker().getRGB());
+			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, bgColor.getRGB());
 
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
@@ -138,7 +140,7 @@ public class TextArea extends Component
 				}
 				else
 				{
-					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColour);
+					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, color(textColour, getColourScheme().getTextColour()));
 				}
 			}
 
@@ -158,7 +160,7 @@ public class TextArea extends Component
 						int stringWidth = fontRenderer.getStringWidth(subString);
 						int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll + (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
 						int posY = y + padding + (cursorY - scroll) * fontRenderer.FONT_HEIGHT;
-						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT - 1, Color.WHITE.getRGB());
+						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT, Color.WHITE.getRGB());
 					}
 				}
 			}

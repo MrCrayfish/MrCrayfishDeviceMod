@@ -2,7 +2,6 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
@@ -18,10 +17,10 @@ public class CheckBox extends Component implements RadioGroup.Item
 	
 	protected ClickListener listener = null;
 	
-	protected int textColour = Color.WHITE.getRGB();
-	protected int backgroundColour = Color.GRAY.getRGB();
-	protected int borderColour = Color.BLACK.getRGB();
-	protected int checkedColour = Color.DARK_GRAY.getRGB();
+	protected int textColour = -1;
+	protected int backgroundColour = -1;
+	protected int borderColour = -1;
+	protected int checkedColour = -1;
 	
 	/**
 	 * Default check box constructor
@@ -65,11 +64,12 @@ public class CheckBox extends Component implements RadioGroup.Item
         {
         	if(group == null)
 			{
-				drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, borderColour);
-				drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, backgroundColour);
+				Color bgColor = new Color(getColourScheme().getBackgroundColour());
+				drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, color(borderColour, bgColor.darker().darker().getRGB()));
+				drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, color(backgroundColour, bgColor.getRGB()));
 				if(checked)
 				{
-					drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, checkedColour);
+					drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, color(checkedColour, bgColor.brighter().brighter().getRGB()));
 				}
 			}
 			else
@@ -78,7 +78,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 				mc.getTextureManager().bindTexture(COMPONENTS_GUI);
 				drawTexturedModalRect(xPosition, yPosition, checked ? 10 : 0, 60, 10, 10);
 			}
-			drawString(mc.fontRenderer, name, xPosition + 12, yPosition + 1, textColour);
+			drawString(mc.fontRenderer, name, xPosition + 12, yPosition + 1, color(textColour, getColourScheme().getTextColour()));
         }
 	}
 	
