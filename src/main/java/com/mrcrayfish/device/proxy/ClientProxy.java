@@ -177,15 +177,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     @Nullable
     private AppInfo generateAppInfo(ResourceLocation identifier, Class<? extends Application> clazz)
     {
-        AppInfo info = null;
-        if(SystemApplication.class.isAssignableFrom(clazz))
-        {
-            info = new AppInfo(identifier, true);
-        }
-        else
-        {
-            info = new AppInfo(identifier, false);
-        }
+        AppInfo info = new AppInfo(identifier, SystemApplication.class.isAssignableFrom(clazz));
         info.reload();
         return info;
     }
@@ -226,9 +218,9 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager)
     {
-        if(ApplicationManager.getAvailableApplications().size() > 0)
+        if(ApplicationManager.getAllApplications().size() > 0)
         {
-            ApplicationManager.getAvailableApplications().forEach(AppInfo::reload);
+            ApplicationManager.getAllApplications().forEach(AppInfo::reload);
             generateIconAtlas();
         }
     }
