@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.core.network.task;
 
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -37,12 +37,12 @@ public class TaskPing extends Task
     public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
     {
         TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("sourceDevicePos")));
-        if(tileEntity instanceof TileEntityDevice)
+        if(tileEntity instanceof TileEntityNetworkDevice)
         {
-            TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            if(tileEntityDevice.isConnected())
+            TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
+            if(tileEntityNetworkDevice.isConnected())
             {
-                this.strength = tileEntityDevice.getSignalStrength();
+                this.strength = tileEntityNetworkDevice.getSignalStrength();
                 this.setSuccessful();
             }
         }
