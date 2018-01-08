@@ -5,9 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.proxy.ClientProxy;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -172,13 +172,17 @@ public class AppInfo
 		{
 			try
 			{
-				info.name = parse(json.getAsJsonObject().get("name").getAsString());
-				info.author = parse(json.getAsJsonObject().get("author").getAsString());
-				info.description = parse(json.getAsJsonObject().get("description").getAsString());
+				info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
+				info.author = convertToLocal(json.getAsJsonObject().get("author").getAsString());
+				info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
 				info.version = json.getAsJsonObject().get("version").getAsString();
-				info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>(){}.getType());
 
-				if(json.getAsJsonObject().has("icon"))
+				if(json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray())
+				{
+					info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>(){}.getType());
+				}
+
+				if(json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive())
 				{
 					info.icon = json.getAsJsonObject().get("icon").getAsString();
 				}
@@ -216,7 +220,7 @@ public class AppInfo
 			return info;
 		}
 
-		private String parse(String s)
+		private String convertToLocal(String s)
 		{
 			Matcher m = LANG.matcher(s);
 			while(m.find())
