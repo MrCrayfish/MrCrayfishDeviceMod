@@ -94,7 +94,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
 
         index++;
 
-        for(AppInfo info : ApplicationManager.getAvailableApplications())
+        for(AppInfo info : ApplicationManager.getAllApplications())
         {
             if(info.getIcon() == null)
                 continue;
