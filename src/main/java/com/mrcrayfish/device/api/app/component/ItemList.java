@@ -19,6 +19,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -384,6 +385,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	 * 
 	 * @return the selected item
 	 */
+	@Nullable
 	public E getSelectedItem()
 	{
 		if(selected >= 0 && selected < items.size())
@@ -431,6 +433,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public void removeAll()
 	{
 		this.items.clear();
+		this.selected = -1;
 		if(initialized)
 		{
 			updateButtons();

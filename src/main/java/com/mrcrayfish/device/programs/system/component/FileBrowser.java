@@ -713,9 +713,9 @@ public class FileBrowser extends Component
 
     private void setClipboardFileToSelected()
     {
-        if(fileList.getSelectedIndex() != -1)
+        File file = fileList.getSelectedItem();
+        if(file != null)
         {
-            File file = fileList.getSelectedItem();
             if(file.isProtected())
             {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be copied.";
@@ -727,13 +727,18 @@ public class FileBrowser extends Component
             clipboardFile = file;
             btnPaste.setEnabled(true);
         }
+        else
+        {
+            Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to copy does not exist.");
+            wrappable.openDialog(dialog);
+        }
     }
 
     private void cutSelectedFile()
     {
-        if(fileList.getSelectedIndex() != -1)
+        File file = fileList.getSelectedItem();
+        if(file != null)
         {
-            File file = fileList.getSelectedItem();
             if(file.isProtected())
             {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be cut.";
@@ -745,6 +750,11 @@ public class FileBrowser extends Component
             clipboardDir = currentFolder;
             clipboardFile = file;
             btnPaste.setEnabled(true);
+        }
+        else
+        {
+            Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to cut does not exist.");
+            wrappable.openDialog(dialog);
         }
     }
 
