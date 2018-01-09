@@ -969,7 +969,7 @@ public class FileBrowser extends Component
 
     public enum Mode
     {
-        FULL(225, 145, 26, 6), BASIC(210, 100, 26, 4);
+        FULL(225, 145, 26, 6), BASIC(211, 105, 26, 4);
 
         private final int width;
         private final int height;

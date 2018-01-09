@@ -225,7 +225,7 @@ public abstract class Dialog extends Wrappable
 			this.addComponent(message);
 			
 			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
-			buttonPositive.setSize(36, 15);
+			buttonPositive.setSize(36, 16);
 			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(positiveListener != null)
@@ -248,6 +248,8 @@ public abstract class Dialog extends Wrappable
 	 */
 	public static class Confirmation extends Dialog
 	{
+		private static final int DIVIDE_WIDTH = 15;
+
 		private String messageText = "Are you sure?";
 		private String positiveText = "Yes";
 		private String negativeText = "No";
@@ -286,29 +288,24 @@ public abstract class Dialog extends Wrappable
 			
 			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
-			
-			buttonPositive = new Button(getWidth() - 35, getHeight() - 20, positiveText);
-			buttonPositive.setSize(30, 15);
+
+			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
+			buttonPositive = new Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
+			buttonPositive.setSize(positiveWidth + 10, 16);
 			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
-                if(positiveListener != null)
-                {
-                    positiveListener.onClick(mouseX, mouseY, mouseButton);
-                }
-                close();
-            });
+				if(positiveListener != null)
+				{
+					positiveListener.onClick(mouseX, mouseY, mouseButton);
+				}
+				close();
+			});
 			this.addComponent(buttonPositive);
-			
-			buttonNegative = new Button(getWidth() - 70, getHeight() - 20, negativeText);
-			buttonPositive.setSize(30, 15);
-			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) ->
-			{
-                if(negativeListener != null)
-                {
-                    negativeListener.onClick(mouseX, mouseY, mouseButton);
-                }
-                close();
-            });
+
+			int negativeWidth = Math.max(20, Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText));
+			buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
+			buttonNegative.setSize(negativeWidth + 10, 16);
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			this.addComponent(buttonNegative);
 		}
 
@@ -358,6 +355,8 @@ public abstract class Dialog extends Wrappable
 	 */
 	public static class Input extends Dialog
 	{
+		private static final int DIVIDE_WIDTH = 15;
+
 		private String messageText = null;
 		private String inputText = "";
 		private String positiveText = "Okay";
@@ -408,8 +407,8 @@ public abstract class Dialog extends Wrappable
 			this.addComponent(textFieldInput);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
-			buttonPositive = new Button(getWidth() - positiveWidth - 15, getHeight() - 20, positiveText);
-			buttonPositive.setSize(positiveWidth + 10, 15);
+			buttonPositive = new Button(getWidth() - positiveWidth - DIVIDE_WIDTH, getHeight() - 20, positiveText);
+			buttonPositive.setSize(positiveWidth + 10, 16);
 			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
                 if(!textFieldInput.getText().isEmpty())
@@ -425,8 +424,8 @@ public abstract class Dialog extends Wrappable
 			this.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
-			buttonNegative = new Button(getWidth() - positiveWidth - negativeWidth - 15 - 15, getHeight() - 20, negativeText);
-			buttonNegative.setSize(negativeWidth + 10, 15);
+			buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
+			buttonNegative.setSize(negativeWidth + 10, 16);
 			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			this.addComponent(buttonNegative);
 		}
@@ -517,7 +516,7 @@ public abstract class Dialog extends Wrappable
 		{
 			super.init();
 
-			main = new Layout(210, 124);
+			main = new Layout(211, 126);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.openFolder(FileSystem.DIR_HOME);
@@ -535,8 +534,8 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(browser);
 
 			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
-			buttonPositive = new Button(172, 105, positiveText);
-			buttonPositive.setSize(positiveWidth + 10, 15);
+			buttonPositive = new Button(172, 106, positiveText);
+			buttonPositive.setSize(positiveWidth + 10, 16);
 			buttonPositive.setEnabled(false);
 			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
@@ -557,8 +556,8 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(buttonPositive);
 
 			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
-			buttonNegative = new Button(125, 105, negativeText);
-			buttonNegative.setSize(negativeWidth + 10, 15);
+			buttonNegative = new Button(125, 106, negativeText);
+			buttonNegative.setSize(negativeWidth + 10, 16);
 			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
@@ -569,7 +568,7 @@ public abstract class Dialog extends Wrappable
 		 * Sets the positive button text
 		 * @param positiveText
 		 */
-		public void setPositiveText(@Nonnull String positiveText)
+		public void setPositiveText(String positiveText)
 		{
 			if(positiveText == null) {
 				throw new IllegalArgumentException("Text can't be null");
@@ -582,7 +581,7 @@ public abstract class Dialog extends Wrappable
 		 *
 		 * @param negativeText
 		 */
-		public void setNegativeText(@Nonnull String negativeText)
+		public void setNegativeText(String negativeText)
 		{
 			if(negativeText == null) {
 				throw new IllegalArgumentException("Text can't be null");
@@ -595,16 +594,32 @@ public abstract class Dialog extends Wrappable
 		 * button is pressed and returns the file that is selected. Returning
 		 * true in the handler indicates that the dialog should close.
 		 *
-		 * @param responseListener
+		 * @param responseListener the response handler to handle the returned file
 		 */
 		public void setResponseHandler(ResponseHandler<File> responseListener)
 		{
 			this.responseListener = responseListener;
 		}
 
+		/**
+		 * Sets the filter for the file list to show only files that match certain conditions.
+		 *
+		 * @param filter the predicate
+		 */
 		public void setFilter(Predicate<File> filter)
 		{
 			this.filter = filter;
+		}
+
+		/**
+		 * Sets the filter for the file list to show only files that can open with the specified
+		 * application.
+		 *
+		 * @param app the predicate
+		 */
+		public void setFilter(Application app)
+		{
+			this.filter = file -> app.getInfo().getFormattedId().equals(file.getOpeningApp());
 		}
 	}
 
@@ -647,15 +662,14 @@ public abstract class Dialog extends Wrappable
 		public void init()
 		{
 			super.init();
-			main = new Layout(210, 142);
+			main = new Layout(211, 145);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.setFilter(file -> filter == null || filter.test(file) || file.isFolder());
 			browser.openFolder(path);
 			main.addComponent(browser);
 
-			int positiveWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText);
-			buttonPositive = new Button(172, 123, positiveText);
+			buttonPositive = new Button(172, 125, positiveText);
 			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
 				if(mouseButton == 0)
@@ -714,8 +728,7 @@ public abstract class Dialog extends Wrappable
 			});
 			main.addComponent(buttonPositive);
 
-			int negativeWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText);
-			buttonNegative = new Button(126, 123, negativeText);
+			buttonNegative = new Button(126, 125, negativeText);
 			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
 			main.addComponent(buttonNegative);
 
@@ -757,18 +770,39 @@ public abstract class Dialog extends Wrappable
 		 * button is pressed and returns the file that is selected. Returning
 		 * true in the handler indicates that the dialog should close.
 		 *
-		 * @param responseHandler
+		 * @param responseHandler the response handler to handle the returned file
 		 */
 		public void setResponseHandler(ResponseHandler<File> responseHandler)
 		{
 			this.responseHandler = responseHandler;
 		}
 
+		/**
+		 * Sets the filter for the file list to show only files that match certain conditions.
+		 *
+		 * @param filter the predicate
+		 */
 		public void setFilter(Predicate<File> filter)
 		{
 			this.filter = filter;
 		}
 
+		/**
+		 * Sets the filter for the file list to show only files that can open with the specified
+		 * application.
+		 *
+		 * @param app the predicate
+		 */
+		public void setFilter(Application app)
+		{
+			this.filter = file -> app.getInfo().getFormattedId().equals(file.getOpeningApp());
+		}
+
+		/**
+		 * Sets the initial folder path to be shown when the the dialog is opened
+		 *
+		 * @param path the initial folder path
+		 */
 		public void setFolder(String path)
 		{
 			this.path = path;
