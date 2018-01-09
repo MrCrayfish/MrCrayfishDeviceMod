@@ -34,6 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.lang.System;
 import java.util.ArrayList;
@@ -764,23 +765,7 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
-                if(currentFolder.hasFile(clipboardFile.getName()))
-                {
-                    Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
-                    dialog.setPositiveText("Override");
-                    dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
-                    {
-                        if(mouseButton == 0)
-                        {
-                            handleCopyCut(true);
-                        }
-                    });
-                    wrappable.openDialog(dialog);
-                }
-                else
-                {
-                    handleCopyCut(false);
-                }
+                handleCopyCut(false);
             }
             else
             {
@@ -792,37 +777,40 @@ public class FileBrowser extends Component
 
     private void handleCopyCut(boolean override)
     {
+        final Callback<FileSystem.Response> CALLBACK = (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
+            {
+                Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
+                dialog.setPositiveText("Override");
+                dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
+                {
+                    if(mouseButton == 0)
+                    {
+                        handleCopyCut(true);
+                    }
+                });
+                wrappable.openDialog(dialog);
+            }
+            else if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                resetClipboard();
+            }
+            else
+            {
+                createErrorDialog(response.getMessage());
+            }
+            setLoading(false);
+        };
+
+        setLoading(true);
         if(clipboardDir != null)
         {
-            setLoading(true);
-            clipboardFile.moveTo(currentFolder, override, (response, success) ->
-            {
-                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                {
-                    resetClipboard();
-                }
-                else
-                {
-                    createErrorDialog(response.getMessage());
-                }
-                setLoading(false);
-            });
+            clipboardFile.moveTo(currentFolder, override, CALLBACK);
         }
         else
         {
-            setLoading(true);
-            clipboardFile.copyTo(currentFolder, override, (response, success) ->
-            {
-                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                {
-                    resetClipboard();
-                }
-                else
-                {
-                    createErrorDialog(response.getMessage());
-                }
-                setLoading(false);
-            });
+            clipboardFile.copyTo(currentFolder, override, CALLBACK);
         }
     }
 

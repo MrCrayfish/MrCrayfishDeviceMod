@@ -458,6 +458,15 @@ public class File
 			return;
 		}
 
+		if(this.equals(destination.getFile(name)))
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createSuccessResponse(), false);
+			}
+			return;
+		}
+
 		if(destination.hasFile(name))
 		{
 			if(!override)
