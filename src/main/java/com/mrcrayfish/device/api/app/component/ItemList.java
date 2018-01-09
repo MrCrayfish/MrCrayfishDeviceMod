@@ -431,9 +431,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 	public void removeAll()
 	{
 		this.items.clear();
-		updateButtons();
-		updateComponent();
-		updateScroll();
+		if(initialized)
+		{
+			updateButtons();
+			updateComponent();
+			updateScroll();
+		}
 	}
 	
 	/**
