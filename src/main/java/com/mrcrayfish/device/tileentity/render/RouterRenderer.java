@@ -7,7 +7,6 @@ import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import com.mrcrayfish.device.util.CollisionHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;

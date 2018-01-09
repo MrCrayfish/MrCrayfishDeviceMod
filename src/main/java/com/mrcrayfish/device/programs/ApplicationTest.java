@@ -1,21 +1,10 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.network.task.TaskGetDevices;
-import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.nbt.NBTTagCompound;
-
-import javax.annotation.Nullable;
-import java.awt.*;
 
 /**
  * Author: MrCrayfish

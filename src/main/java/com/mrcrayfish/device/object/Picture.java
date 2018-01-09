@@ -2,8 +2,6 @@ package com.mrcrayfish.device.object;
 
 import com.mrcrayfish.device.api.io.File;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.nbt.NBTTagList;
 
 import java.awt.*;
 import java.util.Arrays;

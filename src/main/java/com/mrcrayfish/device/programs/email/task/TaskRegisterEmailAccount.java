@@ -2,7 +2,6 @@ package com.mrcrayfish.device.programs.email.task;
 
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

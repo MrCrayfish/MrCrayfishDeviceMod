@@ -1,9 +1,7 @@
 package com.mrcrayfish.device.init;
 
 import com.mrcrayfish.device.block.*;
-
 import com.mrcrayfish.device.item.ItemColorable;
-
 import com.mrcrayfish.device.item.ItemDevice;
 import com.mrcrayfish.device.item.ItemPaper;
 import net.minecraft.block.Block;

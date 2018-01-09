@@ -5,16 +5,13 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
-import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.util.Constants;
 

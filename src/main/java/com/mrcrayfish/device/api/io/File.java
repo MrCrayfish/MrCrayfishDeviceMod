@@ -7,10 +7,8 @@ import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
-import java.util.regex.Pattern;
 
 public class File
 {

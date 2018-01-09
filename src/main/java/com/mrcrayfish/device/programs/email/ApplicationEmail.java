@@ -1,21 +1,19 @@
 package com.mrcrayfish.device.programs.email;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.*;
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout.Background;
+import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;

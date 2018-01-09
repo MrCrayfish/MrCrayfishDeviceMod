@@ -9,7 +9,6 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
@@ -23,19 +22,14 @@ import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.io.IOException;
-import java.lang.reflect.Field;
 
 public class ApplicationPixelPainter extends Application
 {

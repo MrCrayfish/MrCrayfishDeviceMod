@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;

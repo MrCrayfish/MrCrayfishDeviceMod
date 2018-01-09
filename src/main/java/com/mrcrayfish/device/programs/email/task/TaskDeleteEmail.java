@@ -1,14 +1,13 @@
 package com.mrcrayfish.device.programs.email.task;
 
-import java.util.List;
-
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
 import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class TaskDeleteEmail extends Task {
 	

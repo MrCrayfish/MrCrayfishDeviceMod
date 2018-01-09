@@ -1,13 +1,8 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.IIcon;
-import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-
-import java.util.Arrays;
 
 public class ButtonToggle extends Button implements RadioGroup.Item
 {

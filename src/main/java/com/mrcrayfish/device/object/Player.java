@@ -1,11 +1,8 @@
 package com.mrcrayfish.device.object;
 
-import org.lwjgl.input.Keyboard;
-
 import com.mrcrayfish.device.object.Game.Layer;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.util.Vec2d;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBoat;
@@ -13,6 +10,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 
 public class Player
 {
