@@ -97,19 +97,13 @@ public class Layout extends Component
 	}
 	
 	/**
-	 * Called on the initialization of the layout. Caused by 
+	 * Called on the initialization of the layout. Caused by
 	 * {@link Application#setCurrentLayout(Layout)}. Will
 	 * trigger on initialization listener if set. 
 	 * See {@link #setInitListener(InitListener)}
+	 * TODO: Fix docs
 	 */
-	public void init()
-	{
-		if(initListener != null)
-		{
-			initListener.onInit();
-		}
-		handleOnLoad();
-	}
+	public void init() {}
 	
 	/**
 	 * Adds a component to this layout and initializes it.
@@ -129,8 +123,13 @@ public class Layout extends Component
 	public void init(Layout layout) {}
 
 	@Override
-	public void handleOnLoad()
+	protected void handleOnLoad()
 	{
+		if(initListener != null)
+		{
+			initListener.onInit();
+		}
+
 		for(Component c : components)
 		{
 			c.handleOnLoad();

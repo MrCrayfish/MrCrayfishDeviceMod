@@ -85,6 +85,7 @@ public class RenderUtil
 
 	public static void drawApplicationIcon(@Nullable AppInfo info, double x, double y)
 	{
+		//TODO: Reset color GlStateManager.color(1.0F, 1.0F, 1.0F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
 		if(info != null)
 		{
