@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -373,7 +374,10 @@ public class Image extends Component
             {
                 try
                 {
-                    BufferedImage bufferedImage = ImageIO.read(new URL(url));
+                    URL url = new URL(this.url);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                    BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
                     image.imageWidth = bufferedImage.getWidth();
                     image.imageHeight = bufferedImage.getHeight();
                     texture = new DynamicTexture(bufferedImage);
