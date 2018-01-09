@@ -326,7 +326,6 @@ public class Game extends Component
 		{
 			this.currentLayer = Layer.values()[next];
 		}
-		System.out.println(this.currentLayer.name());
 	}
 	
 	public void prevLayer()
@@ -336,7 +335,6 @@ public class Game extends Component
 		{
 			this.currentLayer = Layer.values()[prev];
 		}
-		System.out.println(this.currentLayer.name());
 	}
 
 	public static enum Layer
