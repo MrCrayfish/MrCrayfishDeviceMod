@@ -1,8 +1,12 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.DeviceConfig;
+import com.mrcrayfish.device.block.BlockColorable;
 import com.mrcrayfish.device.core.network.Connection;
 import com.mrcrayfish.device.core.network.Router;
+import net.minecraft.block.BlockColored;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -19,6 +23,7 @@ import java.util.UUID;
  */
 public abstract class TileEntityDevice extends TileEntitySync implements ITickable
 {
+    private EnumDyeColor color = EnumDyeColor.RED;
     private UUID deviceId;
     private String name;
 
@@ -64,6 +69,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         {
             compound.setString("name", name);
         }
+        compound.setByte("color", (byte) color.getMetadata());
         return compound;
     }
 
@@ -79,6 +85,10 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         {
             name = compound.getString("name");
         }
+        if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+        {
+            this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
+        }
     }
 
     @Override
@@ -89,6 +99,17 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         {
             tag.setString("name", name);
         }
+        tag.setByte("color", (byte) color.getMetadata());
         return tag;
+    }
+
+    public final void setColor(EnumDyeColor color)
+    {
+        this.color = color;
+    }
+
+    public final EnumDyeColor getColor()
+    {
+        return color;
     }
 }

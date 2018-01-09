@@ -29,7 +29,6 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 public class TileEntityPrinter extends TileEntityNetworkDevice implements ITickable, Colorable
 {
     private State state = IDLE;
-    private EnumDyeColor color = EnumDyeColor.RED;
 
     private Deque<IPrint> printQueue = new ArrayDeque<>();
     private IPrint currentPrint;
@@ -123,10 +122,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
                 printQueue.offer(print);
             }
         }
-        if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
-        {
-            this.color = EnumDyeColor.byDyeDamage(compound.getByte("color"));
-        }
     }
 
     @Override
@@ -137,7 +132,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
         compound.setInteger("remainingPrintTime", remainingPrintTime);
         compound.setInteger("state", state.ordinal());
         compound.setInteger("paperCount", paperCount);
-        compound.setByte("color", (byte) color.getDyeDamage());
         if(currentPrint != null)
         {
             compound.setTag("currentPrint", IPrint.writeToTag(currentPrint));
@@ -158,7 +152,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
     {
         NBTTagCompound tag = super.writeSyncTag();
         tag.setInteger("paperCount", paperCount);
-        tag.setByte("color", (byte) color.getDyeDamage());
         return tag;
     }
 
@@ -265,16 +258,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
     public IPrint getPrint()
     {
         return currentPrint;
-    }
-
-    public void setColor(EnumDyeColor color)
-    {
-        this.color = color;
-    }
-
-    public EnumDyeColor getColor()
-    {
-        return color;
     }
 
     public enum State

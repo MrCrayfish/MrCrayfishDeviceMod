@@ -43,7 +43,6 @@ public abstract class BlockColorable extends BlockHorizontal
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
-        System.out.println(state);
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof Colorable)
         {
@@ -77,9 +76,7 @@ public abstract class BlockColorable extends BlockHorizontal
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        ItemStack stack = placer.getHeldItem(hand);
-        EnumDyeColor color = EnumDyeColor.byMetadata(stack.getItemDamage());
-        return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(BlockColored.COLOR, color);
+        return state.withProperty(FACING, placer.getHorizontalFacing());
     }
 
     @Override
