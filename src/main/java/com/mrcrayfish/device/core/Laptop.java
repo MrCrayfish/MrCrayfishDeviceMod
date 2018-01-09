@@ -669,5 +669,6 @@ public class Laptop extends GuiScreen implements System
 	public void closeContext()
 	{
 		context = null;
+		dragging = false;
 	}
 }
