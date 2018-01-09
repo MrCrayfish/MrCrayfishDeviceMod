@@ -40,7 +40,7 @@ public class Image extends Component
     private float alpha = 1.0F;
 
     private boolean hasBorder = false;
-    private int borderColour = Color.BLACK.getRGB();
+    private int borderColor = Color.BLACK.getRGB();
     private int borderThickness = 1;
 
     /**
@@ -169,7 +169,7 @@ public class Image extends Component
 
                 if(hasBorder)
                 {
-                    drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColour);
+                    drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColor);
                     GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
                     if(drawFull)
                     {
@@ -262,13 +262,13 @@ public class Image extends Component
     }
 
     /**
-     * Sets the border colour for this component
+     * Sets the border color for this component
      *
-     * @param colour the border colour
+     * @param color the border color
      */
-    private void setBorderColor(Color colour)
+    private void setBorderColor(Color color)
     {
-        this.borderColour = colour.getRGB();
+        this.borderColor = color.getRGB();
     }
 
     /**

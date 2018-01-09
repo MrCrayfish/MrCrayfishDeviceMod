@@ -22,11 +22,11 @@ import java.awt.*;
  */
 public class Palette extends Component
 {
-    private ComboBox.Custom<Integer> colourPicker;
+    private ComboBox.Custom<Integer> colorPicker;
 
     private Color currentColor = Color.RED;
 
-    private Slider colourSlider;
+    private Slider colorSlider;
 
     /**
      * The default constructor for a component.
@@ -38,17 +38,17 @@ public class Palette extends Component
      * @param left how many pixels from the left
      * @param top  how many pixels from the top
      */
-    public Palette(int left, int top, ComboBox.Custom<Integer> colourPicker)
+    public Palette(int left, int top, ComboBox.Custom<Integer> colorPicker)
     {
         super(left, top);
-        this.colourPicker = colourPicker;
+        this.colorPicker = colorPicker;
     }
 
     @Override
     protected void init(Layout layout)
     {
-        colourSlider = new Slider(5, 58, 52);
-        colourSlider.setSlideListener(percentage ->
+        colorSlider = new Slider(5, 58, 52);
+        colorSlider.setSlideListener(percentage ->
         {
             if(percentage >= (1.0 / 6.0) * 5.0)
             {
@@ -75,7 +75,7 @@ public class Palette extends Component
                 currentColor = new Color(1.0F, 0.0F, percentage * 6.0F);
             }
         });
-        layout.addComponent(colourSlider);
+        layout.addComponent(colorSlider);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class Palette extends Component
 
         if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + 1, yPosition + 1, xPosition + 51, yPosition + 51))
         {
-            colourPicker.setValue(GLHelper.getPixel(mouseX, mouseY).getRGB());
+            colorPicker.setValue(GLHelper.getPixel(mouseX, mouseY).getRGB());
         }
     }
 }

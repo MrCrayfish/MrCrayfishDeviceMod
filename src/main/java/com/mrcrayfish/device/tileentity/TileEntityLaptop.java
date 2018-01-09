@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickable, Colorable
+public class TileEntityLaptop extends TileEntityNetworkDevice
 {
 	private static final int OPENED_ANGLE = 102;
 

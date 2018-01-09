@@ -25,35 +25,57 @@ public class ApplicationTest extends Application
     @Override
     public void init()
     {
-        Button button = new Button(5, 5, "Print", Icons.PRINTER);
+        Button button = new Button(5, 5, Icons.PRINTER);
         button.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {
-                int[] pixels = {Color.RED.getRGB(), Color.DARK_GRAY.getRGB(), Color.YELLOW.getRGB(), Color.MAGENTA.getRGB()};
-                Dialog.Print dialog = new Dialog.Print(new ApplicationPixelPainter.PicturePrint("Test", pixels, 2));
+                Dialog.Confirmation dialog = new Dialog.Confirmation("Test");
+                dialog.setPositiveText("Override");
                 openDialog(dialog);
             }
         });
         super.addComponent(button);
 
-        Button getDevices = new Button(50, 5, "Get Devices", Icons.NETWORK_DRIVE);
-        button.setClickListener((mouseX, mouseY, mouseButton) ->
+        Button button1 = new Button(30, 5, Icons.PRINTER);
+        button1.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {
-                Task task = new TaskGetDevices(Laptop.getPos(), TileEntityPrinter.class);
-                task.setCallback((tagCompound, success) ->
-                {
-                    if(success)
-                    {
-                        System.out.println(tagCompound);
-                    }
-                });
-                TaskManager.sendTask(task);
+                openDialog(new Dialog.Message("Test"));
             }
         });
-        super.addComponent(getDevices);
+        super.addComponent(button1);
+
+        Button button2 = new Button(55, 5, Icons.PRINTER);
+        button2.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
+                openDialog(new Dialog.Input("Test"));
+            }
+        });
+        super.addComponent(button2);
+
+        Button button3 = new Button(80, 5, Icons.PRINTER);
+        button3.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
+                openDialog(new Dialog.OpenFile(this));
+            }
+        });
+        super.addComponent(button3);
+
+        Button button4 = new Button(105, 5, Icons.PRINTER);
+        button4.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
+                openDialog(new Dialog.SaveFile(this, new NBTTagCompound()));
+            }
+        });
+        super.addComponent(button4);
     }
 
     @Override

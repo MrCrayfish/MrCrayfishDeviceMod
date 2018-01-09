@@ -18,7 +18,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
-import com.mrcrayfish.device.object.ColourGrid;
+import com.mrcrayfish.device.object.ColorGrid;
 import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
@@ -83,8 +83,8 @@ public class ApplicationPixelPainter extends Application
 	private Slider redSlider;
 	private Slider greenSlider;
 	private Slider blueSlider;
-	private Component colourDisplay;
-	private ColourGrid colourGrid;
+	private Component colorDisplay;
+	private ColorGrid colorGrid;
 	private CheckBox displayGrid;
 
 	public ApplicationPixelPainter()
@@ -302,7 +302,7 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             canvas.setCurrentTool(Canvas.EYE_DROPPER);
-            Color color = new Color(canvas.getCurrentColour());
+			Color color = new Color(canvas.getCurrentColor());
             redSlider.setPercentage(color.getRed() / 255F);
             greenSlider.setPercentage(color.getGreen() / 255F);
             blueSlider.setPercentage(color.getBlue() / 255F);
@@ -414,19 +414,19 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(blueSlider);
 
-		colourDisplay = new Component(158, 5)
+		colorDisplay = new Component(158, 5)
 		{
 			@Override
 			public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 			{
 				drawRect(xPosition, yPosition, xPosition + 50, yPosition + 20, Color.DARK_GRAY.getRGB());
-				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColour());
+				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColor());
 			}
 		};
-		layoutDraw.addComponent(colourDisplay);
+		layoutDraw.addComponent(colorDisplay);
 
-		colourGrid = new ColourGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
-		layoutDraw.addComponent(colourGrid);
+		colorGrid = new ColorGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
+		layoutDraw.addComponent(colorGrid);
 
 		displayGrid = new CheckBox("Grid", 166, 120);
 		displayGrid.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setShowGrid(displayGrid.isSelected()));

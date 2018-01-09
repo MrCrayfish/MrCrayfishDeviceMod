@@ -20,7 +20,7 @@ import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
-import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -856,10 +856,10 @@ public abstract class Dialog extends Wrappable
 				@Override
 				public void render(NetworkDevice networkDevice, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
 				{
-					ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
-					Gui.drawRect(x, y, x + width, y + height, selected ? colourScheme.getItemHighlightColour() : colourScheme.getItemBackgroundColour());
+					ColorScheme colorScheme = Laptop.getSystem().getSettings().getColorScheme();
+					Gui.drawRect(x, y, x + width, y + height, selected ? colorScheme.getItemHighlightColor() : colorScheme.getItemBackgroundColor());
 					Icons.PRINTER.draw(mc, x + 3, y + 3);
-					RenderUtil.drawStringClipped(networkDevice.getName(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColourScheme().getTextColour(), true);
+					RenderUtil.drawStringClipped(networkDevice.getName(), x + 18, y + 4, 118, Laptop.getSystem().getSettings().getColorScheme().getTextColor(), true);
 				}
 			});
 			itemListPrinters.setItemClickListener((blockPos, index, mouseButton) ->

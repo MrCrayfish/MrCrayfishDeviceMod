@@ -26,7 +26,7 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityPrinter extends TileEntityNetworkDevice implements ITickable, Colorable
+public class TileEntityPrinter extends TileEntityNetworkDevice
 {
     private State state = IDLE;
 

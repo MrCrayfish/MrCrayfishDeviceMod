@@ -65,11 +65,11 @@ public class TextArea extends Component
 	private IHighlight highlight = null;
 
 	/* Personalisation */
-	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
-	protected int textColour = Color.WHITE.getRGB();
-	protected int backgroundColour = Color.DARK_GRAY.getRGB();
-	protected int secondaryBackgroundColour = Color.GRAY.getRGB();
-	protected int borderColour = Color.BLACK.getRGB();
+	protected int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
+	protected int textColor = Color.WHITE.getRGB();
+	protected int backgroundColor = Color.DARK_GRAY.getRGB();
+	protected int secondaryBackgroundColor = Color.GRAY.getRGB();
+	protected int borderColor = Color.BLACK.getRGB();
 
 	/**
 	 * Default text area constructor
@@ -101,13 +101,13 @@ public class TextArea extends Component
 		if (this.visible)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(x, y, x + width, y + height, borderColour);
-			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, backgroundColour);
+			Gui.drawRect(x, y, x + width, y + height, borderColor);
+			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, backgroundColor);
 
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
 				GlStateManager.enableBlend();
-				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColour);
+				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColor);
 			}
 
 			GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -138,7 +138,7 @@ public class TextArea extends Component
 				}
 				else
 				{
-					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColour);
+					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColor);
 				}
 			}
 
@@ -174,7 +174,7 @@ public class TextArea extends Component
 					float scrollPercentage = MathHelper.clamp((verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines), 0.0F, 1.0F);
 					int scrollBarY = (int) ((visibleScrollBarHeight - scrollBarHeight) * scrollPercentage);
 					int scrollY = yPosition + 2 + scrollBarY;
-					Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColour);
+					Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColor);
 				}
 
 				if(!wrapText && maxLineWidth >= width - padding * 2)
@@ -185,7 +185,7 @@ public class TextArea extends Component
 					int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
 					int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
 					int scrollX = xPosition + 2 + MathHelper.clamp(relativeScrollX + horizontalOffset, 0, visibleScrollBarWidth - scrollBarWidth);
-					Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColour);
+					Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColor);
 				}
 			}
 		}
@@ -1016,9 +1016,9 @@ public class TextArea extends Component
 
 	/**
 	 * Sets the highlighting for the text area. This is used, for instance, where you want
-	 * particular keywords to be a different colour from the rest.
+	 * particular keywords to be a different color from the rest.
 	 *
-	 * @param highlight the highlight to colour the text
+	 * @param highlight the highlight to color the text
 	 */
 	public void setHighlight(IHighlight highlight)
 	{
@@ -1047,33 +1047,33 @@ public class TextArea extends Component
 	}
 
 	/**
-	 * Sets the text colour for this component
+	 * Sets the text color for this component
 	 *
-	 * @param color the text colour
+	 * @param color the text color
 	 */
-	public void setTextColour(Color color)
+	public void setTextColor(Color color)
 	{
-		this.textColour = color.getRGB();
+		this.textColor = color.getRGB();
 	}
 
 	/**
-	 * Sets the background colour for this component
+	 * Sets the background color for this component
 	 *
-	 * @param color the background colour
+	 * @param color the background color
 	 */
-	public void setBackgroundColour(Color color)
+	public void setBackgroundColor(Color color)
 	{
-		this.backgroundColour = color.getRGB();
+		this.backgroundColor = color.getRGB();
 	}
 
 	/**
-	 * Sets the border colour for this component
+	 * Sets the border color for this component
 	 *
-	 * @param color the border colour
+	 * @param color the border color
 	 */
-	public void setBorderColour(Color color)
+	public void setBorderColor(Color color)
 	{
-		this.borderColour = color.getRGB();
+		this.borderColor = color.getRGB();
 	}
 
 	/**

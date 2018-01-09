@@ -185,7 +185,7 @@ public class ApplicationEmail extends Application
 					}
 					else
 					{
-						fieldEmail.setTextColour(Color.RED);
+						fieldEmail.setTextColor(Color.RED);
 					}
 				});
 				TaskManager.sendTask(taskRegisterAccount);
@@ -449,7 +449,7 @@ public class ApplicationEmail extends Application
 		});
 
 		labelViewSubject = new Label("Subject", 5, 26);
-		labelViewSubject.setTextColour(new Color(255, 170, 0));
+		labelViewSubject.setTextColor(new Color(255, 170, 0));
 		layoutViewEmail.addComponent(labelViewSubject);
 
 		labelFrom = new Label("From", 5, 38);

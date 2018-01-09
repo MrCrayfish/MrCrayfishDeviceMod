@@ -1,7 +1,5 @@
 package com.mrcrayfish.device.object;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.core.Laptop;
@@ -11,8 +9,9 @@ import com.mrcrayfish.device.object.tools.ToolEraser;
 import com.mrcrayfish.device.object.tools.ToolEyeDropper;
 import com.mrcrayfish.device.object.tools.ToolPencil;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
+
+import java.awt.*;
 
 public class Canvas extends Component 
 {
@@ -24,7 +23,7 @@ public class Canvas extends Component
 	
 	public int[] pixels;
 	private int red, green, blue;
-	private int currentColour = Color.BLACK.getRGB();
+	private int currentColor = Color.BLACK.getRGB();
 	
 	private boolean drawing = false;
 	private boolean showGrid = false;
@@ -32,7 +31,7 @@ public class Canvas extends Component
 	
 	public Picture picture;
 	
-	private int gridColour = new Color(200, 200, 200, 150).getRGB();
+	private int gridColor = new Color(200, 200, 200, 150).getRGB();
 	
 	public Canvas(int left, int top)
 	{
@@ -71,8 +70,8 @@ public class Canvas extends Component
 				drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + picture.getPixelHeight(), pixels[j + i * picture.size.width]);
 				if(showGrid)
 				{
-					drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + 1, gridColour);
-					drawRect(pixelX, pixelY, pixelX + 1, pixelY + picture.getPixelHeight(), gridColour);
+					drawRect(pixelX, pixelY, pixelX + picture.getPixelWidth(), pixelY + 1, gridColor);
+					drawRect(pixelX, pixelY, pixelX + 1, pixelY + picture.getPixelHeight(), gridColor);
 				}
 			}
 		}
@@ -136,9 +135,9 @@ public class Canvas extends Component
 		return this.pixels[x + y * picture.size.width];
 	}
 	
-	public void setPixel(int x, int y, int colour)
+	public void setPixel(int x, int y, int color)
 	{
-		this.pixels[x + y * picture.size.width] = colour;
+		this.pixels[x + y * picture.size.width] = color;
 	}
 
 	public boolean isExistingImage() 
@@ -146,42 +145,42 @@ public class Canvas extends Component
 		return existingImage;
 	}
 
-	public void setColour(Color colour)
+	public void setColor(Color color)
 	{
-		this.currentColour = colour.getRGB();
+		this.currentColor = color.getRGB();
 	}
 	
-	public void setColour(int colour)
+	public void setColor(int color)
 	{
-		this.currentColour = colour;
+		this.currentColor = color;
 	}
 	
 	public void setRed(float red)
 	{
 		this.red = (int) (255 * Math.min(1.0, red));
-		compileColour();
+		compileColor();
 	}
 	
 	public void setGreen(float green)
 	{
         this.green = (int) (255 * Math.min(1.0, green));
-        compileColour();
+        compileColor();
 	}
 	
 	public void setBlue(float blue)
 	{
 		this.blue = (int) (255 * Math.min(1.0, blue));
-		compileColour();
+		compileColor();
 	}
 	
-	public void compileColour()
+	public void compileColor()
 	{
-		 this.currentColour = ((255 & 0xFF) << 24) | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 0);
+		 this.currentColor = ((255 & 0xFF) << 24) | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 0);
 	}
 	
-	public int getCurrentColour()
+	public int getCurrentColor()
 	{
-		return currentColour;
+		return currentColor;
 	}
 	
 	public void setCurrentTool(Tool currentTool) 

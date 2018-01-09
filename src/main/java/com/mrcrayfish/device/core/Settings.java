@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.core;
 
-import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -10,7 +10,7 @@ public class Settings
 {
     private static boolean showAllApps = true;
 
-    private ColourScheme colourScheme = new ColourScheme();
+    private ColorScheme colorScheme = new ColorScheme();
 
     public static void setShowAllApps(boolean showAllApps)
     {
@@ -22,16 +22,16 @@ public class Settings
         return Settings.showAllApps;
     }
 
-    public ColourScheme getColourScheme()
+    public ColorScheme getColorScheme()
     {
-        return colourScheme;
+        return colorScheme;
     }
 
     public NBTTagCompound toTag()
     {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setBoolean("showAllApps", showAllApps);
-        tag.setTag("colourScheme", colourScheme.toTag());
+        tag.setTag("colorScheme", colorScheme.toTag());
         return tag;
     }
 
@@ -40,7 +40,7 @@ public class Settings
         //showAllApps = tag.getBoolean("showAllApps");
 
         Settings settings = new Settings();
-        settings.colourScheme = ColourScheme.fromTag(tag.getCompoundTag("colourScheme"));
+        settings.colorScheme = ColorScheme.fromTag(tag.getCompoundTag("colorScheme"));
         return settings;
     }
 }
