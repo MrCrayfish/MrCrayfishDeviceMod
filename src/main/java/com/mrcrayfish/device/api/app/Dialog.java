@@ -69,7 +69,7 @@ public abstract class Dialog extends Wrappable
 		this.width = layout.width;
 		this.height = layout.height;
 		this.pendingLayoutUpdate = true;
-		this.customLayout.init();
+		this.customLayout.handleOnLoad();
 	}
 
 	@Override
