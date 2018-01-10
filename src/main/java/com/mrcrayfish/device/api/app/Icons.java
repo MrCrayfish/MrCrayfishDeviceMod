@@ -130,7 +130,13 @@ public enum Icons implements IIcon
     HEART_OFF,
     HEART_ON,
     MAP,
-    BRIGHTNESS;
+    BRIGHTNESS,
+    GIFT_RED,
+    GIFT_CYAN,
+    GIFT_GREEN,
+    GIFT_BLUE,
+    CREDIT_CARD,
+    PIN;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
