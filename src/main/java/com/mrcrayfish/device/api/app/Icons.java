@@ -136,7 +136,10 @@ public enum Icons implements IIcon
     GIFT_GREEN,
     GIFT_BLUE,
     CREDIT_CARD,
-    PIN;
+    PIN,
+    VISIBILITY_OFF,
+    VISIBILITY_ON,
+    HOURGLASS;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
