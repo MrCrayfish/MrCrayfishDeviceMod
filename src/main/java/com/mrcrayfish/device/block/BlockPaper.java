@@ -4,6 +4,7 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityPaper;
 import com.mrcrayfish.device.util.CollisionHelper;
+import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -14,6 +15,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -100,16 +102,19 @@ public class BlockPaper extends BlockHorizontal implements ITileEntityProvider
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
     {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityPaper)
+        if(!world.isRemote && !player.capabilities.isCreativeMode)
         {
-            TileEntityPaper paper = (TileEntityPaper) tileEntity;
-            ItemStack drop = IPrint.generateItem(paper.getPrint());
-            worldIn.spawnEntity(new EntityItem(worldIn, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityPaper)
+            {
+                TileEntityPaper paper = (TileEntityPaper) tileEntity;
+                ItemStack drop = IPrint.generateItem(paper.getPrint());
+                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+            }
         }
-        super.breakBlock(worldIn, pos, state);
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
     @Override
