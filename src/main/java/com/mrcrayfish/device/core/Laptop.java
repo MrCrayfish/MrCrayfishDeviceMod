@@ -246,7 +246,6 @@ public class Laptop extends GuiScreen implements System
 			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
 				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
-				this.dragging = true;
 				return;
 			}
 			else
@@ -344,14 +343,11 @@ public class Laptop extends GuiScreen implements System
 
 		if(this.context != null)
 		{
-			if(dragging)
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
-				int dropdownX = context.xPosition;
-				int dropdownY = context.yPosition;
-				if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
-				{
-					this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
-				}
+				this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
 			}
 			return;
 		}
