@@ -139,7 +139,16 @@ public enum Icons implements IIcon
     PIN,
     VISIBILITY_OFF,
     VISIBILITY_ON,
-    HOURGLASS;
+    HOURGLASS,
+    OFFLINE,
+    LIVE,
+    ONLINE,
+    CONNECTING,
+    MICROPHONE,
+    MICROPHONE_MUTE,
+    HEADPHONES_MUTE,
+    ZOOM_IN,
+    ZOOM_OUT;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
