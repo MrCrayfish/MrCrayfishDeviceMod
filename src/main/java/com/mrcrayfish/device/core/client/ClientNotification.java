@@ -31,7 +31,7 @@ public class ClientNotification implements IToast
 
         if(subTitle == null)
         {
-            toastGui.getMinecraft().fontRenderer.drawString(RenderUtil.clipStringToWidth(I18n.format(title), 118), 38, 11, -1, true);
+            toastGui.getMinecraft().fontRenderer.drawString(RenderUtil.clipStringToWidth(I18n.format(title), 118), 38, 12, -1, true);
         }
         else
         {
