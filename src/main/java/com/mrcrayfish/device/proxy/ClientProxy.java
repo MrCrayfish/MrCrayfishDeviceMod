@@ -8,6 +8,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.client.ClientNotification;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.tileentity.*;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -230,5 +232,12 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     {
         allowedApps = null;
         DeviceConfig.restore();
+    }
+
+    @Override
+    public void showNotification(NBTTagCompound tag)
+    {
+        ClientNotification notification = ClientNotification.loadFromTag(tag);
+        notification.push();
     }
 }

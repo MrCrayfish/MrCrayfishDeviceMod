@@ -1,10 +1,12 @@
-package com.mrcrayfish.device.programs;
+package com.mrcrayfish.device.programs.example;
 
+import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.client.ClientNotification;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
+import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -60,11 +62,7 @@ public class ApplicationExample extends Application
 		downButton.setPadding(1);
 		downButton.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("icon", Icons.BELL.ordinal());
-			tag.setString("title", "Notification");
-			tag.setString("subTitle", "Hello World!");
-			Minecraft.getMinecraft().getToastGui().add(ClientNotification.loadFromTag(tag));
+			TaskManager.sendTask(new TaskNotificationTest());
         });
 		super.addComponent(downButton);
 		
