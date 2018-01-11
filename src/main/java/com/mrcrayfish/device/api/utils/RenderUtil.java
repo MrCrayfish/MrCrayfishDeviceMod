@@ -100,12 +100,18 @@ public class RenderUtil
 	public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow)
 	{
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		fontRenderer.drawString(clipStringToWidth(text, width), x, y, color, shadow);
+	}
+
+	public static String clipStringToWidth(String text, int width)
+	{
+		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		String clipped = text;
 		if(fontRenderer.getStringWidth(clipped) > width)
 		{
 			clipped = fontRenderer.trimStringToWidth(clipped, width - 8) + "...";
 		}
-		fontRenderer.drawString(clipped, x, y, color, shadow);
+		return clipped;
 	}
 
 	public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)

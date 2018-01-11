@@ -1,9 +1,11 @@
 package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.core.client.ClientNotification;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ApplicationExample extends Application
@@ -56,6 +58,14 @@ public class ApplicationExample extends Application
 		
 		downButton = new Button(56, 43, Icons.CHEVRON_DOWN);
 		downButton.setPadding(1);
+		downButton.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setInteger("icon", Icons.BELL.ordinal());
+			tag.setString("title", "Notification");
+			tag.setString("subTitle", "Hello World!");
+			Minecraft.getMinecraft().getToastGui().add(ClientNotification.loadFromTag(tag));
+        });
 		super.addComponent(downButton);
 		
 		itemList = new ItemList<String>(5, 60, 63, 4);
