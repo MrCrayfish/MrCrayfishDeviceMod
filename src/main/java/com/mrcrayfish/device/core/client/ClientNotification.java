@@ -8,6 +8,7 @@ import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * Author: MrCrayfish
@@ -49,7 +50,10 @@ public class ClientNotification implements IToast
         ClientNotification notification = new ClientNotification();
         notification.icon = Icons.values()[tag.getInteger("icon")];
         notification.title = tag.getString("title");
-        notification.subTitle = tag.getString("subTitle");
+        if(tag.hasKey("subTitle", Constants.NBT.TAG_STRING))
+        {
+            notification.subTitle = tag.getString("subTitle");
+        }
         return notification;
     }
 
