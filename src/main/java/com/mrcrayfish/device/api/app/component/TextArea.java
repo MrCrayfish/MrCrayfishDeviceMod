@@ -393,7 +393,7 @@ public class TextArea extends Component
 	/**
 	 * Performs a backspace at the current cursor position
 	 */
-	private void performBackspace()
+	public void performBackspace()
 	{
 		if(cursorY == 0 && cursorX == 0)
 			return;
@@ -437,7 +437,7 @@ public class TextArea extends Component
 	/**
 	 * Performs a return at the current cursor position
 	 */
-	private void performReturn()
+	public void performReturn()
 	{
 		if(maxLines > 0)
 		{
@@ -641,7 +641,7 @@ public class TextArea extends Component
 		}
 	}
 
-	private void moveCursorRight(int amount)
+	public void moveCursorRight(int amount)
 	{
 		if(amount <= 0)
 			return;
@@ -669,7 +669,7 @@ public class TextArea extends Component
 		moveCursorRight(amount - 1);
 	}
 
-	private void moveCursorLeft(int amount)
+	public void moveCursorLeft(int amount)
 	{
 		if(amount <= 0)
 			return;
