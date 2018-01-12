@@ -12,7 +12,7 @@ public class Spinner extends Component
 	protected final int MAX_PROGRESS = 31;
 	protected int currentProgress = 0;
 	
-	protected Color spinnerColour = Color.WHITE;
+	protected Color spinnerColor = Color.WHITE;
 	
 	/**
 	 * Default spinner constructor
@@ -40,7 +40,7 @@ public class Spinner extends Component
 	{
 		if (this.visible)
         {
-			GL11.glColor4f(spinnerColour.getRed() / 255F, spinnerColour.getGreen() / 255F, spinnerColour.getBlue() / 255F, spinnerColour.getAlpha() / 255F);
+			GL11.glColor4f(spinnerColor.getRed() / 255F, spinnerColor.getGreen() / 255F, spinnerColor.getBlue() / 255F, spinnerColor.getAlpha() / 255F);
 			mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			drawTexturedModalRect(xPosition, yPosition, (currentProgress % 8) * 12, 12 + 12 * (int) Math.floor((double) currentProgress / 8), 12, 12);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

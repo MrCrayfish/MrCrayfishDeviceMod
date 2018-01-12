@@ -7,12 +7,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -43,7 +41,6 @@ public abstract class BlockColorable extends BlockHorizontal
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
-        System.out.println(state);
         TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof Colorable)
         {
@@ -77,9 +74,7 @@ public abstract class BlockColorable extends BlockHorizontal
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        ItemStack stack = placer.getHeldItem(hand);
-        EnumDyeColor color = EnumDyeColor.byMetadata(stack.getItemDamage());
-        return state.withProperty(FACING, placer.getHorizontalFacing()).withProperty(BlockColored.COLOR, color);
+        return state.withProperty(FACING, placer.getHorizontalFacing());
     }
 
     @Override

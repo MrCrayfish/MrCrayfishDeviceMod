@@ -30,8 +30,8 @@ public class TextField extends TextArea
 		if(icon != null)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(x, y, x + 15, y + 16, borderColour);
-			Gui.drawRect(x + 1, y + 1, x + 15, y + 15, secondaryBackgroundColour);
+			Gui.drawRect(x, y, x + 15, y + 16, borderColor);
+			Gui.drawRect(x + 1, y + 1, x + 15, y + 15, secondaryBackgroundColor);
 			icon.draw(mc, x + 3, y + 3);
 		}
 		super.render(laptop, mc, x + (icon != null ? 15 : 0), y, mouseX, mouseY, windowActive, partialTicks);

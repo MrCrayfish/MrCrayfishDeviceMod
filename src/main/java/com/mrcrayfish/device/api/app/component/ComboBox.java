@@ -107,13 +107,7 @@ public abstract class ComboBox<T> extends Component
             }
             else if(value != null)
             {
-                String text = value.toString();
-                int valWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-                if(valWidth > (width - height - 8))
-                {
-                    text = Minecraft.getMinecraft().fontRenderer.trimStringToWidth(text, width - height - 12, false) + "...";
-                }
-                fontrenderer.drawString(text, xPosition + 3, yPosition + 3, Color.WHITE.getRGB(), true);
+                RenderUtil.drawStringClipped(value.toString(), xPosition + 3, yPosition + 3, width - 15, Color.WHITE.getRGB(), true);
             }
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -201,8 +195,8 @@ public abstract class ComboBox<T> extends Component
         public List(int left, int top, int width, T[] items)
         {
             super(left, top, width);
-            this.list = new ItemList<>(0, 0, width + 50, 6, false);
-            this.layout = new Layout(width + 50, getListHeight(list));
+            this.list = new ItemList<>(0, 0, width, 6, false);
+            this.layout = new Layout(width, getListHeight(list));
             this.setItems(items);
         }
 

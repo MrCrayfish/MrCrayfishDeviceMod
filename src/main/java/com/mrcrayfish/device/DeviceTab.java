@@ -2,7 +2,6 @@ package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.init.DeviceBlocks;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 

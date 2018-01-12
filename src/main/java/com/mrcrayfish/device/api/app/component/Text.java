@@ -13,7 +13,7 @@ public class Text extends Component
 	protected int width;
 	protected boolean shadow = false;
 	
-	protected int textColour = Color.WHITE.getRGB();
+	protected int textColor = Color.WHITE.getRGB();
 	
 	/**
 	 * Default text constructor
@@ -37,7 +37,7 @@ public class Text extends Component
         {
 			for(int i = 0; i < lines.size(); i++)
 			{
-				mc.fontRenderer.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColour, shadow);
+				mc.fontRenderer.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColor, shadow);
 			}
         }
 	}
@@ -53,19 +53,19 @@ public class Text extends Component
 	}
 	
 	/**
-	 * Sets the text colour for this component
+	 * Sets the text color for this component
 	 * 
-	 * @param color the text colour
+	 * @param color the text color
 	 */
-	public void setTextColour(Color color) 
+	public void setTextColor(Color color)
 	{
-		this.textColour = color.getRGB();
+		this.textColor = color.getRGB();
 	}
 	
 	/**
 	 * Sets the whether shadow should show under the text
 	 * 
-	 * @param shadow the text colour
+	 * @param shadow the text color
 	 */
 	public void setShadow(boolean shadow)
 	{

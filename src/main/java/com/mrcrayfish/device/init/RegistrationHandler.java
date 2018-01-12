@@ -75,7 +75,6 @@ public class RegistrationHandler
         {
             MrCrayfishDeviceMod.getLogger().info("Registering recipes");
             RECIPES.forEach(recipe -> event.getRegistry().register(recipe));
-            System.out.println(event.getRegistry().getEntries());
         }
     }
 

@@ -3,7 +3,7 @@ package com.mrcrayfish.device.item;
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -65,14 +65,14 @@ public class ItemEthernetCable extends Item
                 BlockPos devicePos = BlockPos.fromLong(tag.getLong("pos"));
 
                 TileEntity tileEntity1 = world.getTileEntity(devicePos);
-                if(tileEntity1 instanceof TileEntityDevice)
+                if(tileEntity1 instanceof TileEntityNetworkDevice)
                 {
-                    TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
-                    if(!router.isDeviceRegistered(tileEntityDevice))
+                    TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity1;
+                    if(!router.isDeviceRegistered(tileEntityNetworkDevice))
                     {
-                        if(router.addDevice(tileEntityDevice))
+                        if(router.addDevice(tileEntityNetworkDevice))
                         {
-                            tileEntityDevice.connect(router);
+                            tileEntityNetworkDevice.connect(router);
                             heldItem.shrink(1);
                             if(getDistance(tileEntity1.getPos(), tileEntityRouter.getPos()) > DeviceConfig.getSignalRange())
                             {
@@ -108,14 +108,14 @@ public class ItemEthernetCable extends Item
                 return EnumActionResult.SUCCESS;
             }
 
-            if(tileEntity instanceof TileEntityDevice)
+            if(tileEntity instanceof TileEntityNetworkDevice)
             {
-                TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
+                TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
                 heldItem.setTagCompound(new NBTTagCompound());
                 NBTTagCompound tag = heldItem.getTagCompound();
-                tag.setUniqueId("id", tileEntityDevice.getId());
-                tag.setString("name", tileEntityDevice.getDeviceName());
-                tag.setLong("pos", tileEntityDevice.getPos().toLong());
+                tag.setUniqueId("id", tileEntityNetworkDevice.getId());
+                tag.setString("name", tileEntityNetworkDevice.getCustomName());
+                tag.setLong("pos", tileEntityNetworkDevice.getPos().toLong());
 
                 sendGameInfoMessage(player, "message.select_router");
                 return EnumActionResult.SUCCESS;

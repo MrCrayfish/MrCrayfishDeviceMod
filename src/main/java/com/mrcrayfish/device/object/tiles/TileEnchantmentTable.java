@@ -1,11 +1,9 @@
 package com.mrcrayfish.device.object.tiles;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.Game;
 import com.mrcrayfish.device.object.Game.Layer;
-import com.mrcrayfish.device.util.GuiHelper;
+import org.lwjgl.opengl.GL11;
 
 public class TileEnchantmentTable extends Tile
 {

@@ -15,7 +15,7 @@ public class Label extends Component {
 	protected double scale = 1;
 	protected int alignment = ALIGN_LEFT;
 
-	protected int textColour = Color.WHITE.getRGB();
+	protected int textColor = Color.WHITE.getRGB();
 	
 	/**
 	 * Default label constructor
@@ -43,7 +43,7 @@ public class Label extends Component {
 					GlStateManager.translate(-(mc.fontRenderer.getStringWidth(text) * scale), 0, 0);
 				if(alignment == ALIGN_CENTER)
 					GlStateManager.translate(-(mc.fontRenderer.getStringWidth(text) * scale) / (2 * scale), 0, 0);
-				mc.fontRenderer.drawString(text, 0, 0, textColour, shadow);
+				mc.fontRenderer.drawString(text, 0, 0, textColor, shadow);
 			}
 			GlStateManager.popMatrix();
         }
@@ -60,13 +60,13 @@ public class Label extends Component {
 	}
 	
 	/**
-	 * Sets the text colour for this component
+	 * Sets the text color for this component
 	 * 
-	 * @param color the text colour
+	 * @param color the text color
 	 */
-	public void setTextColour(Color color) 
+	public void setTextColor(Color color)
 	{
-		this.textColour = color.getRGB();
+		this.textColor = color.getRGB();
 	}
 	
 	/**

@@ -4,7 +4,7 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,13 +48,13 @@ public class TaskPrint extends Task
     public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
     {
         TileEntity tileEntity = world.getTileEntity(BlockPos.fromLong(nbt.getLong("devicePos")));
-        if(tileEntity instanceof TileEntityDevice)
+        if(tileEntity instanceof TileEntityNetworkDevice)
         {
-            TileEntityDevice device = (TileEntityDevice) tileEntity;
+            TileEntityNetworkDevice device = (TileEntityNetworkDevice) tileEntity;
             Router router = device.getRouter();
             if(router != null)
             {
-                TileEntityDevice printer = router.getDevice(world, nbt.getUniqueId("printerId"));
+                TileEntityNetworkDevice printer = router.getDevice(world, nbt.getUniqueId("printerId"));
                 if(printer != null && printer instanceof TileEntityPrinter)
                 {
                     IPrint print = IPrint.loadFromTag(nbt.getCompoundTag("print"));

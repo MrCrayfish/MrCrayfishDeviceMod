@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.core.network;
 
 import com.mrcrayfish.device.DeviceConfig;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -56,7 +56,7 @@ public class Router
         return true;
     }
 
-    public boolean addDevice(TileEntityDevice device)
+    public boolean addDevice(TileEntityNetworkDevice device)
     {
         if(NETWORK_DEVICES.size() >= DeviceConfig.getMaxDevices())
         {
@@ -64,28 +64,28 @@ public class Router
         }
         if(!NETWORK_DEVICES.containsKey(device.getId()))
         {
-            NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device, this));
+            NETWORK_DEVICES.put(device.getId(), new NetworkDevice(device));
         }
         return true;
     }
 
-    public boolean isDeviceRegistered(TileEntityDevice device)
+    public boolean isDeviceRegistered(TileEntityNetworkDevice device)
     {
         return NETWORK_DEVICES.containsKey(device.getId());
     }
 
-    public boolean isDeviceConnected(TileEntityDevice device)
+    public boolean isDeviceConnected(TileEntityNetworkDevice device)
     {
         return isDeviceRegistered(device) && NETWORK_DEVICES.get(device.getId()).getPos() != null;
     }
 
-    public void removeDevice(TileEntityDevice device)
+    public void removeDevice(TileEntityNetworkDevice device)
     {
         NETWORK_DEVICES.remove(device.getId());
     }
 
     @Nullable
-    public TileEntityDevice getDevice(World world, UUID id)
+    public TileEntityNetworkDevice getDevice(World world, UUID id)
     {
         return NETWORK_DEVICES.containsKey(id) ? NETWORK_DEVICES.get(id).getDevice(world) : null;
     }
@@ -101,7 +101,7 @@ public class Router
         return NETWORK_DEVICES.values().stream().filter(networkDevice -> networkDevice.getPos() != null).collect(Collectors.toList());
     }
 
-    public Collection<NetworkDevice> getConnectedDevices(final World world, Class<? extends TileEntityDevice> type)
+    public Collection<NetworkDevice> getConnectedDevices(final World world, Class<? extends TileEntityNetworkDevice> type)
     {
         final Predicate<NetworkDevice> DEVICE_TYPE = networkDevice ->
         {
@@ -109,7 +109,7 @@ public class Router
                 return false;
 
             TileEntity tileEntity = world.getTileEntity(networkDevice.getPos());
-            if(tileEntity instanceof TileEntityDevice)
+            if(tileEntity instanceof TileEntityNetworkDevice)
             {
                 return tileEntity.getClass().isAssignableFrom(type);
             }
@@ -133,18 +133,14 @@ public class Router
                 {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     TileEntity tileEntity = world.getTileEntity(currentPos);
-                    if(tileEntity instanceof TileEntityDevice)
+                    if(tileEntity instanceof TileEntityNetworkDevice)
                     {
-                        TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-                        if(!NETWORK_DEVICES.containsKey(tileEntityDevice.getId()))
+                        TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
+                        if(!NETWORK_DEVICES.containsKey(tileEntityNetworkDevice.getId()))
                             continue;
-                        if(tileEntityDevice.receiveBeacon(this))
+                        if(tileEntityNetworkDevice.receiveBeacon(this))
                         {
-                            NETWORK_DEVICES.get(tileEntityDevice.getId()).update(tileEntityDevice);
-                        }
-                        else
-                        {
-                            NETWORK_DEVICES.remove(tileEntityDevice.getId());
+                            NETWORK_DEVICES.get(tileEntityNetworkDevice.getId()).update(tileEntityNetworkDevice);
                         }
                     }
                 }

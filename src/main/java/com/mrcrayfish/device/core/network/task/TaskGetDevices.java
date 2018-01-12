@@ -3,7 +3,7 @@ package com.mrcrayfish.device.core.network.task;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -19,7 +19,7 @@ import java.util.Collection;
 public class TaskGetDevices extends Task
 {
     private BlockPos devicePos;
-    private Class<? extends TileEntityDevice> targetDeviceClass;
+    private Class<? extends TileEntityNetworkDevice> targetDeviceClass;
 
     private Collection<NetworkDevice> foundDevices;
 
@@ -34,7 +34,7 @@ public class TaskGetDevices extends Task
         this.devicePos = devicePos;
     }
 
-    public TaskGetDevices(BlockPos devicePos, Class<? extends TileEntityDevice> targetDeviceClass)
+    public TaskGetDevices(BlockPos devicePos, Class<? extends TileEntityNetworkDevice> targetDeviceClass)
     {
         this();
         this.devicePos = devicePos;
@@ -59,7 +59,7 @@ public class TaskGetDevices extends Task
         try
         {
             Class targetClass = Class.forName(nbt.getString("targetClass"));
-            if(TileEntityDevice.class.isAssignableFrom(targetClass))
+            if(TileEntityNetworkDevice.class.isAssignableFrom(targetClass))
             {
                 targetDeviceClass = targetClass;
             }
@@ -70,12 +70,12 @@ public class TaskGetDevices extends Task
         }
 
         TileEntity tileEntity = world.getTileEntity(devicePos);
-        if(tileEntity instanceof TileEntityDevice)
+        if(tileEntity instanceof TileEntityNetworkDevice)
         {
-            TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            if(tileEntityDevice.isConnected())
+            TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
+            if(tileEntityNetworkDevice.isConnected())
             {
-                Router router = tileEntityDevice.getRouter();
+                Router router = tileEntityNetworkDevice.getRouter();
                 if(router != null)
                 {
                     if(targetDeviceClass != null)

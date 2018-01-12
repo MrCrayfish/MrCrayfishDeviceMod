@@ -1,10 +1,6 @@
 package com.mrcrayfish.device.programs.system.object;
 
-import java.util.UUID;
-
-import com.mrcrayfish.device.api.utils.BankUtil;
-
-public class Account 
+public class Account
 {
 	private int balance;
 	

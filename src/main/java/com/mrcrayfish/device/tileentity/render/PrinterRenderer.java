@@ -77,8 +77,11 @@ public class PrinterRenderer extends TileEntitySpecialRenderer<TileEntityPrinter
                     GlStateManager.scale(0.3, 0.3, 0.3);
 
                     IPrint print = te.getPrint();
-                    IPrint.Renderer renderer = PrintingManager.getRenderer(print);
-                    renderer.render(print.toTag());
+                    if(print != null)
+                    {
+                        IPrint.Renderer renderer = PrintingManager.getRenderer(print);
+                        renderer.render(print.toTag());
+                    }
                 }
             }
             GlStateManager.popMatrix();

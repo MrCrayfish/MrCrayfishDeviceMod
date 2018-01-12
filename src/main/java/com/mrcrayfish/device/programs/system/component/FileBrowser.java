@@ -142,7 +142,7 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
+            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
@@ -713,9 +713,9 @@ public class FileBrowser extends Component
 
     private void setClipboardFileToSelected()
     {
-        if(fileList.getSelectedIndex() != -1)
+        File file = fileList.getSelectedItem();
+        if(file != null)
         {
-            File file = fileList.getSelectedItem();
             if(file.isProtected())
             {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be copied.";
@@ -727,13 +727,18 @@ public class FileBrowser extends Component
             clipboardFile = file;
             btnPaste.setEnabled(true);
         }
+        else
+        {
+            Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to copy does not exist.");
+            wrappable.openDialog(dialog);
+        }
     }
 
     private void cutSelectedFile()
     {
-        if(fileList.getSelectedIndex() != -1)
+        File file = fileList.getSelectedItem();
+        if(file != null)
         {
-            File file = fileList.getSelectedItem();
             if(file.isProtected())
             {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be cut.";
@@ -746,6 +751,11 @@ public class FileBrowser extends Component
             clipboardFile = file;
             btnPaste.setEnabled(true);
         }
+        else
+        {
+            Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to cut does not exist.");
+            wrappable.openDialog(dialog);
+        }
     }
 
     private void pasteClipboardFile()
@@ -754,23 +764,7 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
-                if(currentFolder.hasFile(clipboardFile.getName()))
-                {
-                    Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
-                    dialog.setPositiveText("Override");
-                    dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
-                    {
-                        if(mouseButton == 0)
-                        {
-                            handleCopyCut(true);
-                        }
-                    });
-                    wrappable.openDialog(dialog);
-                }
-                else
-                {
-                    handleCopyCut(false);
-                }
+                handleCopyCut(false);
             }
             else
             {
@@ -782,37 +776,40 @@ public class FileBrowser extends Component
 
     private void handleCopyCut(boolean override)
     {
+        final Callback<FileSystem.Response> CALLBACK = (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
+            {
+                Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
+                dialog.setPositiveText("Override");
+                dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
+                {
+                    if(mouseButton == 0)
+                    {
+                        handleCopyCut(true);
+                    }
+                });
+                wrappable.openDialog(dialog);
+            }
+            else if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                resetClipboard();
+            }
+            else
+            {
+                createErrorDialog(response.getMessage());
+            }
+            setLoading(false);
+        };
+
+        setLoading(true);
         if(clipboardDir != null)
         {
-            setLoading(true);
-            clipboardFile.moveTo(currentFolder, override, (response, success) ->
-            {
-                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                {
-                    resetClipboard();
-                }
-                else
-                {
-                    createErrorDialog(response.getMessage());
-                }
-                setLoading(false);
-            });
+            clipboardFile.moveTo(currentFolder, override, CALLBACK);
         }
         else
         {
-            setLoading(true);
-            clipboardFile.copyTo(currentFolder, override, (response, success) ->
-            {
-                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                {
-                    resetClipboard();
-                }
-                else
-                {
-                    createErrorDialog(response.getMessage());
-                }
-                setLoading(false);
-            });
+            clipboardFile.copyTo(currentFolder, override, CALLBACK);
         }
     }
 
@@ -971,7 +968,7 @@ public class FileBrowser extends Component
 
     public enum Mode
     {
-        FULL(225, 145, 26, 6), BASIC(210, 100, 26, 4);
+        FULL(225, 145, 26, 6), BASIC(211, 105, 26, 4);
 
         private final int width;
         private final int height;
