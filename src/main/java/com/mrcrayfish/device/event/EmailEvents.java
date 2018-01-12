@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.event;
 
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
+import com.mrcrayfish.device.programs.email.EmailManager;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
