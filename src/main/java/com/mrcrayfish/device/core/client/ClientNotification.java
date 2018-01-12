@@ -5,6 +5,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.toasts.GuiToast;
 import net.minecraft.client.gui.toasts.IToast;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -26,8 +27,12 @@ public class ClientNotification implements IToast
     @Override
     public Visibility draw(GuiToast toastGui, long delta)
     {
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
         toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
         toastGui.drawTexturedModalRect(0, 0, 0, 0, 160, 32);
+
+        toastGui.getMinecraft().getTextureManager().bindTexture(icon.getIconAsset());
+        RenderUtil.drawRectWithTexture(6, 6, icon.getU(), icon.getV(), 20, 20, 10, 10, 200, 200);
 
         if(subTitle == null)
         {
@@ -38,9 +43,6 @@ public class ClientNotification implements IToast
             toastGui.getMinecraft().fontRenderer.drawString(RenderUtil.clipStringToWidth(I18n.format(title), 118), 38, 7, -1, true);
             toastGui.getMinecraft().fontRenderer.drawString(RenderUtil.clipStringToWidth(I18n.format(subTitle), 118), 38, 18, -1);
         }
-
-        toastGui.getMinecraft().getTextureManager().bindTexture(icon.getIconAsset());
-        RenderUtil.drawRectWithTexture(6, 6, icon.getU(), icon.getV(), 20, 20, 10, 10, 200, 200);
 
         return delta >= 5000L ? IToast.Visibility.HIDE : IToast.Visibility.SHOW;
     }
