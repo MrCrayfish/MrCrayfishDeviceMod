@@ -33,6 +33,7 @@ public class EmailManager
         if (nameToInbox.containsKey(to))
         {
             nameToInbox.get(to).add(0, email);
+            sendNotification(to, email);
             return true;
         }
         return false;
@@ -153,4 +154,18 @@ public class EmailManager
         inbox.clear();
     }
 
+    private void sendNotification(String name, Email email)
+    {
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        UUID id = uuidToName.inverse().get(name);
+        if(id != null)
+        {
+            EntityPlayerMP player = server.getPlayerList().getPlayerByUUID(id);
+            if(player != null)
+            {
+                Notification notification = new Notification(Icons.MAIL, "New Email!", "from " + email.getAuthor());
+                notification.pushTo(player);
+            }
+        }
+    }
 }
