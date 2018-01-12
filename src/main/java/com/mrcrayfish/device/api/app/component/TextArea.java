@@ -961,6 +961,8 @@ public class TextArea extends Component
 			lines.add(splitText[i] + "\n");
 		}
 		lines.add(splitText[splitText.length - 1]);
+		cursorX = splitText[splitText.length - 1].length();
+		cursorY = splitText.length - 1;
 	}
 
 	/**
