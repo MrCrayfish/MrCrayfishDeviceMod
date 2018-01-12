@@ -74,7 +74,7 @@ public abstract class BlockDevice extends BlockColorable
             TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
             if(stack.hasDisplayName())
             {
-                tileEntityDevice.setCustomName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()));
+                tileEntityDevice.setCustomName(stack.getDisplayName());
             }
         }
     }
@@ -85,9 +85,9 @@ public abstract class BlockDevice extends BlockColorable
         if(!world.isRemote && !player.capabilities.isCreativeMode)
         {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof Colorable)
+            if(tileEntity instanceof TileEntityDevice)
             {
-                Colorable colorable = (Colorable) tileEntity;
+                TileEntityDevice device = (TileEntityDevice) tileEntity;
 
                 NBTTagCompound tileEntityTag = new NBTTagCompound();
                 tileEntity.writeToNBT(tileEntityTag);
@@ -102,8 +102,13 @@ public abstract class BlockDevice extends BlockColorable
                 NBTTagCompound compound = new NBTTagCompound();
                 compound.setTag("BlockEntityTag", tileEntityTag);
 
-                ItemStack drop = new ItemStack(Item.getItemFromBlock(this), 1, colorable.getColor().getMetadata());
+                ItemStack drop = new ItemStack(Item.getItemFromBlock(this), 1, device.getColor().getMetadata());
                 drop.setTagCompound(compound);
+
+                if(device.hasCustomName())
+                {
+                    drop.setStackDisplayName(device.getCustomName());
+                }
 
                 world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
             }
