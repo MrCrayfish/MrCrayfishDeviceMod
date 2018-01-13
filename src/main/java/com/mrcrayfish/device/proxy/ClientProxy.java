@@ -4,19 +4,24 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.init.DeviceBlocks;
-import com.mrcrayfish.device.init.DeviceItems;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.ApplicationPixelPainter;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import com.mrcrayfish.device.tileentity.TileEntityPaper;
+import com.mrcrayfish.device.tileentity.TileEntityPrinter;
 import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
+import com.mrcrayfish.device.tileentity.render.PaperRenderer;
+import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -25,23 +30,26 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientProxy extends CommonProxy
 {
     @Override
     public void preInit()
     {
-        DeviceBlocks.registerRenders();
-        DeviceItems.registerRenders();
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public void init()
     {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
 
         if(MrCrayfishDeviceMod.DEVELOPER_MODE)
         {
@@ -55,6 +63,7 @@ public class ClientProxy extends CommonProxy
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_4.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_5.png"));
             Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_6.png"));
+            Laptop.addWallpaper(new ResourceLocation("cdm:textures/gui/laptop_wallpaper_7.png"));
         }
     }
 
@@ -64,7 +73,7 @@ public class ClientProxy extends CommonProxy
         generateIconAtlas();
     }
 
-    public void generateIconAtlas()
+    private void generateIconAtlas()
     {
         final int ICON_SIZE = 14;
         int index = 0;
@@ -107,7 +116,7 @@ public class ClientProxy extends CommonProxy
                 }
                 else
                 {
-                    MrCrayfishDeviceMod.getLogger().error("Missing icon for " + identifier.toString());
+                    MrCrayfishDeviceMod.getLogger().error("Icon for application '" + identifier.toString() +  "' could not be found at '" + path + "'");
                 }
             }
             catch(Exception e)
@@ -160,6 +169,39 @@ public class ClientProxy extends CommonProxy
         }
 
         return null;
+    }
+
+    @Override
+    public boolean registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint)
+    {
+        try
+        {
+            Constructor<? extends IPrint> constructor = classPrint.getConstructor();
+            IPrint print = constructor.newInstance();
+            Class<? extends IPrint.Renderer> classRenderer = print.getRenderer();
+            try
+            {
+                IPrint.Renderer renderer = classRenderer.newInstance();
+                Map<String, IPrint.Renderer> idToRenderer = ReflectionHelper.getPrivateValue(PrintingManager.class, null, "registeredRenders");
+                if(idToRenderer == null)
+                {
+                    idToRenderer = new HashMap<>();
+                    ReflectionHelper.setPrivateValue(PrintingManager.class, null, idToRenderer, "registeredRenders");
+                }
+                idToRenderer.put(identifier.toString(), renderer);
+            }
+            catch(InstantiationException e)
+            {
+                MrCrayfishDeviceMod.getLogger().error("The print renderer '" + classRenderer.getName() + "' is missing an empty constructor and could not be registered!");
+                return false;
+            }
+            return true;
+        }
+        catch(Exception e)
+        {
+            MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
+        }
+        return false;
     }
 
     @SubscribeEvent

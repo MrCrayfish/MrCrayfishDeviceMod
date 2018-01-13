@@ -1,8 +1,8 @@
 package com.mrcrayfish.device.core;
 
 import java.awt.Color;
-import java.util.List;
 
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.gui.Gui;
 import org.lwjgl.opengl.GL11;
 
@@ -10,12 +10,10 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.gui.GuiButtonClose;
-import com.mrcrayfish.device.util.GuiHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class Window<T extends Wrappable>
@@ -104,16 +102,21 @@ public class Window<T extends Wrappable>
 		
 		/* Center */
 		RenderUtil.drawRectWithTexture(x + offsetX + 1, y + offsetY + 13, 1, 13, width - 2, height - 14, 13, 1);
+
+		String windowTitle = content.getWindowTitle();
+		if(mc.fontRenderer.getStringWidth(windowTitle) > width - 2 - 13 - 3) // window width, border, close button, padding, padding
+		{
+			windowTitle = mc.fontRenderer.trimStringToWidth(windowTitle, width - 2 - 13 - 3);
+		}
+		mc.fontRenderer.drawString(windowTitle, x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
 		
-		mc.fontRendererObj.drawString(content.getWindowTitle(), x + offsetX + 3, y + offsetY + 3, Color.WHITE.getRGB(), true);
-		
-		btnClose.drawButton(mc, mouseX, mouseY);
+		btnClose.drawButton(mc, mouseX, mouseY, partialTicks);
 		
 		GlStateManager.disableBlend();
 
 		/* Render content */
 		content.render(gui, mc, x + offsetX + 1, y + offsetY + 13, mouseX, mouseY, active && dialogWindow == null, partialTicks);
-		
+
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
 		if(dialogWindow != null)
@@ -240,8 +243,8 @@ public class Window<T extends Wrappable>
 	private void updateComponents(int x, int y)
 	{
 		content.updateComponents(x + offsetX + 1, y + offsetY + 13);
-		btnClose.xPosition = x + offsetX + width - 12;
-		btnClose.yPosition = y + offsetY + 1;
+		btnClose.x = x + offsetX + width - 12;
+		btnClose.y = y + offsetY + 1;
 	}
 	
 	public void openDialog(Dialog dialog)

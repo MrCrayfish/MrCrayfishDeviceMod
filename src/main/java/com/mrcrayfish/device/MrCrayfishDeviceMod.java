@@ -1,23 +1,21 @@
 package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.task.*;
+import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
 import com.mrcrayfish.device.gui.GuiHandler;
-import com.mrcrayfish.device.init.DeviceBlocks;
-import com.mrcrayfish.device.init.DeviceCrafting;
-import com.mrcrayfish.device.init.DeviceItems;
-import com.mrcrayfish.device.init.DeviceTileEntites;
+import com.mrcrayfish.device.init.*;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
 import com.mrcrayfish.device.programs.auction.ApplicationMineBay;
 import com.mrcrayfish.device.programs.auction.task.TaskAddAuction;
 import com.mrcrayfish.device.programs.auction.task.TaskBuyItem;
 import com.mrcrayfish.device.programs.auction.task.TaskGetAuctions;
+import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
@@ -55,24 +53,18 @@ public class MrCrayfishDeviceMod
 	public static final boolean DEVELOPER_MODE = true;
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) throws LaunchException {
-
+	public void preInit(FMLPreInitializationEvent event) throws LaunchException
+	{
 		if(DEVELOPER_MODE && !(Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
 		{
 			throw new LaunchException();
 		}
-
 		logger = event.getModLog();
 
-		/* Block Registering */
-		DeviceBlocks.init();
-		DeviceBlocks.register();
+		DeviceConfig.load(event.getSuggestedConfigurationFile());
+		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
 
-		DeviceItems.init();
-		DeviceItems.register();
-		
-		/* Packet Registering */
-		PacketHandler.init();
+		RegistrationHandler.init();
 		
 		proxy.preInit();
 	}
@@ -80,12 +72,12 @@ public class MrCrayfishDeviceMod
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		/* Crafting Registering */
-		DeviceCrafting.register();
-		
 		/* Tile Entity Registering */
 		DeviceTileEntites.register();
-		
+
+		/* Packet Registering */
+		PacketHandler.init();
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
@@ -114,8 +106,12 @@ public class MrCrayfishDeviceMod
 
 		// Core
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
+		TaskManager.registerTask(TaskPrint.class);
+		TaskManager.registerTask(TaskUpdateSystemData.class);
 
 		//Bank
+		TaskManager.registerTask(ApplicationBank.TaskDeposit.class);
+		TaskManager.registerTask(ApplicationBank.TaskWithdraw.class);
 		TaskManager.registerTask(TaskGetBalance.class);
 		TaskManager.registerTask(TaskPay.class);
 		TaskManager.registerTask(TaskAdd.class);
@@ -139,20 +135,24 @@ public class MrCrayfishDeviceMod
 		if(!DEVELOPER_MODE)
 		{
 			// Applications (Normal)
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
+			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "boat_racers"), ApplicationBoatRacers.class);
+			//ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "mine_bay"), ApplicationMineBay.class);
 
 			// Tasks (Normal)
-			TaskManager.registerTask(TaskAddAuction.class);
-			TaskManager.registerTask(TaskGetAuctions.class);
-			TaskManager.registerTask(TaskBuyItem.class);
+			//TaskManager.registerTask(TaskAddAuction.class);
+			//TaskManager.registerTask(TaskGetAuctions.class);
+			//TaskManager.registerTask(TaskBuyItem.class);
 		}
 		else
 		{
 			// Applications (Developers)
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
+			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 		}
+
+		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
 	}
 
 	public static Logger getLogger()

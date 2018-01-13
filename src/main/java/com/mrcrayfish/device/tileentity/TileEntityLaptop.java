@@ -18,11 +18,14 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+
 public class TileEntityLaptop extends TileEntity implements ITickable
 {
 	public boolean open = false;
 	
-	private NBTTagCompound data;
+	private NBTTagCompound applicationData;
+	private NBTTagCompound systemData;
 	private FileSystem fileSystem;
 
 	@SideOnly(Side.CLIENT)
@@ -33,11 +36,6 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 
 	@SideOnly(Side.CLIENT)
 	private boolean hasExternalDrive;
-
-	public TileEntityLaptop()
-	{
-		this.data = new NBTTagCompound();
-	}
 
 	public void openClose()
 	{
@@ -74,7 +72,16 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.readFromNBT(compound);
 		this.open = compound.getBoolean("open");
-		this.data = compound.getCompoundTag("data");
+
+		if(compound.hasKey("system_data", Constants.NBT.TAG_COMPOUND))
+		{
+			this.systemData = compound.getCompoundTag("system_data");
+		}
+
+		if(compound.hasKey("application_data", Constants.NBT.TAG_COMPOUND))
+		{
+			this.applicationData = compound.getCompoundTag("application_data");
+		}
 
 		if(compound.hasKey("file_system"))
 		{
@@ -92,20 +99,28 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
-		compound.setTag("data", data);
-		compound.setTag("file_system", fileSystem.toTag());
+
+		if(systemData != null)
+		{
+			compound.setTag("system_data", systemData);
+		}
+
+		if(applicationData != null)
+		{
+			compound.setTag("application_data", applicationData);
+		}
+
+		if(fileSystem != null)
+		{
+			compound.setTag("file_system", fileSystem.toTag());
+		}
 		return compound;
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
-		NBTTagCompound tag = pkt.getNbtCompound();
-		super.readFromNBT(tag);
-		this.open = tag.getBoolean("open");
-		this.data.setTag("application", tag.getCompoundTag("application"));
-		this.data.setTag("system", tag.getCompoundTag("system"));
-		this.hasExternalDrive = tag.getBoolean("has_external_drive");
+		this.readFromNBT(pkt.getNbtCompound());
 	}
 
 	@Override
@@ -113,8 +128,17 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 	{
 		NBTTagCompound tag = super.getUpdateTag();
 		tag.setBoolean("open", this.open);
-		tag.setTag("application", createAndGetTag("application"));
-		tag.setTag("system", createAndGetTag("system"));
+
+		if(systemData != null)
+		{
+			tag.setTag("system_data", systemData);
+		}
+
+		if(applicationData != null)
+		{
+			tag.setTag("application_data", applicationData);
+		}
+
 		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
 		return tag;
 	}
@@ -140,43 +164,35 @@ public class TileEntityLaptop extends TileEntity implements ITickable
 
     public NBTTagCompound getApplicationData()
     {
-        return createAndGetTag("application");
+		return applicationData != null ? applicationData : new NBTTagCompound();
     }
 
 	public NBTTagCompound getSystemData()
 	{
-		return createAndGetTag("system");
+		return systemData != null ? systemData : new NBTTagCompound();
 	}
 
 	public FileSystem getFileSystem()
 	{
 		if(fileSystem == null)
 		{
-			fileSystem = new FileSystem(this, createAndGetTag("file_system"));
+			fileSystem = new FileSystem(this, new NBTTagCompound());
 		}
 		return fileSystem;
 	}
 
-	public void setApplicationData(String appId, NBTTagCompound appData)
+	public void setApplicationData(String appId, NBTTagCompound applicationData)
 	{
-		createAndGetTag("application").setTag(appId, appData);
+		this.applicationData = applicationData;
 		markDirty();
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 
 	public void setSystemData(NBTTagCompound systemData)
 	{
-		data.setTag("system", systemData);
+		this.systemData = systemData;
 		markDirty();
-	}
-
-	private NBTTagCompound createAndGetTag(String name)
-	{
-		if(!data.hasKey(name))
-		{
-			data.setTag(name, new NBTTagCompound());
-			markDirty();
-		}
-		return data.getCompoundTag(name);
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 
 	public boolean isExternalDriveAttached()

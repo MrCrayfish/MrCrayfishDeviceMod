@@ -1,15 +1,12 @@
 package com.mrcrayfish.device.programs.system.component;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.ItemClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.Drive;
@@ -23,7 +20,6 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
@@ -38,8 +34,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.awt.*;
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,9 +50,9 @@ public class FileBrowser extends Component
 {
     private static final ResourceLocation ASSETS = new ResourceLocation("cdm:textures/gui/file_browser.png");
 
-    private static final Color HEADER_BACKGROUND = new Color(114, 120, 138);
-    private static final Color ITEM_BACKGROUND = new Color(170, 176, 194);
-    private static final Color ITEM_SELECTED = new Color(200, 176, 174);
+    private static final Color HEADER_BACKGROUND = Color.decode("0x535861");
+    private static final Color ITEM_BACKGROUND = Color.decode("0x9E9E9E");
+    private static final Color ITEM_SELECTED = Color.decode("0x757575");
     private static final Color PROTECTED_FILE = new Color(155, 237, 242);
 
     private static final ListItemRenderer<File> ITEM_RENDERER = new ListItemRenderer<File>(18)
@@ -78,7 +74,7 @@ public class FileBrowser extends Component
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
             Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
-            gui.drawString(Minecraft.getMinecraft().fontRendererObj, file.getName(), x + 22, y + 5, color.getRGB());
+            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, color.getRGB());
         }
     };
 
@@ -146,12 +142,12 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, HEADER_BACKGROUND.getRGB());
+            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
-        btnPreviousFolder = new Button(5, 2, ASSETS, 40, 20, 10, 10);
-        btnPreviousFolder.setClickListener((c, mouseButton) ->
+        btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
+        btnPreviousFolder.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {
@@ -164,8 +160,8 @@ public class FileBrowser extends Component
 
         int btnIndex = 0;
 
-        btnNewFolder = new Button(5, 25 + btnIndex * 20, ASSETS, 0, 20, 10, 10);
-        btnNewFolder.setClickListener((b, mouseButton) ->
+        btnNewFolder = new Button(5, 25 + btnIndex * 20, Icons.NEW_FOLDER);
+        btnNewFolder.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {
@@ -177,8 +173,8 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnRename = new Button(5, 25 + btnIndex * 20, ASSETS, 50, 20, 10, 10);
-        btnRename.setClickListener((c, mouseButton) ->
+        btnRename = new Button(5, 25 + btnIndex * 20, Icons.RENAME);
+        btnRename.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {
@@ -193,8 +189,8 @@ public class FileBrowser extends Component
         {
             btnIndex++;
 
-            btnCopy = new Button(5, 25 + btnIndex * 20, ASSETS, 10, 20, 10, 10);
-            btnCopy.setClickListener((b, mouseButton) ->
+            btnCopy = new Button(5, 25 + btnIndex * 20, Icons.COPY);
+            btnCopy.setClickListener((mouseX, mouseY, mouseButton) ->
             {
                 if(mouseButton == 0)
                 {
@@ -207,8 +203,8 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnCut = new Button(5, 25 + btnIndex * 20, ASSETS, 60, 20, 10, 10);
-            btnCut.setClickListener((c, mouseButton) ->
+            btnCut = new Button(5, 25 + btnIndex * 20, Icons.CUT);
+            btnCut.setClickListener((mouseX, mouseY, mouseButton) ->
             {
                 if(mouseButton == 0)
                 {
@@ -221,8 +217,8 @@ public class FileBrowser extends Component
 
             btnIndex++;
 
-            btnPaste = new Button(5, 25 + btnIndex * 20, ASSETS, 20, 20, 10, 10);
-            btnPaste.setClickListener((b, mouseButton) ->
+            btnPaste = new Button(5, 25 + btnIndex * 20, Icons.CLIPBOARD);
+            btnPaste.setClickListener((mouseX, mouseY, mouseButton) ->
             {
                 if(mouseButton == 0)
                 {
@@ -236,8 +232,8 @@ public class FileBrowser extends Component
 
         btnIndex++;
 
-        btnDelete = new Button(5, 25 + btnIndex * 20, ASSETS, 30, 20, 10, 10);
-        btnDelete.setClickListener((b, mouseButton) ->
+        btnDelete = new Button(5, 25 + btnIndex * 20, Icons.TRASH);
+        btnDelete.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
             {
@@ -331,11 +327,11 @@ public class FileBrowser extends Component
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
 
                 String text = drive.getName();
-                if(mc.fontRendererObj.getStringWidth(text) > 87)
+                if(mc.fontRenderer.getStringWidth(text) > 87)
                 {
-                    text = mc.fontRendererObj.trimStringToWidth(drive.getName(), 78) + "...";
+                    text = mc.fontRenderer.trimStringToWidth(drive.getName(), 78) + "...";
                 }
-                mc.fontRendererObj.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
+                mc.fontRenderer.drawString(text, x + 13, y + 2, Color.WHITE.getRGB(), true);
             }
         });
         layoutMain.addComponent(comboBoxDrive);
@@ -649,7 +645,7 @@ public class FileBrowser extends Component
             dialog.setMessageText(builder.toString());
             dialog.setTitle("Delete");
             dialog.setPositiveText("Yes");
-            dialog.setPositiveListener((c, mouseButton1) ->
+            dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
             {
                 removeFile(fileList.getSelectedIndex());
                 btnRename.setEnabled(false);
@@ -762,7 +758,7 @@ public class FileBrowser extends Component
                 {
                     Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
                     dialog.setPositiveText("Override");
-                    dialog.setPositiveListener((c, mouseButton) ->
+                    dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
                     {
                         if(mouseButton == 0)
                         {
@@ -866,10 +862,10 @@ public class FileBrowser extends Component
     {
         String path = currentFolder.getPath();
         path = path.replace("/", TextFormatting.GOLD + "/" + TextFormatting.RESET);
-        int width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(path);
+        int width = Minecraft.getMinecraft().fontRenderer.getStringWidth(path);
         if(width > 144)
         {
-            path = "..." + Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(path, 144, true);
+            path = "..." + Minecraft.getMinecraft().fontRenderer.trimStringToWidth(path, 144, true);
         }
         labelPath.setText(path);
     }

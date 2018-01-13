@@ -7,9 +7,11 @@ import java.util.List;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.core.Laptop;
 
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 
 /**
  * The Layout class is the main implementation for displaying
@@ -160,6 +162,9 @@ public class Layout extends Component
 		if(!this.visible)
 			return;
 
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		GLHelper.scissor(x, y, width, height);
+
 		if(background != null)
 		{
 			background.render(laptop, mc, x, y, width, height, mouseX, mouseY, windowActive);
@@ -169,8 +174,11 @@ public class Layout extends Component
 		for(Component c : components)
 		{
 			GlStateManager.disableDepth();
+			GLHelper.scissor(x, y, width, height);
 			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
 		}
+
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
 	@Override

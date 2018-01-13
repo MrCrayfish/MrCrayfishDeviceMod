@@ -1,8 +1,12 @@
 package com.mrcrayfish.device.api.io;
 
 import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
+import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.action.FileAction;
+import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -121,7 +125,7 @@ public class Folder extends File
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeNew(this, file, override), (response, success) ->
 		{
-            if(success)
+			if(success)
 			{
 				file.setDrive(drive);
 				file.valid = true;
@@ -133,7 +137,7 @@ public class Folder extends File
 			{
 				callback.execute(response, success);
 			}
-        });
+		});
 	}
 
 	/**
@@ -219,20 +223,20 @@ public class Folder extends File
 		}
 
 		FileSystem.sendAction(drive, FileAction.Factory.makeDelete(file), (response, success) ->
-        {
-            if(success)
-            {
-                file.drive = null;
-                file.valid = false;
-                file.parent = null;
-                files.remove(file);
-                FileBrowser.refreshList = true;
-            }
-            if(callback != null)
-            {
-                callback.execute(response, success);
-            }
-        });
+		{
+			if(success)
+			{
+				file.drive = null;
+				file.valid = false;
+				file.parent = null;
+				files.remove(file);
+				FileBrowser.refreshList = true;
+			}
+			if(callback != null)
+			{
+				callback.execute(response, success);
+			}
+		});
 	}
 
 	public void copyInto(File file, boolean override, boolean cut, @Nullable Callback<FileSystem.Response> callback)
@@ -295,7 +299,7 @@ public class Folder extends File
 	 */
 	public boolean hasFile(String name)
 	{
-		return files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
+		return valid && files.stream().anyMatch(file -> file.name.equalsIgnoreCase(name));
 	}
 
 	/**
@@ -319,7 +323,7 @@ public class Folder extends File
 	 */
 	public boolean hasFolder(String name)
 	{
-		return files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
+		return valid && files.stream().anyMatch(file -> file.isFolder() && file.name.equalsIgnoreCase(name));
 	}
 
 	/**
@@ -333,6 +337,40 @@ public class Folder extends File
 	public Folder getFolder(String name)
 	{
 		return (Folder) files.stream().filter(file -> file.isFolder() && file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
+	public void getFolder(String name, Callback<Folder> callback)
+	{
+		Folder folder = getFolder(name);
+
+		if(folder == null)
+		{
+			callback.execute(null, false);
+			return;
+		}
+
+		if(!folder.isSynced())
+		{
+			Task task = new TaskGetFiles(folder, Laptop.getPos());
+			task.setCallback((nbt, success) ->
+			{
+				if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
+				{
+					NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
+					folder.syncFiles(files);
+					callback.execute(folder, true);
+				}
+				else
+				{
+					callback.execute(null, false);
+				}
+			});
+			TaskManager.sendTask(task);
+		}
+		else
+		{
+			callback.execute(folder, true);
+		}
 	}
 
 	/**
