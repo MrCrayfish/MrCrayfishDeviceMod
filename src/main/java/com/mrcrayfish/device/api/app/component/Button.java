@@ -34,6 +34,7 @@ public class Button extends Component
 	protected ResourceLocation iconResource;
 	protected int iconU, iconV;
 	protected int iconWidth, iconHeight;
+	protected int textureWidth, textureHeight;
 	protected int iconSourceWidth;
 	protected int iconSourceHeight;
 
@@ -81,8 +82,8 @@ I	 * @param top how many pixels from the top
 	{
 		super(left, top);
 		this.padding = 3;
-		this.width = icon.getIconSize() + padding * 2;
-		this.height = icon.getIconSize() + padding * 2;
+		this.width = icon.getIconWidth() + padding * 2;
+		this.height = icon.getIconHeight() + padding * 2;
 		this.setIcon(icon);
 	}
 
@@ -138,11 +139,11 @@ I	 * @param top how many pixels from the top
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Button(int left, int top, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	public Button(int left, int top, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight, int textureWidth, int textureHeight)
 	{
 		super(left, top);
 		this.padding = 3;
-		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight);
+		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight, textureWidth, textureHeight);
 	}
 
 	/**
@@ -151,13 +152,13 @@ I	 * @param top how many pixels from the top
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Button(int left, int top, int buttonWidth, int buttonHeight, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	public Button(int left, int top, int buttonWidth, int buttonHeight, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight, int textureWidth, int textureHeight)
 	{
 		super(left, top);
 		this.explicitSize = true;
 		this.width = buttonWidth;
 		this.height = buttonHeight;
-		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight);
+		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight, textureWidth, textureHeight);
 	}
 
 	/**
@@ -166,11 +167,11 @@ I	 * @param top how many pixels from the top
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Button(int left, int top, String text, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	public Button(int left, int top, String text, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight, int textureWidth, int textureHeight)
 	{
 		super(left, top);
 		this.text = text;
-		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight);
+		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight, textureWidth, textureHeight);
 	}
 
 	/**
@@ -179,14 +180,14 @@ I	 * @param top how many pixels from the top
 	 * @param left how many pixels from the left
 	 * @param top how many pixels from the top
 	 */
-	public Button(int left, int top, int buttonWidth, int buttonHeight, String text, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	public Button(int left, int top, int buttonWidth, int buttonHeight, String text, ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight, int textureWidth, int textureHeight)
 	{
 		super(left, top);
 		this.text = text;
 		this.explicitSize = true;
 		this.width = buttonWidth;
 		this.height = buttonHeight;
-		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight);
+		this.setIcon(iconResource, iconU, iconV, iconWidth, iconHeight, textureWidth, textureHeight);
 	}
 
 	@Override
@@ -233,7 +234,7 @@ I	 * @param top how many pixels from the top
 			{
 				int iconY = (height - iconHeight) / 2;
 				mc.getTextureManager().bindTexture(iconResource);
-				RenderUtil.drawRectWithTexture(x + contentX, y + iconY, iconU, iconV, iconWidth, iconHeight, iconWidth, iconHeight, iconSourceWidth, iconSourceHeight);
+				RenderUtil.drawRectWithTexture(x + contentX, y + iconY, iconU, iconV, iconWidth, iconHeight, textureWidth, textureHeight, iconSourceWidth, iconSourceHeight);
 			}
 
 			if(text != null)
@@ -342,13 +343,15 @@ I	 * @param top how many pixels from the top
 		return text;
 	}
 
-	public void setIcon(ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
+	public void setIcon(ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight, int textureWidth, int textureHeight)
 	{
 		this.iconU = iconU;
 		this.iconV = iconV;
 		this.iconResource = iconResource;
 		this.iconWidth = iconWidth;
 		this.iconHeight = iconHeight;
+		this.textureWidth = textureWidth;
+		this.textureHeight = textureHeight;
 		this.iconSourceWidth = 256;
 		this.iconSourceHeight = 256;
 		updateSize();
@@ -356,14 +359,13 @@ I	 * @param top how many pixels from the top
 
 	public void setIcon(IIcon icon)
 	{
-		this.iconU = icon.getU();
-		this.iconV = icon.getV();
-		this.iconResource = icon.getIconAsset();
-		this.iconWidth = icon.getIconSize();
-		this.iconHeight = icon.getIconSize();
-		this.iconSourceWidth = icon.getGridWidth() * icon.getIconSize();
-		this.iconSourceHeight = icon.getGridHeight() * icon.getIconSize();
-		updateSize();
+		setIcon(icon.getIconAsset(),
+				icon.getU(),
+				icon.getV(),
+				icon.getIconWidth(),
+				icon.getIconHeight(),
+				icon.getTextureWidth(),
+				icon.getTextureHeight());
 	}
 
 	public void removeIcon()

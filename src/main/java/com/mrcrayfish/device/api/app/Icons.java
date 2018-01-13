@@ -144,10 +144,26 @@ public enum Icons implements IIcon
     }
 
 	@Override
-	public int getIconSize()
+	public int getIconWidth()
     {
 		return ICON_SIZE;
 	}
+	
+    @Override
+    public int getIconHeight()
+    {
+        return ICON_SIZE;
+    }
+
+    @Override
+    public int getTextureWidth() {
+        return ICON_SIZE;
+    }
+
+    @Override
+    public int getTextureHeight() {
+        return ICON_SIZE;
+    }
 
     @Override
 	public int getGridWidth()
@@ -159,17 +175,5 @@ public enum Icons implements IIcon
     public int getGridHeight()
     {
         return GRID_SIZE;
-    }
-
-    @Override
-    public int getU()
-    {
-        return (ordinal() % GRID_SIZE) * ICON_SIZE;
-    }
-
-    @Override
-    public int getV()
-    {
-        return (ordinal() / GRID_SIZE) * ICON_SIZE;
     }
 }
