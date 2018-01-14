@@ -145,7 +145,10 @@ public class Image extends Component
     @Override
     public void handleOnLoad()
     {
-        loader.setup(this);
+        if (loader != null)
+        {
+            loader.setup(this);
+        }
     }
 
     @Override
