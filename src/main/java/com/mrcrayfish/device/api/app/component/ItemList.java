@@ -162,7 +162,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 				else
 				{
 					drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColor : Color.DARK_GRAY.getRGB());
-					drawString(mc.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColor);
+					drawString(Laptop.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColor);
 				}
 			}
 
