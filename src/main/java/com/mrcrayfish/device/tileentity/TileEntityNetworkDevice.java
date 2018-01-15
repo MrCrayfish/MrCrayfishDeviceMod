@@ -3,6 +3,8 @@ package com.mrcrayfish.device.tileentity;
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.core.network.Connection;
 import com.mrcrayfish.device.core.network.Router;
+import com.mrcrayfish.device.util.IColored;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -125,6 +127,49 @@ public abstract class TileEntityNetworkDevice extends TileEntityDevice implement
         if(compound.hasKey("connection", Constants.NBT.TAG_COMPOUND))
         {
             connection = Connection.fromTag(this, compound.getCompoundTag("connection"));
+        }
+    }
+
+    public static abstract class Colored extends TileEntityNetworkDevice implements IColored
+    {
+        private EnumDyeColor color = EnumDyeColor.RED;
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            super.readFromNBT(compound);
+            if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+            {
+                this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
+            }
+        }
+
+        @Override
+        public NBTTagCompound writeToNBT(NBTTagCompound compound)
+        {
+            super.writeToNBT(compound);
+            compound.setByte("color", (byte) color.getMetadata());
+            return compound;
+        }
+
+        @Override
+        public NBTTagCompound writeSyncTag()
+        {
+            NBTTagCompound tag = super.writeSyncTag();
+            tag.setByte("color", (byte) color.getMetadata());
+            return tag;
+        }
+
+        @Override
+        public final void setColor(EnumDyeColor color)
+        {
+            this.color = color;
+        }
+
+        @Override
+        public final EnumDyeColor getColor()
+        {
+            return color;
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.item;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
@@ -10,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ItemDevice extends ItemColorable
+public class ItemDevice extends ItemBlock
 {
     public ItemDevice(Block block)
     {

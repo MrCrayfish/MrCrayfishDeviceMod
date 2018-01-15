@@ -19,9 +19,9 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class ItemColorable extends ItemBlock implements SubItems
+public class ItemColoredDevice extends ItemDevice implements SubItems
 {
-    public ItemColorable(Block block)
+    public ItemColoredDevice(Block block)
     {
         super(block);
         this.setMaxDamage(0);

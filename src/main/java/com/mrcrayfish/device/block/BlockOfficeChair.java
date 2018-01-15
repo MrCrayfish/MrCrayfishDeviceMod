@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockOfficeChair extends BlockColorable
+public class BlockOfficeChair extends BlockDevice.Colored
 {
     public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
 
@@ -96,12 +96,6 @@ public class BlockOfficeChair extends BlockColorable
         {
             SeatUtil.createSeatAndSit(worldIn, pos, playerIn, 0.5);
         }
-        return true;
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    {
         return true;
     }
 

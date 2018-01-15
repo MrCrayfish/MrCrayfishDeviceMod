@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityRouter extends TileEntityDevice
+public class TileEntityRouter extends TileEntityDevice.Colored
 {
     private Router router;
 
