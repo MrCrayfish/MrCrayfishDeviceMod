@@ -99,13 +99,12 @@ public class RenderUtil
 
 	public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow)
 	{
-		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-		fontRenderer.drawString(clipStringToWidth(text, width), x, y, color, shadow);
+		Laptop.fontRenderer.drawString(clipStringToWidth(text, width), x, y, color, shadow);
 	}
 
 	public static String clipStringToWidth(String text, int width)
 	{
-		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		FontRenderer fontRenderer = Laptop.fontRenderer;
 		String clipped = text;
 		if(fontRenderer.getStringWidth(clipped) > width)
 		{

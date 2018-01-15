@@ -14,7 +14,7 @@ public class LaptopFontRenderer extends FontRenderer
     public LaptopFontRenderer(Minecraft mc)
     {
         super(mc.gameSettings, new ResourceLocation("textures/font/ascii.png"), mc.getTextureManager(), false);
-        onResourceManagerReload(null);
+        this.onResourceManagerReload(null);
     }
 
     @Override
