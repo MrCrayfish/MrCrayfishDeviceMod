@@ -240,8 +240,8 @@ I	 * @param top how many pixels from the top
 			{
 				int textY = (height - mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
 				int textOffsetX = iconResource != null ? iconWidth + 3 : 0;
-				int textColour = !Button.this.enabled ? 10526880 : (Button.this.hovered ? 16777120 : 14737632);
-				drawString(mc.fontRenderer, text, x + contentX + textOffsetX, y + textY, textColour);
+				int textColor = !Button.this.enabled ? 10526880 : (Button.this.hovered ? 16777120 : 14737632);
+				drawString(mc.fontRenderer, text, x + contentX + textOffsetX, y + textY, textColor);
 			}
         }
 	}
@@ -422,5 +422,5 @@ I	 * @param top how many pixels from the top
 		return width;
 	}
 	
-	//TODO add button text colour and button colour
+	//TODO add button text color and button color
 }

@@ -134,12 +134,8 @@ public class TaskBar
 		}
 
 		mc.fontRenderer.drawString(timeToString(mc.player.world.getWorldTime()), x + 334, y + 5, Color.WHITE.getRGB(), true);
-		
-		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
 		/* Settings App */
-
-
 		int startX = x + 317;
 		for(int i = 0; i < trayItems.size(); i++)
 		{
@@ -150,6 +146,8 @@ public class TaskBar
 			}
 			trayItems.get(i).getIcon().draw(mc, posX + 2, y + 4);
 		}
+
+		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
 		/* Other Apps */
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))

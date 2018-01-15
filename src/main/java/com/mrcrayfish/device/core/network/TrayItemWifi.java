@@ -6,14 +6,17 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ItemList;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.task.TaskManager;
+import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.core.Device;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.network.task.TaskConnect;
 import com.mrcrayfish.device.core.network.task.TaskPing;
-import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.object.TrayItem;
-import net.minecraft.block.state.IBlockState;
+import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -101,18 +104,21 @@ public class TrayItemWifi extends TrayItem
             Gui.drawRect(x, y, x + width, y + height, new Color(0.65F, 0.65F, 0.65F, 0.9F).getRGB());
         });
 
-        ItemList<BlockPos> itemListRouters = new ItemList<>(5, 5, 90, 4);
+        ItemList<Device> itemListRouters = new ItemList<>(5, 5, 90, 4);
         itemListRouters.setItems(getRouters());
-        itemListRouters.setListItemRenderer(new ListItemRenderer<BlockPos>(16)
+        itemListRouters.setListItemRenderer(new ListItemRenderer<Device>(16)
         {
             @Override
-            public void render(BlockPos blockPos, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+            public void render(Device device, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
             {
                 Gui.drawRect(x, y, x + width, y + height, selected ? Color.DARK_GRAY.getRGB() : Color.GRAY.getRGB());
-                gui.drawString(mc.fontRenderer, "Router", x + 16, y + 4, Color.WHITE.getRGB());
+                RenderUtil.drawStringClipped(device.getName(), x + 16, y + 4, 70, Color.WHITE.getRGB(), false);
+
+                if(device.getPos() == null)
+                    return;
 
                 BlockPos laptopPos = Laptop.getPos();
-                double distance = Math.sqrt(blockPos.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
+                double distance = Math.sqrt(device.getPos().distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
                 if(distance > 20)
                 {
                     Icons.WIFI_LOW.draw(mc, x + 3, y + 3);
@@ -129,8 +135,8 @@ public class TrayItemWifi extends TrayItem
         });
         itemListRouters.sortBy((o1, o2) -> {
             BlockPos laptopPos = Laptop.getPos();
-            double distance1 = Math.sqrt(o1.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
-            double distance2 = Math.sqrt(o2.distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
+            double distance1 = Math.sqrt(o1.getPos().distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
+            double distance2 = Math.sqrt(o2.getPos().distanceSqToCenter(laptopPos.getX() + 0.5, laptopPos.getY() + 0.5, laptopPos.getZ() + 0.5));
             return distance1 == distance2 ? 0 : distance1 > distance2 ? 1 : -1;
         });
         layout.addComponent(itemListRouters);
@@ -142,7 +148,7 @@ public class TrayItemWifi extends TrayItem
             {
                 if(itemListRouters.getSelectedItem() != null)
                 {
-                    TaskConnect connect = new TaskConnect(Laptop.getPos(), itemListRouters.getSelectedItem());
+                    TaskConnect connect = new TaskConnect(Laptop.getPos(), itemListRouters.getSelectedItem().getPos());
                     connect.setCallback((tagCompound, success) ->
                     {
                         if(success)
@@ -160,9 +166,9 @@ public class TrayItemWifi extends TrayItem
         return layout;
     }
 
-    private static List<BlockPos> getRouters()
+    private static List<Device> getRouters()
     {
-        List<BlockPos> routers = new ArrayList<>();
+        List<Device> routers = new ArrayList<>();
 
         World world = Minecraft.getMinecraft().world;
         BlockPos laptopPos = Laptop.getPos();
@@ -175,10 +181,10 @@ public class TrayItemWifi extends TrayItem
                 for(int x = -range; x < range + 1; x++)
                 {
                     BlockPos pos = new BlockPos(laptopPos.getX() + x, laptopPos.getY() + y, laptopPos.getZ() + z);
-                    IBlockState state = world.getBlockState(pos);
-                    if(state.getBlock() == DeviceBlocks.ROUTER)
+                    TileEntity tileEntity = world.getTileEntity(pos);
+                    if(tileEntity instanceof TileEntityRouter)
                     {
-                        routers.add(pos);
+                        routers.add(new Device((TileEntityDevice) tileEntity));
                     }
                 }
             }

@@ -3,7 +3,6 @@ package com.mrcrayfish.device.object.tiles;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.Game;
 import com.mrcrayfish.device.object.Game.Layer;
-import com.mrcrayfish.device.util.GuiHelper;
 
 public class TileWheat extends Tile
 {

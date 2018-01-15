@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.core.io;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.core.io.FileSystem.Status;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
@@ -10,8 +10,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
-import com.mrcrayfish.device.core.io.FileSystem.Status;
 
 /**
  * Author: MrCrayfish

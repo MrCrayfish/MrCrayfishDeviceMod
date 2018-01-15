@@ -1,33 +1,26 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.programs.system.object.Account;
+import com.mrcrayfish.device.programs.system.task.TaskDeposit;
+import com.mrcrayfish.device.programs.system.task.TaskWithdraw;
 import com.mrcrayfish.device.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 
 import java.awt.*;
 
@@ -90,6 +83,7 @@ public class ApplicationBank extends SystemApplication
 		{
             GlStateManager.pushMatrix();
             {
+            	GlStateManager.enableDepth();
                 GlStateManager.translate(x + 25, y + 33, 15);
                 GlStateManager.scale((float) -2.5, (float) -2.5, (float) -2.5);
                 GlStateManager.rotate(-10F, 1, 0, 0);
@@ -295,106 +289,4 @@ public class ApplicationBank extends SystemApplication
 	{
 		
 	}
-	
-	public static class TaskDeposit extends Task 
-	{
-		private int amount;
-		
-		private TaskDeposit()
-		{
-			super("bank_deposit");
-		}
-		
-		private TaskDeposit(int amount)
-		{
-			this();
-			this.amount = amount;
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt)
-		{
-			nbt.setInteger("amount", this.amount);
-		}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			int amount = nbt.getInteger("amount");
-			if(InventoryUtil.removeItemWithAmount(player, Items.EMERALD, amount))
-			{
-				Account account = BankUtil.INSTANCE.getAccount(player);
-				if(account.deposit(amount))
-				{
-					this.amount = account.getBalance();
-					this.setSuccessful();
-				}
-			}
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt) 
-		{
-			nbt.setInteger("balance", this.amount);
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt) {}
-	}
-	
-	public static class TaskWithdraw extends Task 
-	{
-		private int amount;
-		
-		private TaskWithdraw()
-		{
-			super("bank_withdraw");
-		}
-		
-		private TaskWithdraw(int amount)
-		{
-			this();
-			this.amount = amount;
-		}
-
-		@Override
-		public void prepareRequest(NBTTagCompound nbt)
-		{
-			nbt.setInteger("amount", this.amount);
-		}
-
-		@Override
-		public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
-		{
-			int amount = nbt.getInteger("amount");
-			Account account = BankUtil.INSTANCE.getAccount(player);
-			if(account.withdraw(amount))
-			{
-				int stacks = amount / 64;
-				for(int i = 0; i < stacks; i++)
-				{
-					world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, 64)));
-				}
-				
-				int remaining = amount % 64;
-				if(remaining > 0)
-				{
-					world.spawnEntity(new EntityItem(world, player.posX, player.posY, player.posZ, new ItemStack(Items.EMERALD, remaining)));
-				}
-				
-				this.amount = account.getBalance();
-				this.setSuccessful();
-			}
-		}
-
-		@Override
-		public void prepareResponse(NBTTagCompound nbt) 
-		{
-			nbt.setInteger("balance", this.amount);
-		}
-
-		@Override
-		public void processResponse(NBTTagCompound nbt) {}
-	}
-
 }

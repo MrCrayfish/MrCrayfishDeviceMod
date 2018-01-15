@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.core;
 
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 

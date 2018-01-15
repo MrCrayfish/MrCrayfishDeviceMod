@@ -8,18 +8,18 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.client.ClientNotification;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.tileentity.TileEntityLaptop;
-import com.mrcrayfish.device.tileentity.TileEntityPaper;
-import com.mrcrayfish.device.tileentity.TileEntityPrinter;
-import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import com.mrcrayfish.device.tileentity.render.LaptopRenderer;
-import com.mrcrayfish.device.tileentity.render.PaperRenderer;
-import com.mrcrayfish.device.tileentity.render.PrinterRenderer;
-import com.mrcrayfish.device.tileentity.render.RouterRenderer;
+import com.mrcrayfish.device.programs.system.SystemApplication;
+import com.mrcrayfish.device.tileentity.*;
+import com.mrcrayfish.device.tileentity.render.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -29,16 +29,22 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy extends CommonProxy implements IResourceManagerReloadListener
 {
+    @Override
+    public void preInit()
+    {
+        super.preInit();
+        ((IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+    }
+
     @Override
     public void init()
     {
@@ -46,6 +52,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRouter.class, new RouterRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityOfficeChair.class, new OfficeChairRenderer());
 
         if(MrCrayfishDeviceMod.DEVELOPER_MODE)
         {
@@ -79,7 +86,7 @@ public class ClientProxy extends CommonProxy
 
         try
         {
-            BufferedImage icon = TextureUtil.readBufferedImage(ClientProxy.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/icon/missing.png"));
+            BufferedImage icon = TextureUtil.readBufferedImage(ClientProxy.class.getResourceAsStream("/assets/" + Reference.MOD_ID + "/textures/app/icon/missing.png"));
             g.drawImage(icon, 0, 0, ICON_SIZE, ICON_SIZE, null);
         }
         catch(IOException e)
@@ -89,10 +96,14 @@ public class ClientProxy extends CommonProxy
 
         index++;
 
-        for(AppInfo info : ApplicationManager.getAvailableApps())
+        for(AppInfo info : ApplicationManager.getAllApplications())
         {
+            if(info.getIcon() == null)
+                continue;
+
             ResourceLocation identifier = info.getId();
-            String path = "/assets/" + identifier.getResourceDomain() + "/textures/icon/" + identifier.getResourcePath() + ".png";
+            ResourceLocation iconResource = new ResourceLocation(info.getIcon());
+            String path = "/assets/" + iconResource.getResourceDomain() + "/" + iconResource.getResourcePath();
             try
             {
                 InputStream input = ClientProxy.class.getResourceAsStream(path);
@@ -146,8 +157,6 @@ public class ClientProxy extends CommonProxy
             java.util.List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
             APPS.add(application);
 
-            AppInfo info = new AppInfo(identifier);
-
             Field field = Application.class.getDeclaredField("info");
             field.setAccessible(true);
 
@@ -155,7 +164,7 @@ public class ClientProxy extends CommonProxy
             modifiers.setAccessible(true);
             modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-            field.set(application, info);
+            field.set(application, generateAppInfo(identifier, clazz));
 
             return application;
         }
@@ -165,6 +174,14 @@ public class ClientProxy extends CommonProxy
         }
 
         return null;
+    }
+
+    @Nullable
+    private AppInfo generateAppInfo(ResourceLocation identifier, Class<? extends Application> clazz)
+    {
+        AppInfo info = new AppInfo(identifier, SystemApplication.class.isAssignableFrom(clazz));
+        info.reload();
+        return info;
     }
 
     @Override
@@ -200,10 +217,27 @@ public class ClientProxy extends CommonProxy
         return false;
     }
 
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager)
+    {
+        if(ApplicationManager.getAllApplications().size() > 0)
+        {
+            ApplicationManager.getAllApplications().forEach(AppInfo::reload);
+            generateIconAtlas();
+        }
+    }
+
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         allowedApps = null;
         DeviceConfig.restore();
+    }
+
+    @Override
+    public void showNotification(NBTTagCompound tag)
+    {
+        ClientNotification notification = ClientNotification.loadFromTag(tag);
+        notification.push();
     }
 }

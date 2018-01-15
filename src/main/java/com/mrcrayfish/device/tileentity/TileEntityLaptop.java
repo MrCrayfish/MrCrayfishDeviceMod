@@ -1,21 +1,18 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.util.TileEntityUtil;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityDevice implements ITickable
+public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 {
-	private String name = "Laptop";
+	private static final int OPENED_ANGLE = 102;
+
 	private boolean open = false;
 
 	private NBTTagCompound applicationData;
@@ -23,18 +20,18 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	private FileSystem fileSystem;
 
 	@SideOnly(Side.CLIENT)
-	public float rotation;
+	private int rotation;
 
 	@SideOnly(Side.CLIENT)
-	public float prevRotation;
+	private int prevRotation;
 
 	@SideOnly(Side.CLIENT)
-	private boolean hasExternalDrive;
+	private EnumDyeColor externalDriveColor;
 
 	@Override
 	public String getDeviceName()
 	{
-		return name;
+		return "Laptop";
 	}
 
 	@Override
@@ -53,7 +50,7 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 			}
 			else
 			{
-				if(rotation < 110)
+				if(rotation < OPENED_ANGLE)
 				{
 					rotation += 10F;
 				}
@@ -69,10 +66,6 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		{
 			this.open = compound.getBoolean("open");
 		}
-		if(compound.hasKey("device_name", Constants.NBT.TAG_STRING))
-		{
-			this.name = compound.getString("device_name");
-		}
 		if(compound.hasKey("system_data", Constants.NBT.TAG_COMPOUND))
 		{
 			this.systemData = compound.getCompoundTag("system_data");
@@ -85,9 +78,13 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		{
 			this.fileSystem = new FileSystem(this, compound.getCompoundTag("file_system"));
 		}
-		if(compound.hasKey("has_external_drive"))
+		if(compound.hasKey("external_drive_color", Constants.NBT.TAG_BYTE))
 		{
-			this.hasExternalDrive = compound.getBoolean("has_external_drive");
+			this.externalDriveColor = null;
+			if(compound.getByte("external_drive_color") != -1)
+			{
+				this.externalDriveColor = EnumDyeColor.byMetadata(compound.getByte("external_drive_color"));
+			}
 		}
 	}
 	
@@ -96,7 +93,6 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
-		compound.setString("device_name", name);
 
 		if(systemData != null)
 		{
@@ -118,10 +114,19 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 	@Override
 	public NBTTagCompound writeSyncTag()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
+		NBTTagCompound tag = super.writeSyncTag();
 		tag.setBoolean("open", open);
-		tag.setString("device_name", name);
-		tag.setBoolean("has_external_drive", getFileSystem().getAttachedDrive() != null);
+		tag.setTag("system_data", getSystemData());
+
+		if(getFileSystem().getAttachedDrive() != null)
+		{
+			tag.setByte("external_drive_color", (byte) getFileSystem().getAttachedDriveColor().getMetadata());
+		}
+		else
+		{
+			tag.setByte("external_drive_color", (byte) -1);
+		}
+
 		return tag;
 	}
 
@@ -183,8 +188,21 @@ public class TileEntityLaptop extends TileEntityDevice implements ITickable
 		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 
+	@SideOnly(Side.CLIENT)
+	public float getScreenAngle(float partialTicks)
+	{
+		return -OPENED_ANGLE * ((prevRotation + (rotation - prevRotation) * partialTicks) / OPENED_ANGLE);
+	}
+
+	@SideOnly(Side.CLIENT)
 	public boolean isExternalDriveAttached()
 	{
-		return hasExternalDrive;
+		return externalDriveColor != null;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public EnumDyeColor getExternalDriveColor()
+	{
+		return externalDriveColor;
 	}
 }

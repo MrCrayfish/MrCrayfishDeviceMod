@@ -1,41 +1,34 @@
 package com.mrcrayfish.device.programs.email;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.*;
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout.Background;
+import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.email.object.Contact;
+import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.task.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -185,7 +178,7 @@ public class ApplicationEmail extends Application
 					}
 					else
 					{
-						fieldEmail.setTextColour(Color.RED);
+						fieldEmail.setTextColor(Color.RED);
 					}
 				});
 				TaskManager.sendTask(taskRegisterAccount);
@@ -230,7 +223,7 @@ public class ApplicationEmail extends Application
 					gui.drawTexturedModalRect(x + 247, y + 8, 0, 10, 20, 12);
 				}
 
-				if(e.attachment != null)
+				if(e.getAttachment() != null)
 				{
 					GlStateManager.color(1.0F, 1.0F, 1.0F);
 					int posX = x + (!e.isRead() ? -30 : 0) + 255;
@@ -238,8 +231,8 @@ public class ApplicationEmail extends Application
 					gui.drawTexturedModalRect(posX, y + 5, 20, 10, 13, 20);
 				}
 
-				mc.fontRenderer.drawString(e.subject, x + 5, y + 5, Color.WHITE.getRGB());
-				mc.fontRenderer.drawString(e.author + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
+				mc.fontRenderer.drawString(e.getSubject(), x + 5, y + 5, Color.WHITE.getRGB());
+				mc.fontRenderer.drawString(e.getAuthor() + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
 			}
 		});
 		layoutInbox.addComponent(listEmails);
@@ -253,9 +246,9 @@ public class ApplicationEmail extends Application
                 TaskManager.sendTask(new TaskViewEmail(index));
                 Email email = listEmails.getSelectedItem();
                 email.setRead(true);
-                textMessage.setText(email.message);
-                labelViewSubject.setText(email.subject);
-                labelFrom.setText(email.author + "@endermail.com");
+                textMessage.setText(email.getMessage());
+                labelViewSubject.setText(email.getSubject());
+                labelFrom.setText(email.getAuthor() + "@endermail.com");
                 attachedFile = email.getAttachment();
                 if(attachedFile != null)
                 {
@@ -281,8 +274,8 @@ public class ApplicationEmail extends Application
             if (email != null)
             {
                 setCurrentLayout(layoutNewEmail);
-                fieldRecipient.setText(email.author + "@endermail.com");
-                fieldSubject.setText("RE: " + email.subject);
+                fieldRecipient.setText(email.getAuthor() + "@endermail.com");
+                fieldSubject.setText("RE: " + email.getSubject());
             }
         });
 		btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
@@ -449,7 +442,7 @@ public class ApplicationEmail extends Application
 		});
 
 		labelViewSubject = new Label("Subject", 5, 26);
-		labelViewSubject.setTextColour(new Color(255, 170, 0));
+		labelViewSubject.setTextColor(new Color(255, 170, 0));
 		layoutViewEmail.addComponent(labelViewSubject);
 
 		labelFrom = new Label("From", 5, 38);
@@ -560,254 +553,5 @@ public class ApplicationEmail extends Application
 	{
 		super.onClose();
 		attachedFile = null;
-	}
-
-	public static class EmailManager
-	{
-		public static final EmailManager INSTANCE = new EmailManager();
-
-		@SideOnly(Side.CLIENT)
-		private List<Email> inbox;
-
-		private Map<UUID, String> uuidToName = new HashMap<UUID, String>();
-		private Map<String, List<Email>> uuidToInbox = new HashMap<String, List<Email>>();
-
-		public boolean addEmailToInbox(Email email, String to)
-		{
-			if (uuidToInbox.containsKey(to))
-			{
-				uuidToInbox.get(to).add(0, email);
-				return true;
-			}
-			return false;
-		}
-
-		@SideOnly(Side.CLIENT)
-		public List<Email> getInbox()
-		{
-			if(inbox == null)
-			{
-				inbox = new ArrayList<>();
-			}
-			return inbox;
-		}
-
-		public List<Email> getEmailsForAccount(EntityPlayer player)
-		{
-			if (uuidToName.containsKey(player.getUniqueID()))
-			{
-				return uuidToInbox.get(uuidToName.get(player.getUniqueID()));
-			}
-			return new ArrayList<Email>();
-		}
-
-		public boolean addAccount(EntityPlayer player, String name)
-		{
-			if (!uuidToName.containsKey(player.getUniqueID()))
-			{
-				if (!uuidToName.containsValue(name))
-				{
-					uuidToName.put(player.getUniqueID(), name);
-					uuidToInbox.put(name, new ArrayList<Email>());
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public boolean hasAccount(UUID uuid)
-		{
-			return uuidToName.containsKey(uuid);
-		}
-
-		public String getName(EntityPlayer player)
-		{
-			return uuidToName.get(player.getUniqueID());
-		}
-
-		public void readFromNBT(NBTTagCompound nbt)
-		{
-			uuidToInbox.clear();
-
-			NBTTagList inboxes = (NBTTagList) nbt.getTag("Inboxes");
-			for (int i = 0; i < inboxes.tagCount(); i++)
-			{
-				NBTTagCompound inbox = inboxes.getCompoundTagAt(i);
-				String name = inbox.getString("Name");
-
-				List<Email> emails = new ArrayList<Email>();
-				NBTTagList emailTagList = (NBTTagList) inbox.getTag("Emails");
-				for (int j = 0; j < emailTagList.tagCount(); j++)
-				{
-					NBTTagCompound emailTag = emailTagList.getCompoundTagAt(j);
-					Email email = Email.readFromNBT(emailTag);
-					emails.add(email);
-				}
-				uuidToInbox.put(name, emails);
-			}
-
-			uuidToName.clear();
-
-			NBTTagList accounts = (NBTTagList) nbt.getTag("Accounts");
-			for (int i = 0; i < accounts.tagCount(); i++)
-			{
-				NBTTagCompound account = accounts.getCompoundTagAt(i);
-				UUID uuid = UUID.fromString(account.getString("UUID"));
-				String name = account.getString("Name");
-				uuidToName.put(uuid, name);
-			}
-		}
-
-		public void writeToNBT(NBTTagCompound nbt)
-		{
-			NBTTagList inboxes = new NBTTagList();
-			for (String key : uuidToInbox.keySet())
-			{
-				NBTTagCompound inbox = new NBTTagCompound();
-				inbox.setString("Name", key);
-
-				NBTTagList emailTagList = new NBTTagList();
-				List<Email> emails = uuidToInbox.get(key);
-				for (Email email : emails)
-				{
-					NBTTagCompound emailTag = new NBTTagCompound();
-					email.writeToNBT(emailTag);
-					emailTagList.appendTag(emailTag);
-				}
-				inbox.setTag("Emails", emailTagList);
-				inboxes.appendTag(inbox);
-			}
-			nbt.setTag("Inboxes", inboxes);
-
-			NBTTagList accounts = new NBTTagList();
-			for (UUID key : uuidToName.keySet())
-			{
-				NBTTagCompound account = new NBTTagCompound();
-				account.setString("UUID", key.toString());
-				account.setString("Name", uuidToName.get(key));
-				accounts.appendTag(account);
-			}
-			nbt.setTag("Accounts", accounts);
-		}
-
-		public void clear()
-		{
-			uuidToInbox.clear();
-			uuidToName.clear();
-			inbox.clear();
-		}
-	}
-
-	public static class Email
-	{
-		private String subject, author, message;
-		private File attachment;
-		private boolean read;
-
-		public Email(String subject, String message, @Nullable File file)
-		{
-			this.subject = subject;
-			this.message = message;
-			this.attachment = file;
-			this.read = false;
-		}
-
-		public Email(String subject, String author, String message, @Nullable File attachment)
-		{
-			this(subject, message, attachment);
-			this.author = author;
-		}
-
-		public String getSubject()
-		{
-			return subject;
-		}
-
-		public String getAuthor()
-		{
-			return author;
-		}
-
-		public void setAuthor(String author)
-		{
-			this.author = author;
-		}
-
-		public String getMessage()
-		{
-			return message;
-		}
-
-		public File getAttachment()
-		{
-			return attachment;
-		}
-
-		public boolean isRead()
-		{
-			return read;
-		}
-
-		public void setRead(boolean read)
-		{
-			this.read = read;
-		}
-
-		public void writeToNBT(NBTTagCompound nbt)
-		{
-			nbt.setString("subject", this.subject);
-			if (author != null) nbt.setString("author", this.author);
-			nbt.setString("message", this.message);
-			nbt.setBoolean("read", this.read);
-
-			if(attachment != null)
-			{
-				NBTTagCompound fileTag = new NBTTagCompound();
-				fileTag.setString("file_name", attachment.getName());
-				fileTag.setTag("data", attachment.toTag());
-				nbt.setTag("attachment", fileTag);
-			}
-		}
-
-		public static Email readFromNBT(NBTTagCompound nbt)
-		{
-			File attachment = null;
-			if(nbt.hasKey("attachment", Constants.NBT.TAG_COMPOUND))
-			{
-				NBTTagCompound fileTag = nbt.getCompoundTag("attachment");
-				attachment = File.fromTag(fileTag.getString("file_name"), fileTag.getCompoundTag("data"));
-			}
-			Email email = new Email(nbt.getString("subject"), nbt.getString("author"), nbt.getString("message"), attachment);
-			email.setRead(nbt.getBoolean("read"));
-			return email;
-		}
-	}
-	
-	private static class Contact
-	{
-		private String nickname;
-		private String email;
-		
-		public Contact(String nickname, String email)
-		{
-			this.nickname = nickname;
-			this.email = email;
-		}
-		
-		public String getNickname()
-		{
-			return nickname;
-		}
-		
-		public String getEmail()
-		{
-			return email;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return nickname;
-		}
 	}
 }

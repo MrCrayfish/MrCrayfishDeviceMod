@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.core.network;
 
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.core.Device;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -13,48 +14,18 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class NetworkDevice
+public class NetworkDevice extends Device
 {
-    private Router router;
-    private UUID id;
-    private String name;
-    private BlockPos pos;
-
     private NetworkDevice() {}
 
-    public NetworkDevice(TileEntityDevice device, Router router)
+    public NetworkDevice(TileEntityNetworkDevice device)
     {
-        this.router = router;
-        this.id = device.getId();
-        update(device);
+        super(device);
     }
 
     public NetworkDevice(UUID id, String name, Router router)
     {
-        this.id = id;
-        this.name = name;
-        this.router = router;
-    }
-
-    public UUID getId()
-    {
-        return id;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    @Nullable
-    public BlockPos getPos()
-    {
-        return pos;
-    }
-
-    public void setPos(BlockPos pos)
-    {
-        this.pos = pos;
+        super(id, name);
     }
 
     public boolean isConnected(World world)
@@ -63,34 +34,29 @@ public class NetworkDevice
             return false;
 
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityDevice)
+        if(tileEntity instanceof TileEntityNetworkDevice)
         {
-            TileEntityDevice device = (TileEntityDevice) tileEntity;
+            TileEntityNetworkDevice device = (TileEntityNetworkDevice) tileEntity;
             Router router = device.getRouter();
             return router != null && router.getId().equals(router.getId());
         }
         return false;
     }
 
-    public void update(TileEntityDevice device)
-    {
-        name = device.getDeviceName();
-        pos = device.getPos();
-    }
-
     @Nullable
-    public TileEntityDevice getDevice(World world)
+    @Override
+    public TileEntityNetworkDevice getDevice(World world)
     {
         if(pos == null)
             return null;
 
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityDevice)
+        if(tileEntity instanceof TileEntityNetworkDevice)
         {
-            TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-            if(tileEntityDevice.getId().equals(getId()))
+            TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
+            if(tileEntityNetworkDevice.getId().equals(getId()))
             {
-                return tileEntityDevice;
+                return tileEntityNetworkDevice;
             }
         }
         return null;
@@ -98,9 +64,7 @@ public class NetworkDevice
 
     public NBTTagCompound toTag(boolean includePos)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("id", id.toString());
-        tag.setString("name", name);
+        NBTTagCompound tag = super.toTag(includePos);
         if(includePos && pos != null)
         {
             tag.setLong("pos", pos.toLong());

@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.util;
 
 import com.mrcrayfish.device.object.Bounds;
-import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 

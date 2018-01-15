@@ -1,14 +1,13 @@
 package com.mrcrayfish.device.programs.auction;
 
+import com.mrcrayfish.device.programs.auction.object.AuctionItem;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import com.mrcrayfish.device.programs.auction.object.AuctionItem;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 public class AuctionManager
 {

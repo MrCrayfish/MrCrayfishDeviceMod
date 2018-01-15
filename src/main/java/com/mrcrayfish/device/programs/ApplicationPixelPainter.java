@@ -9,7 +9,6 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
@@ -18,19 +17,19 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
-import com.mrcrayfish.device.object.ColourGrid;
+import com.mrcrayfish.device.object.ColorGrid;
 import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
-import java.lang.reflect.Field;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -78,8 +77,8 @@ public class ApplicationPixelPainter extends Application
 	private Slider redSlider;
 	private Slider greenSlider;
 	private Slider blueSlider;
-	private Component colourDisplay;
-	private ColourGrid colourGrid;
+	private Component colorDisplay;
+	private ColorGrid colorGrid;
 	private CheckBox displayGrid;
 
 	public ApplicationPixelPainter()
@@ -92,9 +91,11 @@ public class ApplicationPixelPainter extends Application
 	{
 		/* Main Menu */
 		layoutMainMenu = new Layout(100, 100);
-
-		logo = new Image(35, 5, 28, 28, info.getIconU(), info.getIconV(), 14, 14, Laptop.ICON_TEXTURES);
-		layoutMainMenu.addComponent(logo);
+		layoutMainMenu.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+			mc.getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
+			RenderUtil.drawRectWithTexture(x + 36, y + 4, info.getIconU(), info.getIconV(), 28, 28, 14, 14, 224, 224);
+        });
 
 		labelLogo = new Label("Pixel Painter", 19, 35);
 		layoutMainMenu.addComponent(labelLogo);
@@ -295,7 +296,7 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             canvas.setCurrentTool(Canvas.EYE_DROPPER);
-            Color color = new Color(canvas.getCurrentColour());
+			Color color = new Color(canvas.getCurrentColor());
             redSlider.setPercentage(color.getRed() / 255F);
             greenSlider.setPercentage(color.getGreen() / 255F);
             blueSlider.setPercentage(color.getBlue() / 255F);
@@ -407,19 +408,19 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(blueSlider);
 
-		colourDisplay = new Component(158, 5)
+		colorDisplay = new Component(158, 5)
 		{
 			@Override
 			public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 			{
 				drawRect(xPosition, yPosition, xPosition + 50, yPosition + 20, Color.DARK_GRAY.getRGB());
-				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColour());
+				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColor());
 			}
 		};
-		layoutDraw.addComponent(colourDisplay);
+		layoutDraw.addComponent(colorDisplay);
 
-		colourGrid = new ColourGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
-		layoutDraw.addComponent(colourGrid);
+		colorGrid = new ColorGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
+		layoutDraw.addComponent(colorGrid);
 
 		displayGrid = new CheckBox("Grid", 166, 120);
 		displayGrid.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setShowGrid(displayGrid.isSelected()));
@@ -550,36 +551,30 @@ public class ApplicationPixelPainter extends Application
 				GlStateManager.rotate(180, 0, 1, 0);
 
 				// This is for the paper background
-				if (!cut) {
+				if (!cut)
+				{
 					Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
 					RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
 				}
 
 				// This creates an flipped copy of the pixel array
 				// as it otherwise would be mirrored
-				int[] pixels2 = new int[pixels.length];
-				for (int i = 0; i < resolution; i++) {
-					for (int j = 0; j < resolution; j++) {
-						pixels2[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j*resolution];
+				int[] flippedPixels = new int[pixels.length];
+				for (int i = 0; i < resolution; i++)
+				{
+					for (int j = 0; j < resolution; j++)
+					{
+						flippedPixels[resolution - i - 1 + (resolution - j - 1) * resolution] = pixels[i + j * resolution];
 					}
 				}
 
-				// Creating a DynamicTexture to represent the picture
-				DynamicTexture texture = new DynamicTexture(resolution, resolution);
-				// This is actually more efficient than providing an BufferedImage
-				// as BIs can lead to a memory leak or similar
-				try {
-					Field textureDataField = texture.getClass().getDeclaredField("dynamicTextureData");
-					textureDataField.setAccessible(true);
-					textureDataField.set(texture, pixels2);
-					texture.updateDynamicTexture();
-				} catch (NoSuchFieldException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				// Rendering the texture
-				GlStateManager.bindTexture(texture.getGlTextureId());
-				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution ,resolution, resolution, resolution);
-				GlStateManager.deleteTexture(texture.getGlTextureId());
+				int textureId = TextureUtil.glGenTextures();
+				TextureUtil.allocateTexture(textureId, resolution, resolution);
+				TextureUtil.uploadTexture(textureId, flippedPixels, resolution, resolution);
+
+				GlStateManager.bindTexture(textureId);
+				RenderUtil.drawRectWithTexture(-1, 0, 0, 0, 1, 1, resolution, resolution, resolution, resolution);
+				GlStateManager.deleteTexture(textureId);
 
 				GlStateManager.disableRescaleNormal();
 				GlStateManager.disableBlend();

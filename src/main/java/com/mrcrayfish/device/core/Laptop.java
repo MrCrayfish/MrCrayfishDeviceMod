@@ -88,6 +88,12 @@ public class Laptop extends GuiScreen implements System
 		Laptop.pos = laptop.getPos();
 	}
 
+	/**
+	 * Returns the position of the laptop the player is currently using. This method can ONLY be
+	 * called when the laptop GUI is open, otherwise it will return a null position.
+	 *
+	 * @return the position of the laptop currently in use
+	 */
 	@Nullable
 	public static BlockPos getPos()
 	{
@@ -240,7 +246,6 @@ public class Laptop extends GuiScreen implements System
 			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
 				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
-				this.dragging = true;
 				return;
 			}
 			else
@@ -338,14 +343,11 @@ public class Laptop extends GuiScreen implements System
 
 		if(this.context != null)
 		{
-			if(dragging)
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
-				int dropdownX = context.xPosition;
-				int dropdownY = context.yPosition;
-				if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
-				{
-					this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
-				}
+				this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
 			}
 			return;
 		}
@@ -663,5 +665,6 @@ public class Laptop extends GuiScreen implements System
 	public void closeContext()
 	{
 		context = null;
+		dragging = false;
 	}
 }

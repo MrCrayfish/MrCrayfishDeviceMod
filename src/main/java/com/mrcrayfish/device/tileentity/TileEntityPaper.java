@@ -3,9 +3,6 @@ package com.mrcrayfish.device.tileentity;
 import com.mrcrayfish.device.api.print.IPrint;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.Constants;
@@ -73,6 +70,10 @@ public class TileEntityPaper extends TileEntitySync
     public NBTTagCompound writeSyncTag()
     {
         NBTTagCompound tag = new NBTTagCompound();
+        if(print != null)
+        {
+            tag.setTag("print", IPrint.writeToTag(print));
+        }
         tag.setByte("rotation", rotation);
         return tag;
     }

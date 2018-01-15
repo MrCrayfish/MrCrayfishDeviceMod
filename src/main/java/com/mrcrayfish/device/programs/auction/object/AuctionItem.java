@@ -1,9 +1,9 @@
 package com.mrcrayfish.device.programs.auction.object;
 
-import java.util.UUID;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.UUID;
 
 public class AuctionItem
 {

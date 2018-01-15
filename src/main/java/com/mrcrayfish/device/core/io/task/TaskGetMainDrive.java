@@ -6,7 +6,6 @@ import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
-import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
