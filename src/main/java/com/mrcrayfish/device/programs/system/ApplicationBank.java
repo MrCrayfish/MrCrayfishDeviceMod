@@ -83,6 +83,7 @@ public class ApplicationBank extends SystemApplication
 		{
             GlStateManager.pushMatrix();
             {
+            	GlStateManager.enableDepth();
                 GlStateManager.translate(x + 25, y + 33, 15);
                 GlStateManager.scale((float) -2.5, (float) -2.5, (float) -2.5);
                 GlStateManager.rotate(-10F, 1, 0, 0);

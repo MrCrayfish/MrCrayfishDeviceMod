@@ -1,17 +1,16 @@
 package com.mrcrayfish.device.api.app;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.core.Laptop;
-
 import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Layout class is the main implementation for displaying

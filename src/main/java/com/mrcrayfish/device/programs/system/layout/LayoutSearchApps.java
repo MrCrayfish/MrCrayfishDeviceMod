@@ -62,7 +62,6 @@ public class LayoutSearchApps extends StandardLayout
         {
             if(mouseButton == 0)
             {
-                System.out.println(index);
                 if(System.currentTimeMillis() - this.lastClick <= 200)
                 {
                     openApplication(info);

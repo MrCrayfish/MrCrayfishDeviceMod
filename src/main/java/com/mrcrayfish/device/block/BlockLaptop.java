@@ -19,7 +19,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -29,7 +32,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockLaptop extends BlockDevice implements ITileEntityProvider
+public class BlockLaptop extends BlockDevice.Colored
 {
 	public static final PropertyEnum TYPE = PropertyEnum.create("type", Type.class);
 
@@ -169,9 +172,10 @@ public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 	{
 		return new BlockStateContainer(this, FACING, TYPE, BlockColored.COLOR);
 	}
-	
+
+	@Nullable
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		return new TileEntityLaptop();
 	}

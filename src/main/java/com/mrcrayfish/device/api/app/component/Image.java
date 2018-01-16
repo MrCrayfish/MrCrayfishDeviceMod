@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class Image extends Component
     private float alpha = 1.0F;
 
     private boolean hasBorder = false;
-    private int borderColour = Color.BLACK.getRGB();
+    private int borderColor = Color.BLACK.getRGB();
     private int borderThickness = 1;
 
     public Image(int left, int top, int width, int height)
@@ -171,7 +172,7 @@ public class Image extends Component
 
             if(hasBorder)
             {
-                drawRect(x, y, x + componentWidth, y + componentHeight, borderColour);
+                drawRect(x, y, x + componentWidth, y + componentHeight, borderColor);
             }
 
             if(image != null && image.textureId != -1)
@@ -285,13 +286,13 @@ public class Image extends Component
     }
 
     /**
-     * Sets the border colour for this component
+     * Sets the border color for this component
      *
-     * @param colour the border colour
+     * @param color the border color
      */
-    private void setBorderColor(Color colour)
+    private void setBorderColor(Color color)
     {
-        this.borderColour = colour.getRGB();
+        this.borderColor = color.getRGB();
     }
 
     /**
@@ -401,7 +402,10 @@ public class Image extends Component
             {
                 try
                 {
-                    BufferedImage bufferedImage = ImageIO.read(new URL(url));
+                    URL url = new URL(this.url);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                    BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
                     image.imageWidth = bufferedImage.getWidth();
                     image.imageHeight = bufferedImage.getHeight();
                     texture = new DynamicTexture(bufferedImage);

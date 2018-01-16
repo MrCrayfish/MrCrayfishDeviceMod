@@ -24,7 +24,7 @@ public interface IPrint
     int speed();
 
     /**
-     * Gets whether or not this print requires coloured ink.
+     * Gets whether or not this print requires colored ink.
      * @return if print requires ink
      */
     boolean requiresColor();

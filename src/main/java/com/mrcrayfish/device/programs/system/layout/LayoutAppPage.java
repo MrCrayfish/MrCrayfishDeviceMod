@@ -50,7 +50,7 @@ public class LayoutAppPage extends Layout
     {
         this.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            java.awt.Color color = new java.awt.Color(Laptop.getSystem().getSettings().getColourScheme().getHeaderColour());
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
             Gui.drawRect(x, y + 40, x + width, y + 41, color.brighter().getRGB());
             Gui.drawRect(x, y + 41, x + width, y + 60, color.getRGB());
             Gui.drawRect(x, y + 60, x + width, y + 61, color.darker().getRGB());
@@ -82,7 +82,7 @@ public class LayoutAppPage extends Layout
                 }
                 else
                 {
-                    slideShow.addImage(new ResourceLocation(info.getId().getResourceDomain(), image));
+                    slideShow.addImage(new ResourceLocation(image));
                 }
             }
         }

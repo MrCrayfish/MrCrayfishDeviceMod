@@ -3,8 +3,8 @@ package com.mrcrayfish.device.api.utils;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -99,13 +99,18 @@ public class RenderUtil
 
 	public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow)
 	{
-		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+		Laptop.fontRenderer.drawString(clipStringToWidth(text, width), x, y, color, shadow);
+	}
+
+	public static String clipStringToWidth(String text, int width)
+	{
+		FontRenderer fontRenderer = Laptop.fontRenderer;
 		String clipped = text;
 		if(fontRenderer.getStringWidth(clipped) > width)
 		{
 			clipped = fontRenderer.trimStringToWidth(clipped, width - 8) + "...";
 		}
-		fontRenderer.drawString(clipped, x, y, color, shadow);
+		return clipped;
 	}
 
 	public static boolean isMouseInside(int mouseX, int mouseY, int x1, int y1, int x2, int y2)

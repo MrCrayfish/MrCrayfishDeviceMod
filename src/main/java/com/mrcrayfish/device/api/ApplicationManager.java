@@ -1,24 +1,21 @@
 package com.mrcrayfish.device.api;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public class ApplicationManager
+public final class ApplicationManager
 {
 	private static final Map<ResourceLocation, AppInfo> APP_INFO = new HashMap<>();
+
+	private ApplicationManager() {}
 
 	/**
 	 * Registers an application into the application list

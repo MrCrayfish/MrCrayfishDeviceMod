@@ -12,9 +12,9 @@ public class ProgressBar extends Component
 	protected int progress = 0;
 	protected int max = 100;
 	
-	protected int progressColour = new Color(189, 198, 255).getRGB();
-	protected int backgroundColour = Color.DARK_GRAY.getRGB();
-	protected int borderColour = Color.BLACK.getRGB();
+	protected int progressColor = new Color(189, 198, 255).getRGB();
+	protected int backgroundColor = Color.DARK_GRAY.getRGB();
+	protected int borderColor = Color.BLACK.getRGB();
 	
 	/**
 	 * Default progress bar constructor
@@ -36,9 +36,9 @@ public class ProgressBar extends Component
 	{
 		if (this.visible)
         {
-			drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColour);
-			drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColour);
-			drawRect(xPosition + 2, yPosition + 2, xPosition + 2 + getProgressScaled(), yPosition + height - 2, progressColour);
+			drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColor);
+			drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColor);
+			drawRect(xPosition + 2, yPosition + 2, xPosition + 2 + getProgressScaled(), yPosition + height - 2, progressColor);
         }
 	}
 	
