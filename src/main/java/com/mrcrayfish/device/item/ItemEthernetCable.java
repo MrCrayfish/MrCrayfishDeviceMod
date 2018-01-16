@@ -2,7 +2,10 @@ package com.mrcrayfish.device.item;
 
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.Notification;
 import com.mrcrayfish.device.core.network.Router;
+import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.client.gui.GuiScreen;
@@ -54,7 +57,7 @@ public class ItemEthernetCable extends Item
             {
                 if(!heldItem.hasTagCompound())
                 {
-                    sendGameInfoMessage(player, "message.invalid_cable");
+                    sendErrorToast(player, "message.invalid_cable");
                     return EnumActionResult.SUCCESS;
                 }
 
@@ -76,21 +79,21 @@ public class ItemEthernetCable extends Item
                             heldItem.shrink(1);
                             if(getDistance(tileEntity1.getPos(), tileEntityRouter.getPos()) > DeviceConfig.getSignalRange())
                             {
-                                sendGameInfoMessage(player, "message.successful_registered");
+                                sendSuccessToast(player, "message.successful_registered");
                             }
                             else
                             {
-                                sendGameInfoMessage(player, "message.successful_connection");
+                                sendSuccessToast(player, "message.successful_connection");
                             }
                         }
                         else
                         {
-                            sendGameInfoMessage(player, "message.router_max_devices");
+                            sendErrorToast(player, "message.router_max_devices");
                         }
                     }
                     else
                     {
-                        sendGameInfoMessage(player, "message.device_already_connected");
+                        sendErrorToast(player, "message.device_already_connected");
                     }
                 }
                 else
@@ -98,11 +101,11 @@ public class ItemEthernetCable extends Item
                     if(router.addDevice(tag.getUniqueId("id"), tag.getString("name")))
                     {
                         heldItem.shrink(1);
-                        sendGameInfoMessage(player, "message.successful_registered");
+                        sendSuccessToast(player, "message.successful_registered");
                     }
                     else
                     {
-                        sendGameInfoMessage(player, "message.router_max_devices");
+                        sendErrorToast(player, "message.router_max_devices");
                     }
                 }
                 return EnumActionResult.SUCCESS;
@@ -117,18 +120,37 @@ public class ItemEthernetCable extends Item
                 tag.setString("name", tileEntityNetworkDevice.getCustomName());
                 tag.setLong("pos", tileEntityNetworkDevice.getPos().toLong());
 
-                sendGameInfoMessage(player, "message.select_router");
+                sendInfoToast(player, "message.select_router");
                 return EnumActionResult.SUCCESS;
             }
         }
         return EnumActionResult.SUCCESS;
     }
 
-    private void sendGameInfoMessage(EntityPlayer player, String message)
+    private void sendSuccessToast(EntityPlayer player, String message)
     {
         if(player instanceof EntityPlayerMP)
         {
-            ((EntityPlayerMP) player).connection.sendPacket(new SPacketChat(new TextComponentTranslation(message), ChatType.GAME_INFO));
+            Notification notification = new Notification(Icons.CHECK, "Success", message);
+            notification.pushTo((EntityPlayerMP) player);
+        }
+    }
+
+    private void sendInfoToast(EntityPlayer player, String message)
+    {
+        if(player instanceof EntityPlayerMP)
+        {
+            Notification notification = new Notification(Icons.INFO, "Info", message);
+            notification.pushTo((EntityPlayerMP) player);
+        }
+    }
+
+    private void sendErrorToast(EntityPlayer player, String message)
+    {
+        if(player instanceof EntityPlayerMP)
+        {
+            Notification notification = new Notification(Icons.ERROR, "Error", message);
+            notification.pushTo((EntityPlayerMP) player);
         }
     }
 

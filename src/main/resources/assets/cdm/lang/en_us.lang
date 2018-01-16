@@ -44,9 +44,9 @@ app.cdm.boat_racers.author=MrCrayfish
 app.cdm.mine_bay.name=MineBay
 app.cdm.mine_bay.author=MrCrayfish
 
-message.select_router=Now select a router to connect this device to.
-message.invalid_cable=Please select a device first before adding it to this router.
-message.router_max_devices=The maximum amount of devices has been reached for this router.
-message.device_already_connected=The selected device is already connected to this router.
-message.successful_connection=Successfully connected the selected device to this router.
-message.successful_registered=Successfully registered the selected device to this router.
+message.select_router=Now select a Router
+message.invalid_cable=No device selected
+message.router_max_devices=Device limit reached
+message.device_already_connected=Device already linked
+message.successful_connection=Device linked
+message.successful_registered=Device registered
