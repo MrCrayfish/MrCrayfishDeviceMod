@@ -2,7 +2,6 @@ package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.network.Router;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -11,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityRouter extends TileEntitySync implements ITickable
+public class TileEntityRouter extends TileEntityDevice.Colored
 {
     private Router router;
 
@@ -60,6 +59,12 @@ public class TileEntityRouter extends TileEntitySync implements ITickable
     }
 
     @Override
+    public String getDeviceName()
+    {
+        return "Router";
+    }
+
+    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
@@ -75,12 +80,6 @@ public class TileEntityRouter extends TileEntitySync implements ITickable
         {
             router = Router.fromTag(pos, compound.getCompoundTag("router"));
         }
-    }
-
-    @Override
-    public NBTTagCompound writeSyncTag()
-    {
-        return new NBTTagCompound();
     }
 
     public void syncDevicesToClient()

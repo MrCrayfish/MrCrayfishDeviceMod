@@ -1,8 +1,5 @@
 package com.mrcrayfish.device.api.app.listener;
 
-import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.object.AppInfo;
-
 /**
  * The click listener interface. Used for handling clicks
  * on components.

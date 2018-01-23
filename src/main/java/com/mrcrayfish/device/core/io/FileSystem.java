@@ -16,10 +16,11 @@ import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.core.io.task.TaskSendAction;
 import com.mrcrayfish.device.init.DeviceItems;
+import com.mrcrayfish.device.tileentity.TileEntityLaptop;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,7 +29,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class FileSystem
@@ -44,10 +48,11 @@ public class FileSystem
 	private AbstractDrive mainDrive = null;
 	private Map<UUID, AbstractDrive> additionalDrives = new HashMap<>();
 	private AbstractDrive attachedDrive = null;
+	private EnumDyeColor attachedDriveColor = EnumDyeColor.RED;
 
-	private TileEntity tileEntity;
+	private TileEntityLaptop tileEntity;
 	
-	public FileSystem(TileEntity tileEntity, NBTTagCompound fileSystemTag)
+	public FileSystem(TileEntityLaptop tileEntity, NBTTagCompound fileSystemTag)
 	{
 		this.tileEntity = tileEntity;
 
@@ -75,6 +80,11 @@ public class FileSystem
 		if(fileSystemTag.hasKey("external_drive", Constants.NBT.TAG_COMPOUND))
 		{
 			attachedDrive = ExternalDrive.fromTag(fileSystemTag.getCompoundTag("external_drive"));
+		}
+
+		if(fileSystemTag.hasKey("external_drive_color", Constants.NBT.TAG_BYTE))
+		{
+			attachedDriveColor = EnumDyeColor.byMetadata(fileSystemTag.getByte("external_drive_color"));
 		}
 
 		setupDefault();
@@ -175,6 +185,11 @@ public class FileSystem
 			{
 				drive.setName(flashDrive.getDisplayName());
 				attachedDrive = drive;
+				attachedDriveColor = EnumDyeColor.byMetadata(flashDrive.getMetadata());
+
+				tileEntity.getPipeline().setByte("external_drive_color", (byte) attachedDriveColor.getMetadata());
+				tileEntity.sync();
+
 				return true;
 			}
 		}
@@ -186,12 +201,17 @@ public class FileSystem
 		return attachedDrive;
 	}
 
+	public EnumDyeColor getAttachedDriveColor()
+	{
+		return attachedDriveColor;
+	}
+
 	@Nullable
 	public ItemStack removeAttachedDrive()
 	{
 		if(attachedDrive != null)
 		{
-			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE);
+			ItemStack stack = new ItemStack(DeviceItems.FLASH_DRIVE, 1, getAttachedDriveColor().getMetadata());
 			stack.setStackDisplayName(attachedDrive.getName());
 			stack.getTagCompound().setTag("drive", attachedDrive.toTag());
 			attachedDrive = null;
@@ -313,7 +333,10 @@ public class FileSystem
 		fileSystemTag.setTag("drives", tagList);
 
 		if(attachedDrive != null)
+		{
 			fileSystemTag.setTag("external_drive", attachedDrive.toTag());
+			fileSystemTag.setByte("external_drive_color", (byte) attachedDriveColor.getMetadata());
+		}
 
 		return fileSystemTag;
 	}

@@ -8,7 +8,7 @@ public class ToolBucket extends Tool {
 	@Override
 	public void handleClick(Canvas canvas, int x, int y) 
 	{
-		fill(canvas, x, y, canvas.getPixel(x, y), canvas.getCurrentColour());
+		fill(canvas, x, y, canvas.getPixel(x, y), canvas.getCurrentColor());
 	}
 
 	@Override

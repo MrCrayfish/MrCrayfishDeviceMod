@@ -1,12 +1,11 @@
 package com.mrcrayfish.device.core.network;
 
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -73,7 +72,7 @@ public class Connection
         return tag;
     }
 
-    public static Connection fromTag(TileEntityDevice device, NBTTagCompound tag)
+    public static Connection fromTag(TileEntityNetworkDevice device, NBTTagCompound tag)
     {
         Connection connection = new Connection();
         connection.routerId = UUID.fromString(tag.getString("id"));

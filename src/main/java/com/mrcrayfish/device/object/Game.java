@@ -1,18 +1,16 @@
 package com.mrcrayfish.device.object;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.tiles.Tile;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Game extends Component
 {
@@ -328,7 +326,6 @@ public class Game extends Component
 		{
 			this.currentLayer = Layer.values()[next];
 		}
-		System.out.println(this.currentLayer.name());
 	}
 	
 	public void prevLayer()
@@ -338,7 +335,6 @@ public class Game extends Component
 		{
 			this.currentLayer = Layer.values()[prev];
 		}
-		System.out.println(this.currentLayer.name());
 	}
 
 	public static enum Layer

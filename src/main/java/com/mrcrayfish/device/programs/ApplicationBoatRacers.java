@@ -1,13 +1,11 @@
 package com.mrcrayfish.device.programs;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.object.Game;
 import com.mrcrayfish.device.object.TileGrid;
 import com.mrcrayfish.device.object.tiles.Tile;

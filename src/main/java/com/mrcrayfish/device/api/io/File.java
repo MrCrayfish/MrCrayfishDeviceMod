@@ -7,10 +7,8 @@ import com.mrcrayfish.device.core.io.action.FileAction;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
-import java.util.regex.Pattern;
 
 public class File
 {
@@ -454,6 +452,15 @@ public class File
 			if(callback != null)
 			{
 				callback.execute(FileSystem.createResponse(FileSystem.Status.FILE_INVALID, "Source file is invalid"), false);
+			}
+			return;
+		}
+
+		if(this.equals(destination.getFile(name)))
+		{
+			if(callback != null)
+			{
+				callback.execute(FileSystem.createSuccessResponse(), false);
 			}
 			return;
 		}

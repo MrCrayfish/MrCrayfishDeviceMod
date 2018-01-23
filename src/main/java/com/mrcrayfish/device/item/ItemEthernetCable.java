@@ -3,15 +3,15 @@ package com.mrcrayfish.device.item;
 import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketChat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
@@ -25,7 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -39,7 +38,7 @@ public class ItemEthernetCable extends Item
     {
         this.setUnlocalizedName("ethernet_cable");
         this.setRegistryName("ethernet_cable");
-        this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
         this.setMaxStackSize(1);
     }
 
@@ -66,14 +65,14 @@ public class ItemEthernetCable extends Item
                 BlockPos devicePos = BlockPos.fromLong(tag.getLong("pos"));
 
                 TileEntity tileEntity1 = world.getTileEntity(devicePos);
-                if(tileEntity1 instanceof TileEntityDevice)
+                if(tileEntity1 instanceof TileEntityNetworkDevice)
                 {
-                    TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
-                    if(!router.isDeviceRegistered(tileEntityDevice))
+                    TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity1;
+                    if(!router.isDeviceRegistered(tileEntityNetworkDevice))
                     {
-                        if(router.addDevice(tileEntityDevice))
+                        if(router.addDevice(tileEntityNetworkDevice))
                         {
-                            tileEntityDevice.connect(router);
+                            tileEntityNetworkDevice.connect(router);
                             heldItem.shrink(1);
                             if(getDistance(tileEntity1.getPos(), tileEntityRouter.getPos()) > DeviceConfig.getSignalRange())
                             {
@@ -109,18 +108,14 @@ public class ItemEthernetCable extends Item
                 return EnumActionResult.SUCCESS;
             }
 
-            if(tileEntity instanceof TileEntityDevice)
+            if(tileEntity instanceof TileEntityNetworkDevice)
             {
-                TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity;
-                if(!heldItem.hasTagCompound())
-                {
-                    heldItem.setTagCompound(new NBTTagCompound());
-                }
+                TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity;
+                heldItem.setTagCompound(new NBTTagCompound());
                 NBTTagCompound tag = heldItem.getTagCompound();
-                tag.setUniqueId("id", tileEntityDevice.getId());
-                tag.setString("name", tileEntityDevice.getDeviceName());
-                tag.setLong("pos", tileEntityDevice.getPos().toLong());
-                heldItem.setStackDisplayName(TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + I18n.format("item.ethernet_cable.name"));
+                tag.setUniqueId("id", tileEntityNetworkDevice.getId());
+                tag.setString("name", tileEntityNetworkDevice.getCustomName());
+                tag.setLong("pos", tileEntityNetworkDevice.getPos().toLong());
 
                 sendGameInfoMessage(player, "message.select_router");
                 return EnumActionResult.SUCCESS;
@@ -201,5 +196,15 @@ public class ItemEthernetCable extends Item
     private static double getDistance(BlockPos source, BlockPos target)
     {
         return Math.sqrt(source.distanceSqToCenter(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5));
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        if(stack.hasTagCompound())
+        {
+            return TextFormatting.GRAY.toString() + TextFormatting.BOLD.toString() + super.getItemStackDisplayName(stack);
+        }
+        return super.getItemStackDisplayName(stack);
     }
 }

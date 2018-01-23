@@ -3,12 +3,10 @@ package com.mrcrayfish.device.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 /**
  * Author: MrCrayfish

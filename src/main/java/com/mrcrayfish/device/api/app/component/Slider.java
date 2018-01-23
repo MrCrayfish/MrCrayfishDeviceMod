@@ -19,9 +19,9 @@ public class Slider extends Component
 	protected int prevSliderX;
 	protected int newSliderX;
 	
-	protected int sliderColour = Color.WHITE.getRGB();
-	protected int backgroundColour = Color.DARK_GRAY.getRGB();
-	protected int borderColour = Color.BLACK.getRGB();
+	protected int sliderColor = Color.WHITE.getRGB();
+	protected int backgroundColor = Color.DARK_GRAY.getRGB();
+	protected int borderColor = Color.BLACK.getRGB();
 	
 	protected ClickListener clickListener = null;
 	protected ReleaseListener releaseListener = null;
@@ -45,10 +45,10 @@ public class Slider extends Component
 	{
 		if (this.visible)
         {
-			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, borderColour);
-			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, backgroundColour);
-			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, borderColour);
-			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, sliderColour);
+			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, borderColor);
+			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, backgroundColor);
+			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, borderColor);
+			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, sliderColor);
         }
 	}
 	
@@ -191,32 +191,32 @@ public class Slider extends Component
 	}
 	
 	/**
-	 * Sets the slider colour for this component
+	 * Sets the slider color for this component
 	 * 
-	 * @param color the slider colour
+	 * @param color the slider color
 	 */
-	public void setSliderColour(Color color) 
+	public void setSliderColor(Color color)
 	{
-		this.sliderColour = color.getRGB();
+		this.sliderColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the background colour for this component
+	 * Sets the background color for this component
 	 * 
-	 * @param color the background colour
+	 * @param color the background color
 	 */
-	public void setBackgroundColour(Color color) 
+	public void setBackgroundColor(Color color)
 	{
-		this.backgroundColour = color.getRGB();
+		this.backgroundColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the border colour for this component
+	 * Sets the border color for this component
 	 * 
-	 * @param color the border colour
+	 * @param color the border color
 	 */
-	public void setBorderColour(Color color) 
+	public void setBorderColor(Color color)
 	{
-		this.borderColour = color.getRGB();
+		this.borderColor = color.getRGB();
 	}
 }

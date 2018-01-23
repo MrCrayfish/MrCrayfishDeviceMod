@@ -12,13 +12,9 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -27,9 +23,8 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityPrinter extends TileEntityDevice implements ITickable
+public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
 {
-    private String name = "Printer";
     private State state = IDLE;
 
     private Deque<IPrint> printQueue = new ArrayDeque<>();
@@ -87,17 +82,13 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     @Override
     public String getDeviceName()
     {
-        return name;
+        return "Printer";
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        if(compound.hasKey("name", Constants.NBT.TAG_STRING))
-        {
-            name = compound.getString("name");
-        }
         if(compound.hasKey("currentPrint", Constants.NBT.TAG_COMPOUND))
         {
             currentPrint = IPrint.loadFromTag(compound.getCompoundTag("currentPrint"));
@@ -134,7 +125,6 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
-        compound.setString("name", name);
         compound.setInteger("totalPrintTime", totalPrintTime);
         compound.setInteger("remainingPrintTime", remainingPrintTime);
         compound.setInteger("state", state.ordinal());
@@ -157,8 +147,7 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
     @Override
     public NBTTagCompound writeSyncTag()
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("name", name);
+        NBTTagCompound tag = super.writeSyncTag();
         tag.setInteger("paperCount", paperCount);
         return tag;
     }
@@ -263,26 +252,9 @@ public class TileEntityPrinter extends TileEntityDevice implements ITickable
         return paperCount;
     }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
     public IPrint getPrint()
     {
         return currentPrint;
-    }
-
-    @Nullable
-    @Override
-    public ITextComponent getDisplayName()
-    {
-        return new TextComponentString(name);
     }
 
     public enum State

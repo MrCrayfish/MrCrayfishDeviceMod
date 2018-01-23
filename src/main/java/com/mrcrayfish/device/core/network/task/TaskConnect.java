@@ -2,7 +2,7 @@ package com.mrcrayfish.device.core.network.task;
 
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.tileentity.TileEntityDevice;
+import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,12 +47,12 @@ public class TaskConnect extends Task
             Router router = tileEntityRouter.getRouter();
 
             TileEntity tileEntity1 = world.getTileEntity(BlockPos.fromLong(nbt.getLong("devicePos")));
-            if(tileEntity1 instanceof TileEntityDevice)
+            if(tileEntity1 instanceof TileEntityNetworkDevice)
             {
-                TileEntityDevice tileEntityDevice = (TileEntityDevice) tileEntity1;
-                if(router.addDevice(tileEntityDevice))
+                TileEntityNetworkDevice tileEntityNetworkDevice = (TileEntityNetworkDevice) tileEntity1;
+                if(router.addDevice(tileEntityNetworkDevice))
                 {
-                    tileEntityDevice.connect(router);
+                    tileEntityNetworkDevice.connect(router);
                     this.setSuccessful();
                 }
             }
