@@ -20,6 +20,7 @@ import com.mrcrayfish.device.object.Canvas;
 import com.mrcrayfish.device.object.ColorGrid;
 import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
+import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -40,8 +41,7 @@ public class ApplicationPixelPainter extends Application
 	private static final Color AUTHOR_TEXT = new Color(114, 120, 138);
 
 	/* Main Menu */
-	private Layout layoutMainMenu;
-	private Image logo;
+	private StandardLayout layoutMainMenu;
 	private Label labelLogo;
 	private Button btnNewPicture;
 	private Button btnLoadPicture;
@@ -90,25 +90,40 @@ public class ApplicationPixelPainter extends Application
 	public void init()
 	{
 		/* Main Menu */
-		layoutMainMenu = new Layout(100, 100);
-		layoutMainMenu.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		layoutMainMenu = new StandardLayout("Main Menu", 201, 125, this, null);
+		layoutMainMenu.setIcon(Icons.HOME);
+
+		ItemList<Picture> pictureList = new ItemList<>(5, 43, 80, 4);
+		pictureList.setListItemRenderer(new ListItemRenderer<Picture>(18)
 		{
-			mc.getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
-			RenderUtil.drawRectWithTexture(x + 36, y + 4, info.getIconU(), info.getIconV(), 28, 28, 14, 14, 224, 224);
-        });
+			@Override
+			public void render(Picture picture, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+			{
+				RenderUtil.drawStringClipped("Henlo", x, y, 100, AUTHOR_TEXT.getRGB(), true);
+			}
+		});
+		layoutMainMenu.addComponent(pictureList);
 
-		labelLogo = new Label("Pixel Painter", 19, 35);
-		layoutMainMenu.addComponent(labelLogo);
-
-		btnNewPicture = new Button(5, 50, "New");
-		btnNewPicture.setSize(90, 20);
-		btnNewPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutNewPicture));
+		btnNewPicture = new Button(5, 25, "New", Icons.PICTURE);
+		btnNewPicture.setSize(40, 16);
+		btnNewPicture.setToolTip("New Picture", "Start a new masterpiece!");
+		btnNewPicture.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			if(mouseButton == 0)
+			{
+				setCurrentLayout(layoutNewPicture);
+			}
+		});
 		layoutMainMenu.addComponent(btnNewPicture);
 
-		btnLoadPicture = new Button(5, 75, "Load");
-		btnLoadPicture.setSize(90, 20);
+		btnLoadPicture = new Button(48, 25, Icons.IMPORT);
+		btnLoadPicture.setToolTip("Load External", "Open a picture from file");
 		btnLoadPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutLoadPicture));
 		layoutMainMenu.addComponent(btnLoadPicture);
+
+		Button btnDeletePicture = new Button(67, 25, Icons.TRASH);
+		btnDeletePicture.setToolTip("Delete", "Removes the selected image");
+		layoutMainMenu.addComponent(btnDeletePicture);
 
 		
 		/* New Picture */
@@ -170,7 +185,7 @@ public class ApplicationPixelPainter extends Application
             });
         });
 
-		listPictures = new ItemList<>(5, 5, 100, 5);
+		listPictures = new ItemList<>(5, 5, 80, 5);
 		listPictures.setListItemRenderer(new ListItemRenderer<Picture>(20)
 		{
 			@Override
