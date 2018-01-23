@@ -37,6 +37,7 @@ public class Image extends Component
 
     protected int imageU, imageV;
     protected int imageWidth, imageHeight;
+    protected int sourceWidth, sourceHeight;
     protected int componentWidth, componentHeight;
 
     private float alpha = 1.0F;
@@ -86,6 +87,11 @@ public class Image extends Component
      */
     public Image(int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource)
     {
+        this(left, top, componentWidth, componentHeight, imageU, imageV, imageWidth, imageHeight, 256, 256, resource);
+    }
+
+    public Image(int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, int sourceWidth, int sourceHeight, ResourceLocation resource)
+    {
         super(left, top);
         this.loader = new StandardLoader(resource);
         this.componentWidth = componentWidth;
@@ -94,6 +100,8 @@ public class Image extends Component
         this.imageV = imageV;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
+        this.sourceWidth = sourceWidth;
+        this.sourceHeight = sourceHeight;
     }
 
     /**
@@ -130,6 +138,8 @@ public class Image extends Component
         this.imageV = icon.getV();
         this.imageWidth = icon.getIconSize();
         this.imageHeight = icon.getIconSize();
+        this.sourceWidth = icon.getGridWidth() * icon.getIconSize();
+        this.sourceHeight = icon.getGridHeight() * icon.getIconSize();
     }
 
     public Image(int left, int top, int componentWidth, int componentHeight, IIcon icon)
@@ -142,6 +152,8 @@ public class Image extends Component
         this.imageV = icon.getV();
         this.imageWidth = icon.getIconSize();
         this.imageHeight = icon.getIconSize();
+        this.sourceWidth = icon.getGridWidth() * icon.getIconSize();
+        this.sourceHeight = icon.getGridHeight() * icon.getIconSize();
     }
 
     @Override
@@ -191,7 +203,7 @@ public class Image extends Component
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight, sourceWidth, sourceHeight);
                     }
                 }
                 else
@@ -202,7 +214,7 @@ public class Image extends Component
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight, sourceWidth, sourceHeight);
                     }
                 }
             }
