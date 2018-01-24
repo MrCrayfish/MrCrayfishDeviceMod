@@ -12,6 +12,6 @@ public class ItemComponent extends Item
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);
-        this.setCreativeTab(MrCrayfishDeviceMod.tabDevice);
+        this.setCreativeTab(MrCrayfishDeviceMod.TAB_DEVICE);
     }
 }
