@@ -9,6 +9,7 @@ tile.office_chair.name=Office Chair
 item.flash_drive.name=Flash Drive
 item.printed_paper.name=Printed Paper
 item.ethernet_cable.name=Ethernet Cable
+item.motherboard.name=Motherboard
 item.cpu.name=Central Processing Unit
 item.hard_drive.name=Hard Disk Drive
 item.ram.name=Random Access Memory
