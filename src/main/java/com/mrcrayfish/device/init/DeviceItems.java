@@ -13,6 +13,7 @@ public class DeviceItems
     public static final Item FLASH_DRIVE;
     public static final Item ETHERNET_CABLE;
 
+    public static final Item COMPONENT_CIRCUIT_BOARD;
     public static final Item COMPONENT_MOTHERBOARD;
     public static final Item COMPONENT_CPU;
     public static final Item COMPONENT_HARD_DRIVE;
@@ -23,6 +24,7 @@ public class DeviceItems
     {
         FLASH_DRIVE = new ItemFlashDrive();
         ETHERNET_CABLE = new ItemEthernetCable();
+        COMPONENT_CIRCUIT_BOARD = new ItemComponent("circuit_board");
         COMPONENT_MOTHERBOARD = new ItemComponent("motherboard");
         COMPONENT_CPU = new ItemComponent("cpu");
         COMPONENT_HARD_DRIVE = new ItemComponent("hard_drive");
@@ -34,6 +36,7 @@ public class DeviceItems
     {
         register(FLASH_DRIVE);
         register(ETHERNET_CABLE);
+        register(COMPONENT_CIRCUIT_BOARD);
         register(COMPONENT_MOTHERBOARD);
         register(COMPONENT_CPU);
         register(COMPONENT_HARD_DRIVE);
