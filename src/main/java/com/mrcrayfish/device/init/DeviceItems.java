@@ -19,6 +19,7 @@ public class DeviceItems
     public static final Item COMPONENT_HARD_DRIVE;
     public static final Item COMPONENT_RAM;
     public static final Item COMPONENT_GPU;
+    public static final Item COMPONENT_SCREEN;
 
     static
     {
@@ -30,6 +31,7 @@ public class DeviceItems
         COMPONENT_HARD_DRIVE = new ItemComponent("hard_drive");
         COMPONENT_RAM = new ItemComponent("ram");
         COMPONENT_GPU = new ItemComponent("gpu");
+        COMPONENT_SCREEN = new ItemComponent("screen");
     }
 
     public static void register()
@@ -42,6 +44,7 @@ public class DeviceItems
         register(COMPONENT_HARD_DRIVE);
         register(COMPONENT_RAM);
         register(COMPONENT_GPU);
+        register(COMPONENT_SCREEN);
     }
 
     private static void register(Item item)
