@@ -19,6 +19,7 @@ public class DeviceItems
     public static final Item COMPONENT_CPU;
     public static final Item COMPONENT_RAM;
     public static final Item COMPONENT_GPU;
+    public static final Item COMPONENT_WIFI;
     public static final Item COMPONENT_HARD_DRIVE;
     public static final Item COMPONENT_SCREEN;
 
@@ -31,6 +32,7 @@ public class DeviceItems
         COMPONENT_CPU = new ItemMotherboard.Component("cpu");
         COMPONENT_RAM = new ItemMotherboard.Component("ram");
         COMPONENT_GPU = new ItemMotherboard.Component("gpu");
+        COMPONENT_WIFI = new ItemComponent("wifi");
         COMPONENT_HARD_DRIVE = new ItemComponent("hard_drive");
         COMPONENT_SCREEN = new ItemComponent("screen");
     }
@@ -44,6 +46,7 @@ public class DeviceItems
         register(COMPONENT_CPU);
         register(COMPONENT_RAM);
         register(COMPONENT_GPU);
+        register(COMPONENT_WIFI);
         register(COMPONENT_HARD_DRIVE);
         register(COMPONENT_SCREEN);
     }
