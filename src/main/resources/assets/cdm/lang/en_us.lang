@@ -16,6 +16,7 @@ item.hard_drive.name=Hard Disk Drive
 item.ram.name=Random Access Memory
 item.gpu.name=Graphics Processing Unit
 item.wifi.name=WiFi Module
+item.battery.name=Battery
 item.screen.name=Screen
 
 app.cdm.settings.name=Settings
