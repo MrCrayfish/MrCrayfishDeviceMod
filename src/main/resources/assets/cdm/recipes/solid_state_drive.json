@@ -1,0 +1,22 @@
+{
+    "result": {
+        "item": "cdm:solid_state_drive"
+    },
+    "pattern": [
+        "IRI",
+        "IBI",
+        "III"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "B": {
+            "item": "minecraft:black_shulker_box"
+        }
+    }
+}
