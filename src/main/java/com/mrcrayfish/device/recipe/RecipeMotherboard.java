@@ -21,7 +21,7 @@ public class RecipeMotherboard extends net.minecraftforge.registries.IForgeRegis
 {
     public RecipeMotherboard()
     {
-        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "motherboard"));
+        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "motherboard_components"));
     }
 
     @Override
