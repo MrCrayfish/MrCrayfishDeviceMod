@@ -22,6 +22,7 @@ public class DeviceItems
     public static final Item COMPONENT_GPU;
     public static final Item COMPONENT_WIFI;
     public static final Item COMPONENT_HARD_DRIVE;
+    public static final Item COMPONENT_FLASH_CHIP;
     public static final Item COMPONENT_SOLID_STATE_DRIVE;
     public static final Item COMPONENT_BATTERY;
     public static final Item COMPONENT_SCREEN;
@@ -42,6 +43,7 @@ public class DeviceItems
         COMPONENT_GPU = new ItemMotherboard.Component("gpu");
         COMPONENT_WIFI = new ItemMotherboard.Component("wifi");
         COMPONENT_HARD_DRIVE = new ItemComponent("hard_drive");
+        COMPONENT_FLASH_CHIP = new ItemComponent("flash_chip");
         COMPONENT_SOLID_STATE_DRIVE = new ItemComponent("solid_state_drive");
         COMPONENT_BATTERY = new ItemComponent("battery");
         COMPONENT_SCREEN = new ItemComponent("screen");
@@ -61,6 +63,7 @@ public class DeviceItems
         register(COMPONENT_GPU);
         register(COMPONENT_WIFI);
         register(COMPONENT_HARD_DRIVE);
+        register(COMPONENT_FLASH_CHIP);
         register(COMPONENT_SOLID_STATE_DRIVE);
         register(COMPONENT_BATTERY);
         register(COMPONENT_SCREEN);
