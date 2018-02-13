@@ -4,6 +4,7 @@ import com.mrcrayfish.device.item.ItemComponent;
 import com.mrcrayfish.device.item.ItemEthernetCable;
 import com.mrcrayfish.device.item.ItemFlashDrive;
 import com.mrcrayfish.device.item.ItemMotherboard;
+import com.mrcrayfish.device.item.*;
 import net.minecraft.item.Item;
 
 /**
@@ -13,6 +14,10 @@ public class DeviceItems
 {
     public static final Item FLASH_DRIVE;
     public static final Item ETHERNET_CABLE;
+
+    public static final Item PLASTIC_UNREFINED;
+    public static final Item PLASTIC;
+    public static final Item PLASTIC_FRAME;
 
     public static final Item COMPONENT_CIRCUIT_BOARD;
     public static final Item COMPONENT_MOTHERBOARD;
@@ -28,6 +33,11 @@ public class DeviceItems
     {
         FLASH_DRIVE = new ItemFlashDrive();
         ETHERNET_CABLE = new ItemEthernetCable();
+
+        PLASTIC_UNREFINED = new ItemBasic("plastic_unrefined");
+        PLASTIC = new ItemBasic("plastic");
+        PLASTIC_FRAME = new ItemBasic("plastic_frame");
+
         COMPONENT_CIRCUIT_BOARD = new ItemComponent("circuit_board");
         COMPONENT_MOTHERBOARD = new ItemMotherboard();
         COMPONENT_CPU = new ItemMotherboard.Component("cpu");
@@ -43,6 +53,9 @@ public class DeviceItems
     {
         register(FLASH_DRIVE);
         register(ETHERNET_CABLE);
+        register(PLASTIC_UNREFINED);
+        register(PLASTIC);
+        register(PLASTIC_FRAME);
         register(COMPONENT_CIRCUIT_BOARD);
         register(COMPONENT_MOTHERBOARD);
         register(COMPONENT_CPU);

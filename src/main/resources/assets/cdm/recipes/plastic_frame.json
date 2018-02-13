@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "cdm:plastic_frame"
+    },
+    "pattern": [
+        "PPP",
+        "PPP",
+        "PPP"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "P": {
+            "item": "cdm:plastic"
+        }
+    }
+}
