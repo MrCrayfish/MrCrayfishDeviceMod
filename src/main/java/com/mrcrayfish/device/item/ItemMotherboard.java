@@ -30,6 +30,7 @@ public class ItemMotherboard extends ItemComponent
             tooltip.add("CPU: " + getComponentStatus(tag, "cpu"));
             tooltip.add("RAM: " + getComponentStatus(tag, "ram"));
             tooltip.add("GPU: " + getComponentStatus(tag, "gpu"));
+            tooltip.add("WIFI: " + getComponentStatus(tag, "wifi"));
             tooltip.add(TextFormatting.YELLOW + "Hold shift for help");
         }
         else

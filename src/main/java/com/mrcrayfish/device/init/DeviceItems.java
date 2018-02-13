@@ -43,7 +43,7 @@ public class DeviceItems
         COMPONENT_CPU = new ItemMotherboard.Component("cpu");
         COMPONENT_RAM = new ItemMotherboard.Component("ram");
         COMPONENT_GPU = new ItemMotherboard.Component("gpu");
-        COMPONENT_WIFI = new ItemComponent("wifi");
+        COMPONENT_WIFI = new ItemMotherboard.Component("wifi");
         COMPONENT_HARD_DRIVE = new ItemComponent("hard_drive");
         COMPONENT_BATTERY = new ItemComponent("battery");
         COMPONENT_SCREEN = new ItemComponent("screen");
