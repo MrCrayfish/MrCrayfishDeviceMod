@@ -15,6 +15,8 @@ public class DeviceItems
     public static final Item PLASTIC;
     public static final Item PLASTIC_FRAME;
 
+    public static final Item WHEEL;
+
     public static final Item COMPONENT_CIRCUIT_BOARD;
     public static final Item COMPONENT_MOTHERBOARD;
     public static final Item COMPONENT_CPU;
@@ -36,6 +38,8 @@ public class DeviceItems
         PLASTIC = new ItemBasic("plastic");
         PLASTIC_FRAME = new ItemBasic("plastic_frame");
 
+        WHEEL = new ItemBasic("wheel");
+
         COMPONENT_CIRCUIT_BOARD = new ItemComponent("circuit_board");
         COMPONENT_MOTHERBOARD = new ItemMotherboard();
         COMPONENT_CPU = new ItemMotherboard.Component("cpu");
@@ -56,6 +60,7 @@ public class DeviceItems
         register(PLASTIC_UNREFINED);
         register(PLASTIC);
         register(PLASTIC_FRAME);
+        register(WHEEL);
         register(COMPONENT_CIRCUIT_BOARD);
         register(COMPONENT_MOTHERBOARD);
         register(COMPONENT_CPU);

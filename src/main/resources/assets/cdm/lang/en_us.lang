@@ -23,6 +23,7 @@ item.screen.name=Screen
 item.plastic_unrefined.name=Unrefined Plastic
 item.plastic.name=Plastic
 item.plastic_frame.name=Plastic Frame
+item.wheel.name=Wheel
 
 app.cdm.settings.name=Settings
 app.cdm.settings.Author=MrCrayfish
