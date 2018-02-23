@@ -28,6 +28,7 @@ public class DeviceItems
     public static final Item COMPONENT_SOLID_STATE_DRIVE;
     public static final Item COMPONENT_BATTERY;
     public static final Item COMPONENT_SCREEN;
+    public static final Item COMPONENT_SMALL_ELECTRIC_MOTOR;
 
     static
     {
@@ -51,6 +52,7 @@ public class DeviceItems
         COMPONENT_SOLID_STATE_DRIVE = new ItemComponent("solid_state_drive");
         COMPONENT_BATTERY = new ItemComponent("battery");
         COMPONENT_SCREEN = new ItemComponent("screen");
+        COMPONENT_SMALL_ELECTRIC_MOTOR = new ItemComponent("small_electric_motor");
     }
 
     public static void register()
@@ -72,6 +74,7 @@ public class DeviceItems
         register(COMPONENT_SOLID_STATE_DRIVE);
         register(COMPONENT_BATTERY);
         register(COMPONENT_SCREEN);
+        register(COMPONENT_SMALL_ELECTRIC_MOTOR);
     }
 
     private static void register(Item item)
