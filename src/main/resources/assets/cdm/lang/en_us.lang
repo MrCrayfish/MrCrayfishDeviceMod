@@ -21,6 +21,7 @@ item.wifi.name=WiFi Module
 item.battery.name=Battery
 item.screen.name=Screen
 item.small_electric_motor.name=Small Electric Motor
+item.carriage.name=Carriage
 item.plastic_unrefined.name=Unrefined Plastic
 item.plastic.name=Plastic
 item.plastic_frame.name=Plastic Frame

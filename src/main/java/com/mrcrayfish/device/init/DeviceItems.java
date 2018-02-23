@@ -29,6 +29,7 @@ public class DeviceItems
     public static final Item COMPONENT_BATTERY;
     public static final Item COMPONENT_SCREEN;
     public static final Item COMPONENT_SMALL_ELECTRIC_MOTOR;
+    public static final Item COMPONENT_CARRIAGE;
 
     static
     {
@@ -53,6 +54,7 @@ public class DeviceItems
         COMPONENT_BATTERY = new ItemComponent("battery");
         COMPONENT_SCREEN = new ItemComponent("screen");
         COMPONENT_SMALL_ELECTRIC_MOTOR = new ItemComponent("small_electric_motor");
+        COMPONENT_CARRIAGE = new ItemComponent("carriage");
     }
 
     public static void register()
@@ -75,6 +77,8 @@ public class DeviceItems
         register(COMPONENT_BATTERY);
         register(COMPONENT_SCREEN);
         register(COMPONENT_SMALL_ELECTRIC_MOTOR);
+        register(COMPONENT_CARRIAGE);
+
     }
 
     private static void register(Item item)
