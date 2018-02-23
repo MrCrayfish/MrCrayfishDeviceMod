@@ -28,6 +28,7 @@ public class DeviceItems
     public static final Item COMPONENT_SOLID_STATE_DRIVE;
     public static final Item COMPONENT_BATTERY;
     public static final Item COMPONENT_SCREEN;
+    public static final Item COMPONENT_CONTROLLER_UNIT;
     public static final Item COMPONENT_SMALL_ELECTRIC_MOTOR;
     public static final Item COMPONENT_CARRIAGE;
 
@@ -53,6 +54,7 @@ public class DeviceItems
         COMPONENT_SOLID_STATE_DRIVE = new ItemComponent("solid_state_drive");
         COMPONENT_BATTERY = new ItemComponent("battery");
         COMPONENT_SCREEN = new ItemComponent("screen");
+        COMPONENT_CONTROLLER_UNIT = new ItemComponent("controller_unit");
         COMPONENT_SMALL_ELECTRIC_MOTOR = new ItemComponent("small_electric_motor");
         COMPONENT_CARRIAGE = new ItemComponent("carriage");
     }
@@ -76,6 +78,7 @@ public class DeviceItems
         register(COMPONENT_SOLID_STATE_DRIVE);
         register(COMPONENT_BATTERY);
         register(COMPONENT_SCREEN);
+        register(COMPONENT_CONTROLLER_UNIT);
         register(COMPONENT_SMALL_ELECTRIC_MOTOR);
         register(COMPONENT_CARRIAGE);
 
