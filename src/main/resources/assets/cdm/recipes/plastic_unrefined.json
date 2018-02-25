@@ -1,0 +1,19 @@
+{
+    "result": {
+        "item": "cdm:plastic_unrefined"
+    },
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:dye",
+            "data": 0
+        },
+        {
+            "item": "minecraft:dye",
+            "data": 15
+        },
+        {
+            "item": "minecraft:slime_ball"
+        }
+    ]
+}

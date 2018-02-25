@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "cdm:carriage"
+    },
+    "pattern": [
+        "PCP",
+        "III",
+        "SSS"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "P": {
+            "item": "cdm:plastic"
+        },
+        "C": {
+            "item": "minecraft:minecart"
+        },
+        "S": {
+            "item": "minecraft:string"
+        }
+    }
+}

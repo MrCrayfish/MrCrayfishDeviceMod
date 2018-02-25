@@ -1,0 +1,33 @@
+{
+    "result": {
+        "item": "cdm:router",
+        "data": 13
+    },
+    "pattern": [
+        "RDR",
+        "PPP",
+        "WCB"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "D": {
+            "item": "minecraft:dye",
+            "data": 2
+        },
+        "R": {
+            "item": "minecraft:end_rod"
+        },
+        "P": {
+            "item": "cdm:plastic_frame"
+        },
+        "W": {
+            "item": "cdm:wifi"
+        },
+        "C": {
+            "item": "cdm:circuit_board"
+        },
+        "B": {
+            "item": "cdm:battery"
+        }
+    }
+}
