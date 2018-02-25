@@ -14,17 +14,20 @@
             "item": "minecraft:dye",
             "data": 2
         },
-        "I": {
-            "item": "minecraft:iron_ingot"
-        },
         "P": {
             "item": "cdm:plastic_frame"
         },
-        "F": {
-            "item": "cdm:flash_chip"
+        "S": {
+            "item": "cdm:screen"
+        },
+        "M": {
+            "item": "cdm:small_electric_motor"
         },
         "C": {
-            "item": "cdm:circuit_board"
+            "item": "cdm:carriage"
+        },
+        "B": {
+            "item": "cdm:controller_unit"
         }
     }
 }

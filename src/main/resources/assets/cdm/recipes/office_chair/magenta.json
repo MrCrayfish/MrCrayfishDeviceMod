@@ -25,7 +25,8 @@
             "item": "cdm:wheel"
         },
         "F": {
-            "item": "minecraft:cobblestone_wall"
+            "item": "minecraft:cobblestone_wall",
+            "data": 0
         }
     }
 }
