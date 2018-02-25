@@ -3,8 +3,8 @@
         "item": "cdm:flash_chip"
     },
     "pattern": [
-        "PPP",
         "IRI",
+        "PPP",
         "GGG"
     ],
     "type": "minecraft:crafting_shaped",
