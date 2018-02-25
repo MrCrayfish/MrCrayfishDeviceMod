@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityNetworkDevice
+public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 {
 	private static final int OPENED_ANGLE = 102;
 

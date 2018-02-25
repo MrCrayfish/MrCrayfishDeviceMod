@@ -43,7 +43,7 @@ public class Label extends Component {
 					GlStateManager.translate(-(mc.fontRenderer.getStringWidth(text) * scale), 0, 0);
 				if(alignment == ALIGN_CENTER)
 					GlStateManager.translate(-(mc.fontRenderer.getStringWidth(text) * scale) / (2 * scale), 0, 0);
-				mc.fontRenderer.drawString(text, 0, 0, textColor, shadow);
+				Laptop.fontRenderer.drawString(text, 0, 0, textColor, shadow);
 			}
 			GlStateManager.popMatrix();
         }

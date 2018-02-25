@@ -23,7 +23,7 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityPrinter extends TileEntityNetworkDevice
+public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
 {
     private State state = IDLE;
 

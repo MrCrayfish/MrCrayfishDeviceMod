@@ -1,8 +1,7 @@
 package com.mrcrayfish.device.init;
 
 import com.mrcrayfish.device.block.*;
-import com.mrcrayfish.device.item.ItemColorable;
-import com.mrcrayfish.device.item.ItemDevice;
+import com.mrcrayfish.device.item.ItemColoredDevice;
 import com.mrcrayfish.device.item.ItemPaper;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
@@ -29,12 +28,12 @@ public class DeviceBlocks
 
 	public static void register()
 	{
-		registerBlock(LAPTOP, new ItemDevice(LAPTOP));
-        registerBlock(ROUTER, new ItemDevice(ROUTER));
-		registerBlock(PRINTER, new ItemDevice(PRINTER));
+		registerBlock(LAPTOP, new ItemColoredDevice(LAPTOP));
+        registerBlock(ROUTER, new ItemColoredDevice(ROUTER));
+		registerBlock(PRINTER, new ItemColoredDevice(PRINTER));
 		registerBlock(PAPER, new ItemPaper(PAPER));
 
-		registerBlock(OFFICE_CHAIR, new ItemColorable(OFFICE_CHAIR));
+		registerBlock(OFFICE_CHAIR, new ItemColoredDevice(OFFICE_CHAIR));
 	}
 
 	private static void registerBlock(Block block)

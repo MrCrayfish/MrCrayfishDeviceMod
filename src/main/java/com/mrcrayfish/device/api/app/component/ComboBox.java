@@ -65,7 +65,6 @@ public abstract class ComboBox<T> extends Component
     {
         if (this.visible)
         {
-            FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

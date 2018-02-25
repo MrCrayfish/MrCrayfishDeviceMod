@@ -5,6 +5,7 @@ import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncBlock;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
+import com.mrcrayfish.device.util.IColored;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class BlockRouter extends BlockDevice implements ITileEntityProvider
+public class BlockRouter extends BlockDevice.Colored
 {
     public static final PropertyBool VERTICAL = PropertyBool.create("vertical");
 
@@ -105,7 +106,7 @@ public class BlockRouter extends BlockDevice implements ITileEntityProvider
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public TileEntity createTileEntity(World world, IBlockState state)
     {
         return new TileEntityRouter();
     }

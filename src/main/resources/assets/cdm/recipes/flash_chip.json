@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "cdm:flash_chip"
+    },
+    "pattern": [
+        "IRI",
+        "PPP",
+        "GGG"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "P": {
+            "item": "cdm:plastic_frame"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "G": {
+            "item": "minecraft:gold_nugget"
+        }
+    }
+}

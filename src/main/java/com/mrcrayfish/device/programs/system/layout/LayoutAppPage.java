@@ -82,7 +82,7 @@ public class LayoutAppPage extends Layout
                 }
                 else
                 {
-                    slideShow.addImage(new ResourceLocation(info.getId().getResourceDomain(), image));
+                    slideShow.addImage(new ResourceLocation(image));
                 }
             }
         }

@@ -22,13 +22,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class BlockOfficeChair extends BlockColorable
+public class BlockOfficeChair extends BlockDevice.Colored
 {
     public static final PropertyEnum<Type> TYPE = PropertyEnum.create("type", Type.class);
 
@@ -70,6 +72,7 @@ public class BlockOfficeChair extends BlockColorable
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         if(Minecraft.getMinecraft().player.getRidingEntity() instanceof EntitySeat)
@@ -93,12 +96,6 @@ public class BlockOfficeChair extends BlockColorable
         {
             SeatUtil.createSeatAndSit(worldIn, pos, playerIn, 0.5);
         }
-        return true;
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    {
         return true;
     }
 

@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BlockLaptop extends BlockDevice implements ITileEntityProvider
+public class BlockLaptop extends BlockDevice.Colored
 {
 	public static final PropertyEnum TYPE = PropertyEnum.create("type", Type.class);
 
@@ -172,9 +172,10 @@ public class BlockLaptop extends BlockDevice implements ITileEntityProvider
 	{
 		return new BlockStateContainer(this, FACING, TYPE, BlockColored.COLOR);
 	}
-	
+
+	@Nullable
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		return new TileEntityLaptop();
 	}

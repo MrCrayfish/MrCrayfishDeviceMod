@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "cdm:ram"
+    },
+    "pattern": [
+        "BBB",
+        "RCR",
+        "GGG"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "B": {
+            "item": "cdm:circuit_board"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "C": {
+            "item": "minecraft:end_crystal"
+        },
+        "G": {
+            "item": "minecraft:gold_nugget"
+        }
+    }
+}
