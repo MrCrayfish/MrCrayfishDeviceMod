@@ -15,7 +15,7 @@
             "data": 3
         },
         "R": {
-            "item": "minecraft:redstone_torch"
+            "item": "minecraft:end_rod"
         },
         "P": {
             "item": "cdm:plastic_frame"
