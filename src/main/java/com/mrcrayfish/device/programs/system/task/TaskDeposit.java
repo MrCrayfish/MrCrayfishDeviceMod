@@ -36,10 +36,15 @@ public class TaskDeposit extends Task
     @Override
     public void processRequest(NBTTagCompound nbt, World world, EntityPlayer player)
     {
+        Account account = BankUtil.INSTANCE.getAccount(player);
         int amount = nbt.getInteger("amount");
+        long value = account.getBalance() + amount;
+        if(value > Integer.MAX_VALUE)
+        {
+            amount = Integer.MAX_VALUE - account.getBalance();
+        }
         if(InventoryUtil.removeItemWithAmount(player, Items.EMERALD, amount))
         {
-            Account account = BankUtil.INSTANCE.getAccount(player);
             if(account.deposit(amount))
             {
                 this.amount = account.getBalance();
