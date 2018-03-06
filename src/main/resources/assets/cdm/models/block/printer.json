@@ -19,9 +19,9 @@
             "scale": [ 0.5, 0.5, 0.5 ]
         },
         "fixed": {
-            "rotation": [ 0, 180, 0 ],
-            "translation": [ 0, 0, -2.7 ],
-            "scale": [ 0.5, 0.5, 0.5 ]
+            "rotation": [ -90, 180, 0 ],
+            "translation": [ 0, 0, -6.6 ],
+            "scale": [ 1.0, 1.0, 1.0 ]
         },
         "thirdperson_righthand": {
             "rotation": [ 75, 45, 0 ],
