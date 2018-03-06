@@ -240,11 +240,13 @@ public class Image extends Component
     public void setImage(ResourceLocation resource)
     {
         setLoader(new StandardLoader(resource));
+        this.drawFull = true;
     }
 
     public void setImage(String url)
     {
         setLoader(new DynamicLoader(url));
+        this.drawFull = true;
     }
 
     private void setLoader(ImageLoader loader)
