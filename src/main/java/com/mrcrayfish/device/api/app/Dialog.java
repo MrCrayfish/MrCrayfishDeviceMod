@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -701,16 +702,17 @@ public abstract class Dialog extends Wrappable
 								dialog.setPositiveText("Override");
 								dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
 								{
-									browser.removeFile(file.getName());
-									browser.addFile(file);
-									dialog.close();
-
-									//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
-									if(SaveFile.this.responseHandler != null)
+									browser.addFile(file, true, (response1, success1) ->
 									{
-										SaveFile.this.responseHandler.onResponse(true, file);
-									}
-									SaveFile.this.close();
+                                        dialog.close();
+
+                                        //TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
+                                        if(responseHandler != null)
+                                        {
+                                            responseHandler.onResponse(success1, file);
+                                        }
+                                        SaveFile.this.close();
+                                    });
 								});
 								app.openDialog(dialog);
 							}

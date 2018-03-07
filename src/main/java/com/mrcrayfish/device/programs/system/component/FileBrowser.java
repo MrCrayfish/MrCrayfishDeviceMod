@@ -617,6 +617,24 @@ public class FileBrowser extends Component
         });
     }
 
+    public void addFile(File file, boolean override, Callback<FileSystem.Response> callback)
+    {
+        setLoading(true);
+        currentFolder.add(file, override, (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                fileList.addItem(file);
+                FileBrowser.refreshList = true;
+            }
+            if(callback != null)
+            {
+                callback.execute(response, success);
+            }
+            setLoading(false);
+        });
+    }
+
     private void deleteSelectedFile()
     {
         File file = fileList.getSelectedItem();
