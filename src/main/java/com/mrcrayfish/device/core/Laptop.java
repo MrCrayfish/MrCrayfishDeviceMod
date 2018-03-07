@@ -166,6 +166,9 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) 
 	{
+		//Fixes the strange partialTicks that Forge decided to give us
+		partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+
 		this.drawDefaultBackground();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
