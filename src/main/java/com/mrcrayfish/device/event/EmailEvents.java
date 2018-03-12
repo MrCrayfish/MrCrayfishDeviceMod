@@ -1,15 +1,14 @@
 package com.mrcrayfish.device.event;
 
-import java.io.File;
-import java.io.IOException;
-
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
-
+import com.mrcrayfish.device.programs.email.EmailManager;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.io.File;
+import java.io.IOException;
 
 public class EmailEvents 
 {

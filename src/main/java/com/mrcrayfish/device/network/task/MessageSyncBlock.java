@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.network.task;
 
 import com.mrcrayfish.device.tileentity.TileEntityRouter;
-import com.mrcrayfish.device.tileentity.TileEntitySync;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

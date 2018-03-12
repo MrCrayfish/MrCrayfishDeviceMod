@@ -166,6 +166,9 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) 
 	{
+		//Fixes the strange partialTicks that Forge decided to give us
+		partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+
 		this.drawDefaultBackground();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -246,7 +249,6 @@ public class Laptop extends GuiScreen implements System
 			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
 				this.context.handleMouseClick(mouseX, mouseY, mouseButton);
-				this.dragging = true;
 				return;
 			}
 			else
@@ -344,14 +346,11 @@ public class Laptop extends GuiScreen implements System
 
 		if(this.context != null)
 		{
-			if(dragging)
+			int dropdownX = context.xPosition;
+			int dropdownY = context.yPosition;
+			if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
 			{
-				int dropdownX = context.xPosition;
-				int dropdownY = context.yPosition;
-				if(GuiHelper.isMouseInside(mouseX, mouseY, dropdownX, dropdownY, dropdownX + context.width, dropdownY + context.height))
-				{
-					this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
-				}
+				this.context.handleMouseDrag(mouseX, mouseY, clickedMouseButton);
 			}
 			return;
 		}
@@ -669,5 +668,6 @@ public class Laptop extends GuiScreen implements System
 	public void closeContext()
 	{
 		context = null;
+		dragging = false;
 	}
 }

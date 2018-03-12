@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.init;
 
 import com.mrcrayfish.device.tileentity.*;
-
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class DeviceTileEntites 

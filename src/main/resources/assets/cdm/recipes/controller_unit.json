@@ -1,0 +1,31 @@
+{
+    "result": {
+        "item": "cdm:controller_unit"
+    },
+    "pattern": [
+        "CIR",
+        "GDG",
+        " P "
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "C": {
+            "item": "minecraft:comparator"
+        },
+        "I": {
+            "item": "minecraft:redstone"
+        },
+        "R": {
+            "item": "minecraft:repeater"
+        },
+        "G": {
+            "item": "minecraft:gold_nugget"
+        },
+        "D": {
+            "item": "minecraft:diamond"
+        },
+        "P": {
+            "item": "cdm:circuit_board"
+        }
+    }
+}

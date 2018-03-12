@@ -1,22 +1,19 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.util.Colorable;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickable, Colorable
+public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 {
 	private static final int OPENED_ANGLE = 102;
 
 	private boolean open = false;
-	private EnumDyeColor color = EnumDyeColor.RED;
 
 	private NBTTagCompound applicationData;
 	private NBTTagCompound systemData;
@@ -89,10 +86,6 @@ public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickab
 				this.externalDriveColor = EnumDyeColor.byMetadata(compound.getByte("external_drive_color"));
 			}
 		}
-		if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
-		{
-			this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
-		}
 	}
 	
 	@Override
@@ -100,7 +93,6 @@ public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickab
 	{
 		super.writeToNBT(compound);
 		compound.setBoolean("open", open);
-		compound.setByte("color", (byte) color.getMetadata());
 
 		if(systemData != null)
 		{
@@ -124,7 +116,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickab
 	{
 		NBTTagCompound tag = super.writeSyncTag();
 		tag.setBoolean("open", open);
-		tag.setByte("color", (byte) color.getMetadata());
+		tag.setTag("system_data", getSystemData());
 
 		if(getFileSystem().getAttachedDrive() != null)
 		{
@@ -212,15 +204,5 @@ public class TileEntityLaptop extends TileEntityNetworkDevice implements ITickab
 	public EnumDyeColor getExternalDriveColor()
 	{
 		return externalDriveColor;
-	}
-
-	public void setColor(EnumDyeColor color)
-	{
-		this.color = color;
-	}
-
-	public EnumDyeColor getColor()
-	{
-		return color;
 	}
 }

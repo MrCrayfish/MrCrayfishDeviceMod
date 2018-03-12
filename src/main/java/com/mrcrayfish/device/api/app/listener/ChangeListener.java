@@ -1,7 +1,5 @@
 package com.mrcrayfish.device.api.app.listener;
 
-import com.mrcrayfish.device.api.app.Component;
-
 /**
  * The change listener interface. Used for handling value
  * changing in components

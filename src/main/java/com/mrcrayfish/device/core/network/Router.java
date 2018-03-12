@@ -111,7 +111,7 @@ public class Router
             TileEntity tileEntity = world.getTileEntity(networkDevice.getPos());
             if(tileEntity instanceof TileEntityNetworkDevice)
             {
-                return tileEntity.getClass().isAssignableFrom(type);
+                return type.isAssignableFrom(tileEntity.getClass());
             }
             return false;
         };

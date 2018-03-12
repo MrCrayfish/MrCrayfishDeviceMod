@@ -1,18 +1,17 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.app.*;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.ComboBox;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Settings;
 import com.mrcrayfish.device.programs.system.component.Palette;
-import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -36,8 +35,8 @@ public class ApplicationSettings extends SystemApplication
 	private Button buttonWallpaperRight;
 	private Button buttonWallpaperUrl;
 
-	private Layout layoutColourScheme;
-	private Button buttonColourSchemeApply;
+	private Layout layoutColorScheme;
+	private Button buttonColorSchemeApply;
 
 	private Stack<Layout> predecessor = new Stack<>();
 
@@ -63,17 +62,17 @@ public class ApplicationSettings extends SystemApplication
 
 		layoutMain = new Menu("Home");
 
-		Button buttonColourScheme = new Button(5, 26, "Personalise", Icons.EDIT);
-		buttonColourScheme.setSize(90, 20);
-		buttonColourScheme.setToolTip("Personalise", "Change the wallpaper, UI colours, and more!");
-		buttonColourScheme.setClickListener((mouseX, mouseY, mouseButton) ->
+		Button buttonColorScheme = new Button(5, 26, "Personalise", Icons.EDIT);
+		buttonColorScheme.setSize(90, 20);
+		buttonColorScheme.setToolTip("Personalise", "Change the wallpaper, UI colors, and more!");
+		buttonColorScheme.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
 				showMenu(layoutPersonalise);
 			}
 		});
-		layoutMain.addComponent(buttonColourScheme);
+		layoutMain.addComponent(buttonColorScheme);
 
 		layoutGeneral = new Menu("General");
 		layoutGeneral.addComponent(buttonPrevious);
@@ -94,12 +93,12 @@ public class ApplicationSettings extends SystemApplication
 		{
 			int wallpaperX = 7;
 			int wallpaperY = 28;
-			Gui.drawRect(x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColourScheme().getHeaderColour());
+			Gui.drawRect(x + wallpaperX - 1, y + wallpaperY - 1, x + wallpaperX - 1 + 122, y + wallpaperY - 1 + 70, getLaptop().getSettings().getColorScheme().getHeaderColor());
 			GlStateManager.color(1.0F, 1.0F, 1.0F);
 			List<ResourceLocation> wallpapers = getLaptop().getWallapapers();
 			mc.getTextureManager().bindTexture(wallpapers.get(getLaptop().getCurrentWallpaper()));
 			RenderUtil.drawRectWithFullTexture(x + wallpaperX, y + wallpaperY, 0, 0, 120, 68);
-			mc.fontRenderer.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColourScheme().getTextColour(), true);
+			mc.fontRenderer.drawString("Wallpaper", x + wallpaperX + 3, y + wallpaperY + 3, getLaptop().getSettings().getColorScheme().getTextColor(), true);
 		});
 
 		buttonWallpaperLeft = new Button(135, 27, Icons.ARROW_LEFT);
@@ -144,43 +143,43 @@ public class ApplicationSettings extends SystemApplication
         });
 		layoutPersonalise.addComponent(buttonWallpaperUrl);
 
-		layoutColourScheme = new Menu("UI Colours");
+		layoutColorScheme = new Menu("UI Colors");
 		layoutPersonalise.addComponent(buttonPrevious);
 
-		ComboBox.Custom<Integer> comboBoxTextColour = createColourPicker(145, 26);
-		layoutColourScheme.addComponent(comboBoxTextColour);
+		ComboBox.Custom<Integer> comboBoxTextColor = createColorPicker(145, 26);
+		layoutColorScheme.addComponent(comboBoxTextColor);
 
-		ComboBox.Custom<Integer> comboBoxTextSecondaryColour = createColourPicker(145, 44);
-		layoutColourScheme.addComponent(comboBoxTextSecondaryColour);
+		ComboBox.Custom<Integer> comboBoxTextSecondaryColor = createColorPicker(145, 44);
+		layoutColorScheme.addComponent(comboBoxTextSecondaryColor);
 
-		ComboBox.Custom<Integer> comboBoxHeaderColour = createColourPicker(145, 62);
-		layoutColourScheme.addComponent(comboBoxHeaderColour);
+		ComboBox.Custom<Integer> comboBoxHeaderColor = createColorPicker(145, 62);
+		layoutColorScheme.addComponent(comboBoxHeaderColor);
 
-		ComboBox.Custom<Integer> comboBoxBackgroundColour = createColourPicker(145, 80);
-		layoutColourScheme.addComponent(comboBoxBackgroundColour);
+		ComboBox.Custom<Integer> comboBoxBackgroundColor = createColorPicker(145, 80);
+		layoutColorScheme.addComponent(comboBoxBackgroundColor);
 
-		ComboBox.Custom<Integer> comboBoxBackgroundSecondaryColour = createColourPicker(145, 98);
-		layoutColourScheme.addComponent(comboBoxBackgroundSecondaryColour);
+		ComboBox.Custom<Integer> comboBoxBackgroundSecondaryColor = createColorPicker(145, 98);
+		layoutColorScheme.addComponent(comboBoxBackgroundSecondaryColor);
 
-		ComboBox.Custom<Integer> comboBoxItemBackgroundColour = createColourPicker(145, 116);
-		layoutColourScheme.addComponent(comboBoxItemBackgroundColour);
+		ComboBox.Custom<Integer> comboBoxItemBackgroundColor = createColorPicker(145, 116);
+		layoutColorScheme.addComponent(comboBoxItemBackgroundColor);
 
-		ComboBox.Custom<Integer> comboBoxItemHighlightColour = createColourPicker(145, 134);
-		layoutColourScheme.addComponent(comboBoxItemHighlightColour);
+		ComboBox.Custom<Integer> comboBoxItemHighlightColor = createColorPicker(145, 134);
+		layoutColorScheme.addComponent(comboBoxItemHighlightColor);
 
-		buttonColourSchemeApply = new Button(5, 79, Icons.CHECK);
-		buttonColourSchemeApply.setEnabled(false);
-		buttonColourSchemeApply.setToolTip("Apply", "Set these colours as the new colour scheme");
-		buttonColourSchemeApply.setClickListener((mouseX, mouseY, mouseButton) ->
+		buttonColorSchemeApply = new Button(5, 79, Icons.CHECK);
+		buttonColorSchemeApply.setEnabled(false);
+		buttonColorSchemeApply.setToolTip("Apply", "Set these colors as the new color scheme");
+		buttonColorSchemeApply.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			if(mouseButton == 0)
 			{
-				ColourScheme colourScheme = Laptop.getSystem().getSettings().getColourScheme();
-				colourScheme.setBackgroundColour(comboBoxHeaderColour.getValue());
-				buttonColourSchemeApply.setEnabled(false);
+				ColorScheme colorScheme = Laptop.getSystem().getSettings().getColorScheme();
+				colorScheme.setBackgroundColor(comboBoxHeaderColor.getValue());
+				buttonColorSchemeApply.setEnabled(false);
 			}
 		});
-		layoutColourScheme.addComponent(buttonColourSchemeApply);
+		layoutColorScheme.addComponent(buttonColorSchemeApply);
 
 		setCurrentLayout(layoutMain);
 	}
@@ -224,18 +223,18 @@ public class ApplicationSettings extends SystemApplication
 		@Override
 		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 		{
-			Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
+			Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
 			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
 			mc.fontRenderer.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
 			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 		}
 	}
 
-	public ComboBox.Custom<Integer> createColourPicker(int left, int top)
+	public ComboBox.Custom<Integer> createColorPicker(int left, int top)
 	{
-		ComboBox.Custom<Integer> colourPicker = new ComboBox.Custom<>(left, top, 50, 100, 100);
-		colourPicker.setValue(Color.RED.getRGB());
-		colourPicker.setItemRenderer(new ItemRenderer<Integer>()
+		ComboBox.Custom<Integer> colorPicker = new ComboBox.Custom<>(left, top, 50, 100, 100);
+		colorPicker.setValue(Color.RED.getRGB());
+		colorPicker.setItemRenderer(new ItemRenderer<Integer>()
 		{
 			@Override
 			public void render(Integer integer, Gui gui, Minecraft mc, int x, int y, int width, int height)
@@ -246,15 +245,15 @@ public class ApplicationSettings extends SystemApplication
 				}
 			}
 		});
-		colourPicker.setChangeListener((oldValue, newValue) ->
+		colorPicker.setChangeListener((oldValue, newValue) ->
 		{
-			buttonColourSchemeApply.setEnabled(true);
+			buttonColorSchemeApply.setEnabled(true);
 		});
 
-		Palette palette = new Palette(5, 5, colourPicker);
-		Layout layout = colourPicker.getLayout();
+		Palette palette = new Palette(5, 5, colorPicker);
+		Layout layout = colorPicker.getLayout();
 		layout.addComponent(palette);
 
-		return colourPicker;
+		return colorPicker;
 	}
 }

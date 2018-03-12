@@ -3,10 +3,8 @@ package com.mrcrayfish.device.core.io;
 import com.mrcrayfish.device.api.app.Application;
 import net.minecraft.nbt.NBTTagCompound;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
-import java.util.regex.Pattern;
 
 /**
  * Author: MrCrayfish

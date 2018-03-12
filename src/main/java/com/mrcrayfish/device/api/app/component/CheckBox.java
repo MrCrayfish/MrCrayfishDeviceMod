@@ -2,7 +2,6 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
-import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
@@ -18,10 +17,10 @@ public class CheckBox extends Component implements RadioGroup.Item
 	
 	protected ClickListener listener = null;
 	
-	protected int textColour = Color.WHITE.getRGB();
-	protected int backgroundColour = Color.GRAY.getRGB();
-	protected int borderColour = Color.BLACK.getRGB();
-	protected int checkedColour = Color.DARK_GRAY.getRGB();
+	protected int textColor = Color.WHITE.getRGB();
+	protected int backgroundColor = Color.GRAY.getRGB();
+	protected int borderColor = Color.BLACK.getRGB();
+	protected int checkedColor = Color.DARK_GRAY.getRGB();
 	
 	/**
 	 * Default check box constructor
@@ -65,11 +64,11 @@ public class CheckBox extends Component implements RadioGroup.Item
         {
         	if(group == null)
 			{
-				drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, borderColour);
-				drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, backgroundColour);
+				drawRect(xPosition, yPosition, xPosition + 10, yPosition + 10, borderColor);
+				drawRect(xPosition + 1, yPosition + 1, xPosition + 9, yPosition + 9, backgroundColor);
 				if(checked)
 				{
-					drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, checkedColour);
+					drawRect(xPosition + 2, yPosition + 2, xPosition + 8, yPosition + 8, checkedColor);
 				}
 			}
 			else
@@ -78,7 +77,7 @@ public class CheckBox extends Component implements RadioGroup.Item
 				mc.getTextureManager().bindTexture(COMPONENTS_GUI);
 				drawTexturedModalRect(xPosition, yPosition, checked ? 10 : 0, 60, 10, 10);
 			}
-			drawString(mc.fontRenderer, name, xPosition + 12, yPosition + 1, textColour);
+			drawString(mc.fontRenderer, name, xPosition + 12, yPosition + 1, textColor);
         }
 	}
 	
@@ -115,42 +114,42 @@ public class CheckBox extends Component implements RadioGroup.Item
 	}
 	
 	/**
-	 * Sets the text colour for this component
+	 * Sets the text color for this component
 	 * 
-	 * @param color the text colour
+	 * @param color the text color
 	 */
-	public void setTextColour(Color color) 
+	public void setTextColor(Color color)
 	{
-		this.textColour = color.getRGB();
+		this.textColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the background colour for this component
+	 * Sets the background color for this component
 	 * 
-	 * @param color the background colour
+	 * @param color the background color
 	 */
-	public void setBackgroundColour(Color color) 
+	public void setBackgroundColor(Color color)
 	{
-		this.backgroundColour = color.getRGB();
+		this.backgroundColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the border colour for this component
+	 * Sets the border color for this component
 	 * 
-	 * @param color the border colour
+	 * @param color the border color
 	 */
-	public void setBorderColour(Color color) 
+	public void setBorderColor(Color color)
 	{
-		this.borderColour = color.getRGB();
+		this.borderColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the checked colour for this component
+	 * Sets the checked color for this component
 	 * 
-	 * @param color the checked colour
+	 * @param color the checked color
 	 */
-	public void setCheckedColour(Color color)
+	public void setCheckedColor(Color color)
 	{
-		this.checkedColour = color.getRGB();
+		this.checkedColor = color.getRGB();
 	}
 }

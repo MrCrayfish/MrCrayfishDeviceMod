@@ -1,0 +1,28 @@
+{
+    "result": {
+        "item": "cdm:wifi"
+    },
+    "pattern": [
+        " E ",
+        "IDI",
+        "RCR"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "E": {
+            "item": "minecraft:end_rod"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "D": {
+            "item": "minecraft:ender_pearl"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "C": {
+            "item": "cdm:circuit_board"
+        }
+    }
+}

@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class Image extends Component
 
     protected ImageLoader loader;
     protected CachedImage image;
+    protected boolean initialized = false;
     protected boolean drawFull = false;
 
     protected int imageU, imageV;
@@ -40,8 +42,15 @@ public class Image extends Component
     private float alpha = 1.0F;
 
     private boolean hasBorder = false;
-    private int borderColour = Color.BLACK.getRGB();
+    private int borderColor = Color.BLACK.getRGB();
     private int borderThickness = 1;
+
+    public Image(int left, int top, int width, int height)
+    {
+        super(left, top);
+        this.componentWidth = width;
+        this.componentHeight = height;
+    }
 
     /**
      * Creates a new Image using a ResourceLocation. This automatically sets the width and height of
@@ -140,12 +149,16 @@ public class Image extends Component
     {
         spinner = new Spinner(left + (componentWidth / 2) - 6, top + (componentHeight / 2) - 6);
         layout.addComponent(spinner);
+        initialized = true;
     }
 
     @Override
     public void handleOnLoad()
     {
-        loader.setup(this);
+        if(loader != null)
+        {
+            loader.setup(this);
+        }
     }
 
     @Override
@@ -153,11 +166,16 @@ public class Image extends Component
     {
         if(this.visible)
         {
-            if(loader.setup)
+            if(loader != null && loader.setup)
             {
                 image = loader.load(this);
                 spinner.setVisible(false);
                 loader.setup = false;
+            }
+
+            if(hasBorder)
+            {
+                drawRect(x, y, x + componentWidth, y + componentHeight, borderColor);
             }
 
             if(image != null && image.textureId != -1)
@@ -169,32 +187,38 @@ public class Image extends Component
 
                 if(hasBorder)
                 {
-                    drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, borderColour);
                     GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
                     if(drawFull)
                     {
-                        RenderUtil.drawRectWithFullTexture(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
+                        RenderUtil.drawRectWithFullTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(xPosition + borderThickness, yPosition + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
                     }
                 }
                 else
                 {
                     if(drawFull)
                     {
-                        RenderUtil.drawRectWithFullTexture(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight);
+                        RenderUtil.drawRectWithFullTexture(x, y, imageU, imageV, componentWidth, componentHeight);
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(xPosition, yPosition, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
                     }
                 }
             }
             else
             {
-                drawRect(xPosition, yPosition, xPosition + componentWidth, yPosition + componentHeight, Color.LIGHT_GRAY.getRGB());
+                if(hasBorder)
+                {
+                    drawRect(x + borderThickness, y + borderThickness, x + componentWidth - borderThickness, y + componentHeight - borderThickness, Color.LIGHT_GRAY.getRGB());
+                }
+                else
+                {
+                    drawRect(x, y, x + componentWidth, y + componentHeight, Color.LIGHT_GRAY.getRGB());
+                }
             }
         }
 
@@ -216,18 +240,23 @@ public class Image extends Component
     public void setImage(ResourceLocation resource)
     {
         setLoader(new StandardLoader(resource));
+        this.drawFull = true;
     }
 
     public void setImage(String url)
     {
         setLoader(new DynamicLoader(url));
+        this.drawFull = true;
     }
 
     private void setLoader(ImageLoader loader)
     {
         this.loader = loader;
-        loader.setup(this);
-        spinner.setVisible(true);
+        if(initialized)
+        {
+            loader.setup(this);
+            spinner.setVisible(true);
+        }
     }
 
     /**
@@ -262,13 +291,13 @@ public class Image extends Component
     }
 
     /**
-     * Sets the border colour for this component
+     * Sets the border color for this component
      *
-     * @param colour the border colour
+     * @param color the border color
      */
-    private void setBorderColor(Color colour)
+    private void setBorderColor(Color color)
     {
-        this.borderColour = colour.getRGB();
+        this.borderColor = color.getRGB();
     }
 
     /**
@@ -279,6 +308,11 @@ public class Image extends Component
     public void setBorderThickness(int thickness)
     {
         this.borderThickness = thickness;
+    }
+
+    public void setDrawFull(boolean drawFull)
+    {
+        this.drawFull = drawFull;
     }
 
     /**
@@ -373,7 +407,10 @@ public class Image extends Component
             {
                 try
                 {
-                    BufferedImage bufferedImage = ImageIO.read(new URL(url));
+                    URL url = new URL(this.url);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                    BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
                     image.imageWidth = bufferedImage.getWidth();
                     image.imageHeight = bufferedImage.getHeight();
                     texture = new DynamicTexture(bufferedImage);

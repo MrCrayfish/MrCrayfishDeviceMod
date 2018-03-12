@@ -1,11 +1,10 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.entity.EntitySeat;
-import com.mrcrayfish.device.util.Colorable;
+import com.mrcrayfish.device.util.IColored;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,7 +15,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityOfficeChair extends TileEntitySync implements Colorable
+public class TileEntityOfficeChair extends TileEntitySync implements IColored
 {
     private EnumDyeColor color = EnumDyeColor.RED;
 
