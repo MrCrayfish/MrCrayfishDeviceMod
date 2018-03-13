@@ -37,7 +37,7 @@ public class Text extends Component
         {
 			for(int i = 0; i < lines.size(); i++)
 			{
-				Laptop.fontRenderer.drawString(lines.get(i), xPosition, yPosition + (i * 10), textColor, shadow);
+				Laptop.fontRenderer.drawString(lines.get(i), x, y + (i * 10), textColor, shadow);
 			}
         }
 	}

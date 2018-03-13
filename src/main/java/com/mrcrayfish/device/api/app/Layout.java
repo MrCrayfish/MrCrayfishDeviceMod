@@ -124,7 +124,7 @@ public class Layout extends Component
 	public void init(Layout layout) {}
 
 	@Override
-	protected void handleOnLoad()
+	public void handleOnLoad()
 	{
 		if(!initialized)
 		{
@@ -167,9 +167,6 @@ public class Layout extends Component
 		if(!this.visible)
 			return;
 
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GLHelper.scissor(x, y, width, height);
-
 		if(background != null)
 		{
 			background.render(laptop, mc, x, y, width, height, mouseX, mouseY, windowActive);
@@ -179,11 +176,10 @@ public class Layout extends Component
 		for(Component c : components)
 		{
 			GlStateManager.disableDepth();
-			GLHelper.scissor(x, y, width, height);
-			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
+			GLHelper.pushScissor(x, y, width, height);
+			c.render(laptop, mc, x + c.left, y + c.top, mouseX, mouseY, windowActive, partialTicks);
+			GLHelper.popScissor();
 		}
-
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
 	@Override

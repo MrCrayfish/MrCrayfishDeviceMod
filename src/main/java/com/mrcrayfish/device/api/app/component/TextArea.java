@@ -112,8 +112,7 @@ public class TextArea extends Component
 				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColor);
 			}
 
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			GLHelper.scissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
+			GLHelper.pushScissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
 
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
@@ -144,7 +143,7 @@ public class TextArea extends Component
 				}
 			}
 
-			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
+			GLHelper.pushScissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
 
 			if(editable && isFocused)
 			{
@@ -165,7 +164,8 @@ public class TextArea extends Component
 				}
 			}
 
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GLHelper.popScissor();
+			GLHelper.popScissor();
 
 			if(scrollBarVisible)
 			{

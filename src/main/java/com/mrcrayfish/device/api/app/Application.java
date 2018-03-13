@@ -1,11 +1,13 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
+import java.lang.*;
 
 /**
  * The abstract base class for creating applications.
@@ -121,7 +124,18 @@ public abstract class Application extends Wrappable
     @Override
     public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
     {
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GLHelper.pushScissor(x, y, width, height);
         currentLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+        GLHelper.popScissor();
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+        if(!GLHelper.isScissorStackEmpty())
+        {
+            MrCrayfishDeviceMod.getLogger().error("ERROR: A component is not popping it's scissor!");
+        }
+        GLHelper.clearScissorStack();
+
         currentLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
