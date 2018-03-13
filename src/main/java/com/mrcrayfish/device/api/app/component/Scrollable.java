@@ -6,12 +6,18 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.util.math.MathHelper;
+
+import java.awt.*;
 
 /**
  * Author: MrCrayfish
  */
 public class Scrollable extends Component
 {
+    protected int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
+
     private Layout layout;
     private int width;
     private int height;
@@ -69,6 +75,15 @@ public class Scrollable extends Component
     protected void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
     {
         this.layout.renderOverlay(laptop, mc, mouseX, mouseY - scroll, windowActive);
+        if(layout.height > height)
+        {
+            int visibleScrollBarHeight = height;
+            int scrollBarHeight = Math.max(20, (int) (height / (float) layout.height * (float) visibleScrollBarHeight));
+            float scrollPercentage = MathHelper.clamp(scroll / (float) (layout.height - height), 0.0F, 1.0F);
+            int scrollBarY = (int) ((visibleScrollBarHeight - scrollBarHeight) * scrollPercentage);
+            int scrollY = yPosition + scrollBarY;
+            Gui.drawRect(xPosition + width - 5, scrollY, xPosition + width - 2, scrollY + scrollBarHeight, placeholderColor);
+        }
     }
 
     @Override
