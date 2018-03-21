@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app.listener;
 
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.interfaces.IListener;
 
 /**
  * The release listener interface. Used for handling releasing 
@@ -8,7 +9,7 @@ import com.mrcrayfish.device.api.app.Component;
  * 
  * @author MrCrayfish
  */
-public interface ReleaseListener 
+public interface ReleaseListener extends IListener
 {
 	/**
 	 * Called when a click on a component is released

@@ -1,12 +1,14 @@
 package com.mrcrayfish.device.api.app.listener;
 
+import com.mrcrayfish.device.api.app.interfaces.IListener;
+
 /**
  * The click listener interface. Used for handling clicks
  * on components.
  * 
  * @author MrCrayfish
  */
-public interface ClickListener 
+public interface ClickListener extends IListener
 {
 	/**
 	 * Called when component is clicked
