@@ -55,12 +55,14 @@ public class Scrollable extends Component
         this.height = visibleHeight;
     }
 
-    private void setText(Text text)
+    public void setText(Text text)
     {
         text.left = 0;
         text.top = 0;
         this.layout = new Layout(text.width, text.lines.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + (text.lines.size() - 1));
         this.layout.addComponent(text);
+        this.width = layout.width;
+        this.scroll = 0;
     }
 
     @Override
