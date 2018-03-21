@@ -1,0 +1,8 @@
+{
+    "name": "GitWeb",
+    "author": "MrCrayfish, MinecraftDoodler",
+    "description": "It's a web browser of some sort!",
+    "version": "0.0.2",
+    "icon": "cdm:textures/app/icon/gitweb.png",
+    "screenshots": []
+}

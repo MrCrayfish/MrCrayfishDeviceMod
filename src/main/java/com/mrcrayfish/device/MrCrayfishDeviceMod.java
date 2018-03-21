@@ -21,6 +21,7 @@ import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
 import com.mrcrayfish.device.programs.example.ApplicationExample;
 import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
+import com.mrcrayfish.device.programs.gitweb.ApplicationGitWeb;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationBank;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
@@ -107,6 +108,7 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "settings"), ApplicationSettings.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "bank"), ApplicationBank.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "file_browser"), ApplicationFileBrowser.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "gitweb"), ApplicationGitWeb.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "note_stash"), ApplicationNoteStash.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
@@ -128,7 +130,7 @@ public class MrCrayfishDeviceMod
 		TaskManager.registerTask(TaskAdd.class);
 		TaskManager.registerTask(TaskRemove.class);
 
-		//File Browser
+		//File browser
 		TaskManager.registerTask(TaskSendAction.class);
 		TaskManager.registerTask(TaskSetupFileBrowser.class);
 		TaskManager.registerTask(TaskGetFiles.class);
