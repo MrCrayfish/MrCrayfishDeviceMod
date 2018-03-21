@@ -120,7 +120,7 @@ public class Scrollable extends Component
     @Override
     protected void handleMouseScroll(int mouseX, int mouseY, boolean direction)
     {
-        if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition, yPosition, width, height))
+        if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition, yPosition, width, height) && layout.height > height)
         {
             scroll += direction ? -3 : 3;
             if(scroll + height > layout.height)
