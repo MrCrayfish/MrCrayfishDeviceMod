@@ -121,6 +121,11 @@ public enum Alphabet implements IIcon
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
     }
 
+    @Override
+    public int getOrdinal() {
+        return ordinal();
+    }
+
     public void draw(Minecraft mc, int x, int y, int color)
     {
         Color temp = new Color(color);

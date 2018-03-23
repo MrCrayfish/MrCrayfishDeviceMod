@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.core.client;
 
-import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.toasts.GuiToast;
@@ -17,7 +17,7 @@ public class ClientNotification implements IToast
 {
     private static final ResourceLocation TEXTURE_TOASTS = new ResourceLocation("cdm:textures/gui/toast.png");
 
-    private Icons icon;
+    private IIcon icon;
     private String title;
     private String subTitle;
 
@@ -48,7 +48,15 @@ public class ClientNotification implements IToast
     public static ClientNotification loadFromTag(NBTTagCompound tag)
     {
         ClientNotification notification = new ClientNotification();
-        notification.icon = Icons.values()[tag.getInteger("icon")];
+
+        int ordinal = tag.getCompoundTag("icon").getInteger("ordinal");
+        String className = tag.getCompoundTag("icon").getString("className");
+        try {
+            notification.icon = (IIcon)Class.forName(className).getEnumConstants()[ordinal];
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         notification.title = tag.getString("title");
         if(tag.hasKey("subTitle", Constants.NBT.TAG_STRING))
         {

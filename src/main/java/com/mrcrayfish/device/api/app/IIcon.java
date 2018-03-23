@@ -19,6 +19,8 @@ public interface IIcon
 
     int getV();
 
+    int getOrdinal();
+
     default void draw(Minecraft mc, int x, int y)
 	{
 		GlStateManager.color(1.0F, 1.0F, 1.0F);

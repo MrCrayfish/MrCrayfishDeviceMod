@@ -190,4 +190,9 @@ public enum Icons implements IIcon
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
     }
+
+    @Override
+    public int getOrdinal(){
+	    return ordinal();
+    }
 }
