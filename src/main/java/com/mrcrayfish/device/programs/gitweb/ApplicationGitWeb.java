@@ -116,31 +116,28 @@ public class ApplicationGitWeb extends Application
     }
 
     //Attempt to load 'GitWeb' link.
-    void loadLink(String address, Boolean masked)
-    {
-        if(address.contains("."))
-        {
-            if(!masked)
-            {
-                textFieldAddress.setText(address);
-            }
-            textFieldAddress.setFocused(false);
-            String[] urlA = address.split("\\.", -1);
-            if(!address.contains("/"))
-            {
-                this.makeOnlineRequest("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + urlA[1] + "/" + urlA[0]);
-            }
-            else if(address.contains("/"))
-            {
-                String[] urlB = urlA[1].split("/", -1);
-                this.makeOnlineRequest("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + urlB[0] + "/" + urlA[0] + "-sub/" + urlB[1]);
-            }
-        }
-        else
-        {
-            this.setContent("That address doesn't look right");
-        }
-    }
+   	void loadLink(String address, Boolean masked) {
+		if(address.contains(".")) {
+			if(!masked) {
+			bar.setText(address);
+			}
+			bar.setFocused(false);
+			String[] urlA = address.split("\\.", -1);
+				if(!address.contains("/")) {
+					OnlineRe("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + urlA[1] + "/" + urlA[0] + "/index");
+				}else if(address.contains("/")) {
+					String[] urlB = urlA[1].split("/", -1);
+
+					String subAddressBuilder = "";
+					for (int i = 1; i < urlB.length; i++){
+						subAddressBuilder = subAddressBuilder + "/" + urlB[i];
+					}
+					OnlineRe("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + urlB[0] + "/" + urlA[0] + subAddressBuilder + "/index");
+				}
+				}else {
+				siteView.setText("That address doesn't look right");
+		}
+	}
 
     //Makes online Request with redirects and other stuff!
     void makeOnlineRequest(String URL)
