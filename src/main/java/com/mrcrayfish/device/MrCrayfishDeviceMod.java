@@ -42,13 +42,15 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, acceptedMinecraftVersions = Reference.WORKING_MC_VERSION)
+import static com.mrcrayfish.device.Reference.*;
+
+@Mod(modid = MOD_ID, name = NAME, version = VERSION, acceptedMinecraftVersions = WORKING_MC_VERSION)
 public class MrCrayfishDeviceMod 
 {
-	@Instance(Reference.MOD_ID)
+	@Instance(MOD_ID)
 	public static MrCrayfishDeviceMod instance;
 	
-	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
+	@SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = COMMON_PROXY_CLASS)
 	public static CommonProxy proxy;
 	
 	public static final CreativeTabs TAB_DEVICE = new DeviceTab("cdmTabDevice");
