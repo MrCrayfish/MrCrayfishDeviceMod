@@ -82,15 +82,17 @@ public class Text extends Component
 	{
 		if(this.wordListener != null && lines.size() > 0)
 		{
-			int lineY = (mouseY - yPosition) / 10;
-			int cursorX = mouseX - xPosition;
-			String line = lines.get(lineY);
-			int index = Laptop.fontRenderer.trimStringToWidth(line, cursorX).length();
-			String clickedWord = getWord(line, index);
-			System.out.println(clickedWord);
-			if(clickedWord != null)
+			int lineIndex = (mouseY - yPosition) / 10;
+			if(lineIndex < lines.size())
 			{
-				this.wordListener.onWordClicked(clickedWord, mouseButton);
+				int cursorX = mouseX - xPosition;
+				String line = lines.get(lineIndex);
+				int index = Laptop.fontRenderer.trimStringToWidth(line, cursorX).length();
+				String clickedWord = getWord(line, index);
+				if(clickedWord != null)
+				{
+					this.wordListener.onWordClicked(clickedWord, mouseButton);
+				}
 			}
 		}
 	}
