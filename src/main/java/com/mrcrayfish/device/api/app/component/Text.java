@@ -2,7 +2,9 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.List;
@@ -12,8 +14,11 @@ public class Text extends Component
 	protected List<String> lines;
 	protected int width;
 	protected boolean shadow = false;
+	protected boolean hovered = false;
 	
 	protected int textColor = Color.WHITE.getRGB();
+
+	private WordListener wordListener = null;
 	
 	/**
 	 * Default text constructor
@@ -70,5 +75,59 @@ public class Text extends Component
 	public void setShadow(boolean shadow)
 	{
 		this.shadow = shadow;
+	}
+
+	@Override
+	protected void handleMouseClick(int mouseX, int mouseY, int mouseButton)
+	{
+		if(this.wordListener != null && lines.size() > 0)
+		{
+			int lineY = (mouseY - yPosition) / 10;
+			int cursorX = mouseX - xPosition;
+			String line = lines.get(lineY);
+			int index = Laptop.fontRenderer.trimStringToWidth(line, cursorX).length();
+			String clickedWord = getWord(line, index);
+			System.out.println(clickedWord);
+			if(clickedWord != null)
+			{
+				this.wordListener.onWordClicked(clickedWord, mouseButton);
+			}
+		}
+	}
+
+	private String getWord(String line, int index)
+	{
+		if(index >= line.length() || line.charAt(index) == ' ')
+			return null;
+
+		int startIndex = index;
+		while(startIndex > 0 && line.charAt(startIndex - 1) != ' ') --startIndex;
+
+		int endIndex = index;
+		while(endIndex + 1 < line.length() && line.charAt(endIndex + 1) != ' ') ++endIndex;
+
+		endIndex = Math.min(endIndex + 1, line.length());
+
+		return TextFormatting.getTextWithoutFormattingCodes(line.substring(startIndex, endIndex));
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return lines.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + lines.size() - 1;
+	}
+
+	public void setWordListener(WordListener wordListener)
+	{
+		this.wordListener = wordListener;
+	}
+
+	public interface WordListener
+	{
+		void onWordClicked(String word, int mouseButton);
 	}
 }
