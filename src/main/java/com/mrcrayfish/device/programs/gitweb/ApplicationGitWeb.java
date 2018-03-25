@@ -4,18 +4,20 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog.Confirmation;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.util.regex.Pattern;
 
 /**
  * The Device Mod implementations of an internet layoutBrowser. Originally created by MinecraftDoodler.
@@ -23,6 +25,8 @@ import java.awt.*;
  */
 public class ApplicationGitWeb extends Application
 {
+    public static final Pattern PATTERN_LINK = Pattern.compile("[a-zA-Z\\-]+\\.[a-zA-Z]+");
+
     private Layout layoutBrowser;
     private Layout layoutPref;
 
@@ -31,7 +35,8 @@ public class ApplicationGitWeb extends Application
     private Button btnSettings;
 
     private TextField textFieldAddress;
-    private Scrollable scrollable;
+    private Spinner spinnerLoading;
+    private TextLayout scrollable;
 
     @Override
     public void init()
@@ -49,6 +54,10 @@ public class ApplicationGitWeb extends Application
         textFieldAddress.setPlaceholder("Enter Address");
         layoutBrowser.addComponent(textFieldAddress);
 
+        spinnerLoading = new Spinner(291, 4);
+        spinnerLoading.setVisible(false);
+        layoutBrowser.addComponent(spinnerLoading);
+
         btnSearch = new Button(308, 2, 16, 16, Icons.ARROW_RIGHT);
         btnSearch.setToolTip("Refresh", "Loads the entered address.");
         btnSearch.setClickListener((mouseX, mouseY, mouseButton) -> this.loadPasteBin(this.getAddress(), false));
@@ -64,10 +73,17 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
-        Text textAreaSiteView = new Text("", 0, 0, 352); //100
+        Text textAreaSiteView = new Text("", 0, 0, 352);
+        textAreaSiteView.setWordListener((word, mouseButton) ->
+        {
+            if(mouseButton == 0 && PATTERN_LINK.matcher(word).matches())
+            {
+                this.loadLink(word, false);
+            }
+        });
         //textAreaSiteView.setPlaceholder("If you can see this page it either means you entered an address with no text or your not connected to the internet.\n\n  Gitweb can be accessed via an address like pickaxes.info, the word after the dot denotes the folder within the root directory and the first word identifies the filename of the site within said folder. \n \n  You can also access pastebin files by entering pastebin:PASTE_ID, this feature was added just to add an option for users to experiement with ideas and test the markup. \n \n  Remember in order to function correctly GitWeb and Minecraft itself need access to the internet.");
 
-        scrollable = new Scrollable(5, 25, textAreaSiteView, 135);
+        scrollable = new TextLayout(5, 25, 135, textAreaSiteView);
         layoutBrowser.addComponent(scrollable);
 
         this.loadLink("welcome.official", false);
@@ -129,7 +145,10 @@ public class ApplicationGitWeb extends Application
     //Makes online Request with redirects and other stuff!
     void makeOnlineRequest(String URL)
     {
+        spinnerLoading.setVisible(true);
         textFieldAddress.setFocused(false);
+        textFieldAddress.setEditable(false);
+        btnSearch.setEnabled(false);
         OnlineRequest.getInstance().make(URL, (success, response) ->
         {
             //Redirects to another GitWeb site!
@@ -139,7 +158,7 @@ public class ApplicationGitWeb extends Application
                 String reD = response;
                 reD = reD.substring(reD.indexOf(">") + 1);
                 reD = reD.substring(0, reD.indexOf("<"));
-                loadLink(reD, false);
+                this.loadLink(reD, false);
                 return;
             }
             //Masked redirect to another site! (Keeps redirecting sites address in textFieldAddress)
@@ -148,11 +167,13 @@ public class ApplicationGitWeb extends Application
                 String reD = response;
                 reD = reD.substring(reD.indexOf(">") + 1);
                 reD = reD.substring(0, reD.indexOf("<"));
-                loadLink(reD, true);
+                this.loadLink(reD, true);
                 return;
             }
             this.setContent(response);
-            textFieldAddress.setFocused(false);
+            spinnerLoading.setVisible(false);
+            textFieldAddress.setEditable(true);
+            btnSearch.setEnabled(true);
         });
     }
 
@@ -174,7 +195,15 @@ public class ApplicationGitWeb extends Application
 
     private void setContent(String text)
     {
-        scrollable.setText(new Text(text, 0, 0, 355));
+        Text textContent = new Text(text, 0, 0, 355);
+        textContent.setWordListener((word, mouseButton) ->
+        {
+            if(mouseButton == 0 && PATTERN_LINK.matcher(word).matches())
+            {
+                this.loadLink(word, false);
+            }
+        });
+        scrollable.setText(textContent);
     }
 
     @Override
