@@ -123,14 +123,12 @@ public class ApplicationGitWeb extends Application
      */
     private void loadLink(String address, Boolean masked)
     {
-        System.out.println("Loading " + address);
         Matcher matcher = PATTERN_LINK.matcher(address);
         if(!matcher.matches())
         {
             this.setContent("That address doesn't look right");
             return;
         }
-        System.out.println("Matched!");
 
         String domain = matcher.group("domain");
         String extension = matcher.group("extension");
