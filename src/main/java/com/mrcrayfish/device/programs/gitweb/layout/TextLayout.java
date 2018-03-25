@@ -19,6 +19,7 @@ public class TextLayout extends ScrollableLayout
         this.components.clear();
         this.width = text.getWidth();
         this.height = text.getHeight();
+        this.scroll = 0;
         text.left = 0;
         text.top = 0;
         super.addComponent(text);

@@ -17,7 +17,7 @@ public class ScrollableLayout extends Layout
 {
     protected int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
 
-    private int scroll;
+    protected int scroll;
     private int visibleHeight;
 
     public ScrollableLayout(int width, int height, int visibleHeight)
