@@ -304,7 +304,7 @@ I	 * @param top how many pixels from the top
 		handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 	
-	protected boolean isInside(int mouseX, int mouseY)
+	public boolean isInside(int mouseX, int mouseY)
 	{
 		return mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 	}
