@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,6 +37,7 @@ public class LayoutAppPage extends Layout
     private Image imageBanner;
     private Image imageIcon;
     private Label labelTitle;
+    private Label labelAuthor;
     private Label labelVersion;
     private Text textDescription;
 
@@ -65,8 +68,23 @@ public class LayoutAppPage extends Layout
         labelTitle.setScale(2);
         this.addComponent(labelTitle);
 
-        labelVersion = new Label("v" + info.getVersion() + " - " + info.getAuthor(), 38, 50);
+        String vstr = "v" + info.getVersion();
+        this.labelVersion = new Label(vstr, this.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(vstr), 2);
+
+        if(info.hasSingleAuthor())
+            labelAuthor = new Label("By: " + info.getAuthor(), 38, 50);
+        else{
+            StringBuilder sb = new StringBuilder();
+            List<String> names = Arrays.asList(info.getAuthors());
+            for(String a : names){
+                sb.append(a);
+                if(names.indexOf(a) != info.getAuthors().length - 1)
+                    sb.append(", ");
+            }
+            labelAuthor = new Label("By: " + sb.toString(), labelTitle.left, 50);
+        }
         this.addComponent(labelVersion);
+        this.addComponent(labelAuthor);
 
         textDescription = new Text(info.getDescription(), 130, 70, 115);
         this.addComponent(textDescription);
