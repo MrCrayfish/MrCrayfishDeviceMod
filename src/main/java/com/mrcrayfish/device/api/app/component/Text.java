@@ -23,12 +23,20 @@ public class Text extends Component
 	 * @param top how many pixels from the top
 	 * @param width the max width
 	 */
-	public Text(String text, int left, int top, int width) 
+	public Text(String text, int left, int top, int width, int color)
 	{
 		super(left, top);
 		this.width = width;
 		this.setText(text);
+		this.textColor = color;
 	}
+
+    public Text(String text, int left, int top, int width)
+    {
+        super(left, top);
+        this.width = width;
+        this.setText(text);
+    }
 
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks) 

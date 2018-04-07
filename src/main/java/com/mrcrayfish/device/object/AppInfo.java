@@ -25,6 +25,7 @@ public class AppInfo
 	private String name;
 	private String author;
 	private String[] authors;
+	private String[] contributors;
 	private String description;
 	private String version;
 	private String icon;
@@ -77,6 +78,8 @@ public class AppInfo
 	}
 
 	public String[] getAuthors(){ return authors; }
+
+	public String[] getContributors(){ return contributors; }
 	
 	public String getDescription() 
 	{
@@ -185,6 +188,9 @@ public class AppInfo
 				else if(json.getAsJsonObject().has("authors") && json.getAsJsonObject().get("authors").isJsonArray()){
 					info.authors = context.deserialize(json.getAsJsonObject().get("authors"), new TypeToken<String[]>(){}.getType());
 				}
+				if(json.getAsJsonObject().has("contributors") && json.getAsJsonObject().get("contributors").isJsonArray()){
+				    info.contributors = context.deserialize(json.getAsJsonObject().get("contributors"), new TypeToken<String[]>(){}.getType());
+                }
 				info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
 				info.version = json.getAsJsonObject().get("version").getAsString();
 
