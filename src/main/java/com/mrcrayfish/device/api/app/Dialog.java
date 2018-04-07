@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -192,7 +193,8 @@ public abstract class Dialog extends Wrappable
 
 	public static class Message extends Dialog
 	{
-		private String messageText = "";
+		private String messageText;
+		private int messageTextColor = Color.DARK_GRAY.getRGB();
 		
 		private ClickListener positiveListener;
 		private Button buttonPositive;
@@ -200,6 +202,11 @@ public abstract class Dialog extends Wrappable
 		public Message(String messageText)
 		{
 			this.messageText = messageText;
+		}
+
+		public Message(String messageText, int messageTextColor){
+            this.messageText = messageText;
+            this.messageTextColor = messageTextColor;
 		}
 		
 		@Override
@@ -221,7 +228,7 @@ public abstract class Dialog extends Wrappable
 				}
 			});
 			
-			Text message = new Text(messageText, 5, 5, getWidth() - 10);
+			Text message = new Text(messageText, 5, 5, getWidth() - 10, this.messageTextColor);
 			this.addComponent(message);
 			
 			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
@@ -701,16 +708,17 @@ public abstract class Dialog extends Wrappable
 								dialog.setPositiveText("Override");
 								dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
 								{
-									browser.removeFile(file.getName());
-									browser.addFile(file);
-									dialog.close();
-
-									//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
-									if(SaveFile.this.responseHandler != null)
+									browser.addFile(file, true, (response1, success1) ->
 									{
-										SaveFile.this.responseHandler.onResponse(true, file);
-									}
-									SaveFile.this.close();
+                                        dialog.close();
+
+                                        //TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
+                                        if(responseHandler != null)
+                                        {
+                                            responseHandler.onResponse(success1, file);
+                                        }
+                                        SaveFile.this.close();
+                                    });
 								});
 								app.openDialog(dialog);
 							}

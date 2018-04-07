@@ -2,6 +2,7 @@ package com.mrcrayfish.device.programs.system.layout;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
@@ -89,7 +90,7 @@ public class LayoutSearchApps extends StandardLayout
 
     private void openApplication(AppInfo info)
     {
-        Layout layout = new LayoutAppPage(null, info);
+        LayoutAppPage layout = new LayoutAppPage(null, info);
         app.setCurrentLayout(layout);
         Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
         btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
@@ -97,5 +98,22 @@ public class LayoutSearchApps extends StandardLayout
             app.setCurrentLayout(this);
         });
         layout.addComponent(btnPrevious);
+        if(info.getContributors() != null){
+            String str = "Contributors";
+            int strw = Minecraft.getMinecraft().fontRenderer.getStringWidth(str);
+            Button buttonContributors = new Button(this.width - strw - 5, 23, strw + 8, 12, str);
+            buttonContributors.setPadding(5);
+            buttonContributors.setClickListener((x, y, z)->{
+                StringBuilder sb = new StringBuilder();
+                for(String s : info.getContributors()){
+                    sb.append(s);
+                    sb.append("\n");
+                }
+                Dialog.Message dialog = new Dialog.Message(sb.toString());
+                dialog.setTitle("Contributors");
+                this.app.openDialog(dialog);
+            });
+            layout.addComponent(buttonContributors);
+        }
     }
 }

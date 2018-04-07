@@ -1,0 +1,109 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "0": "cdm:items/gpu_red_top",
+        "1": "cdm:items/gpu_red_bottom"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ 0, 2, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.35, 0.35, 0.35 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 45, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 315, 0 ],
+            "translation": [ 0, 5, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "curcuit_board_1",
+            "from": [ 0.50, 0.00, 2.20 ], 
+            "to": [ 15.00, 1.00, 13.70 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.50, 2.00, 15.00, 2.50 ] },
+                "east": { "texture": "#0", "uv": [ 0.50, 2.00, 1.00, 13.50 ] },
+                "south": { "texture": "#0", "uv": [ 0.50, 13.00, 15.00, 13.50 ] },
+                "west": { "texture": "#0", "uv": [ 0.50, 2.00, 1.00, 13.50 ], "rotation": 90 },
+                "up": { "texture": "#0", "uv": [ 0.50, 2.00, 15.00, 13.50 ] },
+                "down": { "texture": "#1", "uv": [ 0.50, 2.00, 15.00, 13.50 ] }
+            }
+        },
+        {
+            "name": "curcuit_board_2",
+            "from": [ 15.00, 0.00, 11.70 ], 
+            "to": [ 15.50, 1.00, 13.70 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 15.00, 12.00, 15.50, 13.00 ] },
+                "east": { "texture": "#0", "uv": [ 15.00, 11.50, 15.50, 13.50 ], "rotation": 90 },
+                "south": { "texture": "#0", "uv": [ 15.00, 12.00, 15.50, 13.00 ] },
+                "up": { "texture": "#0", "uv": [ 15.00, 11.50, 15.50, 13.50 ] },
+                "down": { "texture": "#0", "uv": [ 15.00, 12.00, 15.50, 13.50 ] }
+            }
+        },
+        {
+            "name": "curcuit_board_3",
+            "from": [ 15.00, 0.00, 2.20 ], 
+            "to": [ 15.50, 1.00, 8.20 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 15.00, 2.00, 15.50, 3.00 ] },
+                "east": { "texture": "#0", "uv": [ 15.00, 2.00, 15.50, 8.00 ], "rotation": 90 },
+                "south": { "texture": "#0", "uv": [ 15.00, 2.00, 15.50, 3.00 ] },
+                "up": { "texture": "#0", "uv": [ 15.00, 2.00, 15.50, 8.00 ] },
+                "down": { "texture": "#0", "uv": [ 15.00, 2.00, 15.50, 8.00 ] }
+            }
+        },
+        {
+            "name": "curcuit_board_4",
+            "from": [ 15.00, 0.00, 9.20 ], 
+            "to": [ 15.50, 1.00, 10.70 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 15.00, 9.00, 15.50, 10.00 ] },
+                "east": { "texture": "#0", "uv": [ 15.00, 9.00, 15.50, 10.50 ], "rotation": 90 },
+                "south": { "texture": "#0", "uv": [ 15.00, 9.00, 15.50, 10.00 ] },
+                "up": { "texture": "#0", "uv": [ 15.00, 9.00, 15.50, 10.50 ], "rotation": 90 },
+                "down": { "texture": "#0", "uv": [ 15.00, 9.00, 15.50, 10.50 ] }
+            }
+        },
+        {
+            "name": "gpu_1",
+            "from": [ 1.50, 1.00, 3.70 ], 
+            "to": [ 10.50, 1.40, 12.70 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 1.50, 3.50, 10.50, 4.00 ], "rotation": 180 },
+                "east": { "texture": "#0", "uv": [ 10.00, 3.50, 10.50, 12.50 ], "rotation": 90 },
+                "south": { "texture": "#0", "uv": [ 1.50, 12.00, 10.50, 12.40 ] },
+                "west": { "texture": "#0", "uv": [ 1.50, 3.50, 2.00, 12.50 ], "rotation": 270 },
+                "up": { "texture": "#0", "uv": [ 1.50, 3.50, 10.50, 12.50 ] }
+            }
+        },
+        {
+            "name": "gpu_2",
+            "from": [ 2.00, 1.40, 4.20 ], 
+            "to": [ 10.00, 1.60, 12.20 ], 
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 2.00, 4.00, 10.00, 4.50 ], "rotation": 180 },
+                "east": { "texture": "#0", "uv": [ 9.50, 4.00, 10.00, 12.00 ], "rotation": 90 },
+                "south": { "texture": "#0", "uv": [ 2.00, 11.50, 10.00, 12.00 ] },
+                "west": { "texture": "#0", "uv": [ 2.00, 4.00, 2.50, 12.00 ], "rotation": 270 },
+                "up": { "texture": "#0", "uv": [ 2.00, 4.00, 10.00, 12.00 ] }
+            }
+        }
+    ]
+}

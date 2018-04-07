@@ -1,0 +1,34 @@
+{
+    "result": {
+        "item": "cdm:screen"
+    },
+    "pattern": [
+        "RGB",
+        "PPP",
+        "CDC"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "R": {
+            "item": "minecraft:stained_glass_pane",
+            "data": 14
+        },
+        "G": {
+            "item": "minecraft:stained_glass_pane",
+            "data": 13
+        },
+        "B": {
+            "item": "minecraft:stained_glass_pane",
+            "data": 11
+        },
+        "P": {
+            "item": "minecraft:prismarine_crystals"
+        },
+        "C": {
+            "item": "cdm:circuit_board"
+        },
+        "D": {
+            "item": "minecraft:redstone"
+        }
+    }
+}

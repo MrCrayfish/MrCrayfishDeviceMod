@@ -1,0 +1,19 @@
+{
+    "result": {
+        "item": "cdm:circuit_board"
+    },
+    "pattern": [
+        "BBB",
+        "BRB",
+        "BBB"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "B": {
+            "item": "minecraft:red_nether_brick"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        }
+    }
+}
