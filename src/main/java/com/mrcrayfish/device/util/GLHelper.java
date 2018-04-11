@@ -25,11 +25,6 @@ public class GLHelper
             y = Math.max(scissor.y, y);
             width = x + width > scissor.x + scissor.width ? scissor.x + scissor.width - x : width;
             height = y + height > scissor.y + scissor.height ? scissor.y + scissor.height - y : height;
-            if(x < 0 || y < 0 || width < 0 || height < 0)
-            {
-                System.out.println(x + " " + y + " " + width + " " + height);
-                int t = 0;
-            }
         }
 
         Minecraft mc = Minecraft.getMinecraft();
