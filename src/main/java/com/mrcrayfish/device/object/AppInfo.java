@@ -148,12 +148,32 @@ public class AppInfo
 		support = null;
 	}
 
-	private static class Support
+	public static class Support
 	{
 		private String paypal;
 		private String patreon;
 		private String twitter;
 		private String youtube;
+		
+		public String getPaypal()
+		{
+			return paypal;
+		}
+		
+		public String getPatreon()
+		{
+			return patreon;
+		}
+		
+		public String getTwitter()
+		{
+			return twitter;
+		}
+		
+		public String getYoutube()
+		{
+			return youtube;
+		}
 	}
 
 	public static class Deserializer implements JsonDeserializer<AppInfo>
