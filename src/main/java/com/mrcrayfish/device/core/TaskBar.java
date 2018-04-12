@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.network.TrayItemWifi;
 import com.mrcrayfish.device.object.AnalogClock;
@@ -213,11 +214,22 @@ public class TaskBar {
 
 	private Layout createClockLayout()
 	{
-		Layout layout = new Layout.Context(150, 100);
+		Layout layout = new Layout.Context(115, 115);
 		layout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
 			Gui.drawRect(x, y, x + width, y + height, new Color(0.65F, 0.65F, 0.65F, 0.9F).getRGB());
 		});
-		layout.addComponent(new AnalogClock(0, 0, 50, 50));
+		layout.addComponent(new AnalogClock(layout.width / 2 - 100/2, 12 + (layout.height - 12) / 2 - 100/2, 100, 100));
+
+		Label label = new Label("Day -1", layout.width / 2, 5) {
+			@Override
+			public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
+			{
+				this.setText("Day " + Minecraft.getMinecraft().player.world.getWorldTime() / 24000);
+				super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
+			}
+		};
+		label.setAlignment(2);
+		layout.addComponent(label);
 		return layout;
 	}
 }
