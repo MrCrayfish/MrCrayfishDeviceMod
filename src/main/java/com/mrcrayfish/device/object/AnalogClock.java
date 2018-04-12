@@ -36,12 +36,6 @@ public class AnalogClock extends Component {
 	}
 
 	@Override
-	protected void handleTick()
-	{
-		super.handleTick();
-	}
-
-	@Override
 	protected void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 	{
 		double length = 40;
@@ -82,6 +76,18 @@ public class AnalogClock extends Component {
 		GlStateManager.popMatrix();
 	}
 
+	/**
+	 * Draws a hand from the center of the component to the specified x and y positions.
+	 * 
+	 * @param toX
+	 *            The x to render to
+	 * @param toY
+	 *            The y to render to
+	 * @param size
+	 *            The size of the hand
+	 * @param color
+	 *            The color of the hand
+	 */
 	protected void drawHand(double toX, double toY, double size, int color)
 	{
 		toX -= this.xPosition + this.width / 2;
@@ -100,6 +106,18 @@ public class AnalogClock extends Component {
 		GlStateManager.enableTexture2D();
 	}
 
+	/**
+	 * Draws a circle at the specified x and y position.
+	 * 
+	 * @param x
+	 *            The x position to render the circle at
+	 * @param y
+	 *            The y position to render the circle at
+	 * @param radius
+	 *            The radius of the circle
+	 * @param color
+	 *            The color of the circle
+	 */
 	protected void drawCircle(double x, double y, double radius, int color)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
@@ -115,6 +133,18 @@ public class AnalogClock extends Component {
 		GlStateManager.enableTexture2D();
 	}
 
+	/**
+	 * Draws a solid circle at the specified x and y position.
+	 * 
+	 * @param x
+	 *            The x position to render the circle at
+	 * @param y
+	 *            The y position to render the circle at
+	 * @param radius
+	 *            The radius of the circle
+	 * @param color
+	 *            The color of the circle
+	 */
 	protected void drawFilledCircle(double x, double y, double radius, int color)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
@@ -135,6 +165,18 @@ public class AnalogClock extends Component {
 		GlStateManager.enableTexture2D();
 	}
 
+	/**
+	 * Draws a number at the specified angle on the clockface.
+	 * 
+	 * @param number
+	 *            The number to draw
+	 * @param angle
+	 *            The angle of the number
+	 * @param length
+	 *            The distance from the center it should render at
+	 * @param color
+	 *            The color of the number
+	 */
 	protected void drawNumber(int number, double angle, double length, int color)
 	{
 		GlStateManager.pushMatrix();
@@ -145,21 +187,49 @@ public class AnalogClock extends Component {
 		GlStateManager.popMatrix();
 	}
 
-	protected double calculateXPoint(double angle, double length)
+	/**
+	 * Calculates the x point based on the angle of the hand and diameter of the circle.
+	 * 
+	 * @param angle
+	 *            The angle the hand is facing
+	 * @param diameter
+	 *            The diameter of the circle
+	 * @return The x position calculated
+	 */
+	protected double calculateXPoint(double angle, double diameter)
 	{
-		return length * Math.cos(angle);
+		return diameter * Math.cos(angle);
 	}
 
-	protected double calculateYPoint(double angle, double length)
+	/**
+	 * Calculates the y point based on the angle of the hand and diameter of the circle.
+	 * 
+	 * @param angle
+	 *            The angle the hand is facing
+	 * @param diameter
+	 *            The diameter of the circle
+	 * @return The y position calculated
+	 */
+	protected double calculateYPoint(double angle, double diameter)
 	{
-		return length * Math.sin(angle);
+		return diameter * Math.sin(angle);
 	}
 
+	/**
+	 * @param time
+	 *            The minecraft long time
+	 * @return The hours time
+	 */
 	protected double getHours(long time)
 	{
 		return (time / 1000.0 + 7) % 24;
 	}
 
+	/**
+	 * @param time
+	 *            The minecraft long time
+	 * @return The minutes time
+	 */
 	protected double getMinutes(long time)
 	{
 		return ((time % 1000) / 1000.0 * 60);
