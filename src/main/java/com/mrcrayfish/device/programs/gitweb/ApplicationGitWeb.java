@@ -1,16 +1,15 @@
 package com.mrcrayfish.device.programs.gitweb;
 
-import akka.japi.pf.Match;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog.Confirmation;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebView;
 import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.gui.Gui;
@@ -19,7 +18,6 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The Device Mod implementations of an internet layoutBrowser. Originally created by MinecraftDoodler.
@@ -27,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class ApplicationGitWeb extends Application
 {
-    public static final Pattern PATTERN_LINK = Pattern.compile("(?<domain>[a-zA-Z\\-]+)\\.(?<extension>[a-zA-Z]+)(?<directory>(/[a-zA-Z\\-]+)*)(/)?");
+
 
     private Layout layoutBrowser;
     private Layout layoutPref;
@@ -36,6 +34,7 @@ public class ApplicationGitWeb extends Application
     private Button btnHome;
     private Button btnSettings;
 
+    private GitWebView webView;
     private TextField textFieldAddress;
     private Spinner spinnerLoading;
     private TextLayout scrollable;
@@ -75,7 +74,15 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
-        Text textAreaSiteView = new Text("", 0, 0, 352);
+        String data = "#text\n" +
+                      "text=Henlo my dudes, how is it going!\n" +
+                      "#text\n" +
+                      "text=Welcome";
+
+        webView = new GitWebView(5, 25, 355, 135);
+        webView.loadData(data);
+        layoutBrowser.addComponent(webView);
+        /*Text textAreaSiteView = new Text("", 0, 0, 352);
         textAreaSiteView.setWordListener((word, mouseButton) ->
         {
             if(mouseButton == 0 && PATTERN_LINK.matcher(word).matches())
@@ -84,9 +91,9 @@ public class ApplicationGitWeb extends Application
             }
         });
         scrollable = new TextLayout(5, 25, 135, textAreaSiteView);
-        layoutBrowser.addComponent(scrollable);
+        layoutBrowser.addComponent(scrollable);*/
 
-        this.loadLink("welcome.official", false);
+        //this.loadLink("welcome.official", false);
         this.setCurrentLayout(layoutBrowser);
     }
 
@@ -106,7 +113,7 @@ public class ApplicationGitWeb extends Application
         {
             Confirmation pasteBinConfirm = new Confirmation("Pastebins are not moderated by the §aGitWeb§r team. Are you sure you want to continue loading?");
             pasteBinConfirm.setTitle("Load Pastebin!");
-            pasteBinConfirm.setPositiveListener((mouseX1, mouseY1, mouseButton1) -> this.makeOnlineRequest("https://pastebin.com/raw/" + address.replace("paste", "").replace("raw", "").replace("bin", "").replace(":", "") + "/"));
+            pasteBinConfirm.setPositiveListener((mouseX1, mouseY1, mouseButton1) -> this.loadWebsite("https://pastebin.com/raw/" + address.replace("paste", "").replace("raw", "").replace("bin", "").replace(":", "") + "/"));
             pasteBinConfirm.setNegativeListener((mouseX1, mouseY1, mouseButton1) -> this.setContent("This file did not get permission to load!"));
             this.openDialog(pasteBinConfirm);
         }
@@ -123,7 +130,7 @@ public class ApplicationGitWeb extends Application
      */
     private void loadLink(String address, Boolean masked)
     {
-        Matcher matcher = PATTERN_LINK.matcher(address);
+        Matcher matcher = GitWebView.PATTERN_LINK.matcher(address);
         if(!matcher.matches())
         {
             this.setContent("That address doesn't look right");
@@ -142,7 +149,7 @@ public class ApplicationGitWeb extends Application
 
         if(directory == null)
         {
-            this.makeOnlineRequest("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + "/index");
+            this.loadWebsite("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + "/index");
         }
         else
         {
@@ -150,7 +157,7 @@ public class ApplicationGitWeb extends Application
             {
                 directory = directory.substring(0, directory.length() - 1);
             }
-            this.makeOnlineRequest("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + directory + "/index");
+            this.loadWebsite("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + directory + "/index");
         }
     }
 
@@ -158,7 +165,7 @@ public class ApplicationGitWeb extends Application
      *
      * @param URL
      */
-    private void makeOnlineRequest(String URL)
+    private void loadWebsite(String URL)
     {
         spinnerLoading.setVisible(true);
         textFieldAddress.setFocused(false);
@@ -217,7 +224,7 @@ public class ApplicationGitWeb extends Application
      */
     private void setContent(String text)
     {
-        Text textContent = new Text(text, 0, 0, 355);
+        /*Text textContent = new Text(text, 0, 0, 355);
         textContent.setWordListener((word, mouseButton) ->
         {
             if(mouseButton == 0 && PATTERN_LINK.matcher(word).matches())
@@ -225,7 +232,8 @@ public class ApplicationGitWeb extends Application
                 this.loadLink(word, false);
             }
         });
-        scrollable.setText(textContent);
+        scrollable.setText(textContent);*/
+        webView.loadData(text);
     }
 
     @Override

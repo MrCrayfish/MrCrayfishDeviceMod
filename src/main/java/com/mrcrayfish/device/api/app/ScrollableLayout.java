@@ -129,4 +129,10 @@ public class ScrollableLayout extends Layout
         text.top = 0;
         return layout;
     }
+
+    public void resetScroll()
+    {
+        this.scroll = 0;
+        this.updateComponents(xPosition - left, yPosition - top);
+    }
 }
