@@ -56,7 +56,11 @@ public class ApplicationGitWeb extends Application
         textFieldAddress.setPlaceholder("Enter Address");
         textFieldAddress.setKeyListener(c ->
         {
-            System.out.println(c);
+            if(c == '\r')
+            {
+                webFrame.loadWebsite(this.getAddress());
+                return false;
+            }
             return true;
         });
         layoutBrowser.addComponent(textFieldAddress);
