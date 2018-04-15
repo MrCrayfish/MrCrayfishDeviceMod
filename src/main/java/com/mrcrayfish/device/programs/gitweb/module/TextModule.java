@@ -22,31 +22,20 @@ public class TextModule extends Module
     @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
-        String text = data.get("text");
-        text = text.replace("\\n", "\n");
-        List<String> lines = Laptop.fontRenderer.listFormattedStringToWidth(text, width);
-        return lines.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + lines.size() - 1;
+        return make(data, width).getHeight();
     }
 
     @Override
     public void generate(Layout layout, Map<String, String> data, int width)
     {
-        Text text = new Text(data.get("text"), 0, 0, width);
-        layout.addComponent(text);
+        layout.addComponent(make(data, width));
     }
 
-    /*
-
-    #text
-    text=fadfdsfsdfsdfsdsdfdsfsdfsdfsdfsdf
-    #wiki-item
-    title=
-    text=
-    image=
-
-
-
-
-
-     */
+    private Text make(Map<String, String> data, int width)
+    {
+        Text text = new Text(data.get("text"), 0, 0, width);
+        int padding = data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5;
+        text.setPadding(padding);
+        return text;
+    }
 }
