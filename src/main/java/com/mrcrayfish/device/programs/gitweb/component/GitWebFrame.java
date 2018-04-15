@@ -214,6 +214,7 @@ public class GitWebFrame extends Component
             layout.addComponent(moduleLayout);
         }
 
+        layout.handleOnLoad();
         layout.resetScroll();
         updateListeners();
     }
