@@ -20,13 +20,11 @@ import java.awt.*;
 import java.util.regex.Matcher;
 
 /**
- * The Device Mod implementations of an internet layoutBrowser. Originally created by MinecraftDoodler.
+ * The Device Mod implementations of an internet browser. Originally created by MinecraftDoodler.
  * Licensed under GPL 3.0
  */
 public class ApplicationGitWeb extends Application
 {
-
-
     private Layout layoutBrowser;
     private Layout layoutPref;
 
@@ -74,24 +72,9 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
-        String data = "#text\n" +
-                      "text=Henlo my dudes, how is it going!\n" +
-                      "#text\n" +
-                      "text=Welcome";
-
         webView = new GitWebView(5, 25, 355, 135);
-        webView.loadData(data);
+        webView.loadWebsite("welcome.official");
         layoutBrowser.addComponent(webView);
-        /*Text textAreaSiteView = new Text("", 0, 0, 352);
-        textAreaSiteView.setWordListener((word, mouseButton) ->
-        {
-            if(mouseButton == 0 && PATTERN_LINK.matcher(word).matches())
-            {
-                this.loadLink(word, false);
-            }
-        });
-        scrollable = new TextLayout(5, 25, 135, textAreaSiteView);
-        layoutBrowser.addComponent(scrollable);*/
 
         //this.loadLink("welcome.official", false);
         this.setCurrentLayout(layoutBrowser);
@@ -233,7 +216,7 @@ public class ApplicationGitWeb extends Application
             }
         });
         scrollable.setText(textContent);*/
-        webView.loadData(text);
+        webView.loadRaw(text);
     }
 
     @Override

@@ -26,11 +26,14 @@ public class GitWebView extends Component
     {
         MODULES.put("text", new TextModule());
     }
-
+    private ScrollableLayout layout;
     private int width;
     private int height;
-    private ScrollableLayout layout;
-    private String pendingWebsite = null;
+
+    private String pendingWebsite;
+
+    private Callback<String> loadingCallback;
+    private Callback<String> loadedCallback;
 
     public GitWebView(int left, int top, int width, int height)
     {
@@ -56,7 +59,7 @@ public class GitWebView extends Component
         }
     }
 
-    public void loadData(String data)
+    public void loadRaw(String data)
     {
         layout.clear();
         generateLayout(data);
@@ -65,17 +68,11 @@ public class GitWebView extends Component
     public void loadWebsite(String website)
     {
         layout.clear();
-        loadWebsite(website, null);
-    }
-
-    public void loadWebsite(String website, Callback<String> callback)
-    {
-        layout.clear();
 
         Matcher matcher = GitWebView.PATTERN_LINK.matcher(website);
         if(!matcher.matches())
         {
-            this.loadData("That address doesn't look right");
+            this.loadRaw("That address doesn't look right");
             return;
         }
 
@@ -97,15 +94,33 @@ public class GitWebView extends Component
             url = "https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + directory + "/index";
         }
 
+        if(loadingCallback != null)
+        {
+            loadingCallback.execute(website, true);
+        }
+        this.load(url);
+    }
+
+    public void loadUrl(String url)
+    {
+        if(loadingCallback != null)
+        {
+            loadingCallback.execute(url, true);
+        }
+        this.load(url);
+    }
+
+    private void load(String url)
+    {
         OnlineRequest.getInstance().make(url, (success, response) ->
         {
             if(success)
             {
                 generateLayout(response);
             }
-            if(callback != null)
+            if(loadedCallback != null)
             {
-                callback.execute(response, success);
+                loadedCallback.execute(response, success);
             }
         });
     }
@@ -132,14 +147,17 @@ public class GitWebView extends Component
             offset += height + 5;
         }
 
-        ModuleEntry entry = modules.get(modules.size() - 1);
-        Module module = entry.getModule();
-        int height = module.calculateHeight(entry.getData(), width);
-        Layout moduleLayout = new Layout(0, offset, width, height);
-        module.generate(moduleLayout, entry.getData(), width);
-        layout.addComponent(moduleLayout);
-        layout.resetScroll();
+        if(modules.size() > 0)
+        {
+            ModuleEntry entry = modules.get(modules.size() - 1);
+            Module module = entry.getModule();
+            int height = module.calculateHeight(entry.getData(), width);
+            Layout moduleLayout = new Layout(0, offset, width, height);
+            module.generate(moduleLayout, entry.getData(), width);
+            layout.addComponent(moduleLayout);
+        }
 
+        layout.resetScroll();
         updateListeners();
     }
 
@@ -170,6 +188,8 @@ public class GitWebView extends Component
 
     private static List<ModuleEntry> parseData(String websiteData)
     {
+        websiteData = websiteData.replace("\r", "");
+
         List<ModuleEntry> modules = new LinkedList<>();
         String[] lines = websiteData.trim().split("\\n");
 
@@ -252,5 +272,15 @@ public class GitWebView extends Component
             height += entry.getModule().calculateHeight(entry.getData(), width);
         }
         return height;
+    }
+
+    public void setLoadingCallback(Callback<String> loadingCallback)
+    {
+        this.loadingCallback = loadingCallback;
+    }
+
+    public void setLoadedCallback(Callback<String> loadedCallback)
+    {
+        this.loadedCallback = loadedCallback;
     }
 }
