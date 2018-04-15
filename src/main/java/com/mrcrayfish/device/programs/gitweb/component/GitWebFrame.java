@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 /**
  * Author: MrCrayfish
  */
-public class GitWebView extends Component
+public class GitWebFrame extends Component
 {
     public static final Pattern PATTERN_LINK = Pattern.compile("(?<domain>[a-zA-Z\\-]+)\\.(?<extension>[a-zA-Z]+)(?<directory>(/[a-zA-Z\\-]+)*)(/)?");
     private static final Map<String, Module> MODULES = new HashMap<>();
@@ -38,7 +38,7 @@ public class GitWebView extends Component
     private Callback<String> loadingCallback;
     private Callback<String> loadedCallback;
 
-    public GitWebView(int left, int top, int width, int height)
+    public GitWebFrame(int left, int top, int width, int height)
     {
         super(left, top);
         this.width = width;
@@ -94,7 +94,7 @@ public class GitWebView extends Component
 
         layout.clear();
 
-        Matcher matcher = GitWebView.PATTERN_LINK.matcher(website);
+        Matcher matcher = GitWebFrame.PATTERN_LINK.matcher(website);
         if(!matcher.matches())
         {
             this.loadRaw("That address doesn't look right");
