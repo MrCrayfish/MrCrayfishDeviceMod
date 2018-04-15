@@ -10,6 +10,7 @@ import com.mrcrayfish.device.programs.gitweb.module.Module;
 import com.mrcrayfish.device.programs.gitweb.module.ModuleEntry;
 import com.mrcrayfish.device.programs.gitweb.module.TextModule;
 
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -97,7 +98,10 @@ public class GitWebFrame extends Component
         Matcher matcher = GitWebFrame.PATTERN_LINK.matcher(website);
         if(!matcher.matches())
         {
-            this.loadRaw("That address doesn't look right");
+            if(loadedCallback != null)
+            {
+                loadedCallback.execute(null, false);
+            }
             return;
         }
 
@@ -133,6 +137,19 @@ public class GitWebFrame extends Component
         if(!initialized)
         {
             pendingUrl = url;
+            return;
+        }
+
+        try
+        {
+            new URL(url).toURI();
+        }
+        catch(Exception e)
+        {
+            if(loadedCallback != null)
+            {
+                loadedCallback.execute(null, false);
+            }
             return;
         }
 
