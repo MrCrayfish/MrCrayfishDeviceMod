@@ -30,7 +30,10 @@ public class GitWebView extends Component
     private int width;
     private int height;
 
+    private boolean initialized = false;
+    private String currentWebsite;
     private String pendingWebsite;
+    private String pendingUrl;
 
     private Callback<String> loadingCallback;
     private Callback<String> loadedCallback;
@@ -47,6 +50,22 @@ public class GitWebView extends Component
     protected void init(Layout layout)
     {
        layout.addComponent(this.layout);
+    }
+
+    @Override
+    protected void handleOnLoad()
+    {
+        this.initialized = true;
+        if(pendingUrl != null)
+        {
+            this.loadUrl(pendingUrl);
+            pendingUrl = null;
+        }
+        else if(pendingWebsite != null)
+        {
+            this.loadWebsite(pendingWebsite);
+            pendingWebsite = null;
+        }
     }
 
     @Override
@@ -67,6 +86,12 @@ public class GitWebView extends Component
 
     public void loadWebsite(String website)
     {
+        if(!initialized)
+        {
+            pendingWebsite = website;
+            return;
+        }
+
         layout.clear();
 
         Matcher matcher = GitWebView.PATTERN_LINK.matcher(website);
@@ -75,6 +100,8 @@ public class GitWebView extends Component
             this.loadRaw("That address doesn't look right");
             return;
         }
+
+        currentWebsite = website;
 
         String domain = matcher.group("domain");
         String extension = matcher.group("extension");
@@ -103,6 +130,14 @@ public class GitWebView extends Component
 
     public void loadUrl(String url)
     {
+        if(!initialized)
+        {
+            pendingUrl = url;
+            return;
+        }
+
+        currentWebsite = url;
+
         if(loadingCallback != null)
         {
             loadingCallback.execute(url, true);
@@ -123,6 +158,11 @@ public class GitWebView extends Component
                 loadedCallback.execute(response, success);
             }
         });
+    }
+
+    public String getCurrentWebsite()
+    {
+        return currentWebsite;
     }
 
     private void generateLayout(String websiteData)
