@@ -7,15 +7,18 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.TextField;
+import com.mrcrayfish.device.api.app.listener.KeyListener;
+import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.programs.gitweb.component.GitWebView;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.regex.Matcher;
 
@@ -32,7 +35,7 @@ public class ApplicationGitWeb extends Application
     private Button btnHome;
     private Button btnSettings;
 
-    private GitWebView webView;
+    private GitWebFrame webFrame;
     private TextField textFieldAddress;
     private Spinner spinnerLoading;
     private TextLayout scrollable;
@@ -51,6 +54,11 @@ public class ApplicationGitWeb extends Application
 
         textFieldAddress = new TextField(2, 2, 304);
         textFieldAddress.setPlaceholder("Enter Address");
+        textFieldAddress.setKeyListener(c ->
+        {
+            System.out.println(c);
+            return true;
+        });
         layoutBrowser.addComponent(textFieldAddress);
 
         spinnerLoading = new Spinner(291, 4);
@@ -59,12 +67,12 @@ public class ApplicationGitWeb extends Application
 
         btnSearch = new Button(308, 2, 16, 16, Icons.ARROW_RIGHT);
         btnSearch.setToolTip("Refresh", "Loads the entered address.");
-        btnSearch.setClickListener((mouseX, mouseY, mouseButton) -> this.loadPasteBin(this.getAddress(), false));
+        btnSearch.setClickListener((mouseX, mouseY, mouseButton) -> webFrame.loadWebsite(this.getAddress()));
         layoutBrowser.addComponent(btnSearch);
 
         btnHome = new Button(326, 2, 16, 16, Icons.HOME);
         btnHome.setToolTip("Home", "Loads page set in settings.");
-        btnHome.setClickListener((mouseX, mouseY, mouseButton) -> this.loadLink("welcome.official", false));
+        btnHome.setClickListener((mouseX, mouseY, mouseButton) -> webFrame.loadWebsite("welcome.official"));
         layoutBrowser.addComponent(btnHome);
 
         btnSettings = new Button(344, 2, 16, 16, Icons.WRENCH);
@@ -72,151 +80,43 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
-        webView = new GitWebView(5, 25, 355, 135);
-        webView.loadWebsite("welcome.official");
-        layoutBrowser.addComponent(webView);
+        webFrame = new GitWebFrame(5, 25, 355, 135);
+        webFrame.loadWebsite("welcome.official");
+        webFrame.setLoadingCallback((s, success) ->
+        {
+            if(success)
+            {
+                spinnerLoading.setVisible(true);
+                textFieldAddress.setFocused(false);
+                textFieldAddress.setEditable(false);
+                textFieldAddress.setText(s);
+                btnSearch.setEnabled(false);
+            }
+        });
+        webFrame.setLoadedCallback((s, success) ->
+        {
+            if(success)
+            {
+                spinnerLoading.setVisible(false);
+                textFieldAddress.setEditable(true);
+                btnSearch.setEnabled(true);
+            }
+        });
+        layoutBrowser.addComponent(webFrame);
 
         //this.loadLink("welcome.official", false);
         this.setCurrentLayout(layoutBrowser);
-    }
-
-    /**
-     *
-     * @param address
-     * @param masked
-     */
-    private void loadPasteBin(String address, Boolean masked)
-    {
-        textFieldAddress.setFocused(false);
-        if(!masked)
-        {
-            textFieldAddress.setText(address);
-        }
-        if(address.startsWith("pastebin:") || address.startsWith("rawpastebin:") || address.startsWith("rawpaste:"))
-        {
-            Confirmation pasteBinConfirm = new Confirmation("Pastebins are not moderated by the §aGitWeb§r team. Are you sure you want to continue loading?");
-            pasteBinConfirm.setTitle("Load Pastebin!");
-            pasteBinConfirm.setPositiveListener((mouseX1, mouseY1, mouseButton1) -> this.loadWebsite("https://pastebin.com/raw/" + address.replace("paste", "").replace("raw", "").replace("bin", "").replace(":", "") + "/"));
-            pasteBinConfirm.setNegativeListener((mouseX1, mouseY1, mouseButton1) -> this.setContent("This file did not get permission to load!"));
-            this.openDialog(pasteBinConfirm);
-        }
-        else
-        {
-            this.loadLink(address, masked);
-        }
-    }
-
-    /**
-     *
-     * @param address
-     * @param masked
-     */
-    private void loadLink(String address, Boolean masked)
-    {
-        Matcher matcher = GitWebView.PATTERN_LINK.matcher(address);
-        if(!matcher.matches())
-        {
-            this.setContent("That address doesn't look right");
-            return;
-        }
-
-        String domain = matcher.group("domain");
-        String extension = matcher.group("extension");
-        String directory = matcher.group("directory");
-
-        if(!masked)
-        {
-            textFieldAddress.setText(address);
-        }
-        textFieldAddress.setFocused(false);
-
-        if(directory == null)
-        {
-            this.loadWebsite("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + "/index");
-        }
-        else
-        {
-            if(directory.endsWith("/"))
-            {
-                directory = directory.substring(0, directory.length() - 1);
-            }
-            this.loadWebsite("https://raw.githubusercontent.com/MrCrayfish/GitWeb-Sites/master/" + extension + "/" + domain + directory + "/index");
-        }
-    }
-
-    /**
-     *
-     * @param URL
-     */
-    private void loadWebsite(String URL)
-    {
-        spinnerLoading.setVisible(true);
-        textFieldAddress.setFocused(false);
-        textFieldAddress.setEditable(false);
-        btnSearch.setEnabled(false);
-        OnlineRequest.getInstance().make(URL, (success, response) ->
-        {
-            //Redirects to another GitWeb site!
-            //pastebin's can not be redirected to.
-            if(response.startsWith("redirect>"))
-            {
-                String reD = response;
-                reD = reD.substring(reD.indexOf(">") + 1);
-                reD = reD.substring(0, reD.indexOf("<"));
-                this.loadLink(reD, false);
-                return;
-            }
-            //Masked redirect to another site! (Keeps redirecting sites address in textFieldAddress)
-            if(response.startsWith("masked_redirect>"))
-            {
-                String reD = response;
-                reD = reD.substring(reD.indexOf(">") + 1);
-                reD = reD.substring(0, reD.indexOf("<"));
-                this.loadLink(reD, true);
-                return;
-            }
-            this.setContent(response);
-            spinnerLoading.setVisible(false);
-            textFieldAddress.setEditable(true);
-            btnSearch.setEnabled(true);
-        });
     }
 
     @Override
     public void handleKeyTyped(char character, int code)
     {
         super.handleKeyTyped(character, code);
-        if(code == Keyboard.KEY_RETURN)
-        {
-            loadPasteBin(this.getAddress(), false);
-        }
     }
 
-    /**
-     *
-     * @return
-     */
     private String getAddress()
     {
         return textFieldAddress.getText().replace("\\s+", "");
-    }
-
-    /**
-     *
-     * @param text
-     */
-    private void setContent(String text)
-    {
-        /*Text textContent = new Text(text, 0, 0, 355);
-        textContent.setWordListener((word, mouseButton) ->
-        {
-            if(mouseButton == 0 && PATTERN_LINK.matcher(word).matches())
-            {
-                this.loadLink(word, false);
-            }
-        });
-        scrollable.setText(textContent);*/
-        webView.loadRaw(text);
     }
 
     @Override
