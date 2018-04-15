@@ -4,6 +4,7 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
@@ -42,7 +43,12 @@ public class Text extends Component
         {
 			for(int i = 0; i < lines.size(); i++)
 			{
-				Laptop.fontRenderer.drawString(lines.get(i), x, y + (i * 10), textColor, shadow);
+				String text = lines.get(i);
+				while (text != null && text.endsWith("\n"))
+				{
+					text = text.substring(0, text.length() - 1);
+				}
+				Laptop.fontRenderer.drawString(text, x, y + (i * 10), textColor, shadow);
 			}
         }
 	}
@@ -54,6 +60,7 @@ public class Text extends Component
 	 */
 	public void setText(String text)
 	{
+		text = text.replace("\\n", "\n");
 		this.lines = Laptop.fontRenderer.listFormattedStringToWidth(text, width);
 	}
 	

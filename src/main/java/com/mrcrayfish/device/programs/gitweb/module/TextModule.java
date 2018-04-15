@@ -22,7 +22,9 @@ public class TextModule extends Module
     @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
-        List<String> lines = Laptop.fontRenderer.listFormattedStringToWidth(data.get("text"), width);
+        String text = data.get("text");
+        text = text.replace("\\n", "\n");
+        List<String> lines = Laptop.fontRenderer.listFormattedStringToWidth(text, width);
         return lines.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + lines.size() - 1;
     }
 
