@@ -84,27 +84,20 @@ public class ApplicationGitWeb extends Application
         webFrame.loadWebsite("welcome.official");
         webFrame.setLoadingCallback((s, success) ->
         {
-            if(success)
-            {
-                spinnerLoading.setVisible(true);
-                textFieldAddress.setFocused(false);
-                textFieldAddress.setEditable(false);
-                textFieldAddress.setText(s);
-                btnSearch.setEnabled(false);
-            }
+            spinnerLoading.setVisible(true);
+            textFieldAddress.setFocused(false);
+            textFieldAddress.setEditable(false);
+            textFieldAddress.setText(s);
+            btnSearch.setEnabled(false);
         });
         webFrame.setLoadedCallback((s, success) ->
         {
-            if(success)
-            {
-                spinnerLoading.setVisible(false);
-                textFieldAddress.setEditable(true);
-                btnSearch.setEnabled(true);
-            }
+            spinnerLoading.setVisible(false);
+            textFieldAddress.setEditable(true);
+            btnSearch.setEnabled(true);
         });
         layoutBrowser.addComponent(webFrame);
 
-        //this.loadLink("welcome.official", false);
         this.setCurrentLayout(layoutBrowser);
     }
 
