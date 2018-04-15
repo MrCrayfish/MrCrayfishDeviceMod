@@ -152,7 +152,7 @@ public class Text extends Component
 
 	public int getHeight()
 	{
-		return lines.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + lines.size() - 1;
+		return lines.size() * Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + lines.size() - 1 + padding * 2;
 	}
 
 	public void setWordListener(WordListener wordListener)
