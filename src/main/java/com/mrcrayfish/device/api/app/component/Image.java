@@ -410,8 +410,6 @@ public class Image extends Component
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                     BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
-                    System.out.println("Loaded image: " + this.url);
-                    System.out.println(bufferedImage.getWidth() + " " + bufferedImage.getHeight());
                     image.imageWidth = bufferedImage.getWidth();
                     image.imageHeight = bufferedImage.getHeight();
                     texture = new DynamicTexture(bufferedImage);
