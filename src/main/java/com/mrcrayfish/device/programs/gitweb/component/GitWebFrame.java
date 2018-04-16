@@ -54,7 +54,7 @@ public class GitWebFrame extends Component
     }
 
     @Override
-    protected void handleOnLoad()
+    protected void handleLoad()
     {
         this.initialized = true;
         if(pendingUrl != null)

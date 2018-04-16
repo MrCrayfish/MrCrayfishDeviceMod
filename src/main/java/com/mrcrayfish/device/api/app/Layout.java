@@ -6,7 +6,6 @@ import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -124,7 +123,7 @@ public class Layout extends Component
 	public void init(Layout layout) {}
 
 	@Override
-	public void handleOnLoad()
+	public void handleLoad()
 	{
 		if(!initialized)
 		{
@@ -139,7 +138,16 @@ public class Layout extends Component
 
 		for(Component c : components)
 		{
-			c.handleOnLoad();
+			c.handleLoad();
+		}
+	}
+
+	@Override
+	protected void handleUnload()
+	{
+		for(Component c : components)
+		{
+			c.handleUnload();
 		}
 	}
 

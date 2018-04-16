@@ -354,7 +354,7 @@ public class FileBrowser extends Component
     }
 
     @Override
-    public void handleOnLoad()
+    public void handleLoad()
     {
         if(!loadedStructure)
         {

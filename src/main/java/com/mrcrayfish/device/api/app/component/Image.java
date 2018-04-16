@@ -153,12 +153,18 @@ public class Image extends Component
     }
 
     @Override
-    public void handleOnLoad()
+    public void handleLoad()
     {
         if(loader != null)
         {
             loader.setup(this);
         }
+    }
+
+    @Override
+    protected void handleUnload()
+    {
+        this.initialized = false;
     }
 
     @Override

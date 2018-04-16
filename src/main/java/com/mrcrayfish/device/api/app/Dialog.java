@@ -10,7 +10,6 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -70,7 +69,7 @@ public abstract class Dialog extends Wrappable
 		this.width = layout.width;
 		this.height = layout.height;
 		this.pendingLayoutUpdate = true;
-		this.customLayout.handleOnLoad();
+		this.customLayout.handleLoad();
 	}
 
 	@Override

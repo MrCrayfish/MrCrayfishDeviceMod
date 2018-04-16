@@ -66,11 +66,15 @@ public abstract class Application extends Wrappable
      */
     public final void setCurrentLayout(Layout layout)
     {
+        if(currentLayout != null)
+        {
+            currentLayout.handleUnload();
+        }
         this.currentLayout = layout;
         this.width = layout.width;
         this.height = layout.height;
         this.pendingLayoutUpdate = true;
-        this.currentLayout.handleOnLoad();
+        this.currentLayout.handleLoad();
     }
 
 	/**

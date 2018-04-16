@@ -55,9 +55,9 @@ public class SlideShow extends Component
     }
 
     @Override
-    protected void handleOnLoad()
+    protected void handleLoad()
     {
-        image.handleOnLoad();
+        image.handleLoad();
     }
 
     @Override
