@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.app;
 
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
@@ -19,6 +20,7 @@ public class ScrollableLayout extends Layout
 
     protected int scroll;
     private int visibleHeight;
+    private int scrollSpeed = 5;
 
     public ScrollableLayout(int width, int height, int visibleHeight)
     {
@@ -81,7 +83,7 @@ public class ScrollableLayout extends Layout
     {
         if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition, yPosition, width, visibleHeight) && height > visibleHeight)
         {
-            scroll += direction ? -3 : 3;
+            scroll += direction ? -scrollSpeed : scrollSpeed;
             if(scroll + visibleHeight > height)
             {
                 scroll = height - visibleHeight;
@@ -128,6 +130,11 @@ public class ScrollableLayout extends Layout
         text.left = 0;
         text.top = 0;
         return layout;
+    }
+
+    public void setScrollSpeed(int scrollSpeed)
+    {
+        this.scrollSpeed = scrollSpeed;
     }
 
     public void resetScroll()
