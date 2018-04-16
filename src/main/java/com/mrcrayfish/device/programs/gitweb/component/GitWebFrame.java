@@ -82,7 +82,7 @@ public class GitWebFrame extends Component
     public void loadRaw(String data)
     {
         layout.clear();
-        generateLayout(data);
+        generateLayout(data, false);
     }
 
     public void loadWebsite(String website)
@@ -168,7 +168,7 @@ public class GitWebFrame extends Component
         {
             if(success)
             {
-                generateLayout(response);
+                generateLayout(response, true);
             }
             if(loadedCallback != null)
             {
@@ -182,7 +182,7 @@ public class GitWebFrame extends Component
         return currentWebsite;
     }
 
-    private void generateLayout(String websiteData)
+    private void generateLayout(String websiteData, boolean dynamic)
     {
         List<ModuleEntry> modules = parseData(websiteData);
         if(modules == null)
@@ -214,7 +214,11 @@ public class GitWebFrame extends Component
             layout.addComponent(moduleLayout);
         }
 
-        layout.handleOnLoad();
+        if(dynamic || initialized)
+        {
+            layout.handleLoad();
+        }
+
         layout.resetScroll();
         updateListeners();
     }
