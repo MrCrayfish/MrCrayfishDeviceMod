@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.System;
+import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -30,10 +31,12 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
@@ -212,6 +215,8 @@ public class Laptop extends GuiScreen implements System
 			insideContext = GuiHelper.isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
 		}
 
+		Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
+
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
@@ -221,7 +226,7 @@ public class Laptop extends GuiScreen implements System
 				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
 			}
 		}
-		
+
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
@@ -229,6 +234,21 @@ public class Laptop extends GuiScreen implements System
 		{
 			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
 		}
+
+		Image.CACHE.entrySet().removeIf(entry ->
+		{
+			Image.CachedImage cachedImage = entry.getValue();
+			if(cachedImage.isPendingDeletion())
+			{
+				int texture = cachedImage.getTextureId();
+				if(texture != -1)
+				{
+					GL11.glDeleteTextures(texture);
+				}
+				return true;
+			}
+			return false;
+		});
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

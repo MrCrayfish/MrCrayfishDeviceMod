@@ -21,12 +21,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Image extends Component
 {
-    private static final Map<String, CachedImage> CACHE = new ImageCache(10);
+    public static final Map<String, CachedImage> CACHE = new HashMap<>();
 
     private Spinner spinner;
 
@@ -186,6 +187,8 @@ public class Image extends Component
 
             if(image != null && image.textureId != -1)
             {
+                image.restore();
+
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
                 GlStateManager.enableAlpha();
                 GlStateManager.enableBlend();
@@ -193,7 +196,6 @@ public class Image extends Component
 
                 if(hasBorder)
                 {
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
                     if(drawFull)
                     {
                         RenderUtil.drawRectWithFullTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
@@ -225,15 +227,6 @@ public class Image extends Component
                 {
                     drawRect(x, y, x + componentWidth, y + componentHeight, Color.LIGHT_GRAY.getRGB());
                 }
-            }
-        }
-
-        if(image != null)
-        {
-            if(image.delete)
-            {
-                GlStateManager.deleteTexture(image.textureId);
-                image = null;
             }
         }
     }
@@ -417,6 +410,8 @@ public class Image extends Component
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestProperty("User-Agent", "Mozilla/5.0");
                     BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
+                    System.out.println("Loaded image: " + this.url);
+                    System.out.println(bufferedImage.getWidth() + " " + bufferedImage.getHeight());
                     image.imageWidth = bufferedImage.getWidth();
                     image.imageHeight = bufferedImage.getHeight();
                     texture = new DynamicTexture(bufferedImage);
@@ -478,7 +473,7 @@ public class Image extends Component
 
         private ImageCache(final int capacity)
         {
-            super(capacity, 0.75F, true);
+            super(capacity, 1.0F, true);
             this.CAPACITY = capacity;
         }
 
@@ -494,7 +489,7 @@ public class Image extends Component
         }
     }
 
-    private static class CachedImage
+    public static class CachedImage
     {
         private final int textureId;
         private final int width;
@@ -506,6 +501,26 @@ public class Image extends Component
             this.textureId = textureId;
             this.width = width;
             this.height = height;
+        }
+
+        public int getTextureId()
+        {
+            return textureId;
+        }
+
+        public void restore()
+        {
+            delete = false;
+        }
+
+        public void delete()
+        {
+            delete = true;
+        }
+
+        public boolean isPendingDeletion()
+        {
+            return delete;
         }
     }
 }
