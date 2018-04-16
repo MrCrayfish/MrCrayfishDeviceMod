@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.utils.OnlineRequest;
+import com.mrcrayfish.device.programs.gitweb.module.BannerModule;
 import com.mrcrayfish.device.programs.gitweb.module.Module;
 import com.mrcrayfish.device.programs.gitweb.module.ModuleEntry;
 import com.mrcrayfish.device.programs.gitweb.module.TextModule;
@@ -26,6 +27,7 @@ public class GitWebFrame extends Component
     static
     {
         MODULES.put("text", new TextModule());
+        MODULES.put("banner", new BannerModule());
     }
     private ScrollableLayout layout;
     private int width;
