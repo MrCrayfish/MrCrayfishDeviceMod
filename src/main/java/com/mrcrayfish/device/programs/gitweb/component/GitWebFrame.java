@@ -274,7 +274,7 @@ public class GitWebFrame extends Component
             }
             else if(module != null)
             {
-                String[] data = line.split("=", 1);
+                String[] data = line.split("=", 2);
                 if(data.length != 2)
                     return null;
                 moduleData.put(data[0], data[1]);
