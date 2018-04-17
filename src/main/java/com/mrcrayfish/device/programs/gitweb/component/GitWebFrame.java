@@ -47,6 +47,7 @@ public class GitWebFrame extends Component
         this.width = width;
         this.height = height;
         this.layout = new ScrollableLayout(left, top, width, height, height);
+        this.layout.setScrollSpeed(8);
     }
 
     @Override
