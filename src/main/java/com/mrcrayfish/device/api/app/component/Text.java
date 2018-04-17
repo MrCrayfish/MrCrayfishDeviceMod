@@ -13,6 +13,7 @@ import java.util.List;
 
 public class Text extends Component 
 {
+	protected String rawText;
 	protected List<String> lines;
 	protected int width;
 	protected int padding;
@@ -61,6 +62,7 @@ public class Text extends Component
 	 */
 	public void setText(String text)
 	{
+		rawText = text;
 		text = text.replace("\\n", "\n");
 		this.lines = Laptop.fontRenderer.listFormattedStringToWidth(text, width - padding * 2);
 	}
@@ -97,16 +99,7 @@ public class Text extends Component
 
 	private void updateLines()
 	{
-		StringBuilder result = new StringBuilder();
-		for(int i = 0; i < lines.size() - 1; i++)
-		{
-			result.append(lines.get(i)).append("\n");
-		}
-		if(lines.size() > 0)
-		{
-			result.append(lines.get(lines.size() - 1));
-		}
-		this.setText(result.toString());
+		this.setText(rawText);
 	}
 
 	@Override
