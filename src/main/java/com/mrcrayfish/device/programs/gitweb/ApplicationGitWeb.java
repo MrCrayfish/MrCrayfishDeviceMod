@@ -84,8 +84,8 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
-        webFrame = new GitWebFrame(0, 21, 362, 143);
         webFrame.loadWebsite("welcome.official");
+        webFrame = new GitWebFrame(this, 0, 21, 362, 143);
         webFrame.setLoadingCallback((s, success) ->
         {
             spinnerLoading.setVisible(true);

@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.gitweb.component;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.ScrollableLayout;
@@ -26,7 +27,10 @@ public class GitWebFrame extends Component
         MODULES.put("text", new TextModule());
         MODULES.put("banner", new BannerModule());
         MODULES.put("crafting", new CraftingModule());
+        MODULES.put("download", new DownloadModule());
     }
+
+    private Application app;
     private ScrollableLayout layout;
     private int width;
     private int height;
@@ -39,9 +43,10 @@ public class GitWebFrame extends Component
     private Callback<String> loadingCallback;
     private Callback<String> loadedCallback;
 
-    public GitWebFrame(int left, int top, int width, int height)
+    public GitWebFrame(Application app, int left, int top, int width, int height)
     {
         super(left, top);
+        this.app = app;
         this.width = width;
         this.height = height;
         this.layout = new ScrollableLayout(left, top, width, height, height);
@@ -200,9 +205,9 @@ public class GitWebFrame extends Component
             Module module = entry.getModule();
             int height = module.calculateHeight(entry.getData(), width);
             Layout moduleLayout = new Layout(0, offset, width, height);
-            module.generate(moduleLayout, entry.getData(), width);
+            module.generate(app, entry.getData(), width, moduleLayout);
             layout.addComponent(moduleLayout);
-            offset += height + 5;
+            offset += height;
         }
 
         if(modules.size() > 0)
@@ -211,7 +216,7 @@ public class GitWebFrame extends Component
             Module module = entry.getModule();
             int height = module.calculateHeight(entry.getData(), width);
             Layout moduleLayout = new Layout(0, offset, width, height);
-            module.generate(moduleLayout, entry.getData(), width);
+            module.generate(app, entry.getData(), width, moduleLayout);
             layout.addComponent(moduleLayout);
         }
 
@@ -328,7 +333,7 @@ public class GitWebFrame extends Component
 
     private static int calculateHeight(List<ModuleEntry> modules, int width)
     {
-        int height = (modules.size() - 1) * 5;
+        int height = 0;
         for(int i = 0; i < modules.size(); i++)
         {
             ModuleEntry entry = modules.get(i);

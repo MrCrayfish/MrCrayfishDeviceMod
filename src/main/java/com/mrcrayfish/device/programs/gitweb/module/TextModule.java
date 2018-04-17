@@ -1,11 +1,9 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Text;
-import com.mrcrayfish.device.core.Laptop;
-import net.minecraft.client.Minecraft;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +24,7 @@ public class TextModule extends Module
     }
 
     @Override
-    public void generate(Layout layout, Map<String, String> data, int width)
+    public void generate(Application app, Map<String, String> data, int width, Layout layout)
     {
         layout.addComponent(make(data, width));
     }

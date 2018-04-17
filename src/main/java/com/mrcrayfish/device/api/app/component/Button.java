@@ -343,6 +343,16 @@ I	 * @param top how many pixels from the top
 		return text;
 	}
 
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
 	public void setIcon(ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
 	{
 		this.iconU = iconU;
