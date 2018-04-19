@@ -240,18 +240,20 @@ public class GitWebFrame extends Component
                 this.pendingWebsite = word;
             }
         };
-        for(Component c1 : layout.components)
+        addWordListener(layout, listener);
+    }
+
+    private void addWordListener(Layout layout, Text.WordListener listener)
+    {
+        for(Component c : layout.components)
         {
-            if(c1 instanceof Layout)
+            if(c instanceof Layout)
             {
-                Layout layout = (Layout) c1;
-                for(Component c2 : layout.components)
-                {
-                    if(c2 instanceof Text)
-                    {
-                        ((Text) c2).setWordListener(listener);
-                    }
-                }
+                addWordListener((Layout) c, listener);
+            }
+            else if(c instanceof Text)
+            {
+                ((Text) c).setWordListener(listener);
             }
         }
     }
