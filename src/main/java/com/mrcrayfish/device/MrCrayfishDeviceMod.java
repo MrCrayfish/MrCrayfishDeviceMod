@@ -16,6 +16,7 @@ import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.init.RegistrationHandler;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
+import com.mrcrayfish.device.programs.cray_pad.ApplicationCrayPad;
 import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
@@ -111,6 +112,7 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "pixel_painter"), ApplicationPixelPainter.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "ender_mail"), ApplicationEmail.class);
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
+		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "cray_pad"), ApplicationCrayPad.class);
 
 		// Core
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
