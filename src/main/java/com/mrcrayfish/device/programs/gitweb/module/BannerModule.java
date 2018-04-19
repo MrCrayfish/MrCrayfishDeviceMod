@@ -26,7 +26,7 @@ public class BannerModule extends Module
     }
 
     @Override
-    public void generate(Application app, Map<String, String> data, int width, Layout layout)
+    public void generate(Application app, Layout layout, int width, Map<String, String> data)
     {
         int height = calculateHeight(data, width);
         Image image = new Image(0, 0, width, height);

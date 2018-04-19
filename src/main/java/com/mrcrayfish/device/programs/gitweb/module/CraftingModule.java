@@ -43,7 +43,7 @@ public class CraftingModule extends Module
     }
 
     @Override
-    public void generate(Application app, Map<String, String> data, int width, Layout layout)
+    public void generate(Application app, Layout layout, int width, Map<String, String> data)
     {
         int craftingX = (width - 130) / 2;
         int craftingY = 5;

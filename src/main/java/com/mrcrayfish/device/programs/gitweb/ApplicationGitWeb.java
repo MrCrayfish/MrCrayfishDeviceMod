@@ -1,26 +1,19 @@
 package com.mrcrayfish.device.programs.gitweb;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Dialog.Confirmation;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.api.app.component.Spinner;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.KeyListener;
-import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.input.Keyboard;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.regex.Matcher;
 
 /**
  * The Device Mod implementations of an internet browser. Originally created by MinecraftDoodler.
@@ -84,8 +77,8 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
-        webFrame.loadWebsite("welcome.official");
         webFrame = new GitWebFrame(this, 0, 21, 362, 143);
+        webFrame.loadUrl("https://pastebin.com/raw/ABHtvNQv");
         webFrame.setLoadingCallback((s, success) ->
         {
             spinnerLoading.setVisible(true);

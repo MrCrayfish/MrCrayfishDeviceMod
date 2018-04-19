@@ -14,7 +14,7 @@ public abstract class Module
 
     public abstract int calculateHeight(Map<String, String> data, int width);
 
-    public abstract void generate(Application app, Map<String, String> data, int width, Layout layout);
+    public abstract void generate(Application app, Layout layout, int width, Map<String, String> data);
 
-    //TODO: nav module, footer module, slideshow module, text area syntax highliting, download module
+    //TODO: nav module, footer module, slideshow module, text area syntax highlighting, header (align too), divider
 }

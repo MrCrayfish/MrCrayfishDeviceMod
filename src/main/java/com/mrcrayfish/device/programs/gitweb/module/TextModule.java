@@ -24,7 +24,7 @@ public class TextModule extends Module
     }
 
     @Override
-    public void generate(Application app, Map<String, String> data, int width, Layout layout)
+    public void generate(Application app, Layout layout, int width, Map<String, String> data)
     {
         layout.addComponent(make(data, width));
     }

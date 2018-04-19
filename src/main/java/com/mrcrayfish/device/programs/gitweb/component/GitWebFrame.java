@@ -24,6 +24,7 @@ public class GitWebFrame extends Component
 
     static
     {
+        MODULES.put("header", new HeaderModule());
         MODULES.put("text", new TextModule());
         MODULES.put("banner", new BannerModule());
         MODULES.put("crafting", new CraftingModule());
@@ -205,7 +206,7 @@ public class GitWebFrame extends Component
             Module module = entry.getModule();
             int height = module.calculateHeight(entry.getData(), width);
             Layout moduleLayout = new Layout(0, offset, width, height);
-            module.generate(app, entry.getData(), width, moduleLayout);
+            module.generate(app, moduleLayout, width, entry.getData());
             layout.addComponent(moduleLayout);
             offset += height;
         }
@@ -216,7 +217,7 @@ public class GitWebFrame extends Component
             Module module = entry.getModule();
             int height = module.calculateHeight(entry.getData(), width);
             Layout moduleLayout = new Layout(0, offset, width, height);
-            module.generate(app, entry.getData(), width, moduleLayout);
+            module.generate(app, moduleLayout, width, entry.getData());
             layout.addComponent(moduleLayout);
         }
 
