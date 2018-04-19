@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
@@ -10,6 +9,7 @@ import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,7 +38,7 @@ public class DownloadModule extends Module
     }
 
     @Override
-    public void generate(Application app, Layout layout, int width, Map<String, String> data)
+    public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
         int height = calculateHeight(data, width) - 5;
         AppInfo info = ApplicationManager.getApplication(data.get("file-app"));
@@ -79,8 +79,8 @@ public class DownloadModule extends Module
             {
                 NBTTagCompound tag = JsonToNBT.getTagFromJson(data.get("file-data"));
                 File file = new File(data.getOrDefault("file-name", ""), data.get("file-app"), tag);
-                Dialog dialog = new Dialog.SaveFile(app, file);
-                app.openDialog(dialog);
+                Dialog dialog = new Dialog.SaveFile(frame.getApp(), file);
+                frame.getApp().openDialog(dialog);
             }
             catch(NBTException e)
             {

@@ -1,10 +1,10 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ public class BannerModule extends Module
     }
 
     @Override
-    public void generate(Application app, Layout layout, int width, Map<String, String> data)
+    public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
         int height = calculateHeight(data, width);
         Image image = new Image(0, 0, width, height);

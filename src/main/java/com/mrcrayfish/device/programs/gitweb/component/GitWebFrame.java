@@ -207,7 +207,7 @@ public class GitWebFrame extends Component
             Module module = entry.getModule();
             int height = module.calculateHeight(entry.getData(), width);
             Layout moduleLayout = new Layout(0, offset, width, height);
-            module.generate(app, moduleLayout, width, entry.getData());
+            module.generate(this, moduleLayout, width, entry.getData());
             layout.addComponent(moduleLayout);
             offset += height;
         }
@@ -218,7 +218,7 @@ public class GitWebFrame extends Component
             Module module = entry.getModule();
             int height = module.calculateHeight(entry.getData(), width);
             Layout moduleLayout = new Layout(0, offset, width, height);
-            module.generate(app, moduleLayout, width, entry.getData());
+            module.generate(this, moduleLayout, width, entry.getData());
             layout.addComponent(moduleLayout);
         }
 
@@ -352,5 +352,10 @@ public class GitWebFrame extends Component
     public void setLoadedCallback(Callback<String> loadedCallback)
     {
         this.loadedCallback = loadedCallback;
+    }
+
+    public Application getApp()
+    {
+        return app;
     }
 }

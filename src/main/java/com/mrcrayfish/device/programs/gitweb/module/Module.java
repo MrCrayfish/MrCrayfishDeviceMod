@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public abstract class Module
 
     public abstract int calculateHeight(Map<String, String> data, int width);
 
-    public abstract void generate(Application app, Layout layout, int width, Map<String, String> data);
+    public abstract void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data);
 
     //TODO: nav module, footer module, slideshow module, text area syntax highlighting
 }

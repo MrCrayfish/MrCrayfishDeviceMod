@@ -1,11 +1,11 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.programs.gitweb.component.CraftingBox;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -43,7 +43,7 @@ public class CraftingModule extends Module
     }
 
     @Override
-    public void generate(Application app, Layout layout, int width, Map<String, String> data)
+    public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
         int craftingX = (width - 130) / 2;
         int craftingY = 5;

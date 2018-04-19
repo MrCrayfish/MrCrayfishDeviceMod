@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 
 import java.util.Map;
 
@@ -23,5 +23,5 @@ public class DividerModule extends Module
     }
 
     @Override
-    public void generate(Application app, Layout layout, int width, Map<String, String> data) {}
+    public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data) {}
 }
