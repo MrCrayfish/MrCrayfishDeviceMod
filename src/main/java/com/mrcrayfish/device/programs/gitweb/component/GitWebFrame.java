@@ -72,9 +72,15 @@ public class GitWebFrame extends Component
         }
         else if(pendingWebsite != null)
         {
-            this.loadWebsite(pendingWebsite);
+            this.setWebsite(pendingWebsite);
             pendingWebsite = null;
         }
+    }
+
+    @Override
+    protected void handleUnload()
+    {
+        this.initialized = false;
     }
 
     @Override
@@ -82,7 +88,7 @@ public class GitWebFrame extends Component
     {
         if(pendingWebsite != null)
         {
-            this.loadWebsite(pendingWebsite);
+            this.setWebsite(pendingWebsite);
             pendingWebsite = null;
         }
     }
@@ -95,12 +101,16 @@ public class GitWebFrame extends Component
 
     public void loadWebsite(String website)
     {
-        if(!initialized)
-        {
-            pendingWebsite = website;
-            return;
-        }
+        pendingWebsite = website;
+    }
 
+    public void loadUrl(String url)
+    {
+        pendingUrl = url;
+    }
+
+    private void setWebsite(String website)
+    {
         layout.clear();
 
         Matcher matcher = GitWebFrame.PATTERN_LINK.matcher(website);
@@ -140,13 +150,9 @@ public class GitWebFrame extends Component
         this.load(url);
     }
 
-    public void loadUrl(String url)
+    private void setUrl(String url)
     {
-        if(!initialized)
-        {
-            pendingUrl = url;
-            return;
-        }
+        layout.clear();
 
         try
         {
@@ -199,7 +205,9 @@ public class GitWebFrame extends Component
             return;
         }
 
+        layout.clear();
         layout.height = calculateHeight(modules, width);
+
         int offset = 0;
         for(int i = 0; i < modules.size() - 1; i++)
         {
