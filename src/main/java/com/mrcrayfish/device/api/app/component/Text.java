@@ -107,10 +107,10 @@ public class Text extends Component
 	{
 		if(this.wordListener != null && lines.size() > 0)
 		{
-			int lineIndex = (mouseY - yPosition) / 10;
+			int lineIndex = (mouseY - (yPosition + padding)) / 10;
 			if(lineIndex < lines.size())
 			{
-				int cursorX = mouseX - xPosition;
+				int cursorX = mouseX - (xPosition + padding);
 				String line = lines.get(lineIndex);
 				int index = Laptop.fontRenderer.trimStringToWidth(line, cursorX).length();
 				String clickedWord = getWord(line, index);
