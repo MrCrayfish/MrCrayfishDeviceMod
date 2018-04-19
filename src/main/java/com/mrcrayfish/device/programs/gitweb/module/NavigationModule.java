@@ -35,7 +35,7 @@ public class NavigationModule extends Module
         for(int i = 0; i < navButtons.size(); i++)
         {
             Button button = navButtons.get(i);
-            if(remainingWidth < button.getWidth())
+            if(remainingWidth < button.getWidth() + rowItemCount * 3)
             {
                 if(rowItemCount != 0)
                 {
@@ -44,11 +44,8 @@ public class NavigationModule extends Module
                     remainingWidth = width - 6;
                 }
             }
-            remainingWidth -= button.getWidth();
-            if(rowItemCount > 0)
-            {
-                remainingWidth -= 3;
-            }
+            int offset = button.getWidth();
+            remainingWidth -= offset;
             rowItemCount++;
         }
         return currentRow * 18 + 18 + (currentRow + 1) * 3 + 3;
