@@ -38,13 +38,21 @@ public class ApplicationCrayPad extends Application {
         fileName = new ItemList<FileObject>(5, 5, 100, 5);
         layoutEditor = new Layout(363, 165);
         save = new Button(150 + 15 + 155, 5, "Save");
-        open = new Button(110, 20, "Open");
-        browse = new Button(110, 55, "Browse");
+        open = new Button(110, 10, "Open");
+        browse = new Button(110, 50, "Browse");
         editor = new TextArea(10, 30, 343, 125);
         title = new TextField(10, 5, 300);
+        newFile = new Button(110, 30, "New");
         open.setEnabled(false);
 
         //Listeners
+        newFile.setClickListener(new ClickListener() {
+            @Override
+            public void onClick(int mouseX, int mouseY, int mouseButton) {
+                setCurrentLayout(layoutEditor);
+            }
+        });
+
         layoutMain.setInitListener(new InitListener() {
             @Override
             public void onInit() {
@@ -103,6 +111,7 @@ public class ApplicationCrayPad extends Application {
         layoutEditor.addComponent(editor);
         layoutEditor.addComponent(save);
         layoutEditor.addComponent(title);
+        layoutMain.addComponent(newFile);
         setCurrentLayout(layoutMain);
 
 
