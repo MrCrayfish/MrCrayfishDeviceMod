@@ -16,5 +16,5 @@ public abstract class Module
 
     public abstract void generate(Application app, Layout layout, int width, Map<String, String> data);
 
-    //TODO: nav module, footer module, slideshow module, text area syntax highlighting, header (align too), divider
+    //TODO: nav module, footer module, slideshow module, text area syntax highlighting
 }

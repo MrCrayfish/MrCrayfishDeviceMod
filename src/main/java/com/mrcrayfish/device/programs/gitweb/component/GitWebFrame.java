@@ -26,6 +26,7 @@ public class GitWebFrame extends Component
     {
         MODULES.put("header", new HeaderModule());
         MODULES.put("text", new TextModule());
+        MODULES.put("divider", new DividerModule());
         MODULES.put("banner", new BannerModule());
         MODULES.put("crafting", new CraftingModule());
         MODULES.put("download", new DownloadModule());
