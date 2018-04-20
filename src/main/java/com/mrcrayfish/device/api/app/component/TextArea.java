@@ -113,7 +113,6 @@ public class TextArea extends Component
 			}
 
 			GLHelper.pushScissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
-
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
 				float scrollPercentage = (verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines);
@@ -142,9 +141,9 @@ public class TextArea extends Component
 					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColor);
 				}
 			}
+			GLHelper.popScissor();
 
 			GLHelper.pushScissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
-
 			if(editable && isFocused)
 			{
 				float linesPerUnit = (float) lines.size() / (float) visibleLines;
@@ -163,8 +162,6 @@ public class TextArea extends Component
 					}
 				}
 			}
-
-			GLHelper.popScissor();
 			GLHelper.popScissor();
 
 			if(scrollBarVisible)
