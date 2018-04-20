@@ -498,14 +498,14 @@ public class TextArea extends Component
 			return;
 		}
 
-		if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
+		/*if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
 		{
 			if(verticalScroll > 0)
 			{
 				scroll(-1);
 				moveYCursor(1);
 			}
-		}
+		}*/
 
 		if(wrapText)
 		{
@@ -530,11 +530,11 @@ public class TextArea extends Component
 				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(cursorY + 1);
-			if(verticalScroll + visibleLines == lines.size() - 1)
-			{
 				scroll(-1);
 			}
 		}
+		}
+
 		recalculateMaxWidth();
 	}
 
