@@ -13,6 +13,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
@@ -227,7 +228,7 @@ I	 * @param top how many pixels from the top
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             int contentWidth = (iconResource != null ? iconWidth: 0) + getTextWidth(text);
-            if(iconResource != null && text != null) contentWidth += 3;
+            if(iconResource != null && !StringUtils.isNullOrEmpty(text)) contentWidth += 3;
             int contentX = (int) Math.ceil((width - contentWidth) / 2.0);
 
             if(iconResource != null)
@@ -237,7 +238,7 @@ I	 * @param top how many pixels from the top
 				RenderUtil.drawRectWithTexture(x + contentX, y + iconY, iconU, iconV, iconWidth, iconHeight, iconWidth, iconHeight, iconSourceWidth, iconSourceHeight);
 			}
 
-			if(text != null)
+			if(!StringUtils.isNullOrEmpty(text))
 			{
 				int textY = (height - mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
 				int textOffsetX = iconResource != null ? iconWidth + 3 : 0;
