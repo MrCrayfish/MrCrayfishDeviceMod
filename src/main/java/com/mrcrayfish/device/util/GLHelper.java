@@ -37,6 +37,19 @@ public class GLHelper
     public static void popScissor()
     {
         scissorStack.pop();
+        restoreScissor();
+    }
+
+    private static void restoreScissor()
+    {
+        if(!scissorStack.isEmpty())
+        {
+            Scissor scissor = scissorStack.peek();
+            Minecraft mc = Minecraft.getMinecraft();
+            ScaledResolution resolution = new ScaledResolution(mc);
+            int scale = resolution.getScaleFactor();
+            GL11.glScissor(scissor.x * scale, mc.displayHeight - scissor.y * scale - scissor.height * scale, Math.max(0, scissor.width * scale), Math.max(0, scissor.height * scale));
+        }
     }
 
     public static boolean isScissorStackEmpty()
