@@ -1006,6 +1006,7 @@ public class TextArea extends Component
 	public void setWrapText(boolean wrapText)
 	{
 		this.wrapText = wrapText;
+		this.horizontalScroll = 0;
 		updateText();
 	}
 
