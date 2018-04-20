@@ -232,6 +232,7 @@ public class TextArea extends Component
 				cursorY = lineY;
 			}
 			cursorTick = 0;
+			updateScroll();
 		}
 	}
 
