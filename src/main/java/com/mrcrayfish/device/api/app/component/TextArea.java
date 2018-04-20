@@ -530,9 +530,11 @@ public class TextArea extends Component
 				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(cursorY + 1);
-				scroll(-1);
-			}
 		}
+
+		if(verticalScroll > 0)
+		{
+			scroll(-1);
 		}
 
 		recalculateMaxWidth();
