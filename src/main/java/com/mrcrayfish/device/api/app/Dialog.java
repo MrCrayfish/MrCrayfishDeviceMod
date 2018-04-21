@@ -22,6 +22,7 @@ import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
@@ -92,7 +93,14 @@ public abstract class Dialog extends Wrappable
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		
+		GLHelper.pushScissor(x, y, width, height);
 		customLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+		GLHelper.popScissor();
+
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
 		customLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -129,16 +129,18 @@ public abstract class Application extends Wrappable
     public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
     {
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
         GLHelper.pushScissor(x, y, width, height);
         currentLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
         GLHelper.popScissor();
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         if(!GLHelper.isScissorStackEmpty())
         {
             MrCrayfishDeviceMod.getLogger().error("ERROR: A component is not popping it's scissor!");
         }
         GLHelper.clearScissorStack();
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
         currentLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 

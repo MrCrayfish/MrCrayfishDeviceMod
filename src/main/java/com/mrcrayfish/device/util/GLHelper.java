@@ -36,7 +36,10 @@ public class GLHelper
 
     public static void popScissor()
     {
-        scissorStack.pop();
+        if(!scissorStack.isEmpty())
+        {
+            scissorStack.pop();
+        }
         restoreScissor();
     }
 
