@@ -305,7 +305,14 @@ public abstract class Dialog extends Wrappable
 			int negativeWidth = Math.max(20, Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText));
 			buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
 			buttonNegative.setSize(negativeWidth + 10, 16);
-			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) ->
+			{
+				if(negativeListener != null)
+				{
+					negativeListener.onClick(mouseX, mouseY, mouseButton);
+				}
+				close();
+			});
 			this.addComponent(buttonNegative);
 		}
 
