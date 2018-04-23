@@ -105,18 +105,21 @@ public class Text extends Component
 	@Override
 	protected void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
-		if(this.wordListener != null && lines.size() > 0)
+		if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + padding, yPosition + padding, width - padding * 2, getHeight() - padding * 2))
 		{
-			int lineIndex = (mouseY - (yPosition + padding)) / 10;
-			if(lineIndex < lines.size())
+			if(this.wordListener != null && lines.size() > 0)
 			{
-				int cursorX = mouseX - (xPosition + padding);
-				String line = lines.get(lineIndex);
-				int index = Laptop.fontRenderer.trimStringToWidth(line, cursorX).length();
-				String clickedWord = getWord(line, index);
-				if(clickedWord != null)
+				int lineIndex = (mouseY - (yPosition + padding)) / 10;
+				if(lineIndex < lines.size())
 				{
-					this.wordListener.onWordClicked(clickedWord, mouseButton);
+					int cursorX = mouseX - (xPosition + padding);
+					String line = lines.get(lineIndex);
+					int index = Laptop.fontRenderer.trimStringToWidth(line, cursorX).length();
+					String clickedWord = getWord(line, index);
+					if(clickedWord != null)
+					{
+						this.wordListener.onWordClicked(clickedWord, mouseButton);
+					}
 				}
 			}
 		}
