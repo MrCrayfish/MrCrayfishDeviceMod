@@ -25,6 +25,7 @@ public class GitWebFrame extends Component
     static
     {
         MODULES.put("header", new HeaderModule());
+        MODULES.put("footer", new FooterModule());
         MODULES.put("text", new TextModule());
         MODULES.put("divider", new DividerModule());
         MODULES.put("banner", new BannerModule());
@@ -92,6 +93,11 @@ public class GitWebFrame extends Component
             this.setWebsite(pendingWebsite);
             pendingWebsite = null;
         }
+    }
+
+    public void scrollToTop()
+    {
+        layout.resetScroll();
     }
 
     public void loadRaw(String data)
