@@ -68,7 +68,7 @@ public class GitWebFrame extends Component
         this.initialized = true;
         if(pendingUrl != null)
         {
-            this.loadUrl(pendingUrl);
+            this.setUrl(pendingUrl);
             pendingUrl = null;
         }
         else if(pendingWebsite != null)
