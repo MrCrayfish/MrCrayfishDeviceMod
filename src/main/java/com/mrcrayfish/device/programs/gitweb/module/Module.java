@@ -16,5 +16,5 @@ public abstract class Module
 
     public abstract void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data);
 
-    //TODO: nav module, footer module, slideshow module, text area syntax highlighting
+    //TODO: slideshow module, text area syntax highlighting
 }

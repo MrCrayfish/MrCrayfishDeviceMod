@@ -84,11 +84,11 @@ public class CraftingModule extends Module
         }
 
         ItemStack result = ItemStack.EMPTY;
-        if(data.containsKey("result"))
+        if(data.containsKey("slot-result"))
         {
             try
             {
-                result = new ItemStack(JsonToNBT.getTagFromJson(data.get("result")));
+                result = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-result")));
             }
             catch(NBTException e)
             {
