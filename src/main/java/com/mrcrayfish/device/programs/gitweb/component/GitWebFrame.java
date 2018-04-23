@@ -39,6 +39,7 @@ public class GitWebFrame extends Component
     private int width;
     private int height;
 
+    private boolean allowRemoteUrls = false;
     private boolean initialized = false;
     private String currentWebsite;
     private String pendingWebsite;
@@ -93,6 +94,16 @@ public class GitWebFrame extends Component
             this.setWebsite(pendingWebsite);
             pendingWebsite = null;
         }
+        else if(pendingUrl != null)
+        {
+            this.setUrl(pendingUrl);
+            pendingUrl = null;
+        }
+    }
+
+    public void setAllowRemoteUrls(boolean allowRemoteUrls)
+    {
+        this.allowRemoteUrls = allowRemoteUrls;
     }
 
     public void scrollToTop()
@@ -108,12 +119,20 @@ public class GitWebFrame extends Component
 
     public void loadWebsite(String website)
     {
+        if(allowRemoteUrls && (website.startsWith("http") || website.startsWith("https")))
+        {
+            pendingUrl = website;
+            return;
+        }
         pendingWebsite = website;
     }
 
     public void loadUrl(String url)
     {
-        pendingUrl = url;
+        if(allowRemoteUrls)
+        {
+            pendingUrl = url;
+        }
     }
 
     private void setWebsite(String website)
