@@ -54,9 +54,16 @@ public class NavigationModule extends Module
     @Override
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
+        int color = Color.DARK_GRAY.getRGB();
+        if(data.containsKey("color"))
+        {
+            color = Integer.parseInt(data.get("color"));
+        }
+
+        int finalColor = color;
         layout.setBackground((gui, mc, x, y, width1, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width1, y + height, Color.DARK_GRAY.getRGB());
+            Gui.drawRect(x, y, x + width1, y + height, finalColor);
         });
 
         List<Button> navButtons = createNavigationButtons(frame, data);
