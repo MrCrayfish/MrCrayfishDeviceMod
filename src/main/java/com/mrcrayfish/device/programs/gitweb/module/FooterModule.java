@@ -33,6 +33,7 @@ public class FooterModule extends Module
     {
         Button buttonScroll = new Button(0, 5, Icons.ARROW_UP);
         buttonScroll.left = width - buttonScroll.getWidth() - 5;
+        buttonScroll.setToolTip("Scroll to Top", "Brings you back to the top of the page");
         buttonScroll.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
@@ -44,6 +45,7 @@ public class FooterModule extends Module
 
         Button buttonHome = new Button(0, 5, Icons.HOME);
         buttonHome.left = buttonScroll.left - buttonHome.getWidth() - 3;
+        buttonHome.setToolTip("Go to Homepage", data.get("home-page"));
         buttonHome.setClickListener((mouseX, mouseY, mouseButton) ->
         {
             if(mouseButton == 0)
