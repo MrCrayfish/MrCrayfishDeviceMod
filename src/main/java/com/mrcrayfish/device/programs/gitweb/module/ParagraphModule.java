@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class TextModule extends Module
+public class ParagraphModule extends Module
 {
     @Override
     public String[] getRequiredData()
