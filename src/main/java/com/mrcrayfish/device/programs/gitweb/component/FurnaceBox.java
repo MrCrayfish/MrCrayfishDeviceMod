@@ -18,19 +18,15 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class FurnaceBox extends Component
+public class FurnaceBox extends ContainerBox
 {
-    private static final ResourceLocation CONTAINER_BOXES_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/container_boxes.png");
-
-    private List<Slot> slots = new ArrayList<>();
-
     private int progressTimer;
     private int fuelTimer;
     private int fuelTime;
 
     public FurnaceBox(int left, int top, ItemStack input, ItemStack fuel, ItemStack result)
     {
-        super(left, top);
+        super(left, top, 0, 68);
         slots.add(new Slot(25, 8, input));
         slots.add(new Slot(25, 44, fuel));
         slots.add(new Slot(85, 26, result));
@@ -53,17 +49,15 @@ public class FurnaceBox extends Component
     @Override
     protected void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
     {
+        super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
+
         mc.getTextureManager().bindTexture(CONTAINER_BOXES_TEXTURE);
-        RenderUtil.drawRectWithTexture(x, y, 0, 68, 130, 68, 130, 68, 256, 256);
 
         int burnProgress = this.getBurnLeftScaled(13);
         this.drawTexturedModalRect(x + 25, y + 28 + 12 - burnProgress, 130, 81 - burnProgress, 14, burnProgress + 1);
 
         int cookProgress = this.getCookProgressScaled(24);
         this.drawTexturedModalRect(x + 48, y + 25, 130, 82, cookProgress + 1, 16);
-
-        slots.forEach(slot -> slot.render(x, y));
-        slots.forEach(slot -> slot.renderOverlay(laptop, x, y, mouseX, mouseY));
     }
 
     private int getCookProgressScaled(int pixels)
@@ -79,41 +73,5 @@ public class FurnaceBox extends Component
             i = 200;
         }
         return this.fuelTimer * pixels / i + 1;
-    }
-
-    protected class Slot
-    {
-        private int slotX;
-        private int slotY;
-        private ItemStack stack;
-
-        public Slot(int slotX, int slotY, ItemStack stack)
-        {
-            this.slotX = slotX;
-            this.slotY = slotY;
-            this.stack = stack;
-        }
-
-        public void render(int x, int y)
-        {
-            RenderUtil.renderItem(x + slotX, y + slotY, stack, true);
-        }
-
-        public void renderOverlay(Laptop laptop, int x, int y, int mouseX, int mouseY)
-        {
-            if(GuiHelper.isMouseWithin(mouseX, mouseY, x + slotX, y + slotY, 16, 16))
-            {
-                if(!stack.isEmpty())
-                {
-                    net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
-                    laptop.drawHoveringText(laptop.getItemToolTip(stack), mouseX, mouseY);
-                    net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
-                }
-            }
-
-            GlStateManager.disableRescaleNormal();
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.disableDepth();
-        }
     }
 }
