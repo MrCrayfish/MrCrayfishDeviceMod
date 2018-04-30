@@ -29,15 +29,11 @@ public class CraftingModule extends Module
     public int calculateHeight(Map<String, String> data, int width)
     {
         int height = 78;
-        if(data.containsKey("title") && data.containsKey("desc"))
+        if(data.containsKey("desc"))
         {
-            Text text = new Text(data.get("desc"), 0, 12, width - 130 - 5);
+            Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 130 - 5);
             text.setPadding(5);
             height += Math.max(0, (text.getHeight() + text.top) - height);
-        }
-        else if(data.containsKey("title"))
-        {
-            height += 10;
         }
         return height;
     }
@@ -48,22 +44,20 @@ public class CraftingModule extends Module
         int craftingX = (width - 130) / 2;
         int craftingY = 5;
 
-        if(data.containsKey("title") && data.containsKey("desc"))
+        if(data.containsKey("title") || data.containsKey("desc"))
         {
-            Label label = new Label(TextFormatting.BOLD + data.get("title"), 5, 5);
-            layout.addComponent(label);
-
-            Text text = new Text(data.get("desc"), 0, 12, width - 130 - 5);
-            text.setPadding(5);
-            layout.addComponent(text);
+            if(data.containsKey("title"))
+            {
+                Label label = new Label(TextFormatting.BOLD + data.get("title"), 5, 5);
+                layout.addComponent(label);
+            }
+            if(data.containsKey("desc"))
+            {
+                Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 130 - 5);
+                text.setPadding(5);
+                layout.addComponent(text);
+            }
             craftingX = width - 130 - 5;
-        }
-        else if(data.containsKey("title"))
-        {
-            Label label = new Label(TextFormatting.BOLD + data.get("title"), width / 2, 5);
-            label.setAlignment(Component.ALIGN_CENTER);
-            layout.addComponent(label);
-            craftingY += 10;
         }
 
         ItemStack[] ingredient = new ItemStack[9];
