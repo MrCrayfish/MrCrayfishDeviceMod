@@ -350,7 +350,7 @@ public class GitWebFrame extends Component
 
     private static ModuleEntry createPlainWebsite(String content)
     {
-        Module module = MODULES.get("text");
+        Module module = MODULES.get("paragraph");
         Map<String, String> data = new HashMap<>(1, 1.0F);
         data.put("text", content);
         return new ModuleEntry(module, data);
