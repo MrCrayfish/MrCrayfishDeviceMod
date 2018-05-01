@@ -21,9 +21,9 @@ public class CraftingBox extends ContainerBox
 {
     public static final int HEIGHT = 68;
 
-    public CraftingBox(int left, int top, ItemStack[] ingredients, ItemStack result)
+    public CraftingBox(ItemStack[] ingredients, ItemStack result)
     {
-        super(left, top, 0, 0, HEIGHT, new ItemStack(Blocks.CRAFTING_TABLE), "Crafting Table");
+        super(0, 0, 0, 0, HEIGHT, new ItemStack(Blocks.CRAFTING_TABLE), "Crafting Table");
         this.setIngredients(ingredients);
         this.slots.add(new Slot(102, 35, result));
     }

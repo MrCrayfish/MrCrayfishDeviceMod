@@ -32,6 +32,7 @@ public class GitWebFrame extends Component
         MODULES.put("navigation", new NavigationModule());
         MODULES.put("crafting", new CraftingModule());
         MODULES.put("furnace", new FurnaceModule());
+        MODULES.put("brewing", new BrewingModule());
         MODULES.put("download", new DownloadModule());
     }
 

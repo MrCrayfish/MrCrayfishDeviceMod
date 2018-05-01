@@ -27,9 +27,9 @@ public class FurnaceBox extends ContainerBox
     private int fuelTimer;
     private int fuelTime;
 
-    public FurnaceBox(int left, int top, ItemStack input, ItemStack fuel, ItemStack result)
+    public FurnaceBox(ItemStack input, ItemStack fuel, ItemStack result)
     {
-        super(left, top, 0, 68, HEIGHT, new ItemStack(Blocks.FURNACE), "Furnace");
+        super(0, 0, 0, 68, HEIGHT, new ItemStack(Blocks.FURNACE), "Furnace");
         slots.add(new Slot(25, 8, input));
         slots.add(new Slot(25, 44, fuel));
         slots.add(new Slot(85, 26, result));

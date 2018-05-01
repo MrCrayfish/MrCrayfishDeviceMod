@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class ContainerBox extends Component
+public abstract class ContainerBox extends Component
 {
     protected static final ResourceLocation CONTAINER_BOXES_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/container_boxes.png");
 
