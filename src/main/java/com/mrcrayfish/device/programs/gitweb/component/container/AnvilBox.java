@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.programs.gitweb.component;
+package com.mrcrayfish.device.programs.gitweb.component.container;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.programs.gitweb.component;
+package com.mrcrayfish.device.programs.gitweb.component.container;
 
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Component;

@@ -1,8 +1,7 @@
-package com.mrcrayfish.device.programs.gitweb.component;
+package com.mrcrayfish.device.programs.gitweb.component.container;
 
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 

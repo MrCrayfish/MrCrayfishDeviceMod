@@ -1,18 +1,7 @@
-package com.mrcrayfish.device.programs.gitweb.component;
+package com.mrcrayfish.device.programs.gitweb.component.container;
 
-import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.api.app.Component;
-import com.mrcrayfish.device.api.utils.RenderUtil;
-import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.util.GuiHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
-import java.rmi.activation.ActivationGroup_Stub;
 
 /**
  * Author: MrCrayfish
