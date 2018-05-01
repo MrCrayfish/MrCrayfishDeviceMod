@@ -23,49 +23,14 @@ public class BrewingModule extends ContainerModule
     @Override
     public ContainerBox createContainer(Map<String, String> data)
     {
-        ItemStack fuel = ItemStack.EMPTY;
-        if(data.containsKey("slot-fuel"))
-        {
-            try
-            {
-                fuel = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-fuel")));
-            }
-            catch(NBTException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        ItemStack input = ItemStack.EMPTY;
-        if(data.containsKey("slot-input"))
-        {
-            try
-            {
-                input = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-input")));
-            }
-            catch(NBTException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
+        ItemStack fuel = getItem(data, "slot-fuel");
+        ItemStack input = getItem(data, "slot-input");
         ItemStack[] output = new ItemStack[3];
         Arrays.fill(output, ItemStack.EMPTY);
         for(int i = 0; i < output.length; i++)
         {
-            if(data.containsKey("slot-output-" + (i + 1)))
-            {
-                try
-                {
-                    output[i] = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-output-" + (i + 1))));
-                }
-                catch(NBTException e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            output[i] = getItem(data, "slot-output-" + (i + 1));
         }
-
         return new BrewingBox(fuel, input, output);
     }
 }

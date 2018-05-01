@@ -27,32 +27,9 @@ public class CraftingModule extends ContainerModule
         Arrays.fill(ingredient, ItemStack.EMPTY);
         for(int i = 0; i < ingredient.length; i++)
         {
-            if(data.containsKey("slot-" + (i + 1)))
-            {
-                try
-                {
-                    ingredient[i] = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-" + (i + 1))));
-                }
-                catch(NBTException e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            ingredient[i] = getItem(data, "slot-" + (i + 1));
         }
-
-        ItemStack result = ItemStack.EMPTY;
-        if(data.containsKey("slot-result"))
-        {
-            try
-            {
-                result = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-result")));
-            }
-            catch(NBTException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
+        ItemStack result = getItem(data, "slot-result");
         return new CraftingBox(ingredient, result);
     }
 }

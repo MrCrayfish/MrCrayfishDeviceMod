@@ -22,45 +22,9 @@ public class FurnaceModule extends ContainerModule
     @Override
     public ContainerBox createContainer(Map<String, String> data)
     {
-        ItemStack input = ItemStack.EMPTY;
-        if(data.containsKey("slot-input"))
-        {
-            try
-            {
-                input = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-input")));
-            }
-            catch(NBTException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        ItemStack fuel = ItemStack.EMPTY;
-        if(data.containsKey("slot-fuel"))
-        {
-            try
-            {
-                fuel = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-fuel")));
-            }
-            catch(NBTException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        ItemStack result = ItemStack.EMPTY;
-        if(data.containsKey("slot-result"))
-        {
-            try
-            {
-                result = new ItemStack(JsonToNBT.getTagFromJson(data.get("slot-result")));
-            }
-            catch(NBTException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
+        ItemStack input = getItem(data, "slot-input");
+        ItemStack fuel = getItem(data, "slot-fuel");
+        ItemStack result = getItem(data, "slot-result");
         return new FurnaceBox(input, fuel, result);
     }
 }
