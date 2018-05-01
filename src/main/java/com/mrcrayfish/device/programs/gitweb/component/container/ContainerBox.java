@@ -8,7 +8,6 @@ import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -58,13 +57,13 @@ public abstract class ContainerBox extends Component
 
         RenderUtil.drawStringClipped(title, x + contentOffset + 8 + 4, y, 110, Color.WHITE.getRGB(), true);
 
-        slots.forEach(slot -> slot.render(x, y));
+        slots.forEach(slot -> slot.render(x, y + 12));
     }
 
     @Override
     protected void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
     {
-        slots.forEach(slot -> slot.renderOverlay(laptop, xPosition, yPosition, mouseX, mouseY));
+        slots.forEach(slot -> slot.renderOverlay(laptop, xPosition, yPosition + 12, mouseX, mouseY));
     }
 
     protected class Slot
