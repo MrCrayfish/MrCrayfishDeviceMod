@@ -28,10 +28,10 @@ public class FurnaceModule extends Module
     @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
-        int height = 78;
+        int height = 89;
         if(data.containsKey("desc"))
         {
-            Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 130 - 5);
+            Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 128 - 5);
             text.setPadding(5);
             height += Math.max(0, (text.getHeight() + text.top) - height);
         }
@@ -41,7 +41,7 @@ public class FurnaceModule extends Module
     @Override
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
-        int craftingX = (width - 130) / 2;
+        int craftingX = (width - 128) / 2;
         int craftingY = 5;
 
         if(data.containsKey("title") || data.containsKey("desc"))
@@ -53,11 +53,11 @@ public class FurnaceModule extends Module
             }
             if(data.containsKey("desc"))
             {
-                Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 130 - 5);
+                Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 128 - 5);
                 text.setPadding(5);
                 layout.addComponent(text);
             }
-            craftingX = width - 130 - 5;
+            craftingX = width - 128 - 5;
         }
 
         ItemStack input = ItemStack.EMPTY;

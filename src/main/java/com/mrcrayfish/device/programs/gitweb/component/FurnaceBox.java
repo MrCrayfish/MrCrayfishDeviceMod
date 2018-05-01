@@ -8,6 +8,7 @@ import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
@@ -20,13 +21,15 @@ import java.util.List;
  */
 public class FurnaceBox extends ContainerBox
 {
+    public static final int HEIGHT = 68;
+
     private int progressTimer;
     private int fuelTimer;
     private int fuelTime;
 
     public FurnaceBox(int left, int top, ItemStack input, ItemStack fuel, ItemStack result)
     {
-        super(left, top, 0, 68);
+        super(left, top, 0, 68, HEIGHT, new ItemStack(Blocks.FURNACE), "Furnace");
         slots.add(new Slot(25, 8, input));
         slots.add(new Slot(25, 44, fuel));
         slots.add(new Slot(85, 26, result));
@@ -54,10 +57,10 @@ public class FurnaceBox extends ContainerBox
         mc.getTextureManager().bindTexture(CONTAINER_BOXES_TEXTURE);
 
         int burnProgress = this.getBurnLeftScaled(13);
-        this.drawTexturedModalRect(x + 25, y + 28 + 12 - burnProgress, 130, 81 - burnProgress, 14, burnProgress + 1);
+        this.drawTexturedModalRect(x + 25, y + 28 + 12 - burnProgress, 128, 81 - burnProgress, 14, burnProgress + 1);
 
         int cookProgress = this.getCookProgressScaled(24);
-        this.drawTexturedModalRect(x + 48, y + 25, 130, 82, cookProgress + 1, 16);
+        this.drawTexturedModalRect(x + 48, y + 25, 128, 82, cookProgress + 1, 16);
     }
 
     private int getCookProgressScaled(int pixels)

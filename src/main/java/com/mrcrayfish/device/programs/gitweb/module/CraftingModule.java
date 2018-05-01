@@ -4,13 +4,17 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
+import com.mrcrayfish.device.programs.gitweb.component.ContainerBox;
 import com.mrcrayfish.device.programs.gitweb.component.CraftingBox;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.text.TextFormatting;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -28,10 +32,10 @@ public class CraftingModule extends Module
     @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
-        int height = 78;
+        int height = CraftingBox.HEIGHT + 22;
         if(data.containsKey("desc"))
         {
-            Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 130 - 5);
+            Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - CraftingBox.WIDTH - 5);
             text.setPadding(5);
             height += Math.max(0, (text.getHeight() + text.top) - height);
         }
@@ -41,7 +45,7 @@ public class CraftingModule extends Module
     @Override
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
-        int craftingX = (width - 130) / 2;
+        int craftingX = (width - ContainerBox.WIDTH) / 2;
         int craftingY = 5;
 
         if(data.containsKey("title") || data.containsKey("desc"))
@@ -53,11 +57,11 @@ public class CraftingModule extends Module
             }
             if(data.containsKey("desc"))
             {
-                Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - 130 - 5);
+                Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - ContainerBox.WIDTH - 5);
                 text.setPadding(5);
                 layout.addComponent(text);
             }
-            craftingX = width - 130 - 5;
+            craftingX = width - ContainerBox.WIDTH - 5;
         }
 
         ItemStack[] ingredient = new ItemStack[9];
