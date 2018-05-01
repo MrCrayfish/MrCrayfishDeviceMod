@@ -326,6 +326,7 @@ public class GitWebFrame extends Component
             }
             else
             {
+                modules.clear();
                 modules.add(createPlainWebsite(websiteData));
                 return modules;
             }
