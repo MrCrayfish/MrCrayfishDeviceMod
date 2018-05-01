@@ -1,10 +1,8 @@
 package com.mrcrayfish.device.programs.gitweb.module;
 
-import com.mrcrayfish.device.programs.gitweb.component.ContainerBox;
-import com.mrcrayfish.device.programs.gitweb.component.CraftingBox;
+import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
+import com.mrcrayfish.device.programs.gitweb.component.container.CraftingBox;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 
 import java.util.Arrays;
 import java.util.Map;
