@@ -20,8 +20,8 @@ public class FurnaceBox extends ContainerBox
     public FurnaceBox(ItemStack input, ItemStack fuel, ItemStack result)
     {
         super(0, 0, 0, 68, HEIGHT, new ItemStack(Blocks.FURNACE), "Furnace");
-        slots.add(new Slot(25, 8, input));
-        slots.add(new Slot(25, 44, fuel));
+        slots.add(new Slot(26, 8, input));
+        slots.add(new Slot(26, 44, fuel));
         slots.add(new Slot(85, 26, result));
         this.fuelTime = TileEntityFurnace.getItemBurnTime(fuel);
     }
@@ -47,10 +47,10 @@ public class FurnaceBox extends ContainerBox
         mc.getTextureManager().bindTexture(CONTAINER_BOXES_TEXTURE);
 
         int burnProgress = this.getBurnLeftScaled(13);
-        this.drawTexturedModalRect(x + 25, y + 28 + 12 - burnProgress, 128, 81 - burnProgress, 14, burnProgress + 1);
+        this.drawTexturedModalRect(x + 26, y + 52 - burnProgress, 128, 238 - burnProgress, 14, burnProgress + 1);
 
         int cookProgress = this.getCookProgressScaled(24);
-        this.drawTexturedModalRect(x + 48, y + 25, 128, 82, cookProgress + 1, 16);
+        this.drawTexturedModalRect(x + 49, y + 37, 128, 239, cookProgress + 1, 16);
     }
 
     private int getCookProgressScaled(int pixels)
