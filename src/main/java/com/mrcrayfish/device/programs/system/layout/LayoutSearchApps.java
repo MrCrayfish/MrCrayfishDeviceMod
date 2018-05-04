@@ -33,9 +33,12 @@ public class LayoutSearchApps extends StandardLayout
 
     private long lastClick = 0;
 
-    public LayoutSearchApps(Application app, Layout previous)
+    private ApplicationAppStore appStore;
+
+    public LayoutSearchApps(ApplicationAppStore appStore, Layout previous)
     {
-        super("Search", ApplicationAppStore.LAYOUT_WIDTH, ApplicationAppStore.LAYOUT_HEIGHT, app, previous);
+        super("Search", ApplicationAppStore.LAYOUT_WIDTH, ApplicationAppStore.LAYOUT_HEIGHT, appStore, previous);
+        this.appStore = appStore;
     }
 
     @Override
@@ -89,7 +92,7 @@ public class LayoutSearchApps extends StandardLayout
 
     private void openApplication(AppInfo info)
     {
-        Layout layout = new LayoutAppPage(null, info);
+        Layout layout = new LayoutAppPage(appStore.getLaptop(), info);
         app.setCurrentLayout(layout);
         Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
         btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->

@@ -3,14 +3,19 @@ package com.mrcrayfish.device.core;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.System;
 import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
+import com.mrcrayfish.device.core.task.TaskInstallApp;
+import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
@@ -23,8 +28,10 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -32,7 +39,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 //TODO Intro message (created by mrcrayfish, donate here)
@@ -72,6 +79,8 @@ public class Laptop extends GuiScreen implements System
 	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
+
+	protected List<AppInfo> installedApps = new ArrayList<>();
 	
 	public Laptop(TileEntityLaptop laptop)
 	{
@@ -79,7 +88,7 @@ public class Laptop extends GuiScreen implements System
 		this.systemData = laptop.getSystemData();
 		this.windows = new Window[5];
 		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
-		this.bar = new TaskBar(APPLICATIONS);
+		this.bar = new TaskBar(this);
 		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
@@ -107,6 +116,17 @@ public class Laptop extends GuiScreen implements System
 		int posX = (width - DEVICE_WIDTH) / 2;
 		int posY = (height - DEVICE_HEIGHT) / 2;
 		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
+
+		NBTTagList tagList = systemData.getTagList("InstalledApps", Constants.NBT.TAG_STRING);
+		for(int i = 0; i < tagList.tagCount(); i++)
+		{
+			AppInfo info = ApplicationManager.getApplication(tagList.getStringTagAt(i));
+			if(info != null)
+			{
+				installedApps.add(info);
+			}
+		}
+		installedApps.sort(AppInfo.SORT_NAME);
 	}
 
 	@Override
@@ -411,6 +431,12 @@ public class Laptop extends GuiScreen implements System
 		super.drawHoveringText(textLines, x, y);
 	}
 
+	public void open(AppInfo info)
+	{
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		optional.ifPresent(this::open);
+	}
+
 	public void open(Application app)
 	{
 		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
@@ -608,6 +634,53 @@ public class Laptop extends GuiScreen implements System
 	public Application getApplication(String appId)
 	{
 		return APPLICATIONS.stream().filter(app -> app.getInfo().getFormattedId().equals(appId)).findFirst().orElse(null);
+	}
+
+	@Override
+	public List<AppInfo> getInstalledApplications()
+	{
+		return ImmutableList.copyOf(installedApps);
+	}
+
+	@Override
+	public boolean isApplicationInstalled(AppInfo info)
+	{
+		return installedApps.contains(info);
+	}
+
+	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
+	{
+		Task task = new TaskInstallApp(info, pos, true);
+		task.setCallback((tagCompound, success) ->
+		{
+            if(success)
+			{
+				installedApps.add(info);
+				installedApps.sort(AppInfo.SORT_NAME);
+			}
+			if(callback != null)
+			{
+				callback.execute(null, success);
+			}
+        });
+		TaskManager.sendTask(task);
+	}
+
+	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
+	{
+		Task task = new TaskInstallApp(info, pos, false);
+		task.setCallback((tagCompound, success) ->
+		{
+			if(success)
+			{
+				installedApps.remove(info);
+			}
+			if(callback != null)
+			{
+				callback.execute(null, success);
+			}
+		});
+		TaskManager.sendTask(task);
 	}
 
 	public static System getSystem()

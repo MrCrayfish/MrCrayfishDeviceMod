@@ -29,19 +29,19 @@ public class TaskBar
 
 	private static final int APPS_DISPLAYED = MrCrayfishDeviceMod.DEVELOPER_MODE ? 18 : 10;
 	public static final int BAR_HEIGHT = 18;
-	
+
+	private Laptop laptop;
 	private Button btnLeft;
 	private Button btnRight;
 	
 	private int offset = 0;
 	private int pingTimer = 0;
 
-	private List<Application> applications;
 	private List<TrayItem> trayItems = new ArrayList<>();
 
-	public TaskBar(List<Application> applications)
+	public TaskBar(Laptop laptop)
 	{
-		setupApplications(applications);
+		this.laptop = laptop;
 		trayItems.add(new TrayItemWifi());
 	}
 
@@ -72,7 +72,6 @@ public class TaskBar
 			}
 			return true;
 		};
-		this.applications = applications.stream().filter(VALID_APPS).collect(Collectors.toList());
 	}
 
 	public void init(int posX, int posY)
@@ -94,7 +93,7 @@ public class TaskBar
 		btnRight.yPosition = posY + 3;
 		btnRight.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
-            if(offset + APPS_DISPLAYED < applications.size())
+            if(offset + APPS_DISPLAYED < laptop.installedApps.size())
             {
                 offset++;
             }
@@ -107,29 +106,29 @@ public class TaskBar
 		trayItems.forEach(TrayItem::tick);
 	}
 	
-	public void render(Laptop gui, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)
+	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, float partialTicks)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		gui.drawTexturedModalRect(x, y, 0, 0, 1, 18);
+		laptop.drawTexturedModalRect(x, y, 0, 0, 1, 18);
 		int trayItemsWidth = trayItems.size() * 14;
 		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 36 - trayItemsWidth, 18, 1, 18);
 		RenderUtil.drawRectWithTexture(x + Laptop.SCREEN_WIDTH - 35 - trayItemsWidth, y, 2, 0, 35 + trayItemsWidth, 18, 1, 18);
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		btnLeft.render(gui, mc, btnLeft.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
+		btnLeft.render(laptop, mc, btnLeft.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
 		//btnRight.render(gui, mc, btnRight.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
 
-		for(int i = 0; i < APPS_DISPLAYED && i < applications.size(); i++)
+		for(int i = 0; i < APPS_DISPLAYED && i < laptop.installedApps.size(); i++)
 		{
-			AppInfo info = applications.get(i + offset).getInfo();
+			AppInfo info = laptop.installedApps.get(i + offset);
 			RenderUtil.drawApplicationIcon(info, x + 18 + i * 16, y + 2);
-			if(gui.isApplicationRunning(info.getFormattedId()))
+			if(laptop.isApplicationRunning(info.getFormattedId()))
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
-				gui.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
+				laptop.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
 
@@ -153,10 +152,10 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex < offset + APPS_DISPLAYED && appIndex < applications.size())
+			if(appIndex < offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
 			{
-				gui.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
-				gui.drawHoveringText(Collections.singletonList(applications.get(appIndex).getInfo().getName()), mouseX, mouseY);
+				laptop.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
+				laptop.drawHoveringText(Collections.singletonList(laptop.installedApps.get(appIndex).getName()), mouseX, mouseY);
 			}
 		}
 		
@@ -172,9 +171,9 @@ public class TaskBar
 		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
 		{
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex <= offset + APPS_DISPLAYED && appIndex < applications.size())
+			if(appIndex <= offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
 			{
-				laptop.open(applications.get(appIndex));
+				laptop.open(laptop.installedApps.get(appIndex));
 				return;
 			}
 		}

@@ -7,7 +7,6 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
@@ -17,12 +16,11 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -38,11 +36,14 @@ public class LayoutAppPage extends Layout
     private Label labelVersion;
     private Text textDescription;
 
+    private boolean installed;
+
     public LayoutAppPage(Laptop laptop, AppInfo info)
     {
         super(250, 150);
         this.laptop = laptop;
         this.info = info;
+        this.installed = Laptop.getSystem().isApplicationInstalled(info);
     }
 
     @Override
@@ -97,7 +98,33 @@ public class LayoutAppPage extends Layout
         }
 
         Button btnInstall = new Button(190, 44, "Install", Icons.IMPORT);
+        if(installed)
+        {
+            btnInstall.setText("Remove");
+        }
         btnInstall.setSize(55, 14);
+        btnInstall.setClickListener((mouseX, mouseY, mouseButton) ->
+        {
+            if(mouseButton == 0)
+            {
+                if(installed)
+                {
+                    laptop.removeApplication(info, (o, success) ->
+                    {
+                        btnInstall.setText("Install");
+                        installed = false;
+                    });
+                }
+                else
+                {
+                    laptop.installApplication(info, (o, success) ->
+                    {
+                        btnInstall.setText("Remove");
+                        installed = true;
+                    });
+                }
+            }
+        });
         this.addComponent(btnInstall);
 
         loadScreenshots();

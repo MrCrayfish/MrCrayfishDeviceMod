@@ -1,6 +1,9 @@
 package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.core.Settings;
+import com.mrcrayfish.device.object.AppInfo;
+
+import java.util.Collection;
 
 /**
  * Author: MrCrayfish
@@ -30,4 +33,8 @@ public interface System
      * @return the system settings
      */
     Settings getSettings();
+
+    Collection<AppInfo> getInstalledApplications();
+
+    boolean isApplicationInstalled(AppInfo info);
 }

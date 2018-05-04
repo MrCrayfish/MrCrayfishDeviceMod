@@ -8,6 +8,7 @@ import com.mrcrayfish.device.core.network.task.TaskConnect;
 import com.mrcrayfish.device.core.network.task.TaskGetDevices;
 import com.mrcrayfish.device.core.network.task.TaskPing;
 import com.mrcrayfish.device.core.print.task.TaskPrint;
+import com.mrcrayfish.device.core.task.TaskInstallApp;
 import com.mrcrayfish.device.entity.EntitySeat;
 import com.mrcrayfish.device.event.BankEvents;
 import com.mrcrayfish.device.event.EmailEvents;
@@ -113,6 +114,7 @@ public class MrCrayfishDeviceMod
 		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
 
 		// Core
+		TaskManager.registerTask(TaskInstallApp.class);
 		TaskManager.registerTask(TaskUpdateApplicationData.class);
 		TaskManager.registerTask(TaskPrint.class);
 		TaskManager.registerTask(TaskUpdateSystemData.class);
