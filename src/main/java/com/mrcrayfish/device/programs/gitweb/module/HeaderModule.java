@@ -26,13 +26,14 @@ public class HeaderModule extends Module
         {
             return Integer.parseInt(data.get("scale")) * Laptop.fontRenderer.FONT_HEIGHT + 10;
         }
-        return Laptop.fontRenderer.FONT_HEIGHT + 10;
+        return Laptop.fontRenderer.FONT_HEIGHT + (data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5) * 2;
     }
 
     @Override
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
-        Label label = new Label(data.get("text"), width / 2, 5);
+        int padding = (data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5);
+        Label label = new Label(data.get("text"), width / 2, padding);
         label.setAlignment(Component.ALIGN_CENTER);
 
         int scale = 1;
@@ -45,12 +46,12 @@ public class HeaderModule extends Module
         String align = data.getOrDefault("align", "center");
         if("left".equals(align))
         {
-            label.left = 5;
+            label.left = padding;
             label.setAlignment(Component.ALIGN_LEFT);
         }
         else if("right".equals(align))
         {
-            label.left = width - 5;
+            label.left = width - padding;
             label.setAlignment(Component.ALIGN_RIGHT);
         }
 
