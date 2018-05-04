@@ -193,32 +193,26 @@ public abstract class Dialog extends Wrappable
 
 	public static class Message extends Dialog
 	{
-		private String messageText;
-		private int messageTextColor = Color.DARK_GRAY.getRGB();
-		
+		private String messageText = "";
+
 		private ClickListener positiveListener;
 		private Button buttonPositive;
-		
+
 		public Message(String messageText)
 		{
 			this.messageText = messageText;
 		}
 
-		public Message(String messageText, int messageTextColor){
-            this.messageText = messageText;
-            this.messageTextColor = messageTextColor;
-		}
-		
 		@Override
 		public void init()
 		{
 			super.init();
-			
+
 			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
-			
+
 			super.init();
-			
+
 			defaultLayout.setBackground(new Background()
 			{
 				@Override
@@ -227,20 +221,20 @@ public abstract class Dialog extends Wrappable
 					Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
 				}
 			});
-			
-			Text message = new Text(messageText, 5, 5, getWidth() - 10, this.messageTextColor);
+
+			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
-			
+
 			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
 			buttonPositive.setSize(36, 16);
 			buttonPositive.setClickListener((mouseX, mouseY, mouseButton) ->
 			{
-                if(positiveListener != null)
-                {
-                    positiveListener.onClick(mouseX, mouseY, mouseButton);
-                }
-                close();
-            });
+				if(positiveListener != null)
+				{
+					positiveListener.onClick(mouseX, mouseY, mouseButton);
+				}
+				close();
+			});
 			this.addComponent(buttonPositive);
 		}
 	}

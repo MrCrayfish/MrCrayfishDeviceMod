@@ -7,6 +7,7 @@ import com.mrcrayfish.device.proxy.ClientProxy;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.JsonContext;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +32,7 @@ public class AppInfo
 	private String icon;
 	private String[] screenshots;
 	private Support support;
+	private String[] bundle;
 
 	public AppInfo(ResourceLocation identifier, boolean isSystemApp)
 	{
@@ -172,6 +174,16 @@ public class AppInfo
 
 		private AppInfo info;
 
+		private static final String PROP_NAME = "name";
+		private static final String PROP_AUTHOR = "author";
+		private static final String PROP_AUTHORS = "authors";
+		private static final String PROP_CONTRIB = "contributors";
+		private static final String PROP_DESC = "description";
+		private static final String PROP_VERSION = "version";
+		private static final String PROP_SCREENSHOTS = "screenshots";
+		private static final String PROP_ICON = "icon";
+		private static final String PROP_SUPPORT = "support";
+
 		public Deserializer(AppInfo info)
 		{
 			this.info = info;
@@ -182,31 +194,31 @@ public class AppInfo
 		{
 			try
 			{
-				info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
-				if(json.getAsJsonObject().has("author"))
-					info.author = convertToLocal(json.getAsJsonObject().get("author").getAsString());
-				else if(json.getAsJsonObject().has("authors") && json.getAsJsonObject().get("authors").isJsonArray()){
-					info.authors = context.deserialize(json.getAsJsonObject().get("authors"), new TypeToken<String[]>(){}.getType());
+				info.name = convertToLocal(json.getAsJsonObject().get(PROP_NAME).getAsString());
+				if(json.getAsJsonObject().has(PROP_AUTHOR))
+					info.author = convertToLocal(json.getAsJsonObject().get(PROP_AUTHOR).getAsString());
+				else if(json.getAsJsonObject().has(PROP_AUTHOR) && json.getAsJsonObject().get(PROP_AUTHORS).isJsonArray()){
+					info.authors = deserializeArray(context, PROP_AUTHORS, json.getAsJsonObject());
 				}
-				if(json.getAsJsonObject().has("contributors") && json.getAsJsonObject().get("contributors").isJsonArray()){
-				    info.contributors = context.deserialize(json.getAsJsonObject().get("contributors"), new TypeToken<String[]>(){}.getType());
+				if(json.getAsJsonObject().has(PROP_CONTRIB) && json.getAsJsonObject().get(PROP_CONTRIB).isJsonArray()){
+				    info.contributors = deserializeArray(context, PROP_AUTHORS, json.getAsJsonObject());
                 }
-				info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
-				info.version = json.getAsJsonObject().get("version").getAsString();
+				info.description = convertToLocal(json.getAsJsonObject().get(PROP_DESC).getAsString());
+				info.version = json.getAsJsonObject().get(PROP_VERSION).getAsString();
 
-				if(json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray())
+				if(json.getAsJsonObject().has(PROP_SCREENSHOTS) && json.getAsJsonObject().get(PROP_SCREENSHOTS).isJsonArray())
 				{
-					info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>(){}.getType());
+					info.screenshots = deserializeArray(context, PROP_SCREENSHOTS, json.getAsJsonObject());
 				}
 
-				if(json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive())
+				if(json.getAsJsonObject().has(PROP_ICON) && json.getAsJsonObject().get(PROP_ICON).isJsonPrimitive())
 				{
-					info.icon = json.getAsJsonObject().get("icon").getAsString();
+					info.icon = json.getAsJsonObject().get(PROP_ICON).getAsString();
 				}
 
-				if(json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0)
+				if(json.getAsJsonObject().has(PROP_SUPPORT) && json.getAsJsonObject().get(PROP_SUPPORT).getAsJsonObject().size() > 0)
 				{
-					JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+					JsonObject supportObj = json.getAsJsonObject().get(PROP_SUPPORT).getAsJsonObject();
 					Support support = new Support();
 
 					if(supportObj.has("paypal"))
@@ -235,6 +247,10 @@ public class AppInfo
 			}
 
 			return info;
+		}
+
+		private <T> T[] deserializeArray(JsonDeserializationContext context, String name, JsonObject jsonObject){
+			return context.deserialize(jsonObject.getAsJsonObject().get(name), new TypeToken<T>(){}.getType());
 		}
 
 		private String convertToLocal(String s)
