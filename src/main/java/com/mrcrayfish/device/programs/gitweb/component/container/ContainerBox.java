@@ -100,5 +100,10 @@ public abstract class ContainerBox extends Component
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableDepth();
         }
+
+        public ItemStack getStack()
+        {
+            return stack;
+        }
     }
 }

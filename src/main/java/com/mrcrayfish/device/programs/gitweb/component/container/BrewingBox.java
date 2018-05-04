@@ -61,18 +61,21 @@ public class BrewingBox extends ContainerBox
 
         if (brewTimer > 0)
         {
-            int scaledPercent = (int) (28.0F * (1.0F - (float) brewTimer / 400.0F));
-
-            if (scaledPercent > 0)
+            if(slots.size() > 1 && !slots.get(1).getStack().isEmpty())
             {
-                this.drawTexturedModalRect(x + 93, y + 19, 152, 223, 9, scaledPercent);
-            }
+                int scaledPercent = (int) (28.0F * (1.0F - (float) brewTimer / 400.0F));
 
-            scaledPercent = BUBBLELENGTHS[brewTimer / 2 % 7];
+                if(scaledPercent > 0)
+                {
+                    this.drawTexturedModalRect(x + 93, y + 19, 152, 223, 9, scaledPercent);
+                }
 
-            if (scaledPercent > 0)
-            {
-                this.drawTexturedModalRect(x + 59, y + 16 + 29 - scaledPercent, 161, 251 - scaledPercent, 12, scaledPercent);
+                scaledPercent = BUBBLELENGTHS[brewTimer / 2 % 7];
+
+                if(scaledPercent > 0)
+                {
+                    this.drawTexturedModalRect(x + 59, y + 16 + 29 - scaledPercent, 161, 251 - scaledPercent, 12, scaledPercent);
+                }
             }
         }
     }
