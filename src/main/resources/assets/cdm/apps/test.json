@@ -1,6 +1,7 @@
 {
     "name": "Test",
-    "author": "MrCrayfish",
+    "authors": ["MrCrayfish", "Alex Couch"],
+    "contributors": ["SomeOtherGuy", "Winner", "Loser"],
     "description": "",
     "version": "1.0",
     "screenshots": [
