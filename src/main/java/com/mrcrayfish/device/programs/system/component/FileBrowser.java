@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
@@ -481,8 +482,18 @@ public class FileBrowser extends Component
     {
         if(!folder.isSynced())
         {
+            BlockPos pos = Laptop.getPos();
+            if(pos == null)
+            {
+                if(callback != null)
+                {
+                    callback.execute(null, false);
+                }
+                return;
+            }
+            
             setLoading(true);
-            Task task = new TaskGetFiles(folder, Laptop.getPos()); //TODO convert to file system
+            Task task = new TaskGetFiles(folder, pos); //TODO convert to file system
             task.setCallback((nbt, success) ->
             {
                 if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
@@ -603,6 +614,24 @@ public class FileBrowser extends Component
     {
         setLoading(true);
         currentFolder.add(file, (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                fileList.addItem(file);
+                FileBrowser.refreshList = true;
+            }
+            if(callback != null)
+            {
+                callback.execute(response, success);
+            }
+            setLoading(false);
+        });
+    }
+
+    public void addFile(File file, boolean override, Callback<FileSystem.Response> callback)
+    {
+        setLoading(true);
+        currentFolder.add(file, override, (response, success) ->
         {
             if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
             {

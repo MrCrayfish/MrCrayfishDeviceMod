@@ -1,0 +1,22 @@
+{
+    "result": {
+        "item": "cdm:solid_state_drive"
+    },
+    "pattern": [
+        "ORO",
+        "OFO",
+        "OFO"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "O": {
+            "item": "minecraft:obsidian"
+        },
+        "F": {
+            "item": "cdm:flash_chip"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        }
+    }
+}

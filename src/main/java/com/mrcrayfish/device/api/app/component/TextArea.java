@@ -834,6 +834,10 @@ public class TextArea extends Component
 			do
 			{
 				String line = lines.get(lineIndex);
+				if(totalLength > 0)
+				{
+					builder.append(" ");
+				}
 				builder.append(line);
 
 				if(lineIndex == cursorY)

@@ -1,0 +1,19 @@
+{
+    "result": {
+        "item": "cdm:wheel"
+    },
+    "pattern": [
+        "P P",
+        "PIP",
+        "P P"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "P": {
+            "item": "cdm:plastic"
+        },
+        "I": {
+            "item": "minecraft:iron_block"
+        }
+    }
+}
