@@ -98,7 +98,7 @@ public abstract class Application extends Wrappable
 	 * your application window.
 	 */
 	@Override
-	public abstract void init();
+	public abstract void init(@Nullable NBTTagCompound intent);
 
     @Override
     public void onTick()
@@ -231,7 +231,7 @@ public abstract class Application extends Wrappable
     /**
      * Called when you first load up your application. Allows you to read any
      * stored data you have saved. Only called if you have saved data. This
-     * method is called after {{@link #init()} so you can update any
+     * method is called after {{@link Wrappable#init(NBTTagCompound)} so you can update any
      * Components with this data.
      *
      * @param tagCompound the tag compound where you saved data is

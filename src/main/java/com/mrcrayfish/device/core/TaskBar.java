@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class TaskBar
 {
@@ -173,7 +172,7 @@ public class TaskBar
 			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
 			if(appIndex <= offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
 			{
-				laptop.open(laptop.installedApps.get(appIndex));
+				laptop.openApplication(laptop.installedApps.get(appIndex));
 				return;
 			}
 		}

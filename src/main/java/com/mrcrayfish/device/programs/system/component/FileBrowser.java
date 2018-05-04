@@ -120,7 +120,7 @@ public class FileBrowser extends Component
     /**
      * The default constructor for a component. For your component to
      * be laid out correctly, make sure you use the x and y parameters
-     * from {@link Application#init()} and pass them into the
+     * from {@link Wrappable#init(NBTTagCompound)} and pass them into the
      * x and y arguments of this constructor.
      * <p>
      * Laying out the components is a simple relative positioning. So for left (x position),
@@ -285,11 +285,11 @@ public class FileBrowser extends Component
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
                             if(targetApp != null)
                             {
-                                laptop.open(targetApp);
+                                laptop.openApplication(targetApp, null);
                                 if(!targetApp.handleFile(file))
                                 {
-                                    laptop.close(targetApp);
-                                    laptop.open(systemApp);
+                                    laptop.closeApplication(targetApp);
+                                    laptop.openApplication(systemApp, null);
                                     createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
                             }

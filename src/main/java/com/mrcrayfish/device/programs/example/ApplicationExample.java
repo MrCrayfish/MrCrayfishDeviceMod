@@ -1,14 +1,14 @@
 package com.mrcrayfish.device.programs.example;
 
 import com.mrcrayfish.device.api.task.TaskManager;
-import com.mrcrayfish.device.core.client.ClientNotification;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nullable;
 
 public class ApplicationExample extends Application
 {
@@ -37,7 +37,7 @@ public class ApplicationExample extends Application
 	}
 	
 	@Override
-	public void init() 
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		label = new Label("Label", 5, 5);
 		super.addComponent(label);

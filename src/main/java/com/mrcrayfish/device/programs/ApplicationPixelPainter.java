@@ -6,7 +6,6 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
@@ -30,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 public class ApplicationPixelPainter extends Application
@@ -87,7 +87,7 @@ public class ApplicationPixelPainter extends Application
 	}
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		/* Main Menu */
 		layoutMainMenu = new StandardLayout("Main Menu", 201, 125, this, null);

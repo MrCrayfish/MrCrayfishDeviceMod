@@ -25,8 +25,8 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -118,7 +118,7 @@ public class ApplicationEmail extends Application
 	private List<Contact> contacts;
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		/* Loading Layout */
 		layoutInit = new Layout(40, 40);

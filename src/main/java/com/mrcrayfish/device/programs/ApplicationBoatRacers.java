@@ -11,6 +11,8 @@ import com.mrcrayfish.device.object.TileGrid;
 import com.mrcrayfish.device.object.tiles.Tile;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
+
 public class ApplicationBoatRacers extends Application 
 {
 	private Layout layoutLevelEditor;
@@ -31,7 +33,7 @@ public class ApplicationBoatRacers extends Application
 	}
 	
 	@Override
-	public void init() 
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		layoutLevelEditor = new Layout(364, 178);
 		

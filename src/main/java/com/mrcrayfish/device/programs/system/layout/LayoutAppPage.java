@@ -43,7 +43,7 @@ public class LayoutAppPage extends Layout
         super(250, 150);
         this.laptop = laptop;
         this.info = info;
-        this.installed = Laptop.getSystem().isApplicationInstalled(info);
+        this.installed = Laptop.getSystem().getInstalledApplications().contains(info);
     }
 
     @Override

@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nullable;
 import java.awt.Color;
 
 public class ApplicationBank extends SystemApplication
@@ -76,7 +77,7 @@ public class ApplicationBank extends SystemApplication
 	}
 	
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		layoutStart = new Layout();
 		layoutStart.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->

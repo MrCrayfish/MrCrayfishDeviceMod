@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -18,7 +19,7 @@ import java.util.List;
  * in your application to switch interfaces during runtime.
  * <p>
  * Use {@link com.mrcrayfish.device.api.app.Application#setCurrentLayout(Layout)} 
- * inside of {@link com.mrcrayfish.device.api.app.Application#init()}
+ * inside of {@link Wrappable#init(net.minecraft.nbt.NBTTagCompound)}
  * to set the current layout for your application.
  * <p>
  * Check out the example applications to get a better understand of

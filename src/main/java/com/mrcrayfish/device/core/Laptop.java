@@ -135,7 +135,7 @@ public class Laptop extends GuiScreen implements System
         Keyboard.enableRepeatEvents(false);
 
         /* Close all windows and sendTask application data */
-        for(Window<Application> window : windows)
+        for(Window window : windows)
 		{
         	if(window != null)
 			{
@@ -144,7 +144,6 @@ public class Laptop extends GuiScreen implements System
 		}
 
 		/* Send system data */
-        NBTTagCompound systemData = new NBTTagCompound();
         systemData.setInteger("CurrentWallpaper", currentWallpaper);
         systemData.setTag("Settings", settings.toTag());
         TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
@@ -158,7 +157,7 @@ public class Laptop extends GuiScreen implements System
 	public void onResize(Minecraft mcIn, int width, int height)
 	{
 		super.onResize(mcIn, width, height);
-		for(Window<Application> window : windows)
+		for(Window window : windows)
 		{
 			if(window != null)
 			{
@@ -431,13 +430,20 @@ public class Laptop extends GuiScreen implements System
 		super.drawHoveringText(textLines, x, y);
 	}
 
-	public void open(AppInfo info)
+	@Override
+	public void openApplication(AppInfo info)
 	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(this::open);
+		openApplication(info, null);
 	}
 
-	public void open(Application app)
+	@Override
+	public void openApplication(AppInfo info, @Nullable NBTTagCompound intentTag)
+	{
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		optional.ifPresent(application -> openApplication(application, intentTag));
+	}
+
+	public void openApplication(Application app, @Nullable NBTTagCompound intent)
 	{
 		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
 		{
@@ -462,7 +468,7 @@ public class Laptop extends GuiScreen implements System
 		app.setLaptopPosition(pos);
 
 		Window<Application> window = new Window<>(app, this);
-		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2);
+		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
 
 		if(appData.hasKey(app.getInfo().getFormattedId()))
 		{
@@ -483,8 +489,15 @@ public class Laptop extends GuiScreen implements System
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
-	
-	public void close(Application app)
+
+	@Override
+	public void closeApplication(AppInfo info)
+	{
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		optional.ifPresent(this::closeApplication);
+	}
+
+	public void closeApplication(Application app)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
@@ -640,12 +653,6 @@ public class Laptop extends GuiScreen implements System
 	public List<AppInfo> getInstalledApplications()
 	{
 		return ImmutableList.copyOf(installedApps);
-	}
-
-	@Override
-	public boolean isApplicationInstalled(AppInfo info)
-	{
-		return installedApps.contains(info);
 	}
 
 	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)

@@ -3,16 +3,11 @@ package com.mrcrayfish.device.programs;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ComboBox;
-import com.mrcrayfish.device.api.app.listener.ChangeListener;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 
-import java.lang.System;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -32,7 +27,7 @@ public class ApplicationIcons extends Application
     }
 
     @Override
-    public void init()
+    public void init(@Nullable NBTTagCompound intent)
     {
         layoutMain = new StandardLayout(TextFormatting.BOLD + "Icons", 330, 153, this, null);
         layoutMain.setIcon(Icons.HOME);

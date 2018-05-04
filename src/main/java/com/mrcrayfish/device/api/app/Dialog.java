@@ -10,7 +10,6 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
@@ -74,7 +73,7 @@ public abstract class Dialog extends Wrappable
 	}
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		this.defaultLayout.clear();
 		this.setLayout(defaultLayout);
@@ -204,14 +203,14 @@ public abstract class Dialog extends Wrappable
 		}
 		
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 			
 			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
-			super.init();
+			super.init(intent);
 			
 			defaultLayout.setBackground(new Background()
 			{
@@ -269,14 +268,14 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 			
 			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
-			super.init();
+			super.init(intent);
 
 			defaultLayout.setBackground(new Background()
 			{
@@ -377,9 +376,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 
 			int offset = 0;
 
@@ -390,7 +389,7 @@ public abstract class Dialog extends Wrappable
 				offset += lines * 9 + 5;
 			}
 
-			super.init();
+			super.init(intent);
 
 			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
 				Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
@@ -513,9 +512,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 
 			main = new Layout(211, 126);
 
@@ -660,9 +659,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 			main = new Layout(211, 145);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
@@ -830,9 +829,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 
 			layoutMain = new Layout(150, 132);
 
@@ -981,9 +980,9 @@ public abstract class Dialog extends Wrappable
 			}
 
 			@Override
-			public void init()
+			public void init(@Nullable NBTTagCompound intent)
 			{
-				super.init();
+				super.init(intent);
 
 				layoutMain = new Layout(120, 70);
 

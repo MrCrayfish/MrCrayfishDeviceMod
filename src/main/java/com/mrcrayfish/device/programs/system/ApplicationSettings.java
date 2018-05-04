@@ -12,6 +12,7 @@ import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Settings;
 import com.mrcrayfish.device.programs.system.component.Palette;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
+import com.sun.istack.internal.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,7 +42,7 @@ public class ApplicationSettings extends SystemApplication
 	private Stack<Layout> predecessor = new Stack<>();
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		buttonPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		buttonPrevious.setVisible(false);

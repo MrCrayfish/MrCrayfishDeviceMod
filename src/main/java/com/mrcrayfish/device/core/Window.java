@@ -8,9 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 public class Window<T extends Wrappable>
@@ -54,10 +56,10 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	void init(int x, int y)
+	void init(int x, int y, @Nullable NBTTagCompound intent)
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
-		content.init();
+		content.init(intent);
 	}
 	
 	public void onTick() 
@@ -183,7 +185,7 @@ public class Window<T extends Wrappable>
 		{
 			if(content instanceof Application)
 			{
-				gui.close((Application) content);
+				gui.closeApplication((Application) content);
 				return;
 			}
 
@@ -253,7 +255,7 @@ public class Window<T extends Wrappable>
 		else
 		{
 			dialogWindow = new Window(dialog, null);
-			dialogWindow.init(0, 0);
+			dialogWindow.init(0, 0, null);
 			dialogWindow.setParent(this);
 		}
 	}
@@ -276,7 +278,7 @@ public class Window<T extends Wrappable>
 	{
 		if(content instanceof Application)
 		{
-			laptop.close((Application) content);
+			laptop.closeApplication((Application) content);
 			return;
 		}
 		if(parent != null)

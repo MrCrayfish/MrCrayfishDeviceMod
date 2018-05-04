@@ -9,6 +9,8 @@ import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
+
 public class ApplicationAppStore extends SystemApplication
 {
 	public static final int LAYOUT_WIDTH = 250;
@@ -17,7 +19,7 @@ public class ApplicationAppStore extends SystemApplication
 	private StandardLayout layoutMain;
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		layoutMain = new StandardLayout("Home", LAYOUT_WIDTH, LAYOUT_HEIGHT, this, null);
 		layoutMain.setIcon(Icons.HOME);

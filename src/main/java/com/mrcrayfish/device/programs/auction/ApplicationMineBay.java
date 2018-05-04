@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -82,7 +83,7 @@ public class ApplicationMineBay extends Application
 	}
 	
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		getCurrentLayout().setBackground(new Background()
 		{

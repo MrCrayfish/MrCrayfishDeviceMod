@@ -5,6 +5,8 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
+
 public class ApplicationFileBrowser extends SystemApplication
 {
 	private FileBrowser browser;
@@ -16,7 +18,7 @@ public class ApplicationFileBrowser extends SystemApplication
 	}
 
 	@Override
-	public void init() 
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		browser = new FileBrowser(0, 0, this, FileBrowser.Mode.FULL);
 		browser.openFolder(FileSystem.DIR_HOME);
