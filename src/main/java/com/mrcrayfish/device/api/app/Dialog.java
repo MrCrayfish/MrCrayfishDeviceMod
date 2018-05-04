@@ -193,37 +193,37 @@ public abstract class Dialog extends Wrappable
 
 	public static class Message extends Dialog
 	{
-		private String messageText = "";
+		private String message;
+		private Text text = null;
+		private int foreground = Color.DARK_GRAY.getRGB();
+		private int background = Color.LIGHT_GRAY.getRGB();
 		
 		private ClickListener positiveListener;
 		private Button buttonPositive;
 		
 		public Message(String messageText)
 		{
-			this.messageText = messageText;
+			this.message = messageText;
 		}
-		
+
 		@Override
 		public void init()
 		{
 			super.init();
 			
-			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
+			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(message, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
 			super.init();
 			
-			defaultLayout.setBackground(new Background()
-			{
-				@Override
-				public void render(Gui gui, Minecraft mc, int x, int y, int width, int height, int mouseX, int mouseY, boolean windowActive)
-				{
-					Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
-				}
-			});
+			defaultLayout.setBackground(
+					(gui, mc, x, y, width, height, mouseX, mouseY, windowActive)->
+							Gui.drawRect(x, y, x + width, y + height, background)
+			);
 			
-			Text message = new Text(messageText, 5, 5, getWidth() - 10);
-			this.addComponent(message);
+			text = new Text(message, 5, 5, getWidth() - 10);
+			text.setTextColor(foreground);
+			this.addComponent(text);
 			
 			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");
 			buttonPositive.setSize(36, 16);
@@ -236,6 +236,14 @@ public abstract class Dialog extends Wrappable
                 close();
             });
 			this.addComponent(buttonPositive);
+		}
+
+		public void setForeground(int color){
+			this.foreground = color;
+		}
+
+		public void setBackground(int color){
+			this.background = color;
 		}
 	}
 

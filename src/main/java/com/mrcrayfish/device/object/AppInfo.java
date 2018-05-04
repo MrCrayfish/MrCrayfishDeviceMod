@@ -30,6 +30,7 @@ public class AppInfo
 	private String icon;
 	private String[] screenshots;
 	private Support support;
+	private String[] contributors;
 
 	public AppInfo(ResourceLocation identifier, boolean isSystemApp)
 	{
@@ -118,6 +119,14 @@ public class AppInfo
 		return systemApp;
 	}
 
+	public boolean hasContributors(){
+		return this.contributors != null && this.contributors.length > 0;
+	}
+
+	public String[] getContributors(){
+		return this.contributors;
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -167,6 +176,16 @@ public class AppInfo
 	{
 		private static final Pattern LANG = Pattern.compile("\\$\\{[a-z]+}");
 
+		private static final String NAME = "name";
+		private static final String AUTHOR = "author";
+		private static final String AUTHORS = "authors";
+		private static final String CONTRIBS = "contributors";
+		private static final String DESC = "description";
+		private static final String VERSION  = "version";
+		private static final String SCREENS = "screenshots";
+		private static final String ICON = "icon";
+		private static final String SUPPORT = "support";
+
 		private AppInfo info;
 
 		public Deserializer(AppInfo info)
@@ -179,28 +198,31 @@ public class AppInfo
 		{
 			try
 			{
-				info.name = convertToLocal(json.getAsJsonObject().get("name").getAsString());
-				if(json.getAsJsonObject().has("author"))
-					info.author = convertToLocal(json.getAsJsonObject().get("author").getAsString());
-				else if(json.getAsJsonObject().has("authors") && json.getAsJsonObject().get("authors").isJsonArray()){
-					info.authors = context.deserialize(json.getAsJsonObject().get("authors"), new TypeToken<String[]>(){}.getType());
+				info.name = convertToLocal(json.getAsJsonObject().get(NAME).getAsString());
+				if(json.getAsJsonObject().has(AUTHOR))
+					info.author = convertToLocal(json.getAsJsonObject().get(AUTHOR).getAsString());
+				else if(json.getAsJsonObject().has(AUTHORS) && json.getAsJsonObject().get(AUTHORS).isJsonArray()){
+					info.authors = context.deserialize(json.getAsJsonObject().get(AUTHORS), new TypeToken<String[]>(){}.getType());
 				}
-				info.description = convertToLocal(json.getAsJsonObject().get("description").getAsString());
-				info.version = json.getAsJsonObject().get("version").getAsString();
-
-				if(json.getAsJsonObject().has("screenshots") && json.getAsJsonObject().get("screenshots").isJsonArray())
-				{
-					info.screenshots = context.deserialize(json.getAsJsonObject().get("screenshots"), new TypeToken<String[]>(){}.getType());
+				if(json.getAsJsonObject().has(CONTRIBS) && json.getAsJsonObject().get(CONTRIBS).isJsonArray()){
+					info.contributors = this.deserializeArray(json, CONTRIBS, context);
 				}
+				info.description = convertToLocal(json.getAsJsonObject().get(DESC).getAsString());
+				info.version = json.getAsJsonObject().get(VERSION).getAsString();
 
-				if(json.getAsJsonObject().has("icon") && json.getAsJsonObject().get("icon").isJsonPrimitive())
+				if(json.getAsJsonObject().has(SCREENS) && json.getAsJsonObject().get(SCREENS).isJsonArray())
 				{
-					info.icon = json.getAsJsonObject().get("icon").getAsString();
+					info.screenshots = context.deserialize(json.getAsJsonObject().get(SCREENS), new TypeToken<String[]>(){}.getType());
 				}
 
-				if(json.getAsJsonObject().has("support") && json.getAsJsonObject().get("support").getAsJsonObject().size() > 0)
+				if(json.getAsJsonObject().has(ICON) && json.getAsJsonObject().get(ICON).isJsonPrimitive())
 				{
-					JsonObject supportObj = json.getAsJsonObject().get("support").getAsJsonObject();
+					info.icon = json.getAsJsonObject().get(ICON).getAsString();
+				}
+
+				if(json.getAsJsonObject().has(SUPPORT) && json.getAsJsonObject().get(SUPPORT).getAsJsonObject().size() > 0)
+				{
+					JsonObject supportObj = json.getAsJsonObject().get(SUPPORT).getAsJsonObject();
 					Support support = new Support();
 
 					if(supportObj.has("paypal"))
@@ -229,6 +251,10 @@ public class AppInfo
 			}
 
 			return info;
+		}
+
+		private String[] deserializeArray(JsonElement json, String name, JsonDeserializationContext context){
+			return context.deserialize(json.getAsJsonObject().get(name), new TypeToken<String[]>(){}.getType());
 		}
 
 		private String convertToLocal(String s)

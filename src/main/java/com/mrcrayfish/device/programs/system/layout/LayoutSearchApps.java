@@ -2,6 +2,7 @@ package com.mrcrayfish.device.programs.system.layout;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
@@ -96,6 +97,21 @@ public class LayoutSearchApps extends StandardLayout
         {
             app.setCurrentLayout(this);
         });
+
+        if(info.hasContributors()){
+            String contrbstr = "Contributors";
+            Button contribbutton = new Button(this.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(contrbstr) + 3, 10, contrbstr);
+            contribbutton.setClickListener((x, y, b)->{
+                StringBuilder sb = new StringBuilder();
+                for(String c : info.getContributors()){
+                    sb.append(c);
+                    sb.append("\n");
+                }
+                Dialog.Message message = new Dialog.Message(sb.toString());
+                app.openDialog(message);
+            });
+            layout.addComponent(contribbutton);
+        }
         layout.addComponent(btnPrevious);
     }
 }

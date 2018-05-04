@@ -53,12 +53,20 @@ public class Text extends Component
 	}
 	
 	/**
-	 * Sets the text color for this component
+	 * Sets the text color.
 	 * 
 	 * @param color the text color
 	 */
-	public void setTextColor(Color color)
+	public void setTextColor(int color)
 	{
+		this.textColor = color;
+	}
+
+	/**
+	 * Sets the text color. Keeping this to prevent breaking
+	 * @param color
+	 */
+	public void setTextColor(Color color){
 		this.textColor = color.getRGB();
 	}
 	
