@@ -193,8 +193,7 @@ public abstract class Dialog extends Wrappable
 
 	public static class Message extends Dialog
 	{
-		private String messageText;
-		private int messageTextColor = Color.DARK_GRAY.getRGB();
+		private String messageText = "";
 		
 		private ClickListener positiveListener;
 		private Button buttonPositive;
@@ -202,11 +201,6 @@ public abstract class Dialog extends Wrappable
 		public Message(String messageText)
 		{
 			this.messageText = messageText;
-		}
-
-		public Message(String messageText, int messageTextColor){
-            this.messageText = messageText;
-            this.messageTextColor = messageTextColor;
 		}
 		
 		@Override
@@ -228,7 +222,7 @@ public abstract class Dialog extends Wrappable
 				}
 			});
 			
-			Text message = new Text(messageText, 5, 5, getWidth() - 10, this.messageTextColor);
+			Text message = new Text(messageText, 5, 5, getWidth() - 10);
 			this.addComponent(message);
 			
 			buttonPositive = new Button(getWidth() - 41, getHeight() - 20, "Close");

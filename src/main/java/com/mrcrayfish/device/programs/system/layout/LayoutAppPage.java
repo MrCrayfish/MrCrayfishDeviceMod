@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.programs.system.layout;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
@@ -41,7 +40,6 @@ public class LayoutAppPage extends Layout
     private Label labelAuthor;
     private Label labelVersion;
     private Text textDescription;
-    protected Button buttonContributors;
 
     public LayoutAppPage(Laptop laptop, AppInfo info)
     {
