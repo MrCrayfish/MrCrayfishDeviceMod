@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -108,7 +109,8 @@ public class NavigationModule extends Module
 
     private Button createButton(@Nullable GitWebFrame frame, int index, Map<String, String> data)
     {
-        Button button = new Button(0, 0, data.getOrDefault("item-label-" + index, ""));
+        String label = GitWebFrame.parseFormatting(data.getOrDefault("item-label-" + index, ""));
+        Button button = new Button(0, 0, label);
         if(data.containsKey("item-icon-" + index))
         {
             Icons icon = Icons.valueOf(data.get("item-icon-" + index));

@@ -33,7 +33,8 @@ public class HeaderModule extends Module
     public void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data)
     {
         int padding = (data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5);
-        Label label = new Label(data.get("text"), width / 2, padding);
+        String s = GitWebFrame.parseFormatting(data.get("text"));
+        Label label = new Label(s, width / 2, padding);
         label.setAlignment(Component.ALIGN_CENTER);
 
         int scale = 1;

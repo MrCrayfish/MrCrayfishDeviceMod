@@ -48,7 +48,8 @@ public class ParagraphModule extends Module
 
     private Text make(Map<String, String> data, int width)
     {
-        Text text = new Text(data.get("text"), 0, 0, width);
+        String s = GitWebFrame.parseFormatting(data.get("text"));
+        Text text = new Text(s, 0, 0, width);
         int padding = data.containsKey("padding") ? Integer.parseInt(data.get("padding")) : 5;
         text.setPadding(padding);
         return text;

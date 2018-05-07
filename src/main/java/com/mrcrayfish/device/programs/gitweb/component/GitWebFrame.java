@@ -384,6 +384,11 @@ public class GitWebFrame extends Component
         return height;
     }
 
+    public static String parseFormatting(String s)
+    {
+        return s.replace("&", "\u00A7");
+    }
+
     public void setLoadingCallback(Callback<String> loadingCallback)
     {
         this.loadingCallback = loadingCallback;

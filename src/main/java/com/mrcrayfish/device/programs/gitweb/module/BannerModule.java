@@ -35,7 +35,8 @@ public class BannerModule extends Module
 
         if(data.containsKey("text"))
         {
-            Label label = new Label(data.get("text"), width / 2, (height - 18) / 2);
+            String s = GitWebFrame.parseFormatting(data.get("text"));
+            Label label = new Label(s, width / 2, (height - 18) / 2);
             label.setAlignment(Component.ALIGN_CENTER);
             label.setScale(2.0F);
             layout.addComponent(label);

@@ -30,7 +30,8 @@ public abstract class ContainerModule extends Module
         int height = getHeight() + 22;
         if(data.containsKey("desc"))
         {
-            Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - CraftingBox.WIDTH - 5);
+            String desc = GitWebFrame.parseFormatting(data.get("desc"));
+            Text text = new Text(desc, 0, data.containsKey("title") ? 12 : 5, width - CraftingBox.WIDTH - 5);
             text.setPadding(5);
             height += Math.max(0, (text.getHeight() + text.top) - height);
         }
@@ -47,12 +48,14 @@ public abstract class ContainerModule extends Module
         {
             if(data.containsKey("title"))
             {
-                Label label = new Label(TextFormatting.BOLD + data.get("title"), 5, 5);
+                String s = GitWebFrame.parseFormatting(data.get("title"));
+                Label label = new Label(TextFormatting.BOLD + s, 5, 5);
                 layout.addComponent(label);
             }
             if(data.containsKey("desc"))
             {
-                Text text = new Text(data.get("desc"), 0, data.containsKey("title") ? 12 : 5, width - ContainerBox.WIDTH - 5);
+                String s = GitWebFrame.parseFormatting(data.get("desc"));
+                Text text = new Text(s, 0, data.containsKey("title") ? 12 : 5, width - ContainerBox.WIDTH - 5);
                 text.setPadding(5);
                 layout.addComponent(text);
             }

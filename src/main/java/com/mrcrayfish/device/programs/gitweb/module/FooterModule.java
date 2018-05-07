@@ -61,8 +61,8 @@ public class FooterModule extends Module
             color = Integer.parseInt(data.get("color"));
         }
 
-        String title = data.get("title");
-        String subTitle = data.get("sub-title");
+        String title = GitWebFrame.parseFormatting(data.get("title"));
+        String subTitle = GitWebFrame.parseFormatting(data.get("sub-title"));
         int finalColor = color;
         layout.setBackground((gui, mc, x, y, width1, height, mouseX, mouseY, windowActive) ->
         {
