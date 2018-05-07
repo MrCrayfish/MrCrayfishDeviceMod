@@ -4,6 +4,7 @@ import com.mrcrayfish.device.programs.gitweb.component.container.ContainerBox;
 import com.mrcrayfish.device.programs.gitweb.component.container.FurnaceBox;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,8 @@ public class FurnaceModule extends ContainerModule
     @Override
     public String[] getOptionalData()
     {
-        List<String> optionalData = Arrays.asList(super.getOptionalData());
+        List<String> optionalData = new ArrayList<>();
+        optionalData.addAll(Arrays.asList(super.getOptionalData()));
         optionalData.add("slot-input");
         optionalData.add("slot-fuel");
         optionalData.add("slot-result");
