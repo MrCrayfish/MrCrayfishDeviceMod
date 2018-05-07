@@ -19,6 +19,12 @@ public class DividerModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "color" };
+    }
+
+    @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
         return Math.max(0, Integer.parseInt(data.get("size")));

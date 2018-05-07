@@ -25,6 +25,12 @@ public abstract class ContainerModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "title", "desc" };
+    }
+
+    @Override
     public final int calculateHeight(Map<String, String> data, int width)
     {
         int height = getHeight() + 22;

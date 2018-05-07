@@ -20,6 +20,12 @@ public class HeaderModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "scale", "padding", "align" };
+    }
+
+    @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
         if(data.containsKey("scale"))

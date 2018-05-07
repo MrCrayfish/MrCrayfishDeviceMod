@@ -20,6 +20,12 @@ public class BannerModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "text" };
+    }
+
+    @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
         return 50;

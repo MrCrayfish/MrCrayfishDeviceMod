@@ -19,6 +19,12 @@ public class ParagraphModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "padding", "image" };
+    }
+
+    @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
         int height = make(data, width).getHeight();

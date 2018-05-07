@@ -5,6 +5,7 @@ import com.mrcrayfish.device.programs.gitweb.component.container.CraftingBox;
 import net.minecraft.item.ItemStack;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,6 +13,18 @@ import java.util.Map;
  */
 public class CraftingModule extends ContainerModule
 {
+    @Override
+    public String[] getOptionalData()
+    {
+        List<String> optionalData = Arrays.asList(super.getOptionalData());
+        for(int i = 0; i < 9; i++)
+        {
+            optionalData.add("slot-" + (i + 1));
+        }
+        optionalData.add("slot-result");
+        return optionalData.toArray(new String[0]);
+    }
+
     @Override
     public int getHeight()
     {

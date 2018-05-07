@@ -32,6 +32,12 @@ public class DownloadModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "file-name", "text" };
+    }
+
+    @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
         return 45;

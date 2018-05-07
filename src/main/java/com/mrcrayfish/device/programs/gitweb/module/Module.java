@@ -12,6 +12,8 @@ public abstract class Module
 {
     public abstract String[] getRequiredData();
 
+    public abstract String[] getOptionalData();
+
     public abstract int calculateHeight(Map<String, String> data, int width);
 
     public abstract void generate(GitWebFrame frame, Layout layout, int width, Map<String, String> data);

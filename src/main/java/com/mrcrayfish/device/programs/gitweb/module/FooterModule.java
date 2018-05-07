@@ -23,6 +23,12 @@ public class FooterModule extends Module
     }
 
     @Override
+    public String[] getOptionalData()
+    {
+        return new String[] { "color" };
+    }
+
+    @Override
     public int calculateHeight(Map<String, String> data, int width)
     {
         return 28;

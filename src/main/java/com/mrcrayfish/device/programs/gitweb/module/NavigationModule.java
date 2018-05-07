@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextFormatting;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,20 @@ public class NavigationModule extends Module
     public String[] getRequiredData()
     {
         return new String[0];
+    }
+
+    @Override
+    public String[] getOptionalData()
+    {
+        List<String> optionalData = new ArrayList<>();
+        optionalData.add("color");
+        for(int i = 0; i < 10; i++)
+        {
+            optionalData.add("item-link-" + (i + 1));
+            optionalData.add("item-label-" + (i + 1));
+            optionalData.add("item-icon-" + (i + 1));
+        }
+        return optionalData.toArray(new String[0]);
     }
 
     @Override
