@@ -1,9 +1,13 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
+import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
 import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
@@ -64,5 +68,23 @@ public class ApplicationAppStore extends SystemApplication
 			this.setCurrentLayout(layoutMain);
 		});
 		layout.addComponent(btnPrevious);
+	}
+
+	public static class StoreTrayItem extends TrayItem
+	{
+		public StoreTrayItem()
+		{
+			super(Icons.SHOP);
+		}
+
+		@Override
+		public void handleClick(int mouseX, int mouseY, int mouseButton)
+		{
+			AppInfo info = ApplicationManager.getApplication("cdm:app_store");
+			if(info != null)
+			{
+				Laptop.getSystem().openApplication(info);
+			}
+		}
 	}
 }

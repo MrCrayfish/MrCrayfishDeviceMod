@@ -8,6 +8,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.network.TrayItemWifi;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
+import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -41,6 +42,7 @@ public class TaskBar
 	public TaskBar(Laptop laptop)
 	{
 		this.laptop = laptop;
+		trayItems.add(new ApplicationAppStore.StoreTrayItem());
 		trayItems.add(new TrayItemWifi());
 	}
 

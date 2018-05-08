@@ -166,18 +166,9 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 	{
 		if(systemData == null)
 		{
-			systemData = getDefaultSystemData();
+			systemData = new NBTTagCompound();
 		}
 		return systemData;
-	}
-
-	private NBTTagCompound getDefaultSystemData()
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		NBTTagList tagListApps = new NBTTagList();
-		tagListApps.appendTag(new NBTTagString("cdm.app_store"));
-		tag.setTag("InstalledApps", tagListApps);
-		return tag;
 	}
 
 	public FileSystem getFileSystem()
