@@ -148,7 +148,10 @@ public enum Icons implements IIcon
     MICROPHONE_MUTE,
     HEADPHONES_MUTE,
     ZOOM_IN,
-    ZOOM_OUT;
+    ZOOM_OUT,
+    FILE,
+    FOLDER,
+    SAVE_AS;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
