@@ -602,11 +602,11 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
 	}
 
-	public boolean isApplicationRunning(String appId)
+	public boolean isApplicationRunning(AppInfo info)
 	{
 		for(Window window : windows) 
 		{
-			if(window != null && ((Application) window.content).getInfo().getFormattedId().equals(appId))
+			if(window != null && ((Application) window.content).getInfo() == info)
 			{
 				return true;
 			}

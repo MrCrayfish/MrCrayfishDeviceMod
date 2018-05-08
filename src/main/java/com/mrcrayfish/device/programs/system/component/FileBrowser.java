@@ -286,16 +286,23 @@ public class FileBrowser extends Component
                             if(targetApp != null)
                             {
                                 laptop.openApplication(targetApp, null);
-                                if(!targetApp.handleFile(file))
+                                if(laptop.isApplicationRunning(targetApp.getInfo()))
                                 {
-                                    laptop.closeApplication(targetApp);
-                                    laptop.openApplication(systemApp, null);
-                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
+                                    if(!targetApp.handleFile(file))
+                                    {
+                                        laptop.closeApplication(targetApp);
+                                        laptop.openApplication(systemApp, null);
+                                        createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
+                                    }
+                                }
+                                else
+                                {
+                                    createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
                                 }
                             }
                             else
                             {
-                                createErrorDialog("The application designed for this file does not exist or is not installed.");
+                                createErrorDialog("The application designed for this file does not exist.");
                             }
                         }
                     }

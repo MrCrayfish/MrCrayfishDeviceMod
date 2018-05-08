@@ -130,7 +130,7 @@ public class TaskBar
 		{
 			AppInfo info = laptop.installedApps.get(i + offset);
 			RenderUtil.drawApplicationIcon(info, x + 18 + i * 16, y + 2);
-			if(laptop.isApplicationRunning(info.getFormattedId()))
+			if(laptop.isApplicationRunning(info))
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
 				laptop.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
