@@ -445,6 +445,11 @@ public class Laptop extends GuiScreen implements System
 
 	public void openApplication(Application app, @Nullable NBTTagCompound intent)
 	{
+		if(!app.getInfo().isSystemApp() && !installedApps.contains(app.getInfo()))
+		{
+			return;
+		}
+
 		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
 		{
 			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
