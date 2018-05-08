@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
@@ -10,6 +11,8 @@ import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Settings;
+import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.Palette;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import com.sun.istack.internal.Nullable;
@@ -256,5 +259,23 @@ public class ApplicationSettings extends SystemApplication
 		layout.addComponent(palette);
 
 		return colorPicker;
+	}
+
+	public static class SettingsTrayItem extends TrayItem
+	{
+		public SettingsTrayItem()
+		{
+			super(Icons.WRENCH);
+		}
+
+		@Override
+		public void handleClick(int mouseX, int mouseY, int mouseButton)
+		{
+			AppInfo info = ApplicationManager.getApplication("cdm:settings");
+			if(info != null)
+			{
+				Laptop.getSystem().openApplication(info);
+			}
+		}
 	}
 }
