@@ -9,8 +9,15 @@ import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.programs.gitweb.module.*;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -402,5 +409,35 @@ public class GitWebFrame extends Component
     public Application getApp()
     {
         return app;
+    }
+
+    public static void dumpModules(File file)
+    {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file)))
+        {
+            for(String key : MODULES.keySet())
+            {
+                Module module = MODULES.get(key);
+                writer.write("#" + key);
+                writer.newLine();
+                writer.write("Required Data:");
+                writer.newLine();
+                for(String p : module.getRequiredData()) {
+                    writer.write("- " + p);
+                    writer.newLine();
+                }
+                writer.write("Optional Data:");
+                writer.newLine();
+                for(String p : module.getOptionalData()) {
+                    writer.write("- " + p);
+                    writer.newLine();
+                }
+                writer.newLine();
+            }
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
