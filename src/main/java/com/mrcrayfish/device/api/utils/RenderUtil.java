@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 
@@ -99,7 +100,7 @@ public class RenderUtil
 
 	public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow)
 	{
-		Laptop.fontRenderer.drawString(clipStringToWidth(text, width), x, y, color, shadow);
+		Laptop.fontRenderer.drawString(clipStringToWidth(text, width) + TextFormatting.RESET, x, y, color, shadow);
 	}
 
 	public static String clipStringToWidth(String text, int width)

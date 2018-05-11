@@ -73,7 +73,12 @@ public abstract class Component extends Gui
 	 * Called when the Layout this component is bound to is set as the current layout in an
 	 * application.
 	 */
-	protected void handleOnLoad() {}
+	protected void handleLoad() {}
+
+	/**
+	 * TODO: finish docs
+	 */
+	protected void handleUnload() {}
 	
 	/**
 	 * Called when the game ticks

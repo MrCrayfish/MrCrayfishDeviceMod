@@ -148,7 +148,8 @@ public class ApplicationTextArea extends Application
 
     }
 
-    private static <T extends Object> T[] asArray(T ... t)
+    @SafeVarargs
+    private static <T> T[] asArray(T ... t)
     {
         return t;
     }

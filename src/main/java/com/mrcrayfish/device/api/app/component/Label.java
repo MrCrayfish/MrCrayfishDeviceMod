@@ -40,9 +40,9 @@ public class Label extends Component {
 				GlStateManager.translate(xPosition, yPosition, 0);
 				GlStateManager.scale(scale, scale, scale);
 				if(alignment == ALIGN_RIGHT)
-					GlStateManager.translate((int)-(Laptop.fontRenderer.getStringWidth(text) * scale), 0, 0);
+					GlStateManager.translate((int) -(mc.fontRenderer.getStringWidth(text) * scale), 0, 0);
 				if(alignment == ALIGN_CENTER)
-					GlStateManager.translate((int)(-(Laptop.fontRenderer.getStringWidth(text) * scale) / (2 * scale)), 0, 0);
+					GlStateManager.translate((int) -(mc.fontRenderer.getStringWidth(text) * scale) / (int) (2 * scale), 0, 0);
 				Laptop.fontRenderer.drawString(text, 0, 0, textColor, shadow);
 			}
 			GlStateManager.popMatrix();

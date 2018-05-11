@@ -112,9 +112,7 @@ public class TextArea extends Component
 				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColor);
 			}
 
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			GLHelper.scissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
-
+			GLHelper.pushScissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
 				float scrollPercentage = (verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines);
@@ -143,9 +141,9 @@ public class TextArea extends Component
 					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColor);
 				}
 			}
+			GLHelper.popScissor();
 
-			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
-
+			GLHelper.pushScissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
 			if(editable && isFocused)
 			{
 				float linesPerUnit = (float) lines.size() / (float) visibleLines;
@@ -164,8 +162,7 @@ public class TextArea extends Component
 					}
 				}
 			}
-
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GLHelper.popScissor();
 
 			if(scrollBarVisible)
 			{
@@ -235,6 +232,7 @@ public class TextArea extends Component
 				cursorY = lineY;
 			}
 			cursorTick = 0;
+			updateScroll();
 		}
 	}
 
@@ -498,14 +496,14 @@ public class TextArea extends Component
 			return;
 		}
 
-		if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
+		/*if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
 		{
 			if(verticalScroll > 0)
 			{
 				scroll(-1);
 				moveYCursor(1);
 			}
-		}
+		}*/
 
 		if(wrapText)
 		{
@@ -530,11 +528,13 @@ public class TextArea extends Component
 				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(cursorY + 1);
-			if(verticalScroll + visibleLines == lines.size() - 1)
-			{
-				scroll(-1);
-			}
 		}
+
+		if(verticalScroll > 0)
+		{
+			scroll(-1);
+		}
+
 		recalculateMaxWidth();
 	}
 
@@ -1004,6 +1004,7 @@ public class TextArea extends Component
 	public void setWrapText(boolean wrapText)
 	{
 		this.wrapText = wrapText;
+		this.horizontalScroll = 0;
 		updateText();
 	}
 
