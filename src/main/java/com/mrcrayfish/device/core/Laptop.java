@@ -40,10 +40,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
