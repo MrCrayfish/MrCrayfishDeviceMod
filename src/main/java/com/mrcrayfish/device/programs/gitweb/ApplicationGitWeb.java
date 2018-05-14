@@ -13,6 +13,7 @@ import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 /**
@@ -34,7 +35,7 @@ public class ApplicationGitWeb extends Application
     private TextLayout scrollable;
 
     @Override
-    public void init()
+    public void init(@Nullable NBTTagCompound intent)
     {
         layoutBrowser = new StandardLayout("GitWeb", 362, 240, this, null);
         layoutBrowser.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
