@@ -20,7 +20,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
+import java.util.Collections;
+import java.util.List;
 
 public class ApplicationAppStore extends SystemApplication
 {
@@ -96,7 +98,8 @@ public class ApplicationAppStore extends SystemApplication
 		labelOtherDesc.setShadow(false);
 		homePageLayout.addComponent(labelOtherDesc);
 
-		AppGrid other = new AppGrid(0, 192, 3, 2, ApplicationManager.getAvailableApplications(), this);
+		List<AppInfo> otherApps = shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6);
+		AppGrid other = new AppGrid(0, 192, 3, 2, otherApps, this);
 		homePageLayout.addComponent(other);
 
 		layoutMain.addComponent(homePageLayout);
@@ -126,6 +129,12 @@ public class ApplicationAppStore extends SystemApplication
 			this.setCurrentLayout(layoutMain);
 		});
 		layout.addComponent(btnPrevious);
+	}
+
+	private <T> List<T> shuffleAndShrink(List<T> list, int newSize)
+	{
+		Collections.shuffle(list);
+		return list.subList(0, Math.min(list.size(), 6));
 	}
 
 	public static class StoreTrayItem extends TrayItem

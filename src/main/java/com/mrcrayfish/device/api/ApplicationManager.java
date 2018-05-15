@@ -6,9 +6,7 @@ import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ApplicationManager
@@ -46,19 +44,19 @@ public final class ApplicationManager
 	 *
 	 * @return the application list
 	 */
-	public static Collection<AppInfo> getAvailableApplications()
+	public static List<AppInfo> getAvailableApplications()
 	{
 		return APP_INFO.values().stream().filter(info -> !info.isSystemApp()).collect(Collectors.toList());
 	}
 
-	public static Collection<AppInfo> getSystemApplications()
+	public static List<AppInfo> getSystemApplications()
 	{
 		return APP_INFO.values().stream().filter(AppInfo::isSystemApp).collect(Collectors.toList());
 	}
 
-	public static Collection<AppInfo> getAllApplications()
+	public static List<AppInfo> getAllApplications()
 	{
-		return APP_INFO.values();
+		return new ArrayList<>(APP_INFO.values());
 	}
 
 	@Nullable

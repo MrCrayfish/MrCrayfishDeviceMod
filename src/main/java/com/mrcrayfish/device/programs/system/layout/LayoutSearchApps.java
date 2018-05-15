@@ -47,7 +47,7 @@ public class LayoutSearchApps extends StandardLayout
         super.init();
 
         ItemList<AppInfo> itemListResults = new ItemList<>(5, 48, ApplicationAppStore.LAYOUT_WIDTH - 10, 5, true);
-        itemListResults.setItems(new ArrayList<>(ApplicationManager.getAvailableApplications()));
+        itemListResults.setItems(ApplicationManager.getAvailableApplications());
         itemListResults.sortBy(Comparator.comparing(AppInfo::getName));
         itemListResults.setListItemRenderer(new ListItemRenderer<AppInfo>(18)
         {

@@ -1,12 +1,10 @@
 package com.mrcrayfish.device.programs.system.component;
 
-import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
-import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
