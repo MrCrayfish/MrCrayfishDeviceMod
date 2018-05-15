@@ -254,7 +254,7 @@ public class Laptop extends GuiScreen implements System
 		Image.CACHE.entrySet().removeIf(entry ->
 		{
 			Image.CachedImage cachedImage = entry.getValue();
-			if(cachedImage.isPendingDeletion())
+			if(cachedImage.isDynamic() && cachedImage.isPendingDeletion())
 			{
 				int texture = cachedImage.getTextureId();
 				if(texture != -1)

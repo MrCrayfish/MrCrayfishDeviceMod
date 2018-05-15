@@ -86,7 +86,7 @@ public class ApplicationAppStore extends SystemApplication
 		labelCertifiedDesc.setShadow(false);
 		homePageLayout.addComponent(labelCertifiedDesc);
 
-		AppGrid grid = new AppGrid(0, 81, 3, 1, ApplicationManager.getSystemApplications(), this);
+		AppGrid grid = new AppGrid(0, 81, 3, 1, ApplicationManager.getSystemApplications().toArray(new AppInfo[0]), this);
 		homePageLayout.addComponent(grid);
 
 		Label labelOther = new Label(TextFormatting.WHITE + TextFormatting.BOLD.toString() + "Other Apps", 10, 178);
@@ -99,7 +99,7 @@ public class ApplicationAppStore extends SystemApplication
 		homePageLayout.addComponent(labelOtherDesc);
 
 		List<AppInfo> otherApps = shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6);
-		AppGrid other = new AppGrid(0, 192, 3, 2, otherApps, this);
+		AppGrid other = new AppGrid(0, 192, 3, 2, otherApps.toArray(new AppInfo[0]), this);
 		homePageLayout.addComponent(other);
 
 		layoutMain.addComponent(homePageLayout);

@@ -15,6 +15,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -349,12 +350,12 @@ public class Image extends Component
     private static class StandardLoader extends ImageLoader
     {
         private final AbstractTexture texture;
-        private final String resource;
+        private final ResourceLocation resource;
 
         public StandardLoader(ResourceLocation resource)
         {
             this.texture = new SimpleTexture(resource);
-            this.resource = resource.toString();
+            this.resource = resource;
         }
 
         @Override
@@ -366,32 +367,16 @@ public class Image extends Component
         @Override
         public CachedImage load(Image image)
         {
-            if(CACHE.containsKey(resource))
+            ITextureObject textureObj = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+            if(textureObj != null)
             {
-                return CACHE.get(resource);
+                return new CachedImage(textureObj.getGlTextureId(), 0, 0, false);
             }
-
-            try
+            else
             {
-                ResourceLocation resourceLocation = new ResourceLocation(resource);
-                ITextureObject textureObj = Minecraft.getMinecraft().getTextureManager().getTexture(resourceLocation);
-                int textureId;
-                if(textureObj != null)
-                {
-                    textureId = textureObj.getGlTextureId();
-                }
-                else
-                {
-                    texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
-                    textureId = texture.getGlTextureId();
-                }
-                CachedImage cachedImage = new CachedImage(textureId, 0, 0);
-                CACHE.put(resource, cachedImage);
-                return cachedImage;
-            }
-            catch(IOException e)
-            {
-                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0);
+                AbstractTexture texture = new SimpleTexture(resource);
+                Minecraft.getMinecraft().getTextureManager().loadTexture(resource, texture);
+                return new CachedImage(texture.getGlTextureId(), 0, 0, false);
             }
         }
     }
@@ -450,13 +435,13 @@ public class Image extends Component
             try
             {
                 texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
-                CachedImage cachedImage = new CachedImage(texture.getGlTextureId(), image.imageWidth, image.imageHeight);
+                CachedImage cachedImage = new CachedImage(texture.getGlTextureId(), image.imageWidth, image.imageHeight, true);
                 CACHE.put(url, cachedImage);
                 return cachedImage;
             }
             catch(IOException e)
             {
-                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0);
+                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0, true);
             }
         }
     }
@@ -504,13 +489,15 @@ public class Image extends Component
         private final int textureId;
         private final int width;
         private final int height;
+        private boolean dynamic;
         private boolean delete = false;
 
-        private CachedImage(int textureId, int width, int height)
+        private CachedImage(int textureId, int width, int height, boolean dynamic)
         {
             this.textureId = textureId;
             this.width = width;
             this.height = height;
+            this.dynamic = dynamic;
         }
 
         public int getTextureId()
@@ -526,6 +513,11 @@ public class Image extends Component
         public void delete()
         {
             delete = true;
+        }
+
+        public boolean isDynamic()
+        {
+            return dynamic;
         }
 
         public boolean isPendingDeletion()
