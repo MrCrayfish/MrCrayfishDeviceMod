@@ -122,7 +122,8 @@ public enum Alphabet implements IIcon
     }
 
     @Override
-    public int getOrdinal() {
+    public int getOrdinal()
+    {
         return ordinal();
     }
 

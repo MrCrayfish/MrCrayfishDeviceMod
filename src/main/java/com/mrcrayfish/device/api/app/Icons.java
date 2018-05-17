@@ -192,7 +192,8 @@ public enum Icons implements IIcon
     }
 
     @Override
-    public int getOrdinal(){
+    public int getOrdinal()
+    {
 	    return ordinal();
     }
 }

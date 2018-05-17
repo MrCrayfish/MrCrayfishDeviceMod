@@ -51,17 +51,23 @@ public class ClientNotification implements IToast
 
         int ordinal = tag.getCompoundTag("icon").getInteger("ordinal");
         String className = tag.getCompoundTag("icon").getString("className");
-        try {
+
+        try
+        {
             notification.icon = (IIcon)Class.forName(className).getEnumConstants()[ordinal];
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e)
+        {
             e.printStackTrace();
         }
 
         notification.title = tag.getString("title");
+
         if(tag.hasKey("subTitle", Constants.NBT.TAG_STRING))
         {
             notification.subTitle = tag.getString("subTitle");
         }
+
         return notification;
     }
 
