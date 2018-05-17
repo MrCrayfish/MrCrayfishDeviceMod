@@ -7,10 +7,7 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -375,8 +372,11 @@ public class Image extends Component
             else
             {
                 AbstractTexture texture = new SimpleTexture(resource);
-                Minecraft.getMinecraft().getTextureManager().loadTexture(resource, texture);
-                return new CachedImage(texture.getGlTextureId(), 0, 0, false);
+                if(Minecraft.getMinecraft().getTextureManager().loadTexture(resource, texture))
+                {
+                    return new CachedImage(texture.getGlTextureId(), 0, 0, false);
+                }
+                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0, false);
             }
         }
     }
