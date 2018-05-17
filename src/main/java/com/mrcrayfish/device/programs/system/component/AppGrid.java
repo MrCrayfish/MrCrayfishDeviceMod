@@ -15,12 +15,11 @@ import com.mrcrayfish.device.programs.system.object.RemoteEntry;
 import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -30,7 +29,7 @@ public class AppGrid extends Component
     private int padding = 5;
     private int horizontalItems;
     private int verticalItems;
-    private AppEntry[] apps;
+    private List<AppEntry> entries = new ArrayList<>();
     private ApplicationAppStore store;
 
     private int itemWidth;
@@ -39,23 +38,13 @@ public class AppGrid extends Component
     private long lastClick = 0;
     private int clickedIndex;
 
-    public AppGrid(int left, int top, int horizontalItems, int verticalItems, AppInfo[] apps, ApplicationAppStore store)
-    {
-        super(left, top);
-        this.horizontalItems = horizontalItems;
-        this.verticalItems = verticalItems;
-        this.apps = parseLocalEntries(Arrays.asList(apps));
-        this.store = store;
-        this.itemWidth = (ApplicationAppStore.LAYOUT_WIDTH - padding * 2 - padding * (horizontalItems - 1)) / horizontalItems;
-        this.itemHeight = 80;
-    }
+    private Layout container;
 
-    public AppGrid(int left, int top, int horizontalItems, int verticalItems, RemoteEntry[] apps, ApplicationAppStore store)
+    public AppGrid(int left, int top, int horizontalItems, int verticalItems, ApplicationAppStore store)
     {
         super(left, top);
         this.horizontalItems = horizontalItems;
         this.verticalItems = verticalItems;
-        this.apps = parseRemoteEntries(Arrays.asList(apps));
         this.store = store;
         this.itemWidth = (ApplicationAppStore.LAYOUT_WIDTH - padding * 2 - padding * (horizontalItems - 1)) / horizontalItems;
         this.itemHeight = 80;
@@ -64,20 +53,22 @@ public class AppGrid extends Component
     @Override
     protected void init(Layout layout)
     {
-        int size = Math.min(apps.length, verticalItems * horizontalItems);
+        container = new Layout(0, 0, ApplicationAppStore.LAYOUT_WIDTH, horizontalItems * itemHeight + (horizontalItems + 1) * padding);
+        int size = Math.min(entries.size(), verticalItems * horizontalItems);
         for(int i = 0; i < size; i++)
         {
-            AppEntry entry = apps[i];
+            AppEntry entry = entries.get(i);
             int itemX = left + (i % horizontalItems) * (itemWidth + padding) + padding;
             int itemY = top + (i / horizontalItems) * (itemHeight + padding) + padding;
-            layout.addComponent(generateAppTile(entry, itemX, itemY));
+            container.addComponent(generateAppTile(entry, itemX, itemY));
         }
+        layout.addComponent(container);
     }
 
     @Override
     protected void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
     {
-        int size = Math.min(apps.length, verticalItems * horizontalItems);
+        int size = Math.min(entries.size(), verticalItems * horizontalItems);
         for(int i = 0; i < size; i++)
         {
             int itemX = x + (i % horizontalItems) * (itemWidth + padding) + padding;
@@ -93,7 +84,7 @@ public class AppGrid extends Component
     @Override
     protected void handleMouseClick(int mouseX, int mouseY, int mouseButton)
     {
-        int size = Math.min(apps.length, verticalItems * horizontalItems);
+        int size = Math.min(entries.size(), verticalItems * horizontalItems);
         for(int i = 0; i < size; i++)
         {
             int itemX = xPosition + (i % horizontalItems) * (itemWidth + padding) + padding;
@@ -103,12 +94,7 @@ public class AppGrid extends Component
                 if(System.currentTimeMillis() - this.lastClick <= 200 && clickedIndex == i)
                 {
                     this.lastClick = 0;
-                    AppEntry entry = apps[i];
-                    if(entry instanceof LocalEntry)
-                    {
-                        store.openApplication(((LocalEntry) entry).getInfo());
-                    }
-                    //TODO reimplement with new app entry system
+                    store.openApplication(entries.get(i));
                 }
                 else
                 {
@@ -119,25 +105,24 @@ public class AppGrid extends Component
         }
     }
 
-    private AppEntry[] parseLocalEntries(List<AppInfo> appInfoList)
+    public void addEntry(AppInfo info)
     {
-        List<AppEntry> entries = appInfoList.stream().map(LocalEntry::new).collect(Collectors.toList());
-        return entries.toArray(new AppEntry[0]);
+        this.entries.add(new LocalEntry(info));
     }
 
-    private AppEntry[] parseRemoteEntries(List<RemoteEntry> remoteEntryList)
+    public void addEntry(AppEntry entry)
     {
-        final Function<AppEntry, AppEntry> FUNCTION = remoteEntry ->
+        this.entries.add(adjustEntry(entry));
+    }
+
+    private AppEntry adjustEntry(AppEntry entry)
+    {
+        AppInfo info = ApplicationManager.getApplication(entry.getId());
+        if(info != null)
         {
-            AppInfo info = ApplicationManager.getApplication(remoteEntry.getId());
-            if(info != null)
-            {
-                return new LocalEntry(info);
-            }
-            return remoteEntry;
-        };
-        List<AppEntry> entries = remoteEntryList.stream().map(FUNCTION).collect(Collectors.toList());
-        return entries.toArray(new AppEntry[0]);
+            return new LocalEntry(info);
+        }
+        return entry;
     }
 
     private Layout generateAppTile(AppEntry entry, int left, int top)
@@ -154,7 +139,8 @@ public class AppGrid extends Component
         else if(entry instanceof RemoteEntry)
         {
             RemoteEntry remoteEntry = (RemoteEntry) entry;
-            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, remoteEntry.getImage());
+            ResourceLocation resource = new ResourceLocation(remoteEntry.getId());
+            Image image = new Image(iconOffset, padding, 14 * 3, 14 * 3, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/icon.png");
             layout.addComponent(image);
         }
 
@@ -170,5 +156,28 @@ public class AppGrid extends Component
         layout.addComponent(labelAuthor);
 
         return layout;
+    }
+
+    public void reloadIcons()
+    {
+        if(container != null)
+        {
+            reloadIcons(container);
+        }
+    }
+
+    private void reloadIcons(Layout layout)
+    {
+        layout.components.forEach(component ->
+        {
+            if(component instanceof Layout)
+            {
+                reloadIcons((Layout) component);
+            }
+            else if(component instanceof Image)
+            {
+                ((Image) component).reload();
+            }
+        });
     }
 }

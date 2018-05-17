@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
+import com.mrcrayfish.device.programs.system.object.LocalEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -92,7 +93,7 @@ public class LayoutSearchApps extends StandardLayout
 
     private void openApplication(AppInfo info)
     {
-        Layout layout = new LayoutAppPage(appStore.getLaptop(), info);
+        Layout layout = new LayoutAppPage(appStore.getLaptop(), new LocalEntry(info));
         app.setCurrentLayout(layout);
         Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
         btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->

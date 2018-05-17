@@ -3,23 +3,23 @@ package com.mrcrayfish.device.programs.system.layout;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
-import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.component.SlideShow;
-import net.minecraft.client.Minecraft;
+import com.mrcrayfish.device.programs.system.object.AppEntry;
+import com.mrcrayfish.device.programs.system.object.LocalEntry;
+import com.mrcrayfish.device.programs.system.object.RemoteEntry;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.io.File;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -28,7 +28,7 @@ import java.net.URL;
 public class LayoutAppPage extends Layout
 {
     private Laptop laptop;
-    private AppInfo info;
+    private AppEntry entry;
 
     private Image imageBanner;
     private Image imageIcon;
@@ -38,12 +38,15 @@ public class LayoutAppPage extends Layout
 
     private boolean installed;
 
-    public LayoutAppPage(Laptop laptop, AppInfo info)
+    public LayoutAppPage(Laptop laptop, AppEntry entry)
     {
         super(250, 150);
         this.laptop = laptop;
-        this.info = info;
-        this.installed = Laptop.getSystem().getInstalledApplications().contains(info);
+        this.entry = entry;
+        if(entry instanceof LocalEntry)
+        {
+            this.installed = Laptop.getSystem().getInstalledApplications().contains(((LocalEntry) entry).getInfo());
+        }
     }
 
     @Override
@@ -57,103 +60,138 @@ public class LayoutAppPage extends Layout
             Gui.drawRect(x, y + 60, x + width, y + 61, color.darker().getRGB());
         });
 
+        ResourceLocation resource = new ResourceLocation(entry.getId());
+
         imageBanner = new Image(0, 0, 250, 40);
         imageBanner.setDrawFull(true);
-        imageBanner.setImage(new ResourceLocation(info.getId().getResourceDomain(), "textures/app/banner/" + info.getId().getResourcePath() + ".png"));
+        if(entry instanceof LocalEntry)
+        {
+            imageBanner.setImage(new ResourceLocation(resource.getResourceDomain(), "textures/app/banner/" + resource.getResourcePath() + ".png"));
+        }
+        else if(entry instanceof RemoteEntry)
+        {
+            imageBanner.setImage(ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/banner.png");
+        }
         this.addComponent(imageBanner);
 
-        labelTitle = new Label(info.getName(), 38, 32);
+        if(entry instanceof LocalEntry)
+        {
+            LocalEntry localEntry = (LocalEntry) entry;
+            AppInfo info = localEntry.getInfo();
+            imageIcon = new Image(5, 26, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+        }
+        else if(entry instanceof RemoteEntry)
+        {
+            imageIcon = new Image(5, 26, 28, 28, ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/icon.png");
+        }
+        this.addComponent(imageIcon);
+
+        labelTitle = new Label(entry.getName(), 38, 32);
         labelTitle.setScale(2);
         this.addComponent(labelTitle);
 
-        labelVersion = new Label("v" + info.getVersion() + " - " + info.getAuthor(), 38, 50);
+        String version = entry instanceof LocalEntry ? "v" + entry.getVersion() + " - " + entry.getAuthor() : entry.getAuthor();
+        labelVersion = new Label(version, 38, 50);
         this.addComponent(labelVersion);
 
-        textDescription = new Text(info.getDescription(), 130, 70, 115);
-        this.addComponent(textDescription);
+        ScrollableLayout descriptionLayout = ScrollableLayout.create(130, 67, 78, new Text(entry.getDescription(), 0, 0, 115));
+        this.addComponent(descriptionLayout);
 
         SlideShow slideShow = new SlideShow(5, 67, 120, 78);
-        if(info.getScreenshots() != null)
+        if(entry instanceof LocalEntry)
         {
-            for(String image : info.getScreenshots())
+            if(entry.getScreenshots() != null)
             {
-                if(image.startsWith("http://") || image.startsWith("https://"))
+                for(String image : entry.getScreenshots())
                 {
-                    slideShow.addImage(image);
+                    if(image.startsWith("http://") || image.startsWith("https://"))
+                    {
+                        slideShow.addImage(image);
+                    }
+                    else
+                    {
+                        slideShow.addImage(new ResourceLocation(image));
+                    }
                 }
-                else
-                {
-                    slideShow.addImage(new ResourceLocation(image));
-                }
+            }
+        }
+        else if(entry instanceof RemoteEntry)
+        {
+            RemoteEntry remoteEntry = (RemoteEntry) entry;
+            String screenshotUrl = ApplicationAppStore.CERTIFIED_APPS_URL + "/assets/" + resource.getResourceDomain() + "/" + resource.getResourcePath() + "/screenshots/screenshot_%d.png";
+            for(int i = 0; i < remoteEntry.screenshots; i++)
+            {
+                slideShow.addImage(String.format(screenshotUrl, i));
             }
         }
         this.addComponent(slideShow);
 
-        if(info.getSupport() != null)
+        if(entry instanceof LocalEntry)
         {
-            Button btnDonate = new Button(174, 44, Icons.COIN);
-            btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
-            btnDonate.setSize(14, 14);
-            this.addComponent(btnDonate);
-        }
-
-        Button btnInstall = new Button(190, 44, "Install", Icons.IMPORT);
-        if(installed)
-        {
-            btnInstall.setText("Remove");
-        }
-        btnInstall.setSize(55, 14);
-        btnInstall.setClickListener((mouseX, mouseY, mouseButton) ->
-        {
-            if(mouseButton == 0)
+            if(((LocalEntry) entry).getInfo().getSupport() != null)
             {
-                if(installed)
-                {
-                    laptop.removeApplication(info, (o, success) ->
-                    {
-                        btnInstall.setText("Install");
-                        installed = false;
-                    });
-                }
-                else
-                {
-                    laptop.installApplication(info, (o, success) ->
-                    {
-                        btnInstall.setText("Remove");
-                        installed = true;
-                    });
-                }
+                Button btnDonate = new Button(174, 44, Icons.COIN);
+                btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
+                btnDonate.setSize(14, 14);
+                this.addComponent(btnDonate);
             }
-        });
-        this.addComponent(btnInstall);
+        }
 
-        loadScreenshots();
+        if(entry instanceof LocalEntry)
+        {
+            AppInfo info = ((LocalEntry) entry).getInfo();
+            Button btnInstall = new Button(190, 44, "Install", Icons.IMPORT);
+            if(installed)
+            {
+                btnInstall.setText("Remove");
+            }
+            btnInstall.setSize(55, 14);
+            btnInstall.setClickListener((mouseX, mouseY, mouseButton) ->
+            {
+                if(mouseButton == 0)
+                {
+                    if(installed)
+                    {
+                        laptop.removeApplication(info, (o, success) ->
+                        {
+                            btnInstall.setText("Install");
+                            installed = false;
+                        });
+                    }
+                    else
+                    {
+                        laptop.installApplication(info, (o, success) ->
+                        {
+                            btnInstall.setText("Remove");
+                            installed = true;
+                        });
+                    }
+                }
+            });
+            this.addComponent(btnInstall);
+        }
+        else if(entry instanceof RemoteEntry)
+        {
+            Button btnDownload = new Button(175, 44, "Download", Icons.IMPORT);
+            btnDownload.setSize(70, 14);
+            btnDownload.setClickListener((mouseX, mouseY, mouseButton) -> this.openWebLink("https://minecraft.curseforge.com/projects/" + ((RemoteEntry) entry).project_id));
+            this.addComponent(btnDownload);
+        }
     }
 
-    @Override
-    public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
+    private void openWebLink(String url)
     {
-        GlStateManager.color(1.0F, 1.0F, 1.0F);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(Laptop.ICON_TEXTURES);
-        RenderUtil.drawRectWithTexture(xPosition + 5, yPosition + 26, info.getIconU(), info.getIconV(), 28, 28, 14, 14, 224, 224);
-        super.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
-    }
-
-    private void loadScreenshots()
-    {
-        String screenshots = "assets/" + info.getId().getResourceDomain() + "/textures/app/screenshots/" + info.getId().getResourcePath();
-        URL url = LayoutAppPage.class.getResource(screenshots);
         try
         {
-            if(url != null)
-            {
-                File file = new File(url.toURI());
-                MrCrayfishDeviceMod.getLogger().info(file.exists() + " is true");
-            }
+            URI uri = new URL(url).toURI();
+            Class<?> class_ = Class.forName("java.awt.Desktop");
+            Object object = class_.getMethod("getDesktop").invoke(null);
+            class_.getMethod("browse", URI.class).invoke(object, uri);
         }
-        catch(URISyntaxException e)
+        catch (Throwable throwable1)
         {
-            e.printStackTrace();
+            Throwable throwable = throwable1.getCause();
+            MrCrayfishDeviceMod.getLogger().error("Couldn't open link: {}", (Object)(throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
         }
     }
 }

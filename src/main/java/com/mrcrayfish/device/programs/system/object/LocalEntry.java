@@ -32,6 +32,30 @@ public class LocalEntry implements AppEntry
         return info.getAuthor();
     }
 
+    @Override
+    public String getDescription()
+    {
+        return info.getDescription();
+    }
+
+    @Override
+    public String getVersion()
+    {
+        return info.getVersion();
+    }
+
+    @Override
+    public String getIcon()
+    {
+        return info.getIcon();
+    }
+
+    @Override
+    public String[] getScreenshots()
+    {
+        return info.getScreenshots();
+    }
+
     public AppInfo getInfo()
     {
         return info;

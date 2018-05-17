@@ -1,32 +1,23 @@
 package com.mrcrayfish.device.programs.system.object;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
 public class RemoteEntry implements AppEntry
 {
-    private String id;
-    private String image;
-    private String name;
-    private String author;
-
-    public RemoteEntry(String id, String image, String name, String author)
-    {
-        this.id = id;
-        this.image = image;
-        this.name = name;
-        this.author = author;
-    }
+    public String id;
+    public String name;
+    public String author;
+    public String description;
+    public int screenshots;
+    public String project_id;
 
     @Override
     public String getId()
     {
         return id;
-    }
-
-    public String getImage()
-    {
-        return image;
     }
 
     @Override
@@ -39,5 +30,30 @@ public class RemoteEntry implements AppEntry
     public String getAuthor()
     {
         return author;
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return description;
+    }
+
+    @Override
+    @Nullable
+    public String getVersion()
+    {
+        return null;
+    }
+
+    @Override
+    public String getIcon()
+    {
+        return null;
+    }
+
+    @Override
+    public String[] getScreenshots()
+    {
+        return null;
     }
 }

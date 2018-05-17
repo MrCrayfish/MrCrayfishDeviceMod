@@ -1,12 +1,20 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
+import com.mrcrayfish.device.api.app.component.Spinner;
+import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
@@ -14,18 +22,23 @@ import com.mrcrayfish.device.programs.system.component.AppGrid;
 import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
 import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
+import com.mrcrayfish.device.programs.system.object.AppEntry;
+import com.mrcrayfish.device.programs.system.object.RemoteEntry;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
-import java.awt.Color;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ApplicationAppStore extends SystemApplication
 {
+	public static final String CERTIFIED_APPS_URL = "https://raw.githubusercontent.com/MrCrayfish/DeviceMod-CertifiedApps/master";
+
 	public static final int LAYOUT_WIDTH = 250;
 	public static final int LAYOUT_HEIGHT = 150;
 
@@ -86,8 +99,24 @@ public class ApplicationAppStore extends SystemApplication
 		labelCertifiedDesc.setShadow(false);
 		homePageLayout.addComponent(labelCertifiedDesc);
 
-		AppGrid grid = new AppGrid(0, 81, 3, 1, ApplicationManager.getSystemApplications().toArray(new AppInfo[0]), this);
-		homePageLayout.addComponent(grid);
+		Spinner spinner = new Spinner((LAYOUT_WIDTH - 12) / 2, 120);
+		homePageLayout.addComponent(spinner);
+
+		OnlineRequest.getInstance().make(CERTIFIED_APPS_URL + "/certified_apps.json", (success, response) ->
+		{
+			spinner.setVisible(false);
+            if(success)
+			{
+				AppGrid grid = new AppGrid(0, 81, 3, 1, this);
+				shuffleAndShrink(parseJson(response), 3).forEach(grid::addEntry);
+				homePageLayout.addComponent(grid);
+				grid.reloadIcons();
+			}
+			else
+			{
+				//TODO error handling
+			}
+        });
 
 		Label labelOther = new Label(TextFormatting.WHITE + TextFormatting.BOLD.toString() + "Other Apps", 10, 178);
 		homePageLayout.addComponent(labelOther);
@@ -98,8 +127,8 @@ public class ApplicationAppStore extends SystemApplication
 		labelOtherDesc.setShadow(false);
 		homePageLayout.addComponent(labelOtherDesc);
 
-		List<AppInfo> otherApps = shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6);
-		AppGrid other = new AppGrid(0, 192, 3, 2, otherApps.toArray(new AppInfo[0]), this);
+		AppGrid other = new AppGrid(0, 192, 3, 2, this);
+		shuffleAndShrink(ApplicationManager.getAvailableApplications(), 6).forEach(other::addEntry);
 		homePageLayout.addComponent(other);
 
 		layoutMain.addComponent(homePageLayout);
@@ -119,9 +148,19 @@ public class ApplicationAppStore extends SystemApplication
 		
 	}
 
-	public void openApplication(AppInfo info)
+	public List<RemoteEntry> parseJson(String json)
 	{
-		Layout layout = new LayoutAppPage(getLaptop(), info);
+		List<RemoteEntry> entries = new ArrayList<>();
+		JsonParser parser = new JsonParser();
+		JsonArray array = parser.parse(json).getAsJsonArray();
+		Gson gson = new Gson();
+		array.forEach(element -> entries.add(gson.fromJson(element, new TypeToken<RemoteEntry>(){}.getType())));
+		return entries;
+	}
+
+	public void openApplication(AppEntry entry)
+	{
+		Layout layout = new LayoutAppPage(getLaptop(), entry);
 		this.setCurrentLayout(layout);
 		Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->
@@ -134,7 +173,7 @@ public class ApplicationAppStore extends SystemApplication
 	private <T> List<T> shuffleAndShrink(List<T> list, int newSize)
 	{
 		Collections.shuffle(list);
-		return list.subList(0, Math.min(list.size(), 6));
+		return list.subList(0, Math.min(list.size(), newSize));
 	}
 
 	public static class StoreTrayItem extends TrayItem

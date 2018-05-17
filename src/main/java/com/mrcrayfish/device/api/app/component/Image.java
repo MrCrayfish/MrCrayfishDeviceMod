@@ -169,10 +169,7 @@ public class Image extends Component
     @Override
     public void handleLoad()
     {
-        if(loader != null)
-        {
-            loader.setup(this);
-        }
+        this.reload();
     }
 
     @Override
@@ -246,7 +243,10 @@ public class Image extends Component
 
     public void reload()
     {
-        loader.setup(this);
+        if(loader != null)
+        {
+            loader.setup(this);
+        }
     }
 
     public void setImage(ResourceLocation resource)
