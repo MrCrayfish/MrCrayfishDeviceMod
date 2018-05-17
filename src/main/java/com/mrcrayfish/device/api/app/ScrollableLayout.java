@@ -123,12 +123,11 @@ public class ScrollableLayout extends Layout
         }
     }
 
-    public static ScrollableLayout create(int left, int top, int visibleHeight, Text text)
+    public static ScrollableLayout create(int left, int top, int width, int visibleHeight, String text)
     {
-        ScrollableLayout layout = new ScrollableLayout(left, top, text.getWidth(), text.getHeight(), visibleHeight);
-        layout.addComponent(text);
-        text.left = 0;
-        text.top = 0;
+        Text t = new Text(text, 0, 0, width);
+        ScrollableLayout layout = new ScrollableLayout(left, top, t.getWidth(), t.getHeight(), visibleHeight);
+        layout.addComponent(t);
         return layout;
     }
 

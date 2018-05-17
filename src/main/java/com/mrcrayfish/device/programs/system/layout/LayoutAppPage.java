@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.component.SlideShow;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
@@ -34,7 +35,6 @@ public class LayoutAppPage extends Layout
     private Image imageIcon;
     private Label labelTitle;
     private Label labelVersion;
-    private Text textDescription;
 
     private boolean installed;
 
@@ -43,15 +43,16 @@ public class LayoutAppPage extends Layout
         super(250, 150);
         this.laptop = laptop;
         this.entry = entry;
-        if(entry instanceof LocalEntry)
-        {
-            this.installed = Laptop.getSystem().getInstalledApplications().contains(((LocalEntry) entry).getInfo());
-        }
     }
 
     @Override
     public void init()
     {
+        if(entry instanceof LocalEntry)
+        {
+            installed = Laptop.getSystem().getInstalledApplications().contains(((LocalEntry) entry).getInfo());
+        }
+
         this.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
             Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
@@ -94,7 +95,8 @@ public class LayoutAppPage extends Layout
         labelVersion = new Label(version, 38, 50);
         this.addComponent(labelVersion);
 
-        ScrollableLayout descriptionLayout = ScrollableLayout.create(130, 67, 78, new Text(entry.getDescription(), 0, 0, 115));
+        String description = GitWebFrame.parseFormatting(entry.getDescription());
+        ScrollableLayout descriptionLayout = ScrollableLayout.create(130, 67, 115, 78, description);
         this.addComponent(descriptionLayout);
 
         SlideShow slideShow = new SlideShow(5, 67, 120, 78);
@@ -140,11 +142,7 @@ public class LayoutAppPage extends Layout
         if(entry instanceof LocalEntry)
         {
             AppInfo info = ((LocalEntry) entry).getInfo();
-            Button btnInstall = new Button(190, 44, "Install", Icons.IMPORT);
-            if(installed)
-            {
-                btnInstall.setText("Remove");
-            }
+            Button btnInstall = new Button(190, 44, installed ? "Remove" : "Install", Icons.IMPORT);
             btnInstall.setSize(55, 14);
             btnInstall.setClickListener((mouseX, mouseY, mouseButton) ->
             {
