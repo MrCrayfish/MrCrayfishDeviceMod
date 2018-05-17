@@ -40,7 +40,7 @@ public class ClientNotification implements IToast
         }
 
         toastGui.getMinecraft().getTextureManager().bindTexture(icon.getIconAsset());
-        RenderUtil.drawRectWithTexture(6, 6, icon.getU(), icon.getV(), 20, 20, 10, 10, 200, 200);
+        RenderUtil.drawRectWithTexture(6, 6, icon.getU(), icon.getV(), icon.getGridWidth(), icon.getGridHeight(), icon.getIconSize(), icon.getIconSize(), 200, 200);
 
         return delta >= 5000L ? IToast.Visibility.HIDE : IToast.Visibility.SHOW;
     }
