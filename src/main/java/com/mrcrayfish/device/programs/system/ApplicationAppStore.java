@@ -42,32 +42,16 @@ public class ApplicationAppStore extends SystemApplication
 	public static final int LAYOUT_WIDTH = 250;
 	public static final int LAYOUT_HEIGHT = 150;
 
-	private StandardLayout layoutMain;
+	private Layout layoutMain;
 
 	public List<AppEntry> certifiedApps = new ArrayList<>();
 
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
 	{
-		layoutMain = new StandardLayout("Home", LAYOUT_WIDTH, LAYOUT_HEIGHT, this, null);
-		layoutMain.setIcon(Icons.HOME);
+		layoutMain = new Layout(LAYOUT_WIDTH, LAYOUT_HEIGHT);
 
-		Button btnSearch = new Button(214, 2, Icons.SEARCH);
-		btnSearch.setToolTip("Search", "Find a specific application");
-		btnSearch.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            if(mouseButton == 0)
-			{
-				this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
-			}
-        });
-		layoutMain.addComponent(btnSearch);
-
-		Button btnManageApps = new Button(232, 2, Icons.HAMMER);
-		btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
-		layoutMain.addComponent(btnManageApps);
-
-		ScrollableLayout homePageLayout = new ScrollableLayout(0, 21, LAYOUT_WIDTH, 368, LAYOUT_HEIGHT - 21);
+		ScrollableLayout homePageLayout = new ScrollableLayout(0, 0, LAYOUT_WIDTH, 368, LAYOUT_HEIGHT);
 		homePageLayout.setScrollSpeed(10);
 		homePageLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 		{
@@ -88,7 +72,25 @@ public class ApplicationAppStore extends SystemApplication
 		imageBanner.setDrawFull(true);
 		homePageLayout.addComponent(imageBanner);
 
-		Label labelBanner = new Label("App Market", 10, 35);
+		Button btnSearch = new Button(5, 5, Icons.SEARCH);
+		btnSearch.setToolTip("Search", "Find a specific application");
+		btnSearch.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			if(mouseButton == 0)
+			{
+				this.setCurrentLayout(new LayoutSearchApps(this, getCurrentLayout()));
+			}
+		});
+		homePageLayout.addComponent(btnSearch);
+
+		Button btnManageApps = new Button(23, 5, Icons.HAMMER);
+		btnManageApps.setToolTip("Manage Apps", "Manage your installed applications");
+		homePageLayout.addComponent(btnManageApps);
+
+		Image image = new Image(5, 33, 20, 20, Icons.SHOP);
+		homePageLayout.addComponent(image);
+
+		Label labelBanner = new Label("App Market", 32, 35);
 		labelBanner.setScale(2);
 		homePageLayout.addComponent(labelBanner);
 

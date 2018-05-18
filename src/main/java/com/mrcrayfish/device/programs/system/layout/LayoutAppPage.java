@@ -143,20 +143,9 @@ public class LayoutAppPage extends Layout
 
         if(entry instanceof LocalEntry)
         {
-            if(((LocalEntry) entry).getInfo().getSupport() != null)
-            {
-                Button btnDonate = new Button(174, 44, Icons.COIN);
-                btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
-                btnDonate.setSize(14, 14);
-                this.addComponent(btnDonate);
-            }
-        }
-
-        if(entry instanceof LocalEntry)
-        {
             AppInfo info = ((LocalEntry) entry).getInfo();
-            Button btnInstall = new Button(190, 44, installed ? "Remove" : "Install", installed ? Icons.CROSS : Icons.PLUS);
-            btnInstall.setSize(55, 14);
+            Button btnInstall = new Button(20, 2, installed ? "Delete" : "Install", installed ? Icons.CROSS : Icons.PLUS);
+            btnInstall.setSize(55, 16);
             btnInstall.setClickListener((mouseX, mouseY, mouseButton) ->
             {
                 if(mouseButton == 0)
@@ -174,7 +163,7 @@ public class LayoutAppPage extends Layout
                     {
                         laptop.installApplication(info, (o, success) ->
                         {
-                            btnInstall.setText("Remove");
+                            btnInstall.setText("Delete");
                             btnInstall.setIcon(Icons.CROSS);
                             installed = true;
                         });
@@ -182,11 +171,19 @@ public class LayoutAppPage extends Layout
                 }
             });
             this.addComponent(btnInstall);
+
+            //if(info.getSupport() != null)
+            {
+                Button btnDonate = new Button(234, 44, Icons.COIN);
+                btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
+                btnDonate.setSize(14, 14);
+                this.addComponent(btnDonate);
+            }
         }
         else if(entry instanceof RemoteEntry)
         {
-            Button btnDownload = new Button(175, 44, "Download", Icons.IMPORT);
-            btnDownload.setSize(70, 14);
+            Button btnDownload = new Button(20, 2, "Download", Icons.IMPORT);
+            btnDownload.setSize(66, 16);
             btnDownload.setClickListener((mouseX, mouseY, mouseButton) -> this.openWebLink("https://minecraft.curseforge.com/projects/" + ((RemoteEntry) entry).project_id));
             this.addComponent(btnDownload);
         }
