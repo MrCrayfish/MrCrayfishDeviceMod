@@ -86,10 +86,6 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 
 		if(super.isInside(mouseX, mouseY))
 		{
-			if(clickListener != null)
-			{
-				clickListener.onClick(mouseX, mouseY, mouseButton);
-			}
 			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 			if(group != null)
 			{
@@ -99,6 +95,10 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 			else 
 			{
 				this.toggle = !toggle;
+			}
+			if(clickListener != null)
+			{
+				clickListener.onClick(mouseX, mouseY, mouseButton);
 			}
 		}
 	}
