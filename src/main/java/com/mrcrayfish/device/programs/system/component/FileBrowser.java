@@ -144,7 +144,8 @@ public class FileBrowser extends Component
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
             Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
-            Gui.drawRect(x, y, x + width, y + 21, color.darker().getRGB());
+            Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
+            Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
         });
 
         btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
@@ -329,7 +330,8 @@ public class FileBrowser extends Component
             @Override
             public void render(Drive drive, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
             {
-                drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
+                Color bgColor = new Color(getColorScheme().getBackgroundColor());
+                drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
                 mc.getTextureManager().bindTexture(ASSETS);
                 GlStateManager.color(1.0F, 1.0F, 1.0F);
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);

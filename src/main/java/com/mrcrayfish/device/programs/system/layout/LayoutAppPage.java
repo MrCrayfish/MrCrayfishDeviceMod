@@ -62,7 +62,7 @@ public class LayoutAppPage extends Layout
 
         this.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
             Gui.drawRect(x, y + 40, x + width, y + 41, color.brighter().getRGB());
             Gui.drawRect(x, y + 41, x + width, y + 60, color.getRGB());
             Gui.drawRect(x, y + 60, x + width, y + 61, color.darker().getRGB());

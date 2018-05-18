@@ -228,8 +228,8 @@ public class ApplicationSettings extends SystemApplication
 		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 		{
 			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
-			Gui.drawRect(x, y, x + width, y + 20, color.darker().getRGB());
-			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
+			Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
+			Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
 			mc.fontRenderer.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
 			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 		}
