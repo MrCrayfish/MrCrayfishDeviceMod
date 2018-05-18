@@ -25,6 +25,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -155,19 +156,24 @@ public class ApplicationEmail extends Application
 		
 		/* Register Account Layout */
 		
-		layoutRegisterAccount = new Layout(167, 60);
+		layoutRegisterAccount = new Layout(200, 113);
 
-		labelEmail = new Label("Email", 5, 5);
+		image = new Image(0, 0, layoutRegisterAccount.width, layoutRegisterAccount.height, 0, 0, 640, 360, 640, 360, ENDER_MAIL_BACKGROUND);
+		image.setAlpha(0.85F);
+		layoutRegisterAccount.addComponent(image);
+
+		labelEmail = new Label(TextFormatting.BOLD + "Choose your email", layoutRegisterAccount.width / 2, 30);
+		labelEmail.setAlignment(Component.ALIGN_CENTER);
 		layoutRegisterAccount.addComponent(labelEmail);
 
-		fieldEmail = new TextField(5, 15, 80);
+		fieldEmail = new TextField(20, 50, 80);
 		layoutRegisterAccount.addComponent(fieldEmail);
 
-		labelDomain = new Label("@endermail.com", 88, 18);
+		labelDomain = new Label("@endermail.com", 105, 54);
 		layoutRegisterAccount.addComponent(labelDomain);
 
-		btnRegister = new Button(5, 35, "Register");
-		btnRegister.setSize(157, 20);
+		btnRegister = new Button(70, 80, "Register");
+		btnRegister.setSize(60, 16);
 		btnRegister.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			int length = fieldEmail.getText().length();
