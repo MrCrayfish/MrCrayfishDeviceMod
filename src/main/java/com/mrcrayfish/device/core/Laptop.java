@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.System;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
@@ -447,46 +448,45 @@ public class Laptop extends GuiScreen implements System
 		super.drawHoveringText(textLines, x, y);
 	}
 
-	@Override
-	public void openApplication(AppInfo info)
+	public boolean sendApplicationToFront(AppInfo info)
 	{
-		openApplication(info, null);
+		for(int i = 0; i < windows.length; i++)
+		{
+			Window window = windows[i];
+			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
+			{
+				windows[i] = null;
+				updateWindowStack();
+				windows[0] = window;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
-	public void openApplication(AppInfo info, @Nullable NBTTagCompound intentTag)
+	public void openApplication(AppInfo info)
+	{
+		openApplication(info, (NBTTagCompound) null);
+	}
+
+	@Override
+	public void openApplication(AppInfo info, NBTTagCompound intentTag)
 	{
 		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
 		optional.ifPresent(application -> openApplication(application, intentTag));
 	}
 
-	public void openApplication(Application app, @Nullable NBTTagCompound intent)
+	private void openApplication(Application app, NBTTagCompound intent)
 	{
-		if(!app.getInfo().isSystemApp() && !installedApps.contains(app.getInfo()))
-		{
+		if(!isApplicationInstalled(app.getInfo()))
 			return;
-		}
 
-		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-		{
-			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
-			{
-				return;
-			}
-		}
+		if(!isValidApplication(app.getInfo()))
+			return;
 
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<Application> window = windows[i];
-			if(window != null && window.content.getInfo().getFormattedId().equals(app.getInfo().getFormattedId()))
-			{
-				windows[i] = null;
-				updateWindowStack();
-				windows[0] = window;
-				return;
-			}
-		}
-
+		if(sendApplicationToFront(app.getInfo()))
+			return;
 
 		Window<Application> window = new Window<>(app, this);
 		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
@@ -512,13 +512,44 @@ public class Laptop extends GuiScreen implements System
 	}
 
 	@Override
+	public boolean openApplication(AppInfo info, File file)
+	{
+		if(!isApplicationInstalled(info))
+			return false;
+
+		if(!isValidApplication(info))
+			return false;
+
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		if(optional.isPresent())
+		{
+			Application application = optional.get();
+			boolean alreadyRunning = isApplicationRunning(info);
+			openApplication(application, null);
+			if(isApplicationRunning(info))
+			{
+				if(!application.handleFile(file))
+				{
+					if(!alreadyRunning)
+					{
+						closeApplication(application);
+					}
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public void closeApplication(AppInfo info)
 	{
 		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
 		optional.ifPresent(this::closeApplication);
 	}
 
-	public void closeApplication(Application app)
+	private void closeApplication(Application app)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
@@ -676,8 +707,25 @@ public class Laptop extends GuiScreen implements System
 		return ImmutableList.copyOf(installedApps);
 	}
 
+	public boolean isApplicationInstalled(AppInfo info)
+	{
+		return info.isSystemApp() || installedApps.contains(info);
+	}
+
+	private boolean isValidApplication(AppInfo info)
+	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
+		}
+		return true;
+	}
+
 	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
+		if(isValidApplication(info))
+			return;
+
 		Task task = new TaskInstallApp(info, pos, true);
 		task.setCallback((tagCompound, success) ->
 		{
@@ -696,6 +744,9 @@ public class Laptop extends GuiScreen implements System
 
 	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
+		if(isValidApplication(info))
+			return;
+
 		Task task = new TaskInstallApp(info, pos, false);
 		task.setCallback((tagCompound, success) ->
 		{

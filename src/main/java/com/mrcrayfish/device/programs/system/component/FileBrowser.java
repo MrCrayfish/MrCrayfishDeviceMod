@@ -286,19 +286,14 @@ public class FileBrowser extends Component
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
                             if(targetApp != null)
                             {
-                                laptop.openApplication(targetApp, null);
-                                if(laptop.isApplicationRunning(targetApp.getInfo()))
-                                {
-                                    if(!targetApp.handleFile(file))
-                                    {
-                                        laptop.closeApplication(targetApp);
-                                        laptop.openApplication(systemApp, null);
-                                        createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
-                                    }
-                                }
-                                else
+                                if(!laptop.isApplicationInstalled(targetApp.getInfo()))
                                 {
                                     createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
+                                }
+                                else if(!laptop.openFileWithApplication(targetApp.getInfo(), file))
+                                {
+                                    laptop.sendApplicationToFront(systemApp.getInfo());
+                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
                             }
                             else

@@ -2,8 +2,6 @@ package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.network.TrayItemWifi;
 import com.mrcrayfish.device.object.AppInfo;

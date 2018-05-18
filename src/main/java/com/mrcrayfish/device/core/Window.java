@@ -185,7 +185,7 @@ public class Window<T extends Wrappable>
 		{
 			if(content instanceof Application)
 			{
-				gui.closeApplication((Application) content);
+				gui.closeApplication(((Application) content).getInfo());
 				return;
 			}
 
@@ -278,7 +278,7 @@ public class Window<T extends Wrappable>
 	{
 		if(content instanceof Application)
 		{
-			laptop.closeApplication((Application) content);
+			laptop.closeApplication(((Application) content).getInfo());
 			return;
 		}
 		if(parent != null)

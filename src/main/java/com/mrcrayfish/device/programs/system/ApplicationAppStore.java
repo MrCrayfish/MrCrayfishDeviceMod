@@ -21,7 +21,6 @@ import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.AppGrid;
 import com.mrcrayfish.device.programs.system.layout.LayoutAppPage;
 import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
-import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.RemoteEntry;
 import net.minecraft.client.Minecraft;
