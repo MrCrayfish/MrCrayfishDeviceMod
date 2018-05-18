@@ -79,7 +79,7 @@ public class ApplicationGitWeb extends Application
         layoutBrowser.addComponent(btnSettings);
 
         webFrame = new GitWebFrame(this, 0, 21, 362, 143);
-        webFrame.loadUrl("https://pastebin.com/raw/ABHtvNQv");
+        webFrame.loadWebsite("welcome.official");
         webFrame.setLoadingCallback((s, success) ->
         {
             spinnerLoading.setVisible(true);
