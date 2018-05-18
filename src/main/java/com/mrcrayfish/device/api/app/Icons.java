@@ -154,6 +154,7 @@ public enum Icons implements IIcon
 
     private static final int ICON_SIZE = 10;
     private static final int GRID_SIZE = 20;
+    private static final int SOURCE_SIZE = 200;
 
 	@Override
 	public ResourceLocation getIconAsset()
@@ -179,6 +180,24 @@ public enum Icons implements IIcon
         return GRID_SIZE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSourceHeight()
+    {
+        return SOURCE_SIZE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSourceWidth()
+    {
+        return SOURCE_SIZE;
+    }
+
     @Override
     public int getU()
     {
@@ -189,5 +208,11 @@ public enum Icons implements IIcon
     public int getV()
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
+    }
+
+    @Override
+    public int getOrdinal()
+    {
+	    return ordinal();
     }
 }

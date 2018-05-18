@@ -11,17 +11,17 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Notification
 {
-    private Icons icon;
+    private IIcon icon;
     private String title;
     private String subTitle;
 
-    public Notification(Icons icon, String title)
+    public Notification(IIcon icon, String title)
     {
         this.icon = icon;
         this.title = title;
     }
 
-    public Notification(Icons icon, String title, String subTitle)
+    public Notification(IIcon icon, String title, String subTitle)
     {
         this(icon, title);
         this.subTitle = subTitle;
@@ -30,12 +30,19 @@ public class Notification
     public NBTTagCompound toTag()
     {
         NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger("icon", icon.ordinal());
         tag.setString("title", title);
+
         if(!StringUtils.isEmpty(subTitle))
         {
             tag.setString("subTitle", subTitle);
         }
+
+        NBTTagCompound tagIcon = new NBTTagCompound();
+        tagIcon.setInteger("ordinal", icon.getOrdinal());
+        tagIcon.setString("className", icon.getClass().getName());
+
+        tag.setTag("icon", tagIcon);
+
         return tag;
     }
 
