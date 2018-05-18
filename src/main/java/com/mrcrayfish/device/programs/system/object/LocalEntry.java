@@ -60,4 +60,14 @@ public class LocalEntry implements AppEntry
     {
         return info;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj instanceof AppEntry)
+        {
+            return ((AppEntry) obj).getId().equals(getId());
+        }
+        return false;
+    }
 }

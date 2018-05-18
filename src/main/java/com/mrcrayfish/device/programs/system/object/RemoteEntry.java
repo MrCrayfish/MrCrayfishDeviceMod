@@ -56,4 +56,14 @@ public class RemoteEntry implements AppEntry
     {
         return null;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj instanceof AppEntry)
+        {
+            return ((AppEntry) obj).getId().equals(getId());
+        }
+        return false;
+    }
 }
