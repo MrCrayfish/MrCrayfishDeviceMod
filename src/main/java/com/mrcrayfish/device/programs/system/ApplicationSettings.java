@@ -15,13 +15,13 @@ import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.Palette;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
-import com.sun.istack.internal.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.Stack;
