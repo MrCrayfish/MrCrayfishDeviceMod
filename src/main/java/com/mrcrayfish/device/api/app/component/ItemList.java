@@ -123,14 +123,17 @@ public class ItemList<E> extends Component implements Iterable<E>
 
 			int size = getSize();
 
+			Color bgColor = new Color(getColourScheme().getBackgroundColour());
+			Color borderColor = bgColor.darker().darker();
+
 			/* Fill */
-			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + (size * height) + size, Color.LIGHT_GRAY.getRGB());
+			Gui.drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + (size * height) + size, bgColor.getRGB());
 
 			/* Box */
-			drawHorizontalLine(xPosition, xPosition + width - 1, yPosition, borderColour);
-			drawVerticalLine(xPosition, yPosition, yPosition + (size * height) + size, borderColour);
-			drawVerticalLine(xPosition + width - 1, yPosition, yPosition + (size * height) + size, borderColour);
-			drawHorizontalLine(xPosition, xPosition + width - 1, yPosition + (size * height) + size, borderColour);
+			drawHorizontalLine(xPosition, xPosition + width - 1, yPosition, borderColor.getRGB());
+			drawVerticalLine(xPosition, yPosition, yPosition + (size * height) + size, borderColor.getRGB());
+			drawVerticalLine(xPosition + width - 1, yPosition, yPosition + (size * height) + size, borderColor.getRGB());
+			drawHorizontalLine(xPosition, xPosition + width - 1, yPosition + (size * height) + size, borderColor.getRGB());
 
 			/* Items */
 			for(int i = 0; i < size - 1 && i < items.size(); i++)
@@ -145,9 +148,9 @@ public class ItemList<E> extends Component implements Iterable<E>
 					}
 					else
 					{
-						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? backgroundColour : Color.DARK_GRAY.getRGB());
+						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? bgColor.brighter().getRGB() : bgColor.brighter().brighter().getRGB());
 						drawString(mc.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, Color.DARK_GRAY.getRGB());
+						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, borderColor.getRGB());
 					}
 				}
 			}

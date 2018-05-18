@@ -45,10 +45,11 @@ public class Slider extends Component
 	{
 		if (this.visible)
         {
-			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, borderColour);
-			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, backgroundColour);
-			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, borderColour);
-			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, sliderColour);
+			Color bgColor = new Color(getColourScheme().getBackgroundColour());
+			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, bgColor.darker().darker().getRGB());
+			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, bgColor.getRGB());
+			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, bgColor.darker().darker().getRGB());
+			drawRect(xPosition + newSliderX + 1, yPosition + 1, xPosition + newSliderX + 7, yPosition + 11, bgColor.brighter().brighter().getRGB());
         }
 	}
 	
