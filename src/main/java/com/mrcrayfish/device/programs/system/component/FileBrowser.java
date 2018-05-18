@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
@@ -119,7 +120,7 @@ public class FileBrowser extends Component
     /**
      * The default constructor for a component. For your component to
      * be laid out correctly, make sure you use the x and y parameters
-     * from {@link Application#init()} and pass them into the
+     * from {@link Wrappable#init(NBTTagCompound)} and pass them into the
      * x and y arguments of this constructor.
      * <p>
      * Laying out the components is a simple relative positioning. So for left (x position),
@@ -142,7 +143,7 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColourScheme().getBackgroundColour());
+            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
             Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
         });
 
@@ -284,17 +285,24 @@ public class FileBrowser extends Component
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
                             if(targetApp != null)
                             {
-                                laptop.open(targetApp);
-                                if(!targetApp.handleFile(file))
+                                laptop.openApplication(targetApp, null);
+                                if(laptop.isApplicationRunning(targetApp.getInfo()))
                                 {
-                                    laptop.close(targetApp);
-                                    laptop.open(systemApp);
-                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
+                                    if(!targetApp.handleFile(file))
+                                    {
+                                        laptop.closeApplication(targetApp);
+                                        laptop.openApplication(systemApp, null);
+                                        createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
+                                    }
+                                }
+                                else
+                                {
+                                    createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
                                 }
                             }
                             else
                             {
-                                createErrorDialog("The application designed for this file does not exist or is not installed.");
+                                createErrorDialog("The application designed for this file does not exist.");
                             }
                         }
                     }
@@ -353,7 +361,7 @@ public class FileBrowser extends Component
     }
 
     @Override
-    public void handleOnLoad()
+    public void handleLoad()
     {
         if(!loadedStructure)
         {
@@ -481,8 +489,18 @@ public class FileBrowser extends Component
     {
         if(!folder.isSynced())
         {
+            BlockPos pos = Laptop.getPos();
+            if(pos == null)
+            {
+                if(callback != null)
+                {
+                    callback.execute(null, false);
+                }
+                return;
+            }
+            
             setLoading(true);
-            Task task = new TaskGetFiles(folder, Laptop.getPos()); //TODO convert to file system
+            Task task = new TaskGetFiles(folder, pos); //TODO convert to file system
             task.setCallback((nbt, success) ->
             {
                 if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
@@ -617,6 +635,24 @@ public class FileBrowser extends Component
         });
     }
 
+    public void addFile(File file, boolean override, Callback<FileSystem.Response> callback)
+    {
+        setLoading(true);
+        currentFolder.add(file, override, (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                fileList.addItem(file);
+                FileBrowser.refreshList = true;
+            }
+            if(callback != null)
+            {
+                callback.execute(response, success);
+            }
+            setLoading(false);
+        });
+    }
+
     private void deleteSelectedFile()
     {
         File file = fileList.getSelectedItem();
@@ -713,9 +749,9 @@ public class FileBrowser extends Component
 
     private void setClipboardFileToSelected()
     {
-        if(fileList.getSelectedIndex() != -1)
+        File file = fileList.getSelectedItem();
+        if(file != null)
         {
-            File file = fileList.getSelectedItem();
             if(file.isProtected())
             {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be copied.";
@@ -727,13 +763,18 @@ public class FileBrowser extends Component
             clipboardFile = file;
             btnPaste.setEnabled(true);
         }
+        else
+        {
+            Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to copy does not exist.");
+            wrappable.openDialog(dialog);
+        }
     }
 
     private void cutSelectedFile()
     {
-        if(fileList.getSelectedIndex() != -1)
+        File file = fileList.getSelectedItem();
+        if(file != null)
         {
-            File file = fileList.getSelectedItem();
             if(file.isProtected())
             {
                 String message = "This " + (file.isFolder() ? "folder" : "file") + " is protected and can not be cut.";
@@ -746,6 +787,11 @@ public class FileBrowser extends Component
             clipboardFile = file;
             btnPaste.setEnabled(true);
         }
+        else
+        {
+            Dialog.Message dialog = new Dialog.Message("The file/folder you are trying to cut does not exist.");
+            wrappable.openDialog(dialog);
+        }
     }
 
     private void pasteClipboardFile()
@@ -754,23 +800,7 @@ public class FileBrowser extends Component
         {
             if(canPasteHere())
             {
-                if(currentFolder.hasFile(clipboardFile.getName()))
-                {
-                    Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
-                    dialog.setPositiveText("Override");
-                    dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
-                    {
-                        if(mouseButton == 0)
-                        {
-                            handleCopyCut(true);
-                        }
-                    });
-                    wrappable.openDialog(dialog);
-                }
-                else
-                {
-                    handleCopyCut(false);
-                }
+                handleCopyCut(false);
             }
             else
             {
@@ -782,37 +812,40 @@ public class FileBrowser extends Component
 
     private void handleCopyCut(boolean override)
     {
+        final Callback<FileSystem.Response> CALLBACK = (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.FILE_EXISTS)
+            {
+                Dialog.Confirmation dialog = new Dialog.Confirmation("A file with the same name already exists in this directory. Do you want to override it?");
+                dialog.setPositiveText("Override");
+                dialog.setPositiveListener((mouseX, mouseY, mouseButton) ->
+                {
+                    if(mouseButton == 0)
+                    {
+                        handleCopyCut(true);
+                    }
+                });
+                wrappable.openDialog(dialog);
+            }
+            else if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                resetClipboard();
+            }
+            else
+            {
+                createErrorDialog(response.getMessage());
+            }
+            setLoading(false);
+        };
+
+        setLoading(true);
         if(clipboardDir != null)
         {
-            setLoading(true);
-            clipboardFile.moveTo(currentFolder, override, (response, success) ->
-            {
-                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                {
-                    resetClipboard();
-                }
-                else
-                {
-                    createErrorDialog(response.getMessage());
-                }
-                setLoading(false);
-            });
+            clipboardFile.moveTo(currentFolder, override, CALLBACK);
         }
         else
         {
-            setLoading(true);
-            clipboardFile.copyTo(currentFolder, override, (response, success) ->
-            {
-                if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
-                {
-                    resetClipboard();
-                }
-                else
-                {
-                    createErrorDialog(response.getMessage());
-                }
-                setLoading(false);
-            });
+            clipboardFile.copyTo(currentFolder, override, CALLBACK);
         }
     }
 
@@ -971,7 +1004,7 @@ public class FileBrowser extends Component
 
     public enum Mode
     {
-        FULL(225, 145, 26, 6), BASIC(210, 100, 26, 4);
+        FULL(225, 145, 26, 6), BASIC(211, 105, 26, 4);
 
         private final int width;
         private final int height;

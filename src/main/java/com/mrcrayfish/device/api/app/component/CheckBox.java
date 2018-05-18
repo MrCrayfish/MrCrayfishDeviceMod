@@ -18,10 +18,10 @@ public class CheckBox extends Component implements RadioGroup.Item
 	
 	protected ClickListener listener = null;
 	
-	protected int textColour = -1;
-	protected int backgroundColour = -1;
-	protected int borderColour = -1;
-	protected int checkedColour = -1;
+	protected int textColor = Color.WHITE.getRGB();
+	protected int backgroundColor = Color.GRAY.getRGB();
+	protected int borderColor = Color.BLACK.getRGB();
+	protected int checkedColor = Color.DARK_GRAY.getRGB();
 	
 	/**
 	 * Default check box constructor
@@ -119,42 +119,42 @@ public class CheckBox extends Component implements RadioGroup.Item
 	}
 	
 	/**
-	 * Sets the text colour for this component
+	 * Sets the text color for this component
 	 * 
-	 * @param color the text colour
+	 * @param color the text color
 	 */
-	public void setTextColour(Color color) 
+	public void setTextColor(Color color)
 	{
-		this.textColour = color.getRGB();
+		this.textColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the background colour for this component
+	 * Sets the background color for this component
 	 * 
-	 * @param color the background colour
+	 * @param color the background color
 	 */
-	public void setBackgroundColour(Color color) 
+	public void setBackgroundColor(Color color)
 	{
-		this.backgroundColour = color.getRGB();
+		this.backgroundColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the border colour for this component
+	 * Sets the border color for this component
 	 * 
-	 * @param color the border colour
+	 * @param color the border color
 	 */
-	public void setBorderColour(Color color) 
+	public void setBorderColor(Color color)
 	{
-		this.borderColour = color.getRGB();
+		this.borderColor = color.getRGB();
 	}
 	
 	/**
-	 * Sets the checked colour for this component
+	 * Sets the checked color for this component
 	 * 
-	 * @param color the checked colour
+	 * @param color the checked color
 	 */
-	public void setCheckedColour(Color color)
+	public void setCheckedColor(Color color)
 	{
-		this.checkedColour = color.getRGB();
+		this.checkedColor = color.getRGB();
 	}
 }

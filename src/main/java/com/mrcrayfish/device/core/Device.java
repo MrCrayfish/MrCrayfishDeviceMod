@@ -1,9 +1,6 @@
 package com.mrcrayfish.device.core;
 
-import com.mrcrayfish.device.core.network.NetworkDevice;
-import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityDevice;
-import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

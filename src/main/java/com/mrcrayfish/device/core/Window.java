@@ -1,20 +1,19 @@
 package com.mrcrayfish.device.core;
 
-import java.awt.Color;
-
-import com.mrcrayfish.device.util.GLHelper;
-import net.minecraft.client.gui.Gui;
-import org.lwjgl.opengl.GL11;
-
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.gui.GuiButtonClose;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
+import java.awt.*;
 
 public class Window<T extends Wrappable>
 {
@@ -57,10 +56,10 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	void init(int x, int y)
+	void init(int x, int y, @Nullable NBTTagCompound intent)
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
-		content.init();
+		content.init(intent);
 	}
 	
 	public void onTick() 
@@ -186,7 +185,7 @@ public class Window<T extends Wrappable>
 		{
 			if(content instanceof Application)
 			{
-				gui.close((Application) content);
+				gui.closeApplication((Application) content);
 				return;
 			}
 
@@ -256,7 +255,7 @@ public class Window<T extends Wrappable>
 		else
 		{
 			dialogWindow = new Window(dialog, null);
-			dialogWindow.init(0, 0);
+			dialogWindow.init(0, 0, null);
 			dialogWindow.setParent(this);
 		}
 	}
@@ -279,7 +278,7 @@ public class Window<T extends Wrappable>
 	{
 		if(content instanceof Application)
 		{
-			laptop.close((Application) content);
+			laptop.closeApplication((Application) content);
 			return;
 		}
 		if(parent != null)

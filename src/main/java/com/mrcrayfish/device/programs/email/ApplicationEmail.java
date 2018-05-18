@@ -4,38 +4,31 @@ import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout.Background;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.email.object.Contact;
+import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.task.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +36,7 @@ import java.util.regex.Pattern;
 public class ApplicationEmail extends Application
 {
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
+	private static final ResourceLocation ENDER_MAIL_BACKGROUND = new ResourceLocation("cdm:textures/gui/ender_mail_background.png");
 
 	private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z0-9]{1,10})@endermail\\.com$");
 	private final Color COLOR_EMAIL_CONTENT_BACKGROUND = new Color(160, 160, 160);
@@ -125,7 +119,7 @@ public class ApplicationEmail extends Application
 	private List<Contact> contacts;
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		/* Loading Layout */
 		layoutInit = new Layout(40, 40);
@@ -138,38 +132,48 @@ public class ApplicationEmail extends Application
 
 		
 		/* Main Menu Layout */
-		
-		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, info.getIconU(), info.getIconV(), 14, 14, Laptop.ICON_TEXTURES);
+		layoutMainMenu = new Layout(200, 113);
+
+		Image image = new Image(0, 0, layoutMainMenu.width, layoutMainMenu.height, 0, 0, 640, 360, 640, 360, ENDER_MAIL_BACKGROUND);
+		image.setAlpha(0.85F);
+		layoutMainMenu.addComponent(image);
+
+		logo = new Image(86, 20, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Ender Mail", 50, 35);
+		labelLogo = new Label("Ender Mail", 100, 46);
 		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnRegisterAccount = new Button(5, 50, "Register");
-		btnRegisterAccount.setSize(90, 20);
+		btnRegisterAccount = new Button(70, 65, "Register");
+		btnRegisterAccount.setSize(60, 16);
 		btnRegisterAccount.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutRegisterAccount));
-		btnRegisterAccount.setVisible(false);
 		layoutMainMenu.addComponent(btnRegisterAccount);
+
+		this.setCurrentLayout(layoutMainMenu);
 
 		
 		/* Register Account Layout */
 		
-		layoutRegisterAccount = new Layout(167, 60);
+		layoutRegisterAccount = new Layout(200, 113);
 
-		labelEmail = new Label("Email", 5, 5);
+		image = new Image(0, 0, layoutRegisterAccount.width, layoutRegisterAccount.height, 0, 0, 640, 360, 640, 360, ENDER_MAIL_BACKGROUND);
+		image.setAlpha(0.85F);
+		layoutRegisterAccount.addComponent(image);
+
+		labelEmail = new Label(TextFormatting.BOLD + "Choose your email", layoutRegisterAccount.width / 2, 30);
+		labelEmail.setAlignment(Component.ALIGN_CENTER);
 		layoutRegisterAccount.addComponent(labelEmail);
 
-		fieldEmail = new TextField(5, 15, 80);
+		fieldEmail = new TextField(20, 50, 80);
 		layoutRegisterAccount.addComponent(fieldEmail);
 
-		labelDomain = new Label("@endermail.com", 88, 18);
+		labelDomain = new Label("@endermail.com", 105, 54);
 		layoutRegisterAccount.addComponent(labelDomain);
 
-		btnRegister = new Button(5, 35, "Register");
-		btnRegister.setSize(157, 20);
+		btnRegister = new Button(70, 80, "Register");
+		btnRegister.setSize(60, 16);
 		btnRegister.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			int length = fieldEmail.getText().length();
@@ -185,7 +189,7 @@ public class ApplicationEmail extends Application
 					}
 					else
 					{
-						fieldEmail.setTextColour(Color.RED);
+						fieldEmail.setTextColor(Color.RED);
 					}
 				});
 				TaskManager.sendTask(taskRegisterAccount);
@@ -196,7 +200,7 @@ public class ApplicationEmail extends Application
 		
 		/* Inbox Layout */
 		
-		layoutInbox = new Layout(300, 148);
+		layoutInbox = new Layout(260, 146);
 		layoutInbox.setInitListener(new InitListener()
 		{
 			@Override
@@ -214,8 +218,29 @@ public class ApplicationEmail extends Application
 				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
+		layoutInbox.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+			mc.getTextureManager().bindTexture(ENDER_MAIL_BACKGROUND);
+			RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, 640, 360, 640, 360);
 
-		listEmails = new ItemList<Email>(5, 25, 275, 4);
+			Color temp = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
+			Color color = new Color(temp.getRed(), temp.getGreen(), temp.getBlue(), 150);
+			Gui.drawRect(x, y, x + 125, y + height, color.getRGB());
+			Gui.drawRect(x + 125, y, x + 126, y + height, color.darker().getRGB());
+
+			Email e = listEmails.getSelectedItem();
+			if(e != null)
+			{
+				Gui.drawRect(x + 130, y + 5, x + width - 5, y + 34, color.getRGB());
+				Gui.drawRect(x + 130, y + 34, x + width - 5, y + 35, color.darker().getRGB());
+				Gui.drawRect(x + 130, y + 35, x + width - 5, y + height - 5, new Color(1.0F, 1.0F, 1.0F, 0.25F).getRGB());
+				RenderUtil.drawStringClipped(e.getSubject(), x + 135, y + 10, 120, Color.WHITE.getRGB(), true);
+				RenderUtil.drawStringClipped(e.getAuthor() + "@endermail.com", x + 135, y + 22, 120, Color.LIGHT_GRAY.getRGB(), false);
+				Laptop.fontRenderer.drawSplitString(e.getMessage(), x + 135, y + 40, 115, Color.WHITE.getRGB());
+			}
+        });
+
+		listEmails = new ItemList<>(5, 25, 116, 4);
 		listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
 		{
 			@Override
@@ -225,21 +250,19 @@ public class ApplicationEmail extends Application
 
 				if (!e.isRead())
 				{
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-					mc.getTextureManager().bindTexture(ENDER_MAIL_ICONS);
-					gui.drawTexturedModalRect(x + 247, y + 8, 0, 10, 20, 12);
+					GlStateManager.color(1.0F, 1.0F, 1.0F);
+					RenderUtil.drawApplicationIcon(info, x + width - 16, y + 2);
 				}
 
-				if(e.attachment != null)
+				if(e.getAttachment() != null)
 				{
 					GlStateManager.color(1.0F, 1.0F, 1.0F);
-					int posX = x + (!e.isRead() ? -30 : 0) + 255;
+					int posX = x + (!e.isRead() ? -12 : 0) + width;
 					mc.getTextureManager().bindTexture(ENDER_MAIL_ICONS);
-					gui.drawTexturedModalRect(posX, y + 5, 20, 10, 13, 20);
+					RenderUtil.drawRectWithTexture(posX, y + 16, 20, 10, 7, 10, 13, 20);
 				}
-
-				mc.fontRenderer.drawString(e.subject, x + 5, y + 5, Color.WHITE.getRGB());
-				mc.fontRenderer.drawString(e.author + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
+				RenderUtil.drawStringClipped(e.getSubject(), x + 5, y + 5, width - 20, Color.WHITE.getRGB(), false);
+				RenderUtil.drawStringClipped(e.getAuthor() + "@endermail.com", x + 5, y + 17, width - 20, Color.LIGHT_GRAY.getRGB(), false);
 			}
 		});
 		layoutInbox.addComponent(listEmails);
@@ -253,9 +276,9 @@ public class ApplicationEmail extends Application
                 TaskManager.sendTask(new TaskViewEmail(index));
                 Email email = listEmails.getSelectedItem();
                 email.setRead(true);
-                textMessage.setText(email.message);
-                labelViewSubject.setText(email.subject);
-                labelFrom.setText(email.author + "@endermail.com");
+                textMessage.setText(email.getMessage());
+                labelViewSubject.setText(email.getSubject());
+                labelFrom.setText(email.getAuthor() + "@endermail.com");
                 attachedFile = email.getAttachment();
                 if(attachedFile != null)
                 {
@@ -281,8 +304,8 @@ public class ApplicationEmail extends Application
             if (email != null)
             {
                 setCurrentLayout(layoutNewEmail);
-                fieldRecipient.setText(email.author + "@endermail.com");
-                fieldSubject.setText("RE: " + email.subject);
+                fieldRecipient.setText(email.getAuthor() + "@endermail.com");
+                fieldSubject.setText("RE: " + email.getSubject());
             }
         });
 		btnReplyEmail.setToolTip("Reply", "Reply to the currently selected email");
@@ -322,6 +345,9 @@ public class ApplicationEmail extends Application
 		});
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
 		layoutInbox.addComponent(btnRefresh);
+
+		Button btnSettings = new Button(105, 5, Icons.WRENCH);
+		layoutInbox.addComponent(btnSettings);
 
 		
 		/* New Email Layout */
@@ -449,7 +475,7 @@ public class ApplicationEmail extends Application
 		});
 
 		labelViewSubject = new Label("Subject", 5, 26);
-		labelViewSubject.setTextColour(new Color(255, 170, 0));
+		labelViewSubject.setTextColor(new Color(255, 170, 0));
 		layoutViewEmail.addComponent(labelViewSubject);
 
 		labelFrom = new Label("From", 5, 38);
@@ -492,7 +518,7 @@ public class ApplicationEmail extends Application
 		labelAttachmentName.setAlignment(Component.ALIGN_RIGHT);
 		layoutViewEmail.addComponent(labelAttachmentName);
 
-		setCurrentLayout(layoutInit);
+		this.setCurrentLayout(layoutInit);
 
 		TaskCheckEmailAccount taskCheckAccount = new TaskCheckEmailAccount();
 		taskCheckAccount.setCallback((nbt, success) ->
@@ -560,254 +586,5 @@ public class ApplicationEmail extends Application
 	{
 		super.onClose();
 		attachedFile = null;
-	}
-
-	public static class EmailManager
-	{
-		public static final EmailManager INSTANCE = new EmailManager();
-
-		@SideOnly(Side.CLIENT)
-		private List<Email> inbox;
-
-		private Map<UUID, String> uuidToName = new HashMap<UUID, String>();
-		private Map<String, List<Email>> uuidToInbox = new HashMap<String, List<Email>>();
-
-		public boolean addEmailToInbox(Email email, String to)
-		{
-			if (uuidToInbox.containsKey(to))
-			{
-				uuidToInbox.get(to).add(0, email);
-				return true;
-			}
-			return false;
-		}
-
-		@SideOnly(Side.CLIENT)
-		public List<Email> getInbox()
-		{
-			if(inbox == null)
-			{
-				inbox = new ArrayList<>();
-			}
-			return inbox;
-		}
-
-		public List<Email> getEmailsForAccount(EntityPlayer player)
-		{
-			if (uuidToName.containsKey(player.getUniqueID()))
-			{
-				return uuidToInbox.get(uuidToName.get(player.getUniqueID()));
-			}
-			return new ArrayList<Email>();
-		}
-
-		public boolean addAccount(EntityPlayer player, String name)
-		{
-			if (!uuidToName.containsKey(player.getUniqueID()))
-			{
-				if (!uuidToName.containsValue(name))
-				{
-					uuidToName.put(player.getUniqueID(), name);
-					uuidToInbox.put(name, new ArrayList<Email>());
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public boolean hasAccount(UUID uuid)
-		{
-			return uuidToName.containsKey(uuid);
-		}
-
-		public String getName(EntityPlayer player)
-		{
-			return uuidToName.get(player.getUniqueID());
-		}
-
-		public void readFromNBT(NBTTagCompound nbt)
-		{
-			uuidToInbox.clear();
-
-			NBTTagList inboxes = (NBTTagList) nbt.getTag("Inboxes");
-			for (int i = 0; i < inboxes.tagCount(); i++)
-			{
-				NBTTagCompound inbox = inboxes.getCompoundTagAt(i);
-				String name = inbox.getString("Name");
-
-				List<Email> emails = new ArrayList<Email>();
-				NBTTagList emailTagList = (NBTTagList) inbox.getTag("Emails");
-				for (int j = 0; j < emailTagList.tagCount(); j++)
-				{
-					NBTTagCompound emailTag = emailTagList.getCompoundTagAt(j);
-					Email email = Email.readFromNBT(emailTag);
-					emails.add(email);
-				}
-				uuidToInbox.put(name, emails);
-			}
-
-			uuidToName.clear();
-
-			NBTTagList accounts = (NBTTagList) nbt.getTag("Accounts");
-			for (int i = 0; i < accounts.tagCount(); i++)
-			{
-				NBTTagCompound account = accounts.getCompoundTagAt(i);
-				UUID uuid = UUID.fromString(account.getString("UUID"));
-				String name = account.getString("Name");
-				uuidToName.put(uuid, name);
-			}
-		}
-
-		public void writeToNBT(NBTTagCompound nbt)
-		{
-			NBTTagList inboxes = new NBTTagList();
-			for (String key : uuidToInbox.keySet())
-			{
-				NBTTagCompound inbox = new NBTTagCompound();
-				inbox.setString("Name", key);
-
-				NBTTagList emailTagList = new NBTTagList();
-				List<Email> emails = uuidToInbox.get(key);
-				for (Email email : emails)
-				{
-					NBTTagCompound emailTag = new NBTTagCompound();
-					email.writeToNBT(emailTag);
-					emailTagList.appendTag(emailTag);
-				}
-				inbox.setTag("Emails", emailTagList);
-				inboxes.appendTag(inbox);
-			}
-			nbt.setTag("Inboxes", inboxes);
-
-			NBTTagList accounts = new NBTTagList();
-			for (UUID key : uuidToName.keySet())
-			{
-				NBTTagCompound account = new NBTTagCompound();
-				account.setString("UUID", key.toString());
-				account.setString("Name", uuidToName.get(key));
-				accounts.appendTag(account);
-			}
-			nbt.setTag("Accounts", accounts);
-		}
-
-		public void clear()
-		{
-			uuidToInbox.clear();
-			uuidToName.clear();
-			inbox.clear();
-		}
-	}
-
-	public static class Email
-	{
-		private String subject, author, message;
-		private File attachment;
-		private boolean read;
-
-		public Email(String subject, String message, @Nullable File file)
-		{
-			this.subject = subject;
-			this.message = message;
-			this.attachment = file;
-			this.read = false;
-		}
-
-		public Email(String subject, String author, String message, @Nullable File attachment)
-		{
-			this(subject, message, attachment);
-			this.author = author;
-		}
-
-		public String getSubject()
-		{
-			return subject;
-		}
-
-		public String getAuthor()
-		{
-			return author;
-		}
-
-		public void setAuthor(String author)
-		{
-			this.author = author;
-		}
-
-		public String getMessage()
-		{
-			return message;
-		}
-
-		public File getAttachment()
-		{
-			return attachment;
-		}
-
-		public boolean isRead()
-		{
-			return read;
-		}
-
-		public void setRead(boolean read)
-		{
-			this.read = read;
-		}
-
-		public void writeToNBT(NBTTagCompound nbt)
-		{
-			nbt.setString("subject", this.subject);
-			if (author != null) nbt.setString("author", this.author);
-			nbt.setString("message", this.message);
-			nbt.setBoolean("read", this.read);
-
-			if(attachment != null)
-			{
-				NBTTagCompound fileTag = new NBTTagCompound();
-				fileTag.setString("file_name", attachment.getName());
-				fileTag.setTag("data", attachment.toTag());
-				nbt.setTag("attachment", fileTag);
-			}
-		}
-
-		public static Email readFromNBT(NBTTagCompound nbt)
-		{
-			File attachment = null;
-			if(nbt.hasKey("attachment", Constants.NBT.TAG_COMPOUND))
-			{
-				NBTTagCompound fileTag = nbt.getCompoundTag("attachment");
-				attachment = File.fromTag(fileTag.getString("file_name"), fileTag.getCompoundTag("data"));
-			}
-			Email email = new Email(nbt.getString("subject"), nbt.getString("author"), nbt.getString("message"), attachment);
-			email.setRead(nbt.getBoolean("read"));
-			return email;
-		}
-	}
-	
-	private static class Contact
-	{
-		private String nickname;
-		private String email;
-		
-		public Contact(String nickname, String email)
-		{
-			this.nickname = nickname;
-			this.email = email;
-		}
-		
-		public String getNickname()
-		{
-			return nickname;
-		}
-		
-		public String getEmail()
-		{
-			return email;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return nickname;
-		}
 	}
 }

@@ -1,14 +1,11 @@
 package com.mrcrayfish.device.api.app.component;
 
-import java.awt.Color;
-
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GuiHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,6 +13,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import scala.actors.threadpool.Arrays;
+
+import java.awt.*;
 
 /**
  * A component that allows you "access" to the players inventory. Now why access
@@ -29,8 +28,8 @@ public class Inventory extends Component
 {
 	protected static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
 	
-	protected int selectedColour = new Color(1F, 1F, 0F, 0.15F).getRGB();
-	protected int hoverColour = new Color(1F, 1F, 1F, 0.15F).getRGB();
+	protected int selectedColor = new Color(1F, 1F, 0F, 0.15F).getRGB();
+	protected int hoverColor = new Color(1F, 1F, 1F, 0.15F).getRGB();
 	
 	protected int selected = -1;
 	
@@ -58,12 +57,12 @@ public class Inventory extends Component
 
 				if(selected == i)
 				{
-					Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColour);
+					Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, selectedColor);
 				}
 
 				if(GuiHelper.isMouseInside(mouseX, mouseY, xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 17, yPosition + offsetY + 17))
 				{
-					Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColour);
+					Gui.drawRect(xPosition + offsetX, yPosition + offsetY, xPosition + offsetX + 18, yPosition + offsetY + 18, hoverColor);
 				}
 
 				ItemStack stack = inventory.getStackInSlot(i);
@@ -146,22 +145,22 @@ public class Inventory extends Component
 	}
 	
 	/**
-	 * Sets the colour displayed when an item is selected
+	 * Sets the color displayed when an item is selected
 	 * 
-	 * @param selectedColour the selected colour
+	 * @param selectedColor the selected color
 	 */
-	public void setSelectedColour(int selectedColour)
+	public void setSelectedColor(int selectedColor)
 	{
-		this.selectedColour = selectedColour;
+		this.selectedColor = selectedColor;
 	}
 	
 	/**
-	 * Sets the colour displayed when a mouse is hovering an item
+	 * Sets the color displayed when a mouse is hovering an item
 	 * 
-	 * @param hoverColour the hover colour
+	 * @param hoverColor the hover color
 	 */
-	public void setHoverColour(int hoverColour)
+	public void setHoverColor(int hoverColor)
 	{
-		this.hoverColour = hoverColour;
+		this.hoverColor = hoverColor;
 	}
 }

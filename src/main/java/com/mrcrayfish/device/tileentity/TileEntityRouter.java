@@ -1,10 +1,7 @@
 package com.mrcrayfish.device.tileentity;
 
 import com.mrcrayfish.device.core.network.Router;
-import com.mrcrayfish.device.util.Colorable;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,10 +10,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityRouter extends TileEntityDevice implements ITickable, Colorable
+public class TileEntityRouter extends TileEntityDevice.Colored
 {
-    private EnumDyeColor color = EnumDyeColor.RED;
-
     private Router router;
 
     @SideOnly(Side.CLIENT)
@@ -74,7 +69,6 @@ public class TileEntityRouter extends TileEntityDevice implements ITickable, Col
     {
         super.writeToNBT(compound);
         compound.setTag("router", getRouter().toTag(false));
-        compound.setByte("color", (byte) color.getDyeDamage());
         return compound;
     }
 
@@ -86,18 +80,6 @@ public class TileEntityRouter extends TileEntityDevice implements ITickable, Col
         {
             router = Router.fromTag(pos, compound.getCompoundTag("router"));
         }
-        if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
-        {
-            this.color = EnumDyeColor.byDyeDamage(compound.getByte("color"));
-        }
-    }
-
-    @Override
-    public NBTTagCompound writeSyncTag()
-    {
-        NBTTagCompound tag = super.writeSyncTag();
-        tag.setByte("color", (byte) color.getDyeDamage());
-        return tag;
     }
 
     public void syncDevicesToClient()
@@ -117,15 +99,5 @@ public class TileEntityRouter extends TileEntityDevice implements ITickable, Col
     public AxisAlignedBB getRenderBoundingBox()
     {
         return INFINITE_EXTENT_AABB;
-    }
-
-    public void setColor(EnumDyeColor color)
-    {
-        this.color = color;
-    }
-
-    public EnumDyeColor getColor()
-    {
-        return color;
     }
 }

@@ -8,7 +8,7 @@ public class ToolPencil extends Tool {
 	@Override
 	public void handleClick(Canvas canvas, int x, int y) 
 	{
-		canvas.setPixel(x, y, canvas.getCurrentColour());
+		canvas.setPixel(x, y, canvas.getCurrentColor());
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class ToolPencil extends Tool {
 	@Override
 	public void handleDrag(Canvas canvas, int x, int y) 
 	{
-		canvas.setPixel(x, y, canvas.getCurrentColour());
+		canvas.setPixel(x, y, canvas.getCurrentColor());
 	}
 
 }

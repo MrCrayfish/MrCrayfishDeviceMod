@@ -1,13 +1,8 @@
 package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.IIcon;
-import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-
-import java.util.Arrays;
 
 public class ButtonToggle extends Button implements RadioGroup.Item
 {
@@ -91,10 +86,6 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 
 		if(super.isInside(mouseX, mouseY))
 		{
-			if(clickListener != null)
-			{
-				clickListener.onClick(mouseX, mouseY, mouseButton);
-			}
 			playClickSound(Minecraft.getMinecraft().getSoundHandler());
 			if(group != null)
 			{
@@ -104,6 +95,10 @@ public class ButtonToggle extends Button implements RadioGroup.Item
 			else 
 			{
 				this.toggle = !toggle;
+			}
+			if(clickListener != null)
+			{
+				clickListener.onClick(mouseX, mouseY, mouseButton);
 			}
 		}
 	}

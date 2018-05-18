@@ -1,21 +1,19 @@
 package com.mrcrayfish.device.api;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
-
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nullable;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class ApplicationManager
+public final class ApplicationManager
 {
 	private static final Map<ResourceLocation, AppInfo> APP_INFO = new HashMap<>();
+
+	private ApplicationManager() {}
 
 	/**
 	 * Registers an application into the application list
@@ -40,14 +38,25 @@ public class ApplicationManager
 	}
 
 	/**
-	 * Get all applications that are registered. Please note
-	 * that this list is read only and cannot be modified.
+	 * Get all applications that are registered. The returned collection does not include system
+	 * applications, see {@link #getSystemApplications()} or {@link #getAllApplications()}. Please
+	 * note that this list is read only and cannot be modified.
 	 *
 	 * @return the application list
 	 */
-	public static Collection<AppInfo> getAvailableApps()
+	public static List<AppInfo> getAvailableApplications()
 	{
-		return APP_INFO.values();
+		return APP_INFO.values().stream().filter(info -> !info.isSystemApp()).collect(Collectors.toList());
+	}
+
+	public static List<AppInfo> getSystemApplications()
+	{
+		return APP_INFO.values().stream().filter(AppInfo::isSystemApp).collect(Collectors.toList());
+	}
+
+	public static List<AppInfo> getAllApplications()
+	{
+		return new ArrayList<>(APP_INFO.values());
 	}
 
 	@Nullable

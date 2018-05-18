@@ -3,8 +3,8 @@ package com.mrcrayfish.device.block;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.object.Bounds;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import com.mrcrayfish.device.util.IColored;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class BlockPrinter extends BlockDevice implements ITileEntityProvider
+public class BlockPrinter extends BlockDevice.Colored
 {
     private static final AxisAlignedBB[] BODY_BOUNDING_BOX = new Bounds(5 * 0.0625, 0.0, 1 * 0.0625, 14 * 0.0625, 5 * 0.0625, 15 * 0.0625).getRotatedBounds();
     private static final AxisAlignedBB[] TRAY_BOUNDING_BOX = new Bounds(0.5 * 0.0625, 0.0, 3.5 * 0.0625, 5 * 0.0625, 1 * 0.0625, 12.5 * 0.0625).getRotatedBounds();
@@ -73,7 +73,7 @@ public class BlockPrinter extends BlockDevice implements ITileEntityProvider
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta)
+    public TileEntity createTileEntity(World world, IBlockState state)
     {
         return new TileEntityPrinter();
     }

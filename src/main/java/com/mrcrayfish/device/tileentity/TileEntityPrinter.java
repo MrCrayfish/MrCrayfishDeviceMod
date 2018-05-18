@@ -5,16 +5,13 @@ import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.block.BlockPrinter;
 import com.mrcrayfish.device.init.DeviceSounds;
 import com.mrcrayfish.device.util.CollisionHelper;
-import com.mrcrayfish.device.util.Colorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.util.Constants;
 
@@ -26,10 +23,9 @@ import static com.mrcrayfish.device.tileentity.TileEntityPrinter.State.*;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityPrinter extends TileEntityNetworkDevice implements ITickable, Colorable
+public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
 {
     private State state = IDLE;
-    private EnumDyeColor color = EnumDyeColor.RED;
 
     private Deque<IPrint> printQueue = new ArrayDeque<>();
     private IPrint currentPrint;
@@ -123,10 +119,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
                 printQueue.offer(print);
             }
         }
-        if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
-        {
-            this.color = EnumDyeColor.byDyeDamage(compound.getByte("color"));
-        }
     }
 
     @Override
@@ -137,7 +129,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
         compound.setInteger("remainingPrintTime", remainingPrintTime);
         compound.setInteger("state", state.ordinal());
         compound.setInteger("paperCount", paperCount);
-        compound.setByte("color", (byte) color.getDyeDamage());
         if(currentPrint != null)
         {
             compound.setTag("currentPrint", IPrint.writeToTag(currentPrint));
@@ -158,7 +149,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
     {
         NBTTagCompound tag = super.writeSyncTag();
         tag.setInteger("paperCount", paperCount);
-        tag.setByte("color", (byte) color.getDyeDamage());
         return tag;
     }
 
@@ -265,16 +255,6 @@ public class TileEntityPrinter extends TileEntityNetworkDevice implements ITicka
     public IPrint getPrint()
     {
         return currentPrint;
-    }
-
-    public void setColor(EnumDyeColor color)
-    {
-        this.color = color;
-    }
-
-    public EnumDyeColor getColor()
-    {
-        return color;
     }
 
     public enum State

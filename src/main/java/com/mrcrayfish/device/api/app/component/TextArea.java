@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api.app.component;
 
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
+import com.mrcrayfish.device.api.app.listener.KeyListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -63,13 +64,14 @@ public class TextArea extends Component
 	private boolean wrapText = false;
 	private int maxLineWidth;
 	private IHighlight highlight = null;
+	private KeyListener keyListener = null;
 
 	/* Personalisation */
-	protected int placeholderColour = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
-	protected int textColour = -1;
-	protected int backgroundColour = -1;
-	protected int secondaryBackgroundColour = -1;
-	protected int borderColour = -1;
+	protected int placeholderColor = new Color(1.0F, 1.0F, 1.0F, 0.35F).getRGB();
+	protected int textColor = Color.WHITE.getRGB();
+	protected int backgroundColor = Color.DARK_GRAY.getRGB();
+	protected int secondaryBackgroundColor = Color.GRAY.getRGB();
+	protected int borderColor = Color.BLACK.getRGB();
 
 	/**
 	 * Default text area constructor
@@ -109,12 +111,10 @@ public class TextArea extends Component
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
 				GlStateManager.enableBlend();
-				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColour);
+				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColor);
 			}
 
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			GLHelper.scissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
-
+			GLHelper.pushScissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
 				float scrollPercentage = (verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines);
@@ -143,9 +143,9 @@ public class TextArea extends Component
 					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, color(textColour, getColourScheme().getTextColour()));
 				}
 			}
+			GLHelper.popScissor();
 
-			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
-
+			GLHelper.pushScissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
 			if(editable && isFocused)
 			{
 				float linesPerUnit = (float) lines.size() / (float) visibleLines;
@@ -164,8 +164,7 @@ public class TextArea extends Component
 					}
 				}
 			}
-
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GLHelper.popScissor();
 
 			if(scrollBarVisible)
 			{
@@ -176,7 +175,7 @@ public class TextArea extends Component
 					float scrollPercentage = MathHelper.clamp((verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines), 0.0F, 1.0F);
 					int scrollBarY = (int) ((visibleScrollBarHeight - scrollBarHeight) * scrollPercentage);
 					int scrollY = yPosition + 2 + scrollBarY;
-					Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColour);
+					Gui.drawRect(x + width - 2 - scrollBarSize, scrollY, x + width - 2, scrollY + scrollBarHeight, placeholderColor);
 				}
 
 				if(!wrapText && maxLineWidth >= width - padding * 2)
@@ -187,7 +186,7 @@ public class TextArea extends Component
 					int scrollBarWidth = Math.max(20, (int) ((float) visibleWidth / (float) maxLineWidth * (float) visibleScrollBarWidth));
 					int relativeScrollX = (int) (scrollPercentage * (visibleScrollBarWidth - scrollBarWidth));
 					int scrollX = xPosition + 2 + MathHelper.clamp(relativeScrollX + horizontalOffset, 0, visibleScrollBarWidth - scrollBarWidth);
-					Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColour);
+					Gui.drawRect(scrollX, y + height - scrollBarSize - 2, scrollX + scrollBarWidth, y + height - 2, placeholderColor);
 				}
 			}
 		}
@@ -235,6 +234,7 @@ public class TextArea extends Component
 				cursorY = lineY;
 			}
 			cursorTick = 0;
+			updateScroll();
 		}
 	}
 
@@ -330,6 +330,11 @@ public class TextArea extends Component
 						writeText(character);
 					}
 			}
+
+			if(keyListener != null)
+			{
+				keyListener.onKeyTyped(character);
+			}
 		}
 		updateScroll();
 	}
@@ -388,7 +393,7 @@ public class TextArea extends Component
 	/**
 	 * Performs a backspace at the current cursor position
 	 */
-	private void performBackspace()
+	public void performBackspace()
 	{
 		if(cursorY == 0 && cursorX == 0)
 			return;
@@ -432,7 +437,7 @@ public class TextArea extends Component
 	/**
 	 * Performs a return at the current cursor position
 	 */
-	private void performReturn()
+	public void performReturn()
 	{
 		if(maxLines > 0)
 		{
@@ -493,14 +498,14 @@ public class TextArea extends Component
 			return;
 		}
 
-		if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
+		/*if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
 		{
 			if(verticalScroll > 0)
 			{
 				scroll(-1);
 				moveYCursor(1);
 			}
-		}
+		}*/
 
 		if(wrapText)
 		{
@@ -525,11 +530,13 @@ public class TextArea extends Component
 				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(cursorY + 1);
-			if(verticalScroll + visibleLines == lines.size() - 1)
-			{
-				scroll(-1);
-			}
 		}
+
+		if(verticalScroll > 0)
+		{
+			scroll(-1);
+		}
+
 		recalculateMaxWidth();
 	}
 
@@ -636,7 +643,7 @@ public class TextArea extends Component
 		}
 	}
 
-	private void moveCursorRight(int amount)
+	public void moveCursorRight(int amount)
 	{
 		if(amount <= 0)
 			return;
@@ -664,7 +671,7 @@ public class TextArea extends Component
 		moveCursorRight(amount - 1);
 	}
 
-	private void moveCursorLeft(int amount)
+	public void moveCursorLeft(int amount)
 	{
 		if(amount <= 0)
 			return;
@@ -829,6 +836,10 @@ public class TextArea extends Component
 			do
 			{
 				String line = lines.get(lineIndex);
+				if(totalLength > 0)
+				{
+					builder.append(" ");
+				}
 				builder.append(line);
 
 				if(lineIndex == cursorY)
@@ -956,6 +967,8 @@ public class TextArea extends Component
 			lines.add(splitText[i] + "\n");
 		}
 		lines.add(splitText[splitText.length - 1]);
+		cursorX = splitText[splitText.length - 1].length();
+		cursorY = splitText.length - 1;
 	}
 
 	/**
@@ -993,6 +1006,7 @@ public class TextArea extends Component
 	public void setWrapText(boolean wrapText)
 	{
 		this.wrapText = wrapText;
+		this.horizontalScroll = 0;
 		updateText();
 	}
 
@@ -1018,9 +1032,9 @@ public class TextArea extends Component
 
 	/**
 	 * Sets the highlighting for the text area. This is used, for instance, where you want
-	 * particular keywords to be a different colour from the rest.
+	 * particular keywords to be a different color from the rest.
 	 *
-	 * @param highlight the highlight to colour the text
+	 * @param highlight the highlight to color the text
 	 */
 	public void setHighlight(IHighlight highlight)
 	{
@@ -1049,33 +1063,33 @@ public class TextArea extends Component
 	}
 
 	/**
-	 * Sets the text colour for this component
+	 * Sets the text color for this component
 	 *
-	 * @param color the text colour
+	 * @param color the text color
 	 */
-	public void setTextColour(Color color)
+	public void setTextColor(Color color)
 	{
-		this.textColour = color.getRGB();
+		this.textColor = color.getRGB();
 	}
 
 	/**
-	 * Sets the background colour for this component
+	 * Sets the background color for this component
 	 *
-	 * @param color the background colour
+	 * @param color the background color
 	 */
-	public void setBackgroundColour(Color color)
+	public void setBackgroundColor(Color color)
 	{
-		this.backgroundColour = color.getRGB();
+		this.backgroundColor = color.getRGB();
 	}
 
 	/**
-	 * Sets the border colour for this component
+	 * Sets the border color for this component
 	 *
-	 * @param color the border colour
+	 * @param color the border color
 	 */
-	public void setBorderColour(Color color)
+	public void setBorderColor(Color color)
 	{
-		this.borderColour = color.getRGB();
+		this.borderColor = color.getRGB();
 	}
 
 	/**
@@ -1099,6 +1113,11 @@ public class TextArea extends Component
 	{
 		if(maxLines < 0) maxLines = 0;
 		this.maxLines = maxLines;
+	}
+
+	public void setKeyListener(KeyListener keyListener)
+	{
+		this.keyListener = keyListener;
 	}
 
 	private enum ScrollBar

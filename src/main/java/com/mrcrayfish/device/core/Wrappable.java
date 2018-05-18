@@ -2,6 +2,9 @@ package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.api.app.Dialog;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nullable;
 
 public abstract class Wrappable
 {
@@ -12,8 +15,9 @@ public abstract class Wrappable
 	 * layout and sets it as the current layout. If you override this method and
 	 * are using the default layout, make sure you call it using
 	 * <code>super.init()</code>
+	 * @param intent
 	 */
-	public abstract void init();
+	public abstract void init(@Nullable NBTTagCompound intent);
 
 	/**
 	 * When the games ticks. Note if you override, make sure you call this super

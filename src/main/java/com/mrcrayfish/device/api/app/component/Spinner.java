@@ -13,7 +13,7 @@ public class Spinner extends Component
 	protected final int MAX_PROGRESS = 31;
 	protected int currentProgress = 0;
 	
-	protected int spinnerColour = -1;
+	protected Color spinnerColor = Color.WHITE;
 	
 	/**
 	 * Default spinner constructor

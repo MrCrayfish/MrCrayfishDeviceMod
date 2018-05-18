@@ -1,0 +1,31 @@
+{
+    "result": {
+        "item": "cdm:gpu"
+    },
+    "pattern": [
+        "OGO",
+        "RMP",
+        "CCC"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "O": {
+            "item": "minecraft:obsidian"
+        },
+        "G": {
+            "item": "minecraft:gold_ingot"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "M": {
+            "item": "cdm:ram"
+        },
+        "P": {
+            "item": "minecraft:prismarine_shard"
+        },
+        "C": {
+            "item": "cdm:circuit_board"
+        }
+    }
+}

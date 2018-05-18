@@ -1,0 +1,26 @@
+{
+    "result": {
+        "item": "cdm:ethernet_cable"
+    },
+    "pattern": [
+        "PIL",
+        "GIG",
+        "LIP"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "P": {
+            "item": "cdm:plastic"
+        },
+        "L": {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        "G": {
+            "item": "minecraft:gold_nugget"
+        }
+    }
+}

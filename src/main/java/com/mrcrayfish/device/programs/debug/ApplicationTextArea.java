@@ -1,19 +1,17 @@
 package com.mrcrayfish.device.programs.debug;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.Arrays;
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -87,7 +85,7 @@ public class ApplicationTextArea extends Application
         }
     };
     @Override
-    public void init()
+    public void init(@Nullable NBTTagCompound intent)
     {
         Layout layout = new Layout(250, 150);
 
@@ -150,7 +148,8 @@ public class ApplicationTextArea extends Application
 
     }
 
-    private static <T extends Object> T[] asArray(T ... t)
+    @SafeVarargs
+    private static <T> T[] asArray(T ... t)
     {
         return t;
     }

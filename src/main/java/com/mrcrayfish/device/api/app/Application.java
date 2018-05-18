@@ -1,29 +1,21 @@
 package com.mrcrayfish.device.api.app;
 
-import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.io.File;
-import com.mrcrayfish.device.api.io.Folder;
-import com.mrcrayfish.device.api.task.Callback;
-import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.core.io.task.TaskGetFiles;
-import com.mrcrayfish.device.core.io.task.TaskGetMainDrive;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.system.component.FileBrowser;
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.*;
 
 /**
  * The abstract base class for creating applications.
@@ -72,13 +64,17 @@ public abstract class Application extends Wrappable
      *
      * @param layout
      */
-    protected final void setCurrentLayout(Layout layout)
+    public final void setCurrentLayout(Layout layout)
     {
+        if(currentLayout != null)
+        {
+            currentLayout.handleUnload();
+        }
         this.currentLayout = layout;
         this.width = layout.width;
         this.height = layout.height;
         this.pendingLayoutUpdate = true;
-        this.currentLayout.init();
+        this.currentLayout.handleLoad();
     }
 
 	/**
@@ -109,7 +105,7 @@ public abstract class Application extends Wrappable
 	 * your application window.
 	 */
 	@Override
-	public abstract void init();
+	public abstract void init(@Nullable NBTTagCompound intent);
 
     @Override
     public void onTick()
@@ -132,7 +128,20 @@ public abstract class Application extends Wrappable
     @Override
     public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
     {
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
+        GLHelper.pushScissor(x, y, width, height);
         currentLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+        GLHelper.popScissor();
+
+        if(!GLHelper.isScissorStackEmpty())
+        {
+            MrCrayfishDeviceMod.getLogger().error("ERROR: A component is not popping it's scissor!");
+        }
+        GLHelper.clearScissorStack();
+
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
         currentLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -242,7 +251,7 @@ public abstract class Application extends Wrappable
     /**
      * Called when you first load up your application. Allows you to read any
      * stored data you have saved. Only called if you have saved data. This
-     * method is called after {{@link #init()} so you can update any
+     * method is called after {{@link Wrappable#init(NBTTagCompound)} so you can update any
      * Components with this data.
      *
      * @param tagCompound the tag compound where you saved data is

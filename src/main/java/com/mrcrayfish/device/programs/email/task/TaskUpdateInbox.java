@@ -1,20 +1,18 @@
 package com.mrcrayfish.device.programs.email.task;
 
-import java.util.List;
-
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.programs.email.ApplicationEmail;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.Email;
-import com.mrcrayfish.device.programs.email.ApplicationEmail.EmailManager;
-
+import com.mrcrayfish.device.programs.email.object.Email;
+import com.mrcrayfish.device.programs.email.EmailManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class TaskUpdateInbox extends Task
 {
-	private List<ApplicationEmail.Email> emails;
+	private List<Email> emails;
 	
 	public TaskUpdateInbox() 
 	{
@@ -36,7 +34,7 @@ public class TaskUpdateInbox extends Task
 		NBTTagList tagList = new NBTTagList();
 		if(emails != null)
 		{
-			for(ApplicationEmail.Email email : emails)
+			for(Email email : emails)
 			{
 				NBTTagCompound emailTag = new NBTTagCompound();
 				email.writeToNBT(emailTag);

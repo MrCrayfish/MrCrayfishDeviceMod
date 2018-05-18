@@ -1,11 +1,9 @@
 package com.mrcrayfish.device.tileentity;
 
-import com.mrcrayfish.device.DeviceConfig;
-import com.mrcrayfish.device.core.network.Connection;
-import com.mrcrayfish.device.core.network.Router;
+import com.mrcrayfish.device.util.IColored;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
@@ -19,6 +17,7 @@ import java.util.UUID;
  */
 public abstract class TileEntityDevice extends TileEntitySync implements ITickable
 {
+    private EnumDyeColor color = EnumDyeColor.RED;
     private UUID deviceId;
     private String name;
 
@@ -64,6 +63,7 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         {
             compound.setString("name", name);
         }
+        compound.setByte("color", (byte) color.getMetadata());
         return compound;
     }
 
@@ -79,6 +79,10 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         {
             name = compound.getString("name");
         }
+        if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+        {
+            this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
+        }
     }
 
     @Override
@@ -89,6 +93,50 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         {
             tag.setString("name", name);
         }
+        tag.setByte("color", (byte) color.getMetadata());
         return tag;
+    }
+
+    public static abstract class Colored extends TileEntityDevice implements IColored
+    {
+        private EnumDyeColor color = EnumDyeColor.RED;
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            super.readFromNBT(compound);
+            if(compound.hasKey("color", Constants.NBT.TAG_BYTE))
+            {
+                this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
+            }
+        }
+
+        @Override
+        public NBTTagCompound writeToNBT(NBTTagCompound compound)
+        {
+            super.writeToNBT(compound);
+            compound.setByte("color", (byte) color.getMetadata());
+            return compound;
+        }
+
+        @Override
+        public NBTTagCompound writeSyncTag()
+        {
+            NBTTagCompound tag = super.writeSyncTag();
+            tag.setByte("color", (byte) color.getMetadata());
+            return tag;
+        }
+
+        @Override
+        public final void setColor(EnumDyeColor color)
+        {
+            this.color = color;
+        }
+
+        @Override
+        public final EnumDyeColor getColor()
+        {
+            return color;
+        }
     }
 }

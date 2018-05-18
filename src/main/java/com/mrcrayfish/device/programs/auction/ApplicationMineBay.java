@@ -1,7 +1,6 @@
 package com.mrcrayfish.device.programs.auction;
 
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.Layout.Background;
@@ -26,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -83,7 +83,7 @@ public class ApplicationMineBay extends Application
 	}
 	
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		getCurrentLayout().setBackground(new Background()
 		{

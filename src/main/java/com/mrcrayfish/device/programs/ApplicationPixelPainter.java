@@ -6,10 +6,8 @@ import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
@@ -18,24 +16,21 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.Canvas;
-import com.mrcrayfish.device.object.ColourGrid;
+import com.mrcrayfish.device.object.ColorGrid;
 import com.mrcrayfish.device.object.Picture;
 import com.mrcrayfish.device.object.Picture.Size;
+import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
-import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
-import java.io.IOException;
-import java.lang.reflect.Field;
 
 public class ApplicationPixelPainter extends Application
 {
@@ -46,8 +41,7 @@ public class ApplicationPixelPainter extends Application
 	private static final Color AUTHOR_TEXT = new Color(114, 120, 138);
 
 	/* Main Menu */
-	private Layout layoutMainMenu;
-	private Image logo;
+	private StandardLayout layoutMainMenu;
 	private Label labelLogo;
 	private Button btnNewPicture;
 	private Button btnLoadPicture;
@@ -83,8 +77,8 @@ public class ApplicationPixelPainter extends Application
 	private Slider redSlider;
 	private Slider greenSlider;
 	private Slider blueSlider;
-	private Component colourDisplay;
-	private ColourGrid colourGrid;
+	private Component colorDisplay;
+	private ColorGrid colorGrid;
 	private CheckBox displayGrid;
 
 	public ApplicationPixelPainter()
@@ -93,26 +87,43 @@ public class ApplicationPixelPainter extends Application
 	}
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		/* Main Menu */
-		layoutMainMenu = new Layout(100, 100);
+		layoutMainMenu = new StandardLayout("Main Menu", 201, 125, this, null);
+		layoutMainMenu.setIcon(Icons.HOME);
 
-		logo = new Image(35, 5, 28, 28, info.getIconU(), info.getIconV(), 14, 14, Laptop.ICON_TEXTURES);
-		layoutMainMenu.addComponent(logo);
+		ItemList<Picture> pictureList = new ItemList<>(5, 43, 80, 4);
+		pictureList.setListItemRenderer(new ListItemRenderer<Picture>(18)
+		{
+			@Override
+			public void render(Picture picture, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
+			{
+				RenderUtil.drawStringClipped("Henlo", x, y, 100, AUTHOR_TEXT.getRGB(), true);
+			}
+		});
+		layoutMainMenu.addComponent(pictureList);
 
-		labelLogo = new Label("Pixel Painter", 19, 35);
-		layoutMainMenu.addComponent(labelLogo);
-
-		btnNewPicture = new Button(5, 50, "New");
-		btnNewPicture.setSize(90, 20);
-		btnNewPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutNewPicture));
+		btnNewPicture = new Button(5, 25, "New", Icons.PICTURE);
+		btnNewPicture.setSize(40, 16);
+		btnNewPicture.setToolTip("New Picture", "Start a new masterpiece!");
+		btnNewPicture.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			if(mouseButton == 0)
+			{
+				setCurrentLayout(layoutNewPicture);
+			}
+		});
 		layoutMainMenu.addComponent(btnNewPicture);
 
-		btnLoadPicture = new Button(5, 75, "Load");
-		btnLoadPicture.setSize(90, 20);
+		btnLoadPicture = new Button(48, 25, Icons.IMPORT);
+		btnLoadPicture.setToolTip("Load External", "Open a picture from file");
 		btnLoadPicture.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutLoadPicture));
 		layoutMainMenu.addComponent(btnLoadPicture);
+
+		Button btnDeletePicture = new Button(67, 25, Icons.TRASH);
+		btnDeletePicture.setToolTip("Delete", "Removes the selected image");
+		layoutMainMenu.addComponent(btnDeletePicture);
 
 		
 		/* New Picture */
@@ -174,7 +185,7 @@ public class ApplicationPixelPainter extends Application
             });
         });
 
-		listPictures = new ItemList<>(5, 5, 100, 5);
+		listPictures = new ItemList<>(5, 5, 80, 5);
 		listPictures.setListItemRenderer(new ListItemRenderer<Picture>(20)
 		{
 			@Override
@@ -300,7 +311,7 @@ public class ApplicationPixelPainter extends Application
 		btnEyeDropper.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
             canvas.setCurrentTool(Canvas.EYE_DROPPER);
-            Color color = new Color(canvas.getCurrentColour());
+			Color color = new Color(canvas.getCurrentColor());
             redSlider.setPercentage(color.getRed() / 255F);
             greenSlider.setPercentage(color.getGreen() / 255F);
             blueSlider.setPercentage(color.getBlue() / 255F);
@@ -412,19 +423,19 @@ public class ApplicationPixelPainter extends Application
 		});
 		layoutDraw.addComponent(blueSlider);
 
-		colourDisplay = new Component(158, 5)
+		colorDisplay = new Component(158, 5)
 		{
 			@Override
 			public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 			{
 				drawRect(xPosition, yPosition, xPosition + 50, yPosition + 20, Color.DARK_GRAY.getRGB());
-				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColour());
+				drawRect(xPosition + 1, yPosition + 1, xPosition + 49, yPosition + 19, canvas.getCurrentColor());
 			}
 		};
-		layoutDraw.addComponent(colourDisplay);
+		layoutDraw.addComponent(colorDisplay);
 
-		colourGrid = new ColourGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
-		layoutDraw.addComponent(colourGrid);
+		colorGrid = new ColorGrid(157, 82, 50, canvas, redSlider, greenSlider, blueSlider);
+		layoutDraw.addComponent(colorGrid);
 
 		displayGrid = new CheckBox("Grid", 166, 120);
 		displayGrid.setClickListener((mouseX, mouseY, mouseButton) -> canvas.setShowGrid(displayGrid.isSelected()));

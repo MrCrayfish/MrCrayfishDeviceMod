@@ -127,6 +127,10 @@ public class Folder extends File
 		{
 			if(success)
 			{
+				if(override)
+				{
+					files.remove(getFile(file.name));
+				}
 				file.setDrive(drive);
 				file.valid = true;
 				file.parent = this;

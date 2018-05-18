@@ -7,8 +7,10 @@ import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.network.task.MessageSyncConfig;
 import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,7 +45,14 @@ public class CommonProxy
 		{
 			allowedApps = new ArrayList<>();
 		}
-		allowedApps.add(new AppInfo(identifier));
+		if(SystemApplication.class.isAssignableFrom(clazz))
+		{
+			allowedApps.add(new AppInfo(identifier, true));
+		}
+		else
+		{
+			allowedApps.add(new AppInfo(identifier, false));
+		}
 		return null;
 	}
 
@@ -88,4 +97,6 @@ public class CommonProxy
 			}
 		}
 	}
+
+	public void showNotification(NBTTagCompound tag) {}
 }
