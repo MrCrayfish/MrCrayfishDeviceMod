@@ -24,6 +24,7 @@ import com.mrcrayfish.device.programs.system.layout.LayoutSearchApps;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.RemoteEntry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -112,11 +113,14 @@ public class ApplicationAppStore extends SystemApplication
 			spinner.setVisible(false);
             if(success)
 			{
-				AppGrid grid = new AppGrid(0, 81, 3, 1, this);
-				certifiedApps.addAll(parseJson(response));
-				shuffleAndShrink(certifiedApps, 3).forEach(grid::addEntry);
-				homePageLayout.addComponent(grid);
-				grid.reloadIcons();
+				Minecraft.getMinecraft().addScheduledTask(() ->
+				{
+					AppGrid grid = new AppGrid(0, 81, 3, 1, this);
+					certifiedApps.addAll(parseJson(response));
+					shuffleAndShrink(certifiedApps, 3).forEach(grid::addEntry);
+					homePageLayout.addComponent(grid);
+					grid.reloadIcons();
+                });
 			}
 			else
 			{
