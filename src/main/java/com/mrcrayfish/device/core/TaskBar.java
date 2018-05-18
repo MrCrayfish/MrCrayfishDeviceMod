@@ -92,10 +92,17 @@ public class TaskBar
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.75F);
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
-		laptop.drawTexturedModalRect(x, y, 0, 0, 1, 18);
+
+		Color bgColor = new Color(laptop.getSettings().getColorScheme().getBackgroundColor()).brighter().brighter();
+		float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
+		bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1.0F));
+		GL11.glColor4f(bgColor.getRed() / 255F, bgColor.getGreen() / 255F, bgColor.getBlue() / 255F, 1.0F);
+
 		int trayItemsWidth = trayItems.size() * 14;
+		RenderUtil.drawRectWithTexture(x, y, 0, 0, 1, 18, 1, 18);
 		RenderUtil.drawRectWithTexture(x + 1, y, 1, 0, Laptop.SCREEN_WIDTH - 36 - trayItemsWidth, 18, 1, 18);
 		RenderUtil.drawRectWithTexture(x + Laptop.SCREEN_WIDTH - 35 - trayItemsWidth, y, 2, 0, 35 + trayItemsWidth, 18, 1, 18);
+
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
