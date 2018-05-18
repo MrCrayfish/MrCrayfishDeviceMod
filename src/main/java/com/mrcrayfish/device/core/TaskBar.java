@@ -33,8 +33,6 @@ public class TaskBar
 	public static final int BAR_HEIGHT = 18;
 
 	private Laptop laptop;
-	private Button btnLeft;
-	private Button btnRight;
 	
 	private int offset = 0;
 	private int pingTimer = 0;
@@ -81,28 +79,6 @@ public class TaskBar
 
 	public void init(int posX, int posY)
 	{
-		btnLeft = new Button(0, 0, Icons.CHEVRON_LEFT);
-		btnLeft.setPadding(1);
-		btnLeft.xPosition = posX + 3;
-		btnLeft.yPosition = posY + 3;
-		btnLeft.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            if(offset > 0)
-            {
-                offset--;
-            }
-        });
-		btnRight = new Button(0, 0, Icons.CHEVRON_RIGHT);
-		btnRight.setPadding(1);
-		btnRight.xPosition = posX + 15 + 14 * APPS_DISPLAYED + 14;
-		btnRight.yPosition = posY + 3;
-		btnRight.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            if(offset + APPS_DISPLAYED < laptop.installedApps.size())
-            {
-                offset++;
-            }
-        });
 		init();
 	}
 
@@ -123,17 +99,14 @@ public class TaskBar
 		GlStateManager.disableBlend();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		btnLeft.render(laptop, mc, btnLeft.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
-		//btnRight.render(gui, mc, btnRight.xPosition, btnLeft.yPosition, mouseX, mouseY, true, partialTicks);
-
 		for(int i = 0; i < APPS_DISPLAYED && i < laptop.installedApps.size(); i++)
 		{
 			AppInfo info = laptop.installedApps.get(i + offset);
-			RenderUtil.drawApplicationIcon(info, x + 18 + i * 16, y + 2);
+			RenderUtil.drawApplicationIcon(info, x + 2 + i * 16, y + 2);
 			if(laptop.isApplicationRunning(info))
 			{
 				mc.getTextureManager().bindTexture(APP_BAR_GUI);
-				laptop.drawTexturedModalRect(x + 17 + i * 16, y + 1, 35, 0, 16, 16);
+				laptop.drawTexturedModalRect(x + 1 + i * 16, y + 1, 35, 0, 16, 16);
 			}
 		}
 
@@ -154,12 +127,12 @@ public class TaskBar
 		mc.getTextureManager().bindTexture(APP_BAR_GUI);
 
 		/* Other Apps */
-		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
+		if(isMouseInside(mouseX, mouseY, x + 1, y + 1, x + 236, y + 16))
 		{
-			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex < offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
+			int appIndex = (mouseX - x - 1) / 16;
+			if(appIndex >= 0 && appIndex < offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
 			{
-				laptop.drawTexturedModalRect(x + (appIndex - offset) * 16 + 17, y + 1, 35, 0, 16, 16);
+				laptop.drawTexturedModalRect(x + appIndex * 16 + 1, y + 1, 35, 0, 16, 16);
 				laptop.drawHoveringText(Collections.singletonList(laptop.installedApps.get(appIndex).getName()), mouseX, mouseY);
 			}
 		}
@@ -170,13 +143,10 @@ public class TaskBar
 	
 	public void handleClick(Laptop laptop, int x, int y, int mouseX, int mouseY, int mouseButton) 
 	{
-		btnLeft.handleMouseClick(mouseX, mouseY, mouseButton);
-		btnRight.handleMouseClick(mouseX, mouseY, mouseButton);
-
-		if(isMouseInside(mouseX, mouseY, x + 18, y + 1, x + 236, y + 16))
+		if(isMouseInside(mouseX, mouseY, x + 1, y + 1, x + 236, y + 16))
 		{
-			int appIndex = (mouseX - x - 1) / 16 - 1 + offset;
-			if(appIndex <= offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
+			int appIndex = (mouseX - x - 1) / 16;
+			if(appIndex >= 0 && appIndex <= offset + APPS_DISPLAYED && appIndex < laptop.installedApps.size())
 			{
 				laptop.openApplication(laptop.installedApps.get(appIndex));
 				return;
