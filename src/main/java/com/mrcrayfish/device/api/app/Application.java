@@ -382,18 +382,6 @@ public abstract class Application extends Wrappable
 		return info.getName();
 	}
 
-    public void setLaptopPosition(BlockPos pos)
-    {
-        this.laptopPositon = pos.toImmutable();
-    }
-
-    public BlockPos getLaptopPositon()
-    {
-        return laptopPositon;
-    }
-
-
-
     public String getApplicationFolderPath()
     {
         return FileSystem.DIR_APPLICATION_DATA + "/" + info.getFormattedId();
