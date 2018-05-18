@@ -2,6 +2,7 @@ package com.mrcrayfish.device.programs.system.component;
 
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Component;
+import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
@@ -155,6 +156,21 @@ public class AppGrid extends Component
         labelAuthor.setShadow(false);
         layout.addComponent(labelAuthor);
 
+        if(store.certifiedApps.contains(entry))
+        {
+            Image certifiedIcon = new Image(15, 38, Icons.VERIFIED);
+            layout.addComponent(certifiedIcon);
+        }
+
+        if(entry instanceof LocalEntry)
+        {
+            AppInfo info = ((LocalEntry) entry).getInfo();
+            if(Laptop.getSystem().getInstalledApplications().contains(info))
+            {
+                Image installedIcon = new Image(itemWidth - 10 - 15, 38, Icons.CHECK);
+                layout.addComponent(installedIcon);
+            }
+        }
         return layout;
     }
 

@@ -93,7 +93,7 @@ public class LayoutSearchApps extends StandardLayout
 
     private void openApplication(AppInfo info)
     {
-        Layout layout = new LayoutAppPage(appStore.getLaptop(), new LocalEntry(info));
+        Layout layout = new LayoutAppPage(appStore.getLaptop(), new LocalEntry(info), appStore);
         app.setCurrentLayout(layout);
         Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
         btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->

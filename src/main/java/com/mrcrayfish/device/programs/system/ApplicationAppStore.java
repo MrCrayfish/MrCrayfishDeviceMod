@@ -44,6 +44,8 @@ public class ApplicationAppStore extends SystemApplication
 
 	private StandardLayout layoutMain;
 
+	public List<AppEntry> certifiedApps = new ArrayList<>();
+
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
 	{
@@ -104,11 +106,13 @@ public class ApplicationAppStore extends SystemApplication
 
 		OnlineRequest.getInstance().make(CERTIFIED_APPS_URL + "/certified_apps.json", (success, response) ->
 		{
+			certifiedApps.clear();
 			spinner.setVisible(false);
             if(success)
 			{
 				AppGrid grid = new AppGrid(0, 81, 3, 1, this);
-				shuffleAndShrink(parseJson(response), 3).forEach(grid::addEntry);
+				certifiedApps.addAll(parseJson(response));
+				shuffleAndShrink(certifiedApps, 3).forEach(grid::addEntry);
 				homePageLayout.addComponent(grid);
 				grid.reloadIcons();
 			}
@@ -160,7 +164,7 @@ public class ApplicationAppStore extends SystemApplication
 
 	public void openApplication(AppEntry entry)
 	{
-		Layout layout = new LayoutAppPage(getLaptop(), entry);
+		Layout layout = new LayoutAppPage(getLaptop(), entry, this);
 		this.setCurrentLayout(layout);
 		Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->

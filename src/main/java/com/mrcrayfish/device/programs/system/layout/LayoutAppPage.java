@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.system.layout;
 
+import com.google.common.collect.Lists;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
@@ -16,12 +17,16 @@ import com.mrcrayfish.device.programs.system.component.SlideShow;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.LocalEntry;
 import com.mrcrayfish.device.programs.system.object.RemoteEntry;
+import com.mrcrayfish.device.util.GuiHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Author: MrCrayfish
@@ -30,6 +35,7 @@ public class LayoutAppPage extends Layout
 {
     private Laptop laptop;
     private AppEntry entry;
+    private ApplicationAppStore store;
 
     private Image imageBanner;
     private Image imageIcon;
@@ -38,11 +44,12 @@ public class LayoutAppPage extends Layout
 
     private boolean installed;
 
-    public LayoutAppPage(Laptop laptop, AppEntry entry)
+    public LayoutAppPage(Laptop laptop, AppEntry entry, ApplicationAppStore store)
     {
         super(250, 150);
         this.laptop = laptop;
         this.entry = entry;
+        this.store = store;
     }
 
     @Override
@@ -87,6 +94,12 @@ public class LayoutAppPage extends Layout
         }
         this.addComponent(imageIcon);
 
+        if(store.certifiedApps.contains(entry))
+        {
+            int width = Laptop.fontRenderer.getStringWidth(entry.getName()) * 2;
+            Image certifiedIcon = new Image(38 + width + 3, 29, 20, 20, Icons.VERIFIED);
+            this.addComponent(certifiedIcon);
+        }
         labelTitle = new Label(entry.getName(), 38, 32);
         labelTitle.setScale(2);
         this.addComponent(labelTitle);
@@ -176,6 +189,17 @@ public class LayoutAppPage extends Layout
             btnDownload.setSize(70, 14);
             btnDownload.setClickListener((mouseX, mouseY, mouseButton) -> this.openWebLink("https://minecraft.curseforge.com/projects/" + ((RemoteEntry) entry).project_id));
             this.addComponent(btnDownload);
+        }
+    }
+
+    @Override
+    public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
+    {
+        super.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
+        int width = Laptop.fontRenderer.getStringWidth(entry.getName()) * 2;
+        if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20))
+        {
+            laptop.drawHoveringText(Lists.newArrayList(TextFormatting.GREEN + "Certified App"), mouseX, mouseY);
         }
     }
 
