@@ -142,7 +142,7 @@ public class LayoutAppPage extends Layout
         if(entry instanceof LocalEntry)
         {
             AppInfo info = ((LocalEntry) entry).getInfo();
-            Button btnInstall = new Button(190, 44, installed ? "Remove" : "Install", Icons.IMPORT);
+            Button btnInstall = new Button(190, 44, installed ? "Remove" : "Install", installed ? Icons.CROSS : Icons.PLUS);
             btnInstall.setSize(55, 14);
             btnInstall.setClickListener((mouseX, mouseY, mouseButton) ->
             {
@@ -153,6 +153,7 @@ public class LayoutAppPage extends Layout
                         laptop.removeApplication(info, (o, success) ->
                         {
                             btnInstall.setText("Install");
+                            btnInstall.setIcon(Icons.PLUS);
                             installed = false;
                         });
                     }
@@ -161,6 +162,7 @@ public class LayoutAppPage extends Layout
                         laptop.installApplication(info, (o, success) ->
                         {
                             btnInstall.setText("Remove");
+                            btnInstall.setIcon(Icons.CROSS);
                             installed = true;
                         });
                     }
