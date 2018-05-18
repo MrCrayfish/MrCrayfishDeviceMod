@@ -61,7 +61,8 @@ public class FileBrowser extends Component
         @Override
         public void render(File file, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
         {
-            Gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
+            Color bgColor = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
+            Gui.drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
 
             GlStateManager.color(1.0F, 1.0F, 1.0F);
             Minecraft.getMinecraft().getTextureManager().bindTexture(ASSETS);
@@ -74,8 +75,7 @@ public class FileBrowser extends Component
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
-            Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
-            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, color.getRGB());
+            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());
         }
     };
 
@@ -143,8 +143,8 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-            Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+            Gui.drawRect(x, y, x + width, y + 21, color.darker().getRGB());
         });
 
         btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
