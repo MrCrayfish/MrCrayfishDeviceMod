@@ -18,7 +18,7 @@ public class ApplicationFileBrowser extends SystemApplication
 	
 	public ApplicationFileBrowser()
 	{
-		this.setDefaultWidth(225);
+		this.setDefaultWidth(211);
 		this.setDefaultHeight(145);
 	}
 
