@@ -207,7 +207,7 @@ I	 * @param top how many pixels from the top
         {
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Color bgColor = new Color(getColourScheme().getBackgroundColour()).brighter().brighter();
+			Color bgColor = new Color(getColorScheme().getBackgroundColor()).brighter().brighter();
 			float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
 			bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1.0F));
 			GL11.glColor4f(bgColor.getRed() / 255F, bgColor.getGreen() / 255F, bgColor.getBlue() / 255F, 1.0F);
@@ -442,5 +442,5 @@ I	 * @param top how many pixels from the top
 		return width;
 	}
 	
-	//TODO add button text colour and button colour
+	//TODO add button text Color and button Color
 }

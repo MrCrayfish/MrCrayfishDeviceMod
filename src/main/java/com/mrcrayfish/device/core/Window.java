@@ -19,7 +19,7 @@ public class Window<T extends Wrappable>
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
-	public static final int COLOUR_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
+	public static final int Color_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
 	
 	T content;
 	int width, height;
@@ -120,7 +120,7 @@ public class Window<T extends Wrappable>
         
 		if(dialogWindow != null)
 		{
-			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
+			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, Color_WINDOW_DARK);
 			dialogWindow.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
 		}
 	}

@@ -32,7 +32,7 @@ public class TextField extends TextArea
 		if(icon != null)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Color bgColor = new Color(color(backgroundColour, getColourScheme().getBackgroundColour()));
+			Color bgColor = new Color(color(backgroundColor, getColorScheme().getBackgroundColor()));
 			Gui.drawRect(x, y, x + 15, y + 16, bgColor.darker().darker().getRGB());
 			Gui.drawRect(x + 1, y + 1, x + 15, y + 15, bgColor.brighter().getRGB());
 			icon.draw(mc, x + 3, y + 3);

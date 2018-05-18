@@ -45,7 +45,7 @@ public class Slider extends Component
 	{
 		if (this.visible)
         {
-			Color bgColor = new Color(getColourScheme().getBackgroundColour());
+			Color bgColor = new Color(getColorScheme().getBackgroundColor());
 			drawRect(xPosition, yPosition + 4, xPosition + width, yPosition + 8, bgColor.darker().darker().getRGB());
 			drawRect(xPosition + 1, yPosition + 5, xPosition + width - 1, yPosition + 7, bgColor.getRGB());
 			drawRect(xPosition + newSliderX, yPosition, xPosition + newSliderX + 8, yPosition + 12, bgColor.darker().darker().getRGB());

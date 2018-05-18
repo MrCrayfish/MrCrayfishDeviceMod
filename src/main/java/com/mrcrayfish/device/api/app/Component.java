@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.programs.system.object.ColourScheme;
+import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -193,12 +193,12 @@ public abstract class Component extends Gui
 	}
 
 	/**
-	 * Gets the laptop's colour scheme. A simple helper method to clean up code.
+	 * Gets the laptop's Color scheme. A simple helper method to clean up code.
 	 * @return
 	 */
-	protected ColourScheme getColourScheme()
+	protected ColorScheme getColorScheme()
 	{
-		return Laptop.getSystem().getSettings().getColourScheme();
+		return Laptop.getSystem().getSettings().getColorScheme();
 	}
 
 	protected static int color(int personalColor, int systemColor)

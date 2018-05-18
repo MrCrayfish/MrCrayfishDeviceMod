@@ -104,7 +104,7 @@ public class TextArea extends Component
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-			Color bgColor = new Color(color(backgroundColour, getColourScheme().getBackgroundColour()));
+			Color bgColor = new Color(color(backgroundColor, getColorScheme().getBackgroundColor()));
 			Gui.drawRect(x, y, x + width, y + height, bgColor.darker().darker().getRGB());
 			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, bgColor.getRGB());
 
@@ -140,7 +140,7 @@ public class TextArea extends Component
 				}
 				else
 				{
-					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, color(textColour, getColourScheme().getTextColour()));
+					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, color(textColor, getColorScheme().getTextColor()));
 				}
 			}
 			GLHelper.popScissor();

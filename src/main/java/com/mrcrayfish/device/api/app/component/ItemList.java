@@ -121,7 +121,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 
 			int size = getSize();
 
-			Color bgColor = new Color(getColourScheme().getBackgroundColour());
+			Color bgColor = new Color(getColorScheme().getBackgroundColor());
 			Color borderColor = bgColor.darker().darker();
 
 			/* Fill */
@@ -142,12 +142,12 @@ public class ItemList<E> extends Component implements Iterable<E>
 					if(renderer != null)
 					{
 						renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 2, renderer.getHeight(), (i + offset) == selected);
-						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColor);
+						drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColor.getRGB());
 					}
 					else
 					{
 						drawRect(xPosition + 1, yPosition + (i * 14) + 1, xPosition + width - 1, yPosition + 13 + (i * 14) + 1, (i + offset) != selected ? bgColor.brighter().getRGB() : bgColor.brighter().brighter().getRGB());
-						drawString(mc.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColour);
+						drawString(mc.fontRenderer, item.toString(), xPosition + 3, yPosition + 3 + (i * 14), textColor);
 						drawHorizontalLine(xPosition + 1, xPosition + width - 2, yPosition + (i * height) + i + height + 1, borderColor.getRGB());
 					}
 				}
@@ -160,7 +160,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 				if(renderer != null)
 				{
 					renderer.render(item, this, mc, xPosition + 1, yPosition + (i * (renderer.getHeight())) + 1 + i, width - 2, renderer.getHeight(), (i + offset) == selected);
-					drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColor);
+					drawHorizontalLine(xPosition + 1, xPosition + width - 1, yPosition + (i * height) + i + height + 1, borderColor.getRGB());
 				}
 				else
 				{
@@ -172,7 +172,7 @@ public class ItemList<E> extends Component implements Iterable<E>
 			if(items.size() > visibleItems)
 			{
 				drawRect(xPosition + width, yPosition, xPosition + width + 10, yPosition + (size * height) + size, Color.DARK_GRAY.getRGB());
-				drawVerticalLine(xPosition + width + 10, yPosition + 11, yPosition + (size * height) + size - 11, borderColor);
+				drawVerticalLine(xPosition + width + 10, yPosition + 11, yPosition + (size * height) + size - 11, borderColor.getRGB());
 			}
         }
 	}
