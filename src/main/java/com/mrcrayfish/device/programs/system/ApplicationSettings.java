@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.ComboBox;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -146,6 +147,16 @@ public class ApplicationSettings extends SystemApplication
 			openDialog(dialog);
         });
 		layoutPersonalise.addComponent(buttonWallpaperUrl);
+
+		Button buttonReset = new Button(6, 100, "Reset Color Scheme");
+		buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				Laptop.getSystem().getSettings().getColorScheme().resetDefault();
+			}
+        });
+		layoutPersonalise.addComponent(buttonReset);
 
 		layoutColorScheme = new Menu("UI Colors");
 		layoutPersonalise.addComponent(buttonPrevious);
