@@ -7,7 +7,9 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -78,5 +80,11 @@ public class RecipeLaptop extends net.minecraftforge.registries.IForgeRegistryEn
     public ItemStack getRecipeOutput()
     {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients()
+    {
+        return null;
     }
 }
