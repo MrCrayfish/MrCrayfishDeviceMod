@@ -109,6 +109,24 @@ public enum Alphabet implements IIcon
         return GRID_SIZE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSourceHeight()
+    {
+        return ICON_SIZE * GRID_SIZE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSourceWidth()
+    {
+        return ICON_SIZE * GRID_SIZE;
+    }
+
     @Override
     public int getU()
     {
@@ -119,6 +137,12 @@ public enum Alphabet implements IIcon
     public int getV()
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
+    }
+
+    @Override
+    public int getOrdinal()
+    {
+        return ordinal();
     }
 
     public void draw(Minecraft mc, int x, int y, int color)
