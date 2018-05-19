@@ -193,10 +193,13 @@ public class LayoutAppPage extends Layout
     public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
     {
         super.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
-        int width = Laptop.fontRenderer.getStringWidth(entry.getName()) * 2;
-        if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20))
+        if(store.certifiedApps.contains(entry))
         {
-            laptop.drawHoveringText(Lists.newArrayList(TextFormatting.GREEN + "Certified App"), mouseX, mouseY);
+            int width = Laptop.fontRenderer.getStringWidth(entry.getName()) * 2;
+            if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20))
+            {
+                laptop.drawHoveringText(Lists.newArrayList(TextFormatting.GREEN + "Certified App"), mouseX, mouseY);
+            }
         }
     }
 
