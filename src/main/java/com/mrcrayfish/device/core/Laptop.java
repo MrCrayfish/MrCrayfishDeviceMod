@@ -723,7 +723,7 @@ public class Laptop extends GuiScreen implements System
 
 	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
-		if(isValidApplication(info))
+		if(!isValidApplication(info))
 			return;
 
 		Task task = new TaskInstallApp(info, pos, true);
@@ -744,7 +744,7 @@ public class Laptop extends GuiScreen implements System
 
 	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
-		if(isValidApplication(info))
+		if(!isValidApplication(info))
 			return;
 
 		Task task = new TaskInstallApp(info, pos, false);
