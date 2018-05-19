@@ -290,7 +290,7 @@ public class FileBrowser extends Component
                                 {
                                     createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
                                 }
-                                else if(!laptop.openFileWithApplication(targetApp.getInfo(), file))
+                                else if(!laptop.openApplication(targetApp.getInfo(), file))
                                 {
                                     laptop.sendApplicationToFront(systemApp.getInfo());
                                     createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
