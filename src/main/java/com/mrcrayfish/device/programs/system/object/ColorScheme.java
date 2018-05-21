@@ -97,7 +97,7 @@ public class ColorScheme
     {
         textColor = Color.decode("0xFFFFFF").getRGB();
         textSecondaryColor = Color.decode("0x9BEDF2").getRGB();
-        headerColor = Color.decode("0x535861").getRGB();
+        headerColor = Color.decode("0x959fa6").getRGB();
         backgroundColor = Color.decode("0x535861").getRGB();
         backgroundSecondaryColor = 0;
         itemBackgroundColor = Color.decode("0x9E9E9E").getRGB();

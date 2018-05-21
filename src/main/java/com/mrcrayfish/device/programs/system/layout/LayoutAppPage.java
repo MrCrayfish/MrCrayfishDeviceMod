@@ -60,7 +60,7 @@ public class LayoutAppPage extends Layout
 
         this.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
             Gui.drawRect(x, y + 40, x + width, y + 41, color.brighter().getRGB());
             Gui.drawRect(x, y + 41, x + width, y + 60, color.getRGB());
             Gui.drawRect(x, y + 60, x + width, y + 61, color.darker().getRGB());
@@ -170,13 +170,14 @@ public class LayoutAppPage extends Layout
             });
             this.addComponent(btnInstall);
 
-            //if(info.getSupport() != null)
+            //TODO implement support button
+            /*if(info.getSupport() != null)
             {
                 Button btnDonate = new Button(234, 44, Icons.COIN);
                 btnDonate.setToolTip("Donate", "Opens a link to donate to author of the application");
                 btnDonate.setSize(14, 14);
                 this.addComponent(btnDonate);
-            }
+            }*/
         }
         else if(entry instanceof RemoteEntry)
         {
@@ -191,10 +192,13 @@ public class LayoutAppPage extends Layout
     public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
     {
         super.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
-        int width = Laptop.fontRenderer.getStringWidth(entry.getName()) * 2;
-        if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20))
+        if(store.certifiedApps.contains(entry))
         {
-            laptop.drawHoveringText(Lists.newArrayList(TextFormatting.GREEN + "Certified App"), mouseX, mouseY);
+            int width = Laptop.fontRenderer.getStringWidth(entry.getName()) * 2;
+            if(GuiHelper.isMouseWithin(mouseX, mouseY, xPosition + 38 + width + 3, yPosition + 29, 20, 20))
+            {
+                laptop.drawHoveringText(Lists.newArrayList(TextFormatting.GREEN + "Certified App"), mouseX, mouseY);
+            }
         }
     }
 

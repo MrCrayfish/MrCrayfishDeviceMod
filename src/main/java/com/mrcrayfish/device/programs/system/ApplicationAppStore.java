@@ -57,7 +57,7 @@ public class ApplicationAppStore extends SystemApplication
 		homePageLayout.setScrollSpeed(10);
 		homePageLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
 		{
-			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
 			int offset = 60;
 			Gui.drawRect(x, y + offset, x + LAYOUT_WIDTH, y + offset + 1, color.brighter().getRGB());
 			Gui.drawRect(x, y + offset + 1, x + LAYOUT_WIDTH, y + offset + 19, color.getRGB());

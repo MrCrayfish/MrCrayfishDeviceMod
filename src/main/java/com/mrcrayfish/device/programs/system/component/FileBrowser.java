@@ -61,7 +61,8 @@ public class FileBrowser extends Component
         @Override
         public void render(File file, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
         {
-            Gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
+            Color bgColor = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
+            Gui.drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
 
             GlStateManager.color(1.0F, 1.0F, 1.0F);
             Minecraft.getMinecraft().getTextureManager().bindTexture(ASSETS);
@@ -74,8 +75,7 @@ public class FileBrowser extends Component
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
-            Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
-            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, color.getRGB());
+            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());
         }
     };
 
@@ -143,8 +143,9 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-            Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+            Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
+            Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
         });
 
         btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
@@ -330,7 +331,8 @@ public class FileBrowser extends Component
             @Override
             public void render(Drive drive, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
             {
-                drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
+                Color bgColor = new Color(getColorScheme().getBackgroundColor());
+                drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
                 mc.getTextureManager().bindTexture(ASSETS);
                 GlStateManager.color(1.0F, 1.0F, 1.0F);
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
@@ -352,7 +354,7 @@ public class FileBrowser extends Component
         layoutLoading = new Layout(mode.getOffset(), 25, fileList.getWidth(), fileList.getHeight());
         layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + height, Window.COLOUR_WINDOW_DARK);
+            Gui.drawRect(x, y, x + width, y + height, Window.Color_WINDOW_DARK);
         });
         layoutLoading.setVisible(false);
 

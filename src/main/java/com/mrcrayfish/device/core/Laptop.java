@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.System;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
@@ -30,6 +31,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
@@ -116,6 +118,7 @@ public class Laptop extends GuiScreen implements System
 		int posY = (height - DEVICE_HEIGHT) / 2;
 		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 
+		installedApps.clear();
 		NBTTagList tagList = systemData.getTagList("InstalledApps", Constants.NBT.TAG_STRING);
 		for(int i = 0; i < tagList.tagCount(); i++)
 		{
@@ -143,15 +146,25 @@ public class Laptop extends GuiScreen implements System
 		}
 
 		/* Send system data */
-        systemData.setInteger("CurrentWallpaper", currentWallpaper);
-        systemData.setTag("Settings", settings.toTag());
-        TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
+		this.updateSystemData();
 
 		Laptop.pos = null;
         Laptop.system = null;
 		Laptop.mainDrive = null;
     }
-	
+
+    private void updateSystemData()
+	{
+		systemData.setInteger("CurrentWallpaper", currentWallpaper);
+		systemData.setTag("Settings", settings.toTag());
+
+		NBTTagList tagListApps = new NBTTagList();
+		installedApps.forEach(info -> tagListApps.appendTag(new NBTTagString(info.getFormattedId())));
+		systemData.setTag("InstalledApps", tagListApps);
+
+		TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
+	}
+
 	@Override
 	public void onResize(Minecraft mcIn, int width, int height)
 	{
@@ -446,14 +459,30 @@ public class Laptop extends GuiScreen implements System
 		super.drawHoveringText(textLines, x, y);
 	}
 
-	@Override
-	public void openApplication(AppInfo info)
+	public boolean sendApplicationToFront(AppInfo info)
 	{
-		openApplication(info, null);
+		for(int i = 0; i < windows.length; i++)
+		{
+			Window window = windows[i];
+			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
+			{
+				windows[i] = null;
+				updateWindowStack();
+				windows[0] = window;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
-	public void openApplication(AppInfo info, @Nullable NBTTagCompound intentTag)
+	public void openApplication(AppInfo info)
+	{
+		openApplication(info, (NBTTagCompound) null);
+	}
+
+	@Override
+	public void openApplication(AppInfo info, NBTTagCompound intentTag)
 	{
 		if(isApplicationRunning(info))
 			return;
@@ -465,27 +494,19 @@ public class Laptop extends GuiScreen implements System
 		}
 	}
 
-	public void openApplication(Application app, @Nullable NBTTagCompound intent)
+	private void openApplication(Application app, NBTTagCompound intent)
 	{
-		if(!app.getInfo().isSystemApp() && !installedApps.contains(app.getInfo()))
+		if(!isApplicationInstalled(app.getInfo()))
+			return;
+
+		if(!isValidApplication(app.getInfo()))
 			return;
 
 		if(!ApplicationManager.isApplicationWhitelisted(app.getInfo()))
 			return;
 
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window<Application> window = windows[i];
-			if(window != null && window.content.getInfo().getFormattedId().equals(app.getInfo().getFormattedId()))
-			{
-				windows[i] = null;
-				updateWindowStack();
-				windows[0] = window;
-				return;
-			}
-		}
-
-		app.setLaptopPosition(pos);
+		if(sendApplicationToFront(app.getInfo()))
+			return;
 
 		Window<Application> window = new Window<>(app, this);
 		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
@@ -508,6 +529,37 @@ public class Laptop extends GuiScreen implements System
 		addWindow(window);
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+	}
+
+	@Override
+	public boolean openApplication(AppInfo info, File file)
+	{
+		if(!isApplicationInstalled(info))
+			return false;
+
+		if(!isValidApplication(info))
+			return false;
+
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		if(optional.isPresent())
+		{
+			Application application = optional.get();
+			boolean alreadyRunning = isApplicationRunning(info);
+			openApplication(application, null);
+			if(isApplicationRunning(info))
+			{
+				if(!application.handleFile(file))
+				{
+					if(!alreadyRunning)
+					{
+						closeApplication(application);
+					}
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Nullable
@@ -543,7 +595,7 @@ public class Laptop extends GuiScreen implements System
 		}
 	}
 
-	public void closeApplication(Application app)
+	private void closeApplication(Application app)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
@@ -695,8 +747,25 @@ public class Laptop extends GuiScreen implements System
 		return ImmutableList.copyOf(installedApps);
 	}
 
+	public boolean isApplicationInstalled(AppInfo info)
+	{
+		return info.isSystemApp() || installedApps.contains(info);
+	}
+
+	private boolean isValidApplication(AppInfo info)
+	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
+		}
+		return true;
+	}
+
 	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
+		if(!isValidApplication(info))
+			return;
+
 		Task task = new TaskInstallApp(info, pos, true);
 		task.setCallback((tagCompound, success) ->
 		{
@@ -715,6 +784,9 @@ public class Laptop extends GuiScreen implements System
 
 	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
+		if(!isValidApplication(info))
+			return;
+
 		Task task = new TaskInstallApp(info, pos, false);
 		task.setCallback((tagCompound, success) ->
 		{

@@ -139,6 +139,16 @@ public class ApplicationSettings extends SystemApplication
         });
 		layoutPersonalise.addComponent(buttonWallpaperUrl);
 
+		Button buttonReset = new Button(6, 100, "Reset Color Scheme");
+		buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				Laptop.getSystem().getSettings().getColorScheme().resetDefault();
+			}
+        });
+		layoutPersonalise.addComponent(buttonReset);
+
 		layoutColorScheme = new Menu("UI Colors");
 		layoutPersonalise.addComponent(buttonPrevious);
 
@@ -219,8 +229,9 @@ public class ApplicationSettings extends SystemApplication
 		@Override
 		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 		{
-			Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
+			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+			Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
+			Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
 			mc.fontRenderer.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
 			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 		}

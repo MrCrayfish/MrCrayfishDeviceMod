@@ -6,6 +6,7 @@ import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,10 +48,18 @@ public class ApplicationExample extends Application
 		
 		button = new Button(5, 18, "Button");
 		button.setSize(63, 20);
+		button.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+            itemList.addItem("Henlo");
+        });
 		super.addComponent(button);
 		
 		leftButton = new Button(5, 43, Icons.CHEVRON_LEFT);
 		leftButton.setPadding(1);
+		leftButton.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+			itemList.removeItem(itemList.getSelectedIndex());
+        });
 		super.addComponent(leftButton);
 		
 		upButton = new Button(22, 43, Icons.CHEVRON_UP);
@@ -74,12 +83,15 @@ public class ApplicationExample extends Application
 		itemList.addItem("Item #2");
 		itemList.addItem("Item #3");
 		super.addComponent(itemList);
-		
+
+		//RadioGroup group = new RadioGroup();
 		checkBoxOff = new CheckBox("Off", 5, 122);
+		//checkBoxOff.setRadioGroup(group);
 		super.addComponent(checkBoxOff);
 		
 		checkBoxOn = new CheckBox("On", 42, 122);
 		checkBoxOn.setSelected(true);
+		//checkBoxOn.setRadioGroup(group);
 		super.addComponent(checkBoxOn);
 		
 		textField = new TextField(88, 5, 80);

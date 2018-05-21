@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.app.component;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
 import com.mrcrayfish.device.api.app.listener.KeyListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -103,13 +104,15 @@ public class TextArea extends Component
 		if (this.visible)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(x, y, x + width, y + height, borderColor);
-			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, backgroundColor);
+
+			Color bgColor = new Color(color(backgroundColor, getColorScheme().getBackgroundColor()));
+			Gui.drawRect(x, y, x + width, y + height, bgColor.darker().darker().getRGB());
+			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, bgColor.getRGB());
 
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
 				GlStateManager.enableBlend();
-				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColor);
+				RenderUtil.drawStringClipped(placeholder, x + padding, y + padding, width - padding * 2, placeholderColor, false);
 			}
 
 			GLHelper.pushScissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
@@ -138,7 +141,7 @@ public class TextArea extends Component
 				}
 				else
 				{
-					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColor);
+					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, color(textColor, getColorScheme().getTextColor()));
 				}
 			}
 			GLHelper.popScissor();
@@ -158,7 +161,7 @@ public class TextArea extends Component
 						int stringWidth = fontRenderer.getStringWidth(subString);
 						int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll + (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
 						int posY = y + padding + (cursorY - scroll) * fontRenderer.FONT_HEIGHT;
-						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT - 1, Color.WHITE.getRGB());
+						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT, Color.WHITE.getRGB());
 					}
 				}
 			}

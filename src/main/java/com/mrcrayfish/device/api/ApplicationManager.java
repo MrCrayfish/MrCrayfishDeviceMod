@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public final class ApplicationManager
@@ -76,7 +77,8 @@ public final class ApplicationManager
 	 */
 	public static List<AppInfo> getAvailableApplications()
 	{
-		return APP_INFO_MAP.values().stream().filter(info -> !info.isSystemApp()).collect(Collectors.toList());
+		final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && (!MrCrayfishDeviceMod.proxy.hasAllowedApplications() || MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info));
+		return APP_INFO.values().stream().filter(FILTER).collect(Collectors.toList());
 	}
 
 	public static List<AppInfo> getSystemApplications()

@@ -19,7 +19,7 @@ public class Window<T extends Wrappable>
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
-	public static final int COLOUR_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
+	public static final int Color_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
 	
 	T content;
 	int width, height;
@@ -83,7 +83,7 @@ public class Window<T extends Wrappable>
 			content.clearPendingLayout();
 		}
 		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(WINDOW_GUI);
 
@@ -120,7 +120,7 @@ public class Window<T extends Wrappable>
         
 		if(dialogWindow != null)
 		{
-			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
+			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, Color_WINDOW_DARK);
 			dialogWindow.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
 		}
 	}
@@ -185,7 +185,7 @@ public class Window<T extends Wrappable>
 		{
 			if(content instanceof Application)
 			{
-				gui.closeApplication((Application) content);
+				gui.closeApplication(((Application) content).getInfo());
 				return;
 			}
 
@@ -278,7 +278,7 @@ public class Window<T extends Wrappable>
 	{
 		if(content instanceof Application)
 		{
-			laptop.closeApplication((Application) content);
+			laptop.closeApplication(((Application) content).getInfo());
 			return;
 		}
 		if(parent != null)
