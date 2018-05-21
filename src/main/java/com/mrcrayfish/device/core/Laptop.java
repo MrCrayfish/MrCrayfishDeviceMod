@@ -118,6 +118,7 @@ public class Laptop extends GuiScreen implements System
 		int posY = (height - DEVICE_HEIGHT) / 2;
 		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
 
+		installedApps.clear();
 		NBTTagList tagList = systemData.getTagList("InstalledApps", Constants.NBT.TAG_STRING);
 		for(int i = 0; i < tagList.tagCount(); i++)
 		{
