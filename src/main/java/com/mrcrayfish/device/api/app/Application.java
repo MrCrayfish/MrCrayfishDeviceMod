@@ -24,8 +24,7 @@ import java.lang.*;
  */
 public abstract class Application extends Wrappable
 {
-	protected final AppInfo info = null;
-	private BlockPos laptopPositon;
+	private AppInfo info = null;
 
 	private int width, height;
 

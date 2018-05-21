@@ -11,6 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Comparator;
 import java.util.regex.Matcher;
@@ -119,6 +121,23 @@ public class AppInfo
 	public Class<Application> getAppClass()
 	{
 		return APP_CLASS;
+	}
+
+	public Application createInstance()
+	{
+		try
+		{
+			Application application = APP_CLASS.newInstance();
+			Field field = Application.class.getDeclaredField("info");
+			field.setAccessible(true);
+			field.set(application, this);
+			return application;
+		}
+		catch(InstantiationException | IllegalAccessException | NoSuchFieldException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
