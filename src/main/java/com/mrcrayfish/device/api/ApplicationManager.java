@@ -54,20 +54,6 @@ public final class ApplicationManager
 		});
 	}
 
-	@Nullable
-	public static Application createApplication(AppInfo info)
-	{
-		try
-		{
-			return info.getAppClass().newInstance();
-		}
-		catch(InstantiationException | IllegalAccessException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	/**
 	 * Get all applications that are registered. The returned collection does not include system
 	 * applications, see {@link #getSystemApplications()} or {@link #getAllApplications()}. Please
@@ -77,8 +63,8 @@ public final class ApplicationManager
 	 */
 	public static List<AppInfo> getAvailableApplications()
 	{
-		final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && (!MrCrayfishDeviceMod.proxy.hasAllowedApplications() || MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info));
-		return APP_INFO.values().stream().filter(FILTER).collect(Collectors.toList());
+		final Predicate<AppInfo> FILTER = info -> !info.isSystemApp() && isApplicationWhitelisted(info);
+		return APP_INFO_MAP.values().stream().filter(FILTER).collect(Collectors.toList());
 	}
 
 	public static List<AppInfo> getSystemApplications()

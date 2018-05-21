@@ -142,7 +142,7 @@ public class ApplicationEmail extends Application
 		image.setAlpha(0.85F);
 		layoutMainMenu.addComponent(image);
 
-		logo = new Image(86, 20, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
+		logo = new Image(86, 20, 28, 28, getInfo().getIconU(), getInfo().getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
 		layoutMainMenu.addComponent(logo);
 
 		labelLogo = new Label("Ender Mail", 100, 46);
@@ -254,7 +254,7 @@ public class ApplicationEmail extends Application
 				if (!e.isRead())
 				{
 					GlStateManager.color(1.0F, 1.0F, 1.0F);
-					RenderUtil.drawApplicationIcon(info, x + width - 16, y + 2);
+					RenderUtil.drawApplicationIcon(getInfo(), x + width - 16, y + 2);
 				}
 
 				if(e.getAttachment() != null)
@@ -581,7 +581,7 @@ public class ApplicationEmail extends Application
 		{
 			return "Contacts";
 		}
-		return info.getName();
+		return getInfo().getName();
 	}
 
 	@Override

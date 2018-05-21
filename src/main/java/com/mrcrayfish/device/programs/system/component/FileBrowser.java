@@ -282,7 +282,6 @@ public class FileBrowser extends Component
                         Laptop laptop = systemApp.getLaptop();
                         if(laptop != null)
                         {
-                            //TODO change to check if application is installed
                             AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                             if(!laptop.getInstalledApplications().contains(info))
                             {
@@ -293,11 +292,8 @@ public class FileBrowser extends Component
                                 Application targetApp = laptop.getOrCreateApplication(info);
                                 if(targetApp != null)
                                 {
-                                    laptop.openApplication(targetApp, null);
-                                    if(!targetApp.handleFile(file))
+                                    if(!laptop.openApplication(targetApp.getInfo(), file))
                                     {
-                                        laptop.closeApplication(targetApp);
-                                        laptop.openApplication(systemApp, null);
                                         createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                     }
                                 }

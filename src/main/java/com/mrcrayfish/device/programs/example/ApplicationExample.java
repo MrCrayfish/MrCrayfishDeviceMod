@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.programs.example;
 
 import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.app.Application;
@@ -32,14 +33,7 @@ public class ApplicationExample extends Application
 	private TextArea textArea;
 	private Text text;
 	private Image image;
-	
-	public ApplicationExample() 
-	{
-		//super("example", "UI Components");
-		this.setDefaultWidth(270);
-		this.setDefaultHeight(140);
-	}
-	
+
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
 	{
