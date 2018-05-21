@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.email.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.EmailManager;
@@ -7,15 +9,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "send_email")
 public class TaskSendEmail extends Task 
 {
 	private Email email;
 	private String to;
 	
-	public TaskSendEmail() 
-	{
-		super("send_email");
-	}
+	public TaskSendEmail() {}
 	
 	public TaskSendEmail(Email email, String to)
 	{

@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.core.Settings;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;

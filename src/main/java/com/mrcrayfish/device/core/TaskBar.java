@@ -1,12 +1,11 @@
 package com.mrcrayfish.device.core;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.network.TrayItemWifi;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.ApplicationFileBrowser;
@@ -61,19 +60,11 @@ public class TaskBar
 			{
 				return true;
 			}
-			if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+			else if(MrCrayfishDeviceMod.DEVELOPER_MODE && Settings.isShowAllApps())
 			{
-				if(MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
-				{
-					return !MrCrayfishDeviceMod.DEVELOPER_MODE || Settings.isShowAllApps();
-				}
-				return false;
+				return true;
 			}
-			else if(MrCrayfishDeviceMod.DEVELOPER_MODE)
-			{
-				return Settings.isShowAllApps();
-			}
-			return true;
+			return ApplicationManager.isApplicationWhitelisted(app.getInfo());
 		};
 	}
 

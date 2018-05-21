@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.network.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.Router;
@@ -16,6 +18,7 @@ import java.util.Collection;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "get_network_devices")
 public class TaskGetDevices extends Task
 {
     private BlockPos devicePos;
@@ -23,14 +26,10 @@ public class TaskGetDevices extends Task
 
     private Collection<NetworkDevice> foundDevices;
 
-    private TaskGetDevices()
-    {
-        super("get_network_devices");
-    }
+    private TaskGetDevices() {}
 
     public TaskGetDevices(BlockPos devicePos)
     {
-        this();
         this.devicePos = devicePos;
     }
 

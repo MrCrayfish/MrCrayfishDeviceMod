@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.network.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
@@ -13,15 +15,13 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "connect")
 public class TaskConnect extends Task
 {
     private BlockPos devicePos;
     private BlockPos routerPos;
 
-    public TaskConnect()
-    {
-        super("connect");
-    }
+    public TaskConnect() {}
 
     public TaskConnect(BlockPos devicePos, BlockPos routerPos)
     {

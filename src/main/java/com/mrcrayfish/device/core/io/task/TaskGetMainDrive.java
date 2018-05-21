@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Task;
@@ -17,16 +19,14 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "get_main_drive")
 public class TaskGetMainDrive extends Task
 {
     private BlockPos pos;
 
     private AbstractDrive mainDrive;
 
-    private TaskGetMainDrive()
-    {
-        super("get_main_drive");
-    }
+    private TaskGetMainDrive() {}
 
     public TaskGetMainDrive(BlockPos pos)
     {

@@ -1,19 +1,19 @@
 package com.mrcrayfish.device.programs.email.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.EmailManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "register_email_account")
 public class TaskRegisterEmailAccount extends Task
 {
 	private String name;
 	
-	public TaskRegisterEmailAccount() 
-	{
-		super("register_email_account");
-	}
+	public TaskRegisterEmailAccount() {}
 	
 	public TaskRegisterEmailAccount(String name) 
 	{

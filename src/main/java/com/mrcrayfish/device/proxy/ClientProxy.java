@@ -4,13 +4,11 @@ import com.mrcrayfish.device.DeviceConfig;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.client.ClientNotification;
-import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.system.SystemApplication;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.tileentity.*;
 import com.mrcrayfish.device.tileentity.render.*;
 import net.minecraft.client.Minecraft;
@@ -26,13 +24,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -142,48 +137,6 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
         ReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
     }
 
-    @Nullable
-    @Override
-    public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
-    {
-        if("minecraft".equals(identifier.getResourceDomain()))
-        {
-            throw new IllegalArgumentException("Invalid identifier domain");
-        }
-
-        try
-        {
-            Application application = clazz.newInstance();
-            java.util.List<Application> APPS = ReflectionHelper.getPrivateValue(Laptop.class, null, "APPLICATIONS");
-            APPS.add(application);
-
-            Field field = Application.class.getDeclaredField("info");
-            field.setAccessible(true);
-
-            Field modifiers = Field.class.getDeclaredField("modifiers");
-            modifiers.setAccessible(true);
-            modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-            field.set(application, generateAppInfo(identifier, clazz));
-
-            return application;
-        }
-        catch(InstantiationException | IllegalAccessException | NoSuchFieldException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @Nullable
-    private AppInfo generateAppInfo(ResourceLocation identifier, Class<? extends Application> clazz)
-    {
-        AppInfo info = new AppInfo(identifier, SystemApplication.class.isAssignableFrom(clazz));
-        info.reload();
-        return info;
-    }
-
     @Override
     public boolean registerPrint(ResourceLocation identifier, Class<? extends IPrint> classPrint)
     {
@@ -230,7 +183,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
-        allowedApps = null;
+        ReflectionHelper.setPrivateValue(ApplicationManager.class, null, null, "whitelistedApps");
         DeviceConfig.restore();
     }
 

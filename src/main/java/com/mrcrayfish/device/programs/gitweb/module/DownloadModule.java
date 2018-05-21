@@ -8,7 +8,7 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

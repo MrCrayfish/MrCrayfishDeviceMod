@@ -16,7 +16,7 @@ import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import com.mrcrayfish.device.core.task.TaskInstallApp;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
@@ -55,7 +55,6 @@ public class Laptop extends GuiScreen implements System
 
 	public static final FontRenderer fontRenderer = new LaptopFontRenderer(Minecraft.getMinecraft());
 
-	private static final List<Application> APPLICATIONS = new ArrayList<>();
 	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
 	private static final int BORDER = 10;
@@ -456,24 +455,23 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void openApplication(AppInfo info, @Nullable NBTTagCompound intentTag)
 	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(application -> openApplication(application, intentTag));
+		if(isApplicationRunning(info))
+			return;
+
+		Application application = ApplicationManager.createApplication(info);
+		if(application != null)
+		{
+			openApplication(application, intentTag);
+		}
 	}
 
 	public void openApplication(Application app, @Nullable NBTTagCompound intent)
 	{
 		if(!app.getInfo().isSystemApp() && !installedApps.contains(app.getInfo()))
-		{
 			return;
-		}
 
-		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-		{
-			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
-			{
-				return;
-			}
-		}
+		if(!ApplicationManager.isApplicationWhitelisted(app.getInfo()))
+			return;
 
 		for(int i = 0; i < windows.length; i++)
 		{
@@ -512,11 +510,37 @@ public class Laptop extends GuiScreen implements System
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
+	@Nullable
+	public Application getOrCreateApplication(AppInfo info)
+	{
+		Application application = getRunningApplication(info);
+		return application != null ? application : ApplicationManager.createApplication(info);
+	}
+
+	private Application getRunningApplication(AppInfo info)
+	{
+		for(Window window : windows)
+		{
+			if(window != null && window.content instanceof Application)
+			{
+				Application application = (Application) window.content;
+				if(application.getInfo() == info)
+				{
+					return application;
+				}
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public void closeApplication(AppInfo info)
 	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(this::closeApplication);
+		Application application = getRunningApplication(info);
+		if(application != null)
+		{
+			closeApplication(application);
+		}
 	}
 
 	public void closeApplication(Application app)
@@ -665,12 +689,6 @@ public class Laptop extends GuiScreen implements System
 		return ImmutableList.copyOf(WALLPAPERS);
 	}
 
-	@Nullable
-	public Application getApplication(String appId)
-	{
-		return APPLICATIONS.stream().filter(app -> app.getInfo().getFormattedId().equals(appId)).findFirst().orElse(null);
-	}
-
 	@Override
 	public List<AppInfo> getInstalledApplications()
 	{
@@ -729,11 +747,6 @@ public class Laptop extends GuiScreen implements System
 	public static Drive getMainDrive()
 	{
 		return mainDrive;
-	}
-
-	public List<Application> getApplications()
-	{
-		return APPLICATIONS;
 	}
 
 	public TaskBar getTaskBar()

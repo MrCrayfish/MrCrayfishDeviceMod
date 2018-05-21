@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.example;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
@@ -10,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
+@DeviceApplication(modId = Reference.MOD_ID, appId = "example", debug = true)
 public class ApplicationExample extends Application
 {
 	private Label label;

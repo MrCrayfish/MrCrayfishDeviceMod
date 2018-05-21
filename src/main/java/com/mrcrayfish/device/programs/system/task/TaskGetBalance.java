@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
@@ -7,14 +9,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "bank_get_balance")
 public class TaskGetBalance extends Task 
 {
 	private int balance;
-	
-	public TaskGetBalance()
-	{
-		super("bank_get_balance");
-	}
 
 	@Override
 	public void prepareRequest(NBTTagCompound nbt) {}

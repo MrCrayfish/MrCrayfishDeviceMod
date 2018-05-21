@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.utils.BankUtil;
 import com.mrcrayfish.device.programs.system.object.Account;
@@ -9,15 +11,13 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "bank_pay")
 public class TaskPay extends Task 
 {
 	private String uuid;
 	private int amount;
 	
-	public TaskPay()
-	{
-		super("bank_pay");
-	}
+	public TaskPay() {}
 	
 	public TaskPay(String uuid, int amount)
 	{

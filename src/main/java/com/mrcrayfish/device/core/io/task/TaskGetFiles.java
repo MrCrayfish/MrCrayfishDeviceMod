@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.io.Folder;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "get_files")
 public class TaskGetFiles extends Task
 {
     private String uuid;
@@ -29,10 +32,7 @@ public class TaskGetFiles extends Task
 
     private List<ServerFile> files;
 
-    private TaskGetFiles()
-    {
-        super("get_files");
-    }
+    private TaskGetFiles() {}
 
     public TaskGetFiles(Folder folder, BlockPos pos)
     {

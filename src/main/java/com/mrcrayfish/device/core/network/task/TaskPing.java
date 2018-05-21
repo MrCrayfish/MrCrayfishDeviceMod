@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.network.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,15 +13,13 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "ping")
 public class TaskPing extends Task
 {
     private BlockPos sourceDevicePos;
     private int strength;
 
-    private TaskPing()
-    {
-        super("ping");
-    }
+    private TaskPing() {}
 
     public TaskPing(BlockPos sourceDevicePos)
     {

@@ -4,6 +4,7 @@ import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
+import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
@@ -32,6 +33,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.awt.*;
 
+@DeviceApplication(modId = Reference.MOD_ID, appId = "pixel_painter")
 public class ApplicationPixelPainter extends Application
 {
 	private static final ResourceLocation PIXEL_PAINTER_ICONS = new ResourceLocation("cdm:textures/gui/pixel_painter.png");

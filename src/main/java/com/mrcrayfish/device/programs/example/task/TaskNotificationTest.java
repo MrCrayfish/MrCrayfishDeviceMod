@@ -1,7 +1,9 @@
 package com.mrcrayfish.device.programs.example.task;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Notification;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,12 +17,10 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "notification_test", debug = true)
 public class TaskNotificationTest extends Task
 {
-    public TaskNotificationTest()
-    {
-        super("notification_test");
-    }
+    public TaskNotificationTest() {}
 
     @Override
     public void prepareRequest(NBTTagCompound nbt)

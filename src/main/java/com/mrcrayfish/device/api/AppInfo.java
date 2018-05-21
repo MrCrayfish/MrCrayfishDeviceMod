@@ -1,11 +1,11 @@
-package com.mrcrayfish.device.object;
+package com.mrcrayfish.device.api;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.proxy.ClientProxy;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.InputStream;
@@ -21,9 +21,10 @@ public class AppInfo
 	public static final Comparator<AppInfo> SORT_NAME = Comparator.comparing(AppInfo::getName);
 
 	private transient final ResourceLocation APP_ID;
+	private transient final Class<Application> APP_CLASS;
+	private transient final boolean SYSTEM_APP;
 	private transient int iconU = 0;
 	private transient int iconV = 0;
-	private transient boolean systemApp;
 
 	private String name;
 	private String author;
@@ -33,10 +34,11 @@ public class AppInfo
 	private String[] screenshots;
 	private Support support;
 
-	public AppInfo(ResourceLocation identifier, boolean isSystemApp)
+	AppInfo(ResourceLocation appIdentifier, Class<Application> appClass, boolean isSystemApp)
 	{
-		this.APP_ID = identifier;
-		this.systemApp = isSystemApp;
+		this.APP_ID = appIdentifier;
+		this.APP_CLASS = appClass;
+		this.SYSTEM_APP = isSystemApp;
 	}
 
 	/**
@@ -111,7 +113,12 @@ public class AppInfo
 
 	public boolean isSystemApp()
 	{
-		return systemApp;
+		return SYSTEM_APP;
+	}
+
+	public Class<Application> getAppClass()
+	{
+		return APP_CLASS;
 	}
 
 	@Override

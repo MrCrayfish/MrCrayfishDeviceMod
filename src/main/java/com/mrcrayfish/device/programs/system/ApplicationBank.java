@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.*;
+import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
@@ -25,6 +27,7 @@ import net.minecraft.util.text.TextFormatting;
 import javax.annotation.Nullable;
 import java.awt.Color;
 
+@DeviceApplication(modId = Reference.MOD_ID, appId = "bank")
 public class ApplicationBank extends SystemApplication
 {
 	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);

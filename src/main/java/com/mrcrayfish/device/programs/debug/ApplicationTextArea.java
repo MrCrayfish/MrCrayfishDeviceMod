@@ -1,8 +1,10 @@
 package com.mrcrayfish.device.programs.debug;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
@@ -16,6 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
+@DeviceApplication(modId = Reference.MOD_ID, appId = "text_area", debug = true)
 public class ApplicationTextArea extends Application
 {
     public static final IHighlight JAVA_HIGHLIGHT = text -> 

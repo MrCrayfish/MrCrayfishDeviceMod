@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.email.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.EmailManager;
@@ -9,14 +11,12 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "delete_email")
 public class TaskDeleteEmail extends Task {
 	
 	private int index;
 	
-	public TaskDeleteEmail() 
-	{
-		super("delete_email");
-	}
+	public TaskDeleteEmail() {}
 	
 	public TaskDeleteEmail(int index) 
 	{

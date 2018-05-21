@@ -1,8 +1,10 @@
 package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -11,6 +13,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
+@DeviceApplication(modId = Reference.MOD_ID, appId = "test", debug = true)
 public class ApplicationTest extends Application
 {
     @Override

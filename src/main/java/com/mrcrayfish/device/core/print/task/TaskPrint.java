@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.print.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.annotation.DeviceTask;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.NetworkDevice;
@@ -17,20 +19,17 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "print")
 public class TaskPrint extends Task
 {
     private BlockPos devicePos;
     private UUID printerId;
     private IPrint print;
 
-    private TaskPrint()
-    {
-        super("print");
-    }
+    private TaskPrint() {}
 
     public TaskPrint(BlockPos devicePos, NetworkDevice printer, IPrint print)
     {
-        this();
         this.devicePos = devicePos;
         this.printerId = printer.getId();
         this.print = print;

@@ -8,9 +8,8 @@ import com.mrcrayfish.device.api.app.ScrollableLayout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
-import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.component.SlideShow;
@@ -26,7 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 import java.awt.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
  * Author: MrCrayfish
