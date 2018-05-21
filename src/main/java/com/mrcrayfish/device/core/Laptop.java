@@ -31,6 +31,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
@@ -146,14 +147,24 @@ public class Laptop extends GuiScreen implements System
 		}
 
 		/* Send system data */
-        systemData.setInteger("CurrentWallpaper", currentWallpaper);
-        systemData.setTag("Settings", settings.toTag());
-        TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
+		this.updateSystemData();
 
 		Laptop.pos = null;
         Laptop.system = null;
 		Laptop.mainDrive = null;
     }
+
+    private void updateSystemData()
+	{
+		systemData.setInteger("CurrentWallpaper", currentWallpaper);
+		systemData.setTag("Settings", settings.toTag());
+
+		NBTTagList tagListApps = new NBTTagList();
+		installedApps.forEach(info -> tagListApps.appendTag(new NBTTagString(info.getFormattedId())));
+		systemData.setTag("InstalledApps", tagListApps);
+
+		TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
+	}
 	
 	@Override
 	public void onResize(Minecraft mcIn, int width, int height)
