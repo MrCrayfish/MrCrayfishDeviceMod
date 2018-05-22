@@ -11,6 +11,7 @@ import java.util.*;
 
 public class ApplicationRegistry {
     private static final Set<IAppContainer> apps = new HashSet<>();
+    private static final Set<IAppContainer> debugApps = new HashSet<>();
 
     public static void populateApps(ASMDataTable asmDataTable){
         MrCrayfishDeviceMod.getLogger().info("Populating annotated apps...");
@@ -19,14 +20,19 @@ public class ApplicationRegistry {
             try {
                 final String name = it.getClassName();
                 final Class<?> clazz = Class.forName(name);
-                if(clazz.getSuperclass() == Application.class){
+                if(Application.class.isAssignableFrom(clazz)){
                     final Class<? extends Application> claz = clazz.asSubclass(Application.class);
                     final Annotation[] anns = claz.getAnnotations();
                     for(Annotation a : anns){
                         final String n = a.annotationType().getCanonicalName();
                         if(n.equals(App.class.getCanonicalName())){
                             final App app = (App)a;
-                            apps.add(newAppContainer(app, claz));
+                            IAppContainer appContainer = newAppContainer(app, claz);
+                            if(app.isDebug()) {
+                                debugApps.add(appContainer);
+                            }else{
+                                apps.add(appContainer);
+                            }
                         }
                     }
                 }
@@ -34,7 +40,7 @@ public class ApplicationRegistry {
                 e.printStackTrace();
             }
         }
-        MrCrayfishDeviceMod.getLogger().info("\tDone!");
+        MrCrayfishDeviceMod.getLogger().info("Done!");
     }
 
     private static IAppContainer newAppContainer(App app, Class<? extends Application> clazz){
@@ -51,11 +57,6 @@ public class ApplicationRegistry {
             }
 
             @Override
-            public boolean isDebug() {
-                return app.isDebug();
-            }
-
-            @Override
             public boolean isSystemApp(){
                 return app.isSystemApp();
             }
@@ -67,7 +68,15 @@ public class ApplicationRegistry {
     public static void registerApps(){
         MrCrayfishDeviceMod.getLogger().info("Registering annotated apps...");
         for(IAppContainer app : apps){
-            MrCrayfishDeviceMod.getLogger().info(app.getAppId());
+            MrCrayfishDeviceMod.getLogger().info("\t" + app.getAppId());
+            ApplicationManager.registerApplication(app);
+        }
+    }
+
+    public static void registerDebugApps(){
+        MrCrayfishDeviceMod.getLogger().info("Registering debug apps...");
+        for(IAppContainer app : debugApps){
+            MrCrayfishDeviceMod.getLogger().info("\t" + app.getAppId());
             ApplicationManager.registerApplication(app);
         }
     }

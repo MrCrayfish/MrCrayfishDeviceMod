@@ -1,8 +1,10 @@
 package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ComboBox;
+import com.mrcrayfish.device.api.app.registry.App;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
@@ -12,6 +14,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
+@App(modId = Reference.MOD_ID, appId = "icons", isDebug = true)
 public class ApplicationIcons extends Application
 {
     private int offset;

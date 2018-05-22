@@ -9,6 +9,7 @@ import com.mrcrayfish.device.api.app.component.*;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
+import com.mrcrayfish.device.api.app.registry.App;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.print.IPrint;
@@ -32,6 +33,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.awt.*;
 
+@App(modId = Reference.MOD_ID, appId = "pixel_painter")
 public class ApplicationPixelPainter extends Application
 {
 	private static final ResourceLocation PIXEL_PAINTER_ICONS = new ResourceLocation("cdm:textures/gui/pixel_painter.png");

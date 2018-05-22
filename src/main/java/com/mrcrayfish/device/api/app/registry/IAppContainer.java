@@ -9,6 +9,5 @@ import javax.annotation.Nullable;
 public interface IAppContainer {
     Class<? extends Application> getContainedAppClass();
     ResourceLocation getAppId();
-    boolean isDebug();
     boolean isSystemApp();
 }

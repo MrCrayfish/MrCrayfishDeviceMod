@@ -39,6 +39,14 @@ public class CommonProxy
 
 	public void postInit() {}
 
+	public Application registerApplication(IAppContainer app){
+		if(allowedApps == null){
+			allowedApps = new ArrayList<>();
+		}
+		allowedApps.add(new AppInfo(app.getAppId(), app.isSystemApp()));
+		return null;
+	}
+
 	@Nullable
 	public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{

@@ -17,10 +17,6 @@ public final class ApplicationManager
 
 	private ApplicationManager() {}
 
-	public static Application registerApplication(IAppContainer app){
-		return registerApplication(app.getAppId(), app.getContainedAppClass());
-	}
-
 	/**
 	 * Registers an application into the application list
 	 *
@@ -28,8 +24,10 @@ public final class ApplicationManager
 	 * <p>
 	 * Example: {@code new ResourceLocation("modid:appid");}
 	 *
-	 * @param identifier the
-	 * @param clazz
+	 * This is here along with the other {@link ApplicationManager#registerApplication(IAppContainer)} for backwards compatibility
+	 *
+	 * @param identifier the ID of the application. A resource location
+	 * @param clazz the application class being registered
 	 */
 	@Nullable
 	public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
@@ -38,6 +36,24 @@ public final class ApplicationManager
 		if(application != null)
 		{
 			APP_INFO.put(identifier, application.getInfo());
+			return application;
+		}
+		return null;
+	}
+
+	/**
+	 * Do not use this. This is for internal use only!
+	 *
+	 * Just pass in an instance of {@link IAppContainer} to register it just like normal.
+	 * A new {@link Application} object will be constructed from {@link com.mrcrayfish.device.proxy.ClientProxy#registerApplication(IAppContainer)}
+	 * @param app the application container instance. Used by the annotation registry system.
+	 * @return either an instance of the application constructed in ClientProxy, or null
+	 */
+	@Nullable
+	public static Application registerApplication(IAppContainer app){
+		Application application = MrCrayfishDeviceMod.proxy.registerApplication(app);
+		if(application != null){
+			APP_INFO.put(app.getAppId(), application.getInfo());
 			return application;
 		}
 		return null;

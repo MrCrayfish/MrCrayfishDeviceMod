@@ -5,6 +5,7 @@ import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.registry.IAppContainer;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.core.Laptop;
@@ -140,6 +141,11 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     {
         ReflectionHelper.setPrivateValue(AppInfo.class, info, iconU, "iconU");
         ReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
+    }
+
+    @Override
+    public Application registerApplication(IAppContainer app){
+        return registerApplication(app.getAppId(), app.getContainedAppClass());
     }
 
     @Nullable

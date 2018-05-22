@@ -14,6 +14,7 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Spinner;
+import com.mrcrayfish.device.api.app.registry.App;
 import com.mrcrayfish.device.api.utils.OnlineRequest;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.object.AppInfo;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@App(modId = Reference.MOD_ID, appId = "app_store", isSystemApp = true)
 public class ApplicationAppStore extends SystemApplication
 {
 	public static final String CERTIFIED_APPS_URL = "https://raw.githubusercontent.com/MrCrayfish/DeviceMod-CertifiedApps/master";

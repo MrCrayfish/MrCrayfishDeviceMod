@@ -1,8 +1,10 @@
 package com.mrcrayfish.device.programs.system;
 
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.app.registry.App;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.object.AppInfo;
@@ -12,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
+@App(modId = Reference.MOD_ID, appId = "file_browser", isSystemApp = true)
 public class ApplicationFileBrowser extends SystemApplication
 {
 	private FileBrowser browser;
