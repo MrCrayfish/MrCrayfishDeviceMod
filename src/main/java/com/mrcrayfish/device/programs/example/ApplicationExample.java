@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.example;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.app.registry.App;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
@@ -11,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
+@App(modId=Reference.MOD_ID, appId="example")
 public class ApplicationExample extends Application
 {
 	private Label label;
@@ -45,18 +48,12 @@ public class ApplicationExample extends Application
 		
 		button = new Button(5, 18, "Button");
 		button.setSize(63, 20);
-		button.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-            itemList.addItem("Henlo");
-        });
+		button.setClickListener((mouseX, mouseY, mouseButton) -> itemList.addItem("Henlo"));
 		super.addComponent(button);
 		
 		leftButton = new Button(5, 43, Icons.CHEVRON_LEFT);
 		leftButton.setPadding(1);
-		leftButton.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			itemList.removeItem(itemList.getSelectedIndex());
-        });
+		leftButton.setClickListener((mouseX, mouseY, mouseButton) -> itemList.removeItem(itemList.getSelectedIndex()));
 		super.addComponent(leftButton);
 		
 		upButton = new Button(22, 43, Icons.CHEVRON_UP);
@@ -69,13 +66,10 @@ public class ApplicationExample extends Application
 		
 		downButton = new Button(56, 43, Icons.CHEVRON_DOWN);
 		downButton.setPadding(1);
-		downButton.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			TaskManager.sendTask(new TaskNotificationTest());
-        });
+		downButton.setClickListener((mouseX, mouseY, mouseButton) -> TaskManager.sendTask(new TaskNotificationTest()));
 		super.addComponent(downButton);
 		
-		itemList = new ItemList<String>(5, 60, 63, 4);
+		itemList = new ItemList<>(5, 60, 63, 4);
 		itemList.addItem("Item #1");
 		itemList.addItem("Item #2");
 		itemList.addItem("Item #3");
@@ -105,14 +99,7 @@ public class ApplicationExample extends Application
 		super.addComponent(progressBar);
 		
 		slider = new Slider(88, 111, 80);
-		slider.setSlideListener(new SlideListener()
-		{
-			@Override
-			public void onSlide(float percentage)
-			{
-				progressBar.setProgress((int) (100 * percentage));
-			}
-		});
+		slider.setSlideListener(percentage -> progressBar.setProgress((int) (100 * percentage)));
 		super.addComponent(slider);
 		
 		spinner = new Spinner(56, 3);

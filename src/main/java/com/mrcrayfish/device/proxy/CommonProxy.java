@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.proxy;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.registry.IAppContainer;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.network.PacketHandler;

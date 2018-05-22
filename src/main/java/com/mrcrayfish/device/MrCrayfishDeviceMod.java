@@ -1,6 +1,7 @@
 package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.app.registry.ApplicationRegistry;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.io.task.*;
@@ -68,6 +69,8 @@ public class MrCrayfishDeviceMod
 		}
 		logger = event.getModLog();
 
+		ApplicationRegistry.populateApps(event.getAsmData());
+
 		DeviceConfig.load(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
 
@@ -92,6 +95,7 @@ public class MrCrayfishDeviceMod
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
 
+		ApplicationRegistry.registerApps();
 		registerApplications();
 
 		proxy.init();
@@ -161,7 +165,6 @@ public class MrCrayfishDeviceMod
 		else
 		{
 			// Applications (Developers)
-			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "example"), ApplicationExample.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "icons"), ApplicationIcons.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
 			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);

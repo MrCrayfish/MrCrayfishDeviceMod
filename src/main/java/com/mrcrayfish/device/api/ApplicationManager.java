@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.registry.IAppContainer;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.util.ResourceLocation;
 
@@ -14,6 +15,10 @@ public final class ApplicationManager
 	private static final Map<ResourceLocation, AppInfo> APP_INFO = new HashMap<>();
 
 	private ApplicationManager() {}
+
+	public static Application registerApplication(IAppContainer app){
+		return registerApplication(app.getAppId(), app.getContainedAppClass());
+	}
 
 	/**
 	 * Registers an application into the application list
