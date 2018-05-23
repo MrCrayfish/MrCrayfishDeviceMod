@@ -86,7 +86,7 @@ public class MrCrayfishDeviceMod
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
 
-		registerApplications();
+		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
 
 		proxy.init();
 	}
@@ -95,11 +95,6 @@ public class MrCrayfishDeviceMod
 	public void postInit(FMLPostInitializationEvent event) 
 	{
 		proxy.postInit();
-	}
-
-	private void registerApplications()
-	{
-		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);
 	}
 
 	public static Logger getLogger()

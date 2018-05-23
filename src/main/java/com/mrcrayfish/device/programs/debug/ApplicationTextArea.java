@@ -4,7 +4,7 @@ import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
-import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;

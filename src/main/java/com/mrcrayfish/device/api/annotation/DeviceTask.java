@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.annotation;
+package com.mrcrayfish.device.api.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

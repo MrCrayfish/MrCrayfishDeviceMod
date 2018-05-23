@@ -2,7 +2,7 @@ package com.mrcrayfish.device.api.task;
 
 import com.google.common.collect.HashBiMap;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
-import com.mrcrayfish.device.api.app.annotation.DeviceTask;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageRequest;
 import net.minecraft.util.ResourceLocation;

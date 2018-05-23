@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
 import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.api.app.annotation.DeviceTask;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;

@@ -2,7 +2,7 @@ package com.mrcrayfish.device.programs.system;
 
 import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.*;
-import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;

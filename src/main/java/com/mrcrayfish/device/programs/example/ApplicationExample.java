@@ -1,13 +1,11 @@
 package com.mrcrayfish.device.programs.example;
 
 import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.api.AppInfo;
-import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.*;
-import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.app.listener.SlideListener;
 import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.programs.email.task;
 
 import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.api.app.annotation.DeviceTask;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.EmailManager;

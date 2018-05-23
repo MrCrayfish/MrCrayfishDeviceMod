@@ -1,8 +1,7 @@
 package com.mrcrayfish.device.api;
 
-import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.annotation.DeviceApplication;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
