@@ -36,6 +36,7 @@ public abstract class BlockDevice extends BlockHorizontal
     protected BlockDevice(Material materialIn)
     {
         super(materialIn);
+        this.setHardness(0.5F);
     }
 
     @Override
@@ -133,6 +134,8 @@ public abstract class BlockDevice extends BlockHorizontal
                 }
 
                 world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+
+                return world.setBlockToAir(pos);
             }
         }
         return super.removedByPlayer(state, world, pos, player, willHarvest);
@@ -248,6 +251,8 @@ public abstract class BlockDevice extends BlockHorizontal
                     }
 
                     world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+
+                    return world.setBlockToAir(pos);
                 }
             }
             return super.removedByPlayer(state, world, pos, player, willHarvest);
