@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +12,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
+@CDMRegister(modId = Reference.MOD_ID, uid = "update_app_data")
 public class TaskUpdateApplicationData extends Task
 {
     private int x, y, z;

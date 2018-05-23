@@ -7,7 +7,8 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.ButtonToggle;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
-import com.mrcrayfish.device.api.app.registry.App;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-@App(modId=Reference.MOD_ID, appId="text_area", isDebug = true)
+@CDMRegister(modId = Reference.MOD_ID, uid="text_area", isDebug = true)
 public class ApplicationTextArea extends Application
 {
     public static final IHighlight JAVA_HIGHLIGHT = text -> 

@@ -1,7 +1,8 @@
 package com.mrcrayfish.device;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.registry.ApplicationRegistry;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
+import com.mrcrayfish.device.api.registry.app.ApplicationRegistry;
 import com.mrcrayfish.device.api.print.PrintingManager;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.core.io.task.*;
@@ -18,10 +19,8 @@ import com.mrcrayfish.device.init.DeviceTileEntites;
 import com.mrcrayfish.device.init.RegistrationHandler;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.programs.*;
-import com.mrcrayfish.device.programs.debug.ApplicationTextArea;
 import com.mrcrayfish.device.programs.email.ApplicationEmail;
 import com.mrcrayfish.device.programs.email.task.*;
-import com.mrcrayfish.device.programs.example.ApplicationExample;
 import com.mrcrayfish.device.programs.example.task.TaskNotificationTest;
 import com.mrcrayfish.device.programs.gitweb.ApplicationGitWeb;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
@@ -38,6 +37,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -60,6 +60,8 @@ public class MrCrayfishDeviceMod
 
 	public static final boolean DEVELOPER_MODE = true;
 
+	public static ASMDataTable asmTable;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) throws LaunchException
 	{
@@ -69,13 +71,11 @@ public class MrCrayfishDeviceMod
 		}
 		logger = event.getModLog();
 
-		ApplicationRegistry.populateApps(event.getAsmData());
-
 		DeviceConfig.load(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(new DeviceConfig());
 
 		RegistrationHandler.init();
-		
+		asmTable = event.getAsmData();
 		proxy.preInit();
 	}
 	
@@ -95,10 +95,6 @@ public class MrCrayfishDeviceMod
 		MinecraftForge.EVENT_BUS.register(new EmailEvents());
 		MinecraftForge.EVENT_BUS.register(new BankEvents());
 
-		if(DEVELOPER_MODE) {
-			ApplicationRegistry.registerDebugApps();
-		}
-		ApplicationRegistry.registerApps();
 		registerApplications();
 
 		proxy.init();
@@ -123,36 +119,36 @@ public class MrCrayfishDeviceMod
 //		ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "app_store"), ApplicationAppStore.class);
 
 		// Core
-		TaskManager.registerTask(TaskInstallApp.class);
-		TaskManager.registerTask(TaskUpdateApplicationData.class);
-		TaskManager.registerTask(TaskPrint.class);
-		TaskManager.registerTask(TaskUpdateSystemData.class);
-		TaskManager.registerTask(TaskConnect.class);
-		TaskManager.registerTask(TaskPing.class);
-		TaskManager.registerTask(TaskGetDevices.class);
-
-		//Bank
-		TaskManager.registerTask(TaskDeposit.class);
-		TaskManager.registerTask(TaskWithdraw.class);
-		TaskManager.registerTask(TaskGetBalance.class);
-		TaskManager.registerTask(TaskPay.class);
-		TaskManager.registerTask(TaskAdd.class);
-		TaskManager.registerTask(TaskRemove.class);
-
-		//File browser
-		TaskManager.registerTask(TaskSendAction.class);
-		TaskManager.registerTask(TaskSetupFileBrowser.class);
-		TaskManager.registerTask(TaskGetFiles.class);
-		TaskManager.registerTask(TaskGetStructure.class);
-		TaskManager.registerTask(TaskGetMainDrive.class);
-
-		//Ender Mail
-		TaskManager.registerTask(TaskUpdateInbox.class);
-		TaskManager.registerTask(TaskSendEmail.class);
-		TaskManager.registerTask(TaskCheckEmailAccount.class);
-		TaskManager.registerTask(TaskRegisterEmailAccount.class);
-		TaskManager.registerTask(TaskDeleteEmail.class);
-		TaskManager.registerTask(TaskViewEmail.class);
+//		TaskManager.registerTask(TaskInstallApp.class);
+//		TaskManager.registerTask(TaskUpdateApplicationData.class);
+//		TaskManager.registerTask(TaskPrint.class);
+//		TaskManager.registerTask(TaskUpdateSystemData.class);
+//		TaskManager.registerTask(TaskConnect.class);
+//		TaskManager.registerTask(TaskPing.class);
+//		TaskManager.registerTask(TaskGetDevices.class);
+//
+//		Bank
+//		TaskManager.registerTask(TaskDeposit.class);
+//		TaskManager.registerTask(TaskWithdraw.class);
+//		TaskManager.registerTask(TaskGetBalance.class);
+//		TaskManager.registerTask(TaskPay.class);
+//		TaskManager.registerTask(TaskAdd.class);
+//		TaskManager.registerTask(TaskRemove.class);
+//
+//		File browser
+//		TaskManager.registerTask(TaskSendAction.class);
+//		TaskManager.registerTask(TaskSetupFileBrowser.class);
+//		TaskManager.registerTask(TaskGetFiles.class);
+//		TaskManager.registerTask(TaskGetStructure.class);
+//		TaskManager.registerTask(TaskGetMainDrive.class);
+//
+//		Ender Mail
+//		TaskManager.registerTask(TaskUpdateInbox.class);
+//		TaskManager.registerTask(TaskSendEmail.class);
+//		TaskManager.registerTask(TaskCheckEmailAccount.class);
+//		TaskManager.registerTask(TaskRegisterEmailAccount.class);
+//		TaskManager.registerTask(TaskDeleteEmail.class);
+//		TaskManager.registerTask(TaskViewEmail.class);
 
 		if(!DEVELOPER_MODE)
 		{
@@ -172,7 +168,7 @@ public class MrCrayfishDeviceMod
 //			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "text_area"), ApplicationTextArea.class);
 //			ApplicationManager.registerApplication(new ResourceLocation(Reference.MOD_ID, "test"), ApplicationTest.class);
 
-			TaskManager.registerTask(TaskNotificationTest.class);
+//			TaskManager.registerTask(TaskNotificationTest.class);
 		}
 
 		PrintingManager.registerPrint(new ResourceLocation(Reference.MOD_ID, "picture"), ApplicationPixelPainter.PicturePrint.class);

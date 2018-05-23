@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.network.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.Router;
 import com.mrcrayfish.device.tileentity.TileEntityNetworkDevice;
@@ -13,6 +15,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
+@CDMRegister(modId = Reference.MOD_ID, uid = "network_connect")
 public class TaskConnect extends Task
 {
     private BlockPos devicePos;

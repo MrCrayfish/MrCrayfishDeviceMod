@@ -6,7 +6,8 @@ import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.registry.App;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import com.mrcrayfish.device.api.task.Callback;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.BankUtil;
@@ -27,7 +28,7 @@ import net.minecraft.util.text.TextFormatting;
 import javax.annotation.Nullable;
 import java.awt.Color;
 
-@App(modId = Reference.MOD_ID, appId = "bank", isSystemApp = true)
+@CDMRegister(modId = Reference.MOD_ID, uid = "bank", isSystem = true)
 public class ApplicationBank extends SystemApplication
 {
 	private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);

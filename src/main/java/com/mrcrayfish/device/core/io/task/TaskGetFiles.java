@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.io.Folder;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.ServerFile;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
+@CDMRegister(modId = Reference.MOD_ID, uid = "io_get_files")
 public class TaskGetFiles extends Task
 {
     private String uuid;

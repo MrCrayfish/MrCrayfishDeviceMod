@@ -5,7 +5,8 @@ import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.registry.App;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
@@ -13,7 +14,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-@App(modId = Reference.MOD_ID, appId = "test", isDebug = true)
+@CDMRegister(modId = Reference.MOD_ID, uid = "test", isSystem = true)
 public class ApplicationTest extends Application
 {
     @Override

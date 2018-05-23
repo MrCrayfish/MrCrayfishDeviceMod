@@ -1,4 +1,4 @@
-package com.mrcrayfish.device.api.app.registry;
+package com.mrcrayfish.device.api.registry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface App {
+public @interface CDMRegister {
     String modId();
-    String appId();
+    String uid();
     boolean isDebug() default false;
-    boolean isSystemApp() default false;
+    boolean isSystem() default false;
 }

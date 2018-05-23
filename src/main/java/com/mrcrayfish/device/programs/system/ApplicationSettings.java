@@ -8,7 +8,8 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.ComboBox;
-import com.mrcrayfish.device.api.app.registry.App;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
@@ -28,7 +29,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.Stack;
 
-@App(modId = Reference.MOD_ID, appId = "settings", isSystemApp = true)
+@CDMRegister(modId = Reference.MOD_ID, uid = "settings", isSystem = true)
 public class ApplicationSettings extends SystemApplication
 {
 	private Button buttonPrevious;

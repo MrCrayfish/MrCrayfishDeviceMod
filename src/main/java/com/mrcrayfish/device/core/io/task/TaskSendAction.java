@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
@@ -15,6 +17,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
+@CDMRegister(modId = Reference.MOD_ID, uid = "io_send_action")
 public class TaskSendAction extends Task
 {
     private String uuid;

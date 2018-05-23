@@ -2,7 +2,7 @@ package com.mrcrayfish.device.api;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
-import com.mrcrayfish.device.api.app.registry.IAppContainer;
+import com.mrcrayfish.device.api.registry.BasicContainer;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.util.ResourceLocation;
 
@@ -24,15 +24,13 @@ public final class ApplicationManager
 	 * <p>
 	 * Example: {@code new ResourceLocation("modid:appid");}
 	 *
-	 * This is here along with the other {@link ApplicationManager#registerApplication(IAppContainer)} for backwards compatibility
-	 *
 	 * @param identifier the ID of the application. A resource location
 	 * @param clazz the application class being registered
 	 */
 	@Nullable
 	public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{
-		Application application = MrCrayfishDeviceMod.proxy.registerApplication(identifier, clazz);
+		Application application = MrCrayfishDeviceMod.proxy.registerApplication(new AppInfo(identifier, Application.class.isAssignableFrom(clazz)), clazz);
 		if(application != null)
 		{
 			APP_INFO.put(identifier, application.getInfo());
@@ -41,19 +39,12 @@ public final class ApplicationManager
 		return null;
 	}
 
-	/**
-	 * Do not use this. This is for internal use only!
-	 *
-	 * Just pass in an instance of {@link IAppContainer} to register it just like normal.
-	 * A new {@link Application} object will be constructed from {@link com.mrcrayfish.device.proxy.ClientProxy#registerApplication(IAppContainer)}
-	 * @param app the application container instance. Used by the annotation registry system.
-	 * @return either an instance of the application constructed in ClientProxy, or null
-	 */
+
 	@Nullable
-	public static Application registerApplication(IAppContainer app){
+	public static Application registerApplication(BasicContainer app){
 		Application application = MrCrayfishDeviceMod.proxy.registerApplication(app);
 		if(application != null){
-			APP_INFO.put(app.getAppId(), application.getInfo());
+			APP_INFO.put(app.getId(), application.getInfo());
 			return application;
 		}
 		return null;

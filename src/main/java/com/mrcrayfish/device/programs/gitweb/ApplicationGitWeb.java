@@ -7,7 +7,8 @@ import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Spinner;
 import com.mrcrayfish.device.api.app.component.TextField;
-import com.mrcrayfish.device.api.app.registry.App;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.programs.gitweb.component.GitWebFrame;
 import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
@@ -22,7 +23,7 @@ import java.awt.*;
  * The Device Mod implementations of an internet browser. Originally created by MinecraftDoodler.
  * Licensed under GPL 3.0
  */
-@App(modId = Reference.MOD_ID, appId = "gitweb")
+@CDMRegister(modId = Reference.MOD_ID, uid="text_area")
 public class ApplicationGitWeb extends Application
 {
     private Layout layoutBrowser;

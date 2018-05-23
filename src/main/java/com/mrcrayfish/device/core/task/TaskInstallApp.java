@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.core.task;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
@@ -16,6 +18,7 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Author: MrCrayfish
  */
+@CDMRegister(modId = Reference.MOD_ID, uid = "system_install_app")
 public class TaskInstallApp extends Task
 {
     private String appId;
