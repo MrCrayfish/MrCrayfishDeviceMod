@@ -319,6 +319,21 @@ public class Folder extends File
 		return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
+	public void getFile(String name, Callback<File> callback)
+	{
+		if(!valid)
+			throw new IllegalStateException("Folder must be added to the system before retrieve files");
+
+		if(!isSynced())
+		{
+			sync((folder, success) -> callback.execute(getFile(name), success));
+		}
+		else
+		{
+			callback.execute(getFile(name), true);
+		}
+	}
+
 	/**
 	 * Checks if the folder contains a folder for the specified name.
 	 *
