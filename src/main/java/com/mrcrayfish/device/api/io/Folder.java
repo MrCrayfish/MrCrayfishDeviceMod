@@ -11,6 +11,7 @@ import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -473,6 +474,48 @@ public class Folder extends File
 			files.add(file);
 		}
 		synced = true;
+	}
+
+	public void sync(@Nullable Callback<Folder> callback)
+	{
+		if(!valid)
+			throw new IllegalStateException("Folder must be added to the system before it can be synced");
+
+		if(!isSynced())
+		{
+			BlockPos pos = Laptop.getPos();
+			if(pos == null)
+			{
+				if(callback != null)
+				{
+					callback.execute(this, false);
+				}
+				return;
+			}
+
+			Task task = new TaskGetFiles(this, pos);
+			task.setCallback((nbt, success) ->
+			{
+				if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
+				{
+					NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
+					syncFiles(files);
+					if(callback != null)
+					{
+						callback.execute(this, true);
+					}
+				}
+				else if(callback != null)
+				{
+					callback.execute(this, false);
+				}
+			});
+			TaskManager.sendTask(task);
+		}
+		else if(callback != null)
+		{
+			callback.execute(this, true);
+		}
 	}
 
 	/**
