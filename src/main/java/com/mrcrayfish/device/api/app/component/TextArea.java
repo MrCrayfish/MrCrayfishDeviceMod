@@ -982,7 +982,7 @@ public class TextArea extends Component
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < lines.size() - 1; i++)
 		{
-			builder.append(lines.get(i)).append("\n");
+			builder.append(lines.get(i));
 		}
 		builder.append(lines.get(lines.size() - 1));
 		return builder.toString();
