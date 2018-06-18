@@ -360,35 +360,21 @@ public class Folder extends File
 
 	public void getFolder(String name, Callback<Folder> callback)
 	{
-		Folder folder = getFolder(name);
+		Folder requestedFolder = getFolder(name);
 
-		if(folder == null)
+		if(requestedFolder == null)
 		{
 			callback.execute(null, false);
 			return;
 		}
 
-		if(!folder.isSynced())
+		if(!requestedFolder.isSynced())
 		{
-			Task task = new TaskGetFiles(folder, Laptop.getPos());
-			task.setCallback((nbt, success) ->
-			{
-				if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
-				{
-					NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
-					folder.syncFiles(files);
-					callback.execute(folder, true);
-				}
-				else
-				{
-					callback.execute(null, false);
-				}
-			});
-			TaskManager.sendTask(task);
+			sync((folder, success) -> callback.execute(requestedFolder, success));
 		}
 		else
 		{
-			callback.execute(folder, true);
+			callback.execute(requestedFolder, true);
 		}
 	}
 
