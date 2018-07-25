@@ -36,9 +36,10 @@ public class ProgressBar extends Component
 	{
 		if (this.visible)
         {
-			drawRect(xPosition, yPosition, xPosition + width, yPosition + height, borderColor);
-			drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, backgroundColor);
-			drawRect(xPosition + 2, yPosition + 2, xPosition + 2 + getProgressScaled(), yPosition + height - 2, progressColor);
+			Color bgColor = new Color(getColorScheme().getBackgroundColor());
+			drawRect(xPosition, yPosition, xPosition + width, yPosition + height, bgColor.darker().darker().getRGB());
+			drawRect(xPosition + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, bgColor.getRGB());
+			drawRect(xPosition + 2, yPosition + 2, xPosition + 2 + getProgressScaled(), yPosition + height - 2, bgColor.brighter().brighter().getRGB());
         }
 	}
 	

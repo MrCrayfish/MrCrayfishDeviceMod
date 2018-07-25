@@ -11,6 +11,7 @@ import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -127,6 +128,10 @@ public class Folder extends File
 		{
 			if(success)
 			{
+				if(override)
+				{
+					files.remove(getFile(file.name));
+				}
 				file.setDrive(drive);
 				file.valid = true;
 				file.parent = this;
@@ -315,6 +320,21 @@ public class Folder extends File
 		return files.stream().filter(file -> file.name.equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
+	public void getFile(String name, Callback<File> callback)
+	{
+		if(!valid)
+			throw new IllegalStateException("Folder must be added to the system before retrieve files");
+
+		if(!isSynced())
+		{
+			sync((folder, success) -> callback.execute(getFile(name), success));
+		}
+		else
+		{
+			callback.execute(getFile(name), true);
+		}
+	}
+
 	/**
 	 * Checks if the folder contains a folder for the specified name.
 	 *
@@ -341,35 +361,21 @@ public class Folder extends File
 
 	public void getFolder(String name, Callback<Folder> callback)
 	{
-		Folder folder = getFolder(name);
+		Folder requestedFolder = getFolder(name);
 
-		if(folder == null)
+		if(requestedFolder == null)
 		{
 			callback.execute(null, false);
 			return;
 		}
 
-		if(!folder.isSynced())
+		if(!requestedFolder.isSynced())
 		{
-			Task task = new TaskGetFiles(folder, Laptop.getPos());
-			task.setCallback((nbt, success) ->
-			{
-				if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
-				{
-					NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
-					folder.syncFiles(files);
-					callback.execute(folder, true);
-				}
-				else
-				{
-					callback.execute(null, false);
-				}
-			});
-			TaskManager.sendTask(task);
+			sync((folder, success) -> callback.execute(requestedFolder, success));
 		}
 		else
 		{
-			callback.execute(folder, true);
+			callback.execute(requestedFolder, true);
 		}
 	}
 
@@ -468,6 +474,48 @@ public class Folder extends File
 			files.add(file);
 		}
 		synced = true;
+	}
+
+	public void sync(@Nullable Callback<Folder> callback)
+	{
+		if(!valid)
+			throw new IllegalStateException("Folder must be added to the system before it can be synced");
+
+		if(!isSynced())
+		{
+			BlockPos pos = Laptop.getPos();
+			if(pos == null)
+			{
+				if(callback != null)
+				{
+					callback.execute(this, false);
+				}
+				return;
+			}
+
+			Task task = new TaskGetFiles(this, pos);
+			task.setCallback((nbt, success) ->
+			{
+				if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
+				{
+					NBTTagList files = nbt.getTagList("files", Constants.NBT.TAG_COMPOUND);
+					syncFiles(files);
+					if(callback != null)
+					{
+						callback.execute(this, true);
+					}
+				}
+				else if(callback != null)
+				{
+					callback.execute(this, false);
+				}
+			});
+			TaskManager.sendTask(task);
+		}
+		else if(callback != null)
+		{
+			callback.execute(this, true);
+		}
 	}
 
 	/**

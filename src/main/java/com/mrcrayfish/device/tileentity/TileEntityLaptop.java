@@ -4,6 +4,8 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.util.TileEntityUtil;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -162,7 +164,11 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 
 	public NBTTagCompound getSystemData()
 	{
-		return systemData != null ? systemData : new NBTTagCompound();
+		if(systemData == null)
+		{
+			systemData = new NBTTagCompound();
+		}
+		return systemData;
 	}
 
 	public FileSystem getFileSystem()

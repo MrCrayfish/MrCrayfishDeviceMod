@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.Constants;
 
@@ -60,7 +61,8 @@ public class FileBrowser extends Component
         @Override
         public void render(File file, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
         {
-            Gui.drawRect(x, y, x + width, y + height, selected ? ITEM_SELECTED.getRGB() : ITEM_BACKGROUND.getRGB());
+            Color bgColor = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
+            Gui.drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
 
             GlStateManager.color(1.0F, 1.0F, 1.0F);
             Minecraft.getMinecraft().getTextureManager().bindTexture(ASSETS);
@@ -73,8 +75,7 @@ public class FileBrowser extends Component
                 AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
                 RenderUtil.drawApplicationIcon(info, x + 3, y + 2);
             }
-            Color color = file.isProtected() ? PROTECTED_FILE : Color.WHITE;
-            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, color.getRGB());
+            gui.drawString(Minecraft.getMinecraft().fontRenderer, file.getName(), x + 22, y + 5, file.isProtected() ? PROTECTED_FILE.getRGB() : Laptop.getSystem().getSettings().getColorScheme().getTextColor());
         }
     };
 
@@ -119,7 +120,7 @@ public class FileBrowser extends Component
     /**
      * The default constructor for a component. For your component to
      * be laid out correctly, make sure you use the x and y parameters
-     * from {@link Application#init()} and pass them into the
+     * from {@link Wrappable#init(NBTTagCompound)} and pass them into the
      * x and y arguments of this constructor.
      * <p>
      * Laying out the components is a simple relative positioning. So for left (x position),
@@ -142,8 +143,9 @@ public class FileBrowser extends Component
         layoutMain = new Layout(mode.getWidth(), mode.getHeight());
         layoutMain.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-            Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
+            Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+            Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
+            Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
         });
 
         btnPreviousFolder = new Button(5, 2, Icons.ARROW_LEFT);
@@ -284,17 +286,19 @@ public class FileBrowser extends Component
                             Application targetApp = laptop.getApplication(file.getOpeningApp());
                             if(targetApp != null)
                             {
-                                laptop.open(targetApp);
-                                if(!targetApp.handleFile(file))
+                                if(!laptop.isApplicationInstalled(targetApp.getInfo()))
                                 {
-                                    laptop.close(targetApp);
-                                    laptop.open(systemApp);
+                                    createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
+                                }
+                                else if(!laptop.openApplication(targetApp.getInfo(), file))
+                                {
+                                    laptop.sendApplicationToFront(systemApp.getInfo());
                                     createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
                                 }
                             }
                             else
                             {
-                                createErrorDialog("The application designed for this file does not exist or is not installed.");
+                                createErrorDialog("The application designed for this file does not exist.");
                             }
                         }
                     }
@@ -321,7 +325,8 @@ public class FileBrowser extends Component
             @Override
             public void render(Drive drive, Gui gui, Minecraft mc, int x, int y, int width, int height, boolean selected)
             {
-                drawRect(x, y, x + width, y + height, Color.GRAY.getRGB());
+                Color bgColor = new Color(getColorScheme().getBackgroundColor());
+                drawRect(x, y, x + width, y + height, selected ? bgColor.brighter().brighter().getRGB() : bgColor.brighter().getRGB());
                 mc.getTextureManager().bindTexture(ASSETS);
                 GlStateManager.color(1.0F, 1.0F, 1.0F);
                 RenderUtil.drawRectWithTexture(x + 2, y + 2, drive.getType().ordinal() * 8, 30, 8, 8, 8, 8);
@@ -343,7 +348,7 @@ public class FileBrowser extends Component
         layoutLoading = new Layout(mode.getOffset(), 25, fileList.getWidth(), fileList.getHeight());
         layoutLoading.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
         {
-            Gui.drawRect(x, y, x + width, y + height, Window.COLOUR_WINDOW_DARK);
+            Gui.drawRect(x, y, x + width, y + height, Window.Color_WINDOW_DARK);
         });
         layoutLoading.setVisible(false);
 
@@ -353,7 +358,7 @@ public class FileBrowser extends Component
     }
 
     @Override
-    public void handleOnLoad()
+    public void handleLoad()
     {
         if(!loadedStructure)
         {
@@ -481,8 +486,18 @@ public class FileBrowser extends Component
     {
         if(!folder.isSynced())
         {
+            BlockPos pos = Laptop.getPos();
+            if(pos == null)
+            {
+                if(callback != null)
+                {
+                    callback.execute(null, false);
+                }
+                return;
+            }
+            
             setLoading(true);
-            Task task = new TaskGetFiles(folder, Laptop.getPos()); //TODO convert to file system
+            Task task = new TaskGetFiles(folder, pos); //TODO convert to file system
             task.setCallback((nbt, success) ->
             {
                 if(success && nbt.hasKey("files", Constants.NBT.TAG_LIST))
@@ -603,6 +618,24 @@ public class FileBrowser extends Component
     {
         setLoading(true);
         currentFolder.add(file, (response, success) ->
+        {
+            if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
+            {
+                fileList.addItem(file);
+                FileBrowser.refreshList = true;
+            }
+            if(callback != null)
+            {
+                callback.execute(response, success);
+            }
+            setLoading(false);
+        });
+    }
+
+    public void addFile(File file, boolean override, Callback<FileSystem.Response> callback)
+    {
+        setLoading(true);
+        currentFolder.add(file, override, (response, success) ->
         {
             if(response.getStatus() == FileSystem.Status.SUCCESSFUL)
             {

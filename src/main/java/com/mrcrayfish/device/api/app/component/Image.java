@@ -7,26 +7,25 @@ import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.texture.*;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Image extends Component
 {
-    private static final Map<String, CachedImage> CACHE = new ImageCache(10);
+    public static final Map<String, CachedImage> CACHE = new HashMap<>();
 
     private Spinner spinner;
 
@@ -37,6 +36,7 @@ public class Image extends Component
 
     protected int imageU, imageV;
     protected int imageWidth, imageHeight;
+    protected int sourceWidth, sourceHeight;
     protected int componentWidth, componentHeight;
 
     private float alpha = 1.0F;
@@ -86,6 +86,11 @@ public class Image extends Component
      */
     public Image(int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, ResourceLocation resource)
     {
+        this(left, top, componentWidth, componentHeight, imageU, imageV, imageWidth, imageHeight, 256, 256, resource);
+    }
+
+    public Image(int left, int top, int componentWidth, int componentHeight, int imageU, int imageV, int imageWidth, int imageHeight, int sourceWidth, int sourceHeight, ResourceLocation resource)
+    {
         super(left, top);
         this.loader = new StandardLoader(resource);
         this.componentWidth = componentWidth;
@@ -94,6 +99,8 @@ public class Image extends Component
         this.imageV = imageV;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
+        this.sourceWidth = sourceWidth;
+        this.sourceHeight = sourceHeight;
     }
 
     /**
@@ -130,6 +137,8 @@ public class Image extends Component
         this.imageV = icon.getV();
         this.imageWidth = icon.getIconSize();
         this.imageHeight = icon.getIconSize();
+        this.sourceWidth = icon.getGridWidth() * icon.getIconSize();
+        this.sourceHeight = icon.getGridHeight() * icon.getIconSize();
     }
 
     public Image(int left, int top, int componentWidth, int componentHeight, IIcon icon)
@@ -142,6 +151,8 @@ public class Image extends Component
         this.imageV = icon.getV();
         this.imageWidth = icon.getIconSize();
         this.imageHeight = icon.getIconSize();
+        this.sourceWidth = icon.getGridWidth() * icon.getIconSize();
+        this.sourceHeight = icon.getGridHeight() * icon.getIconSize();
     }
 
     @Override
@@ -153,12 +164,15 @@ public class Image extends Component
     }
 
     @Override
-    public void handleOnLoad()
+    public void handleLoad()
     {
-        if(loader != null)
-        {
-            loader.setup(this);
-        }
+        this.reload();
+    }
+
+    @Override
+    protected void handleUnload()
+    {
+        this.initialized = false;
     }
 
     @Override
@@ -180,6 +194,8 @@ public class Image extends Component
 
             if(image != null && image.textureId != -1)
             {
+                image.restore();
+
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, alpha);
                 GlStateManager.enableAlpha();
                 GlStateManager.enableBlend();
@@ -187,14 +203,13 @@ public class Image extends Component
 
                 if(hasBorder)
                 {
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
                     if(drawFull)
                     {
                         RenderUtil.drawRectWithFullTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2);
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x + borderThickness, y + borderThickness, imageU, imageV, componentWidth - borderThickness * 2, componentHeight - borderThickness * 2, imageWidth, imageHeight, sourceWidth, sourceHeight);
                     }
                 }
                 else
@@ -205,7 +220,7 @@ public class Image extends Component
                     }
                     else
                     {
-                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight);
+                        RenderUtil.drawRectWithTexture(x, y, imageU, imageV, componentWidth, componentHeight, imageWidth, imageHeight, sourceWidth, sourceHeight);
                     }
                 }
             }
@@ -221,30 +236,26 @@ public class Image extends Component
                 }
             }
         }
-
-        if(image != null)
-        {
-            if(image.delete)
-            {
-                GlStateManager.deleteTexture(image.textureId);
-                image = null;
-            }
-        }
     }
 
     public void reload()
     {
-        loader.setup(this);
+        if(loader != null)
+        {
+            loader.setup(this);
+        }
     }
 
     public void setImage(ResourceLocation resource)
     {
         setLoader(new StandardLoader(resource));
+        this.drawFull = true;
     }
 
     public void setImage(String url)
     {
         setLoader(new DynamicLoader(url));
+        this.drawFull = true;
     }
 
     private void setLoader(ImageLoader loader)
@@ -336,12 +347,12 @@ public class Image extends Component
     private static class StandardLoader extends ImageLoader
     {
         private final AbstractTexture texture;
-        private final String resource;
+        private final ResourceLocation resource;
 
         public StandardLoader(ResourceLocation resource)
         {
             this.texture = new SimpleTexture(resource);
-            this.resource = resource.toString();
+            this.resource = resource;
         }
 
         @Override
@@ -353,32 +364,19 @@ public class Image extends Component
         @Override
         public CachedImage load(Image image)
         {
-            if(CACHE.containsKey(resource))
+            ITextureObject textureObj = Minecraft.getMinecraft().getTextureManager().getTexture(resource);
+            if(textureObj != null)
             {
-                return CACHE.get(resource);
+                return new CachedImage(textureObj.getGlTextureId(), 0, 0, false);
             }
-
-            try
+            else
             {
-                ResourceLocation resourceLocation = new ResourceLocation(resource);
-                ITextureObject textureObj = Minecraft.getMinecraft().getTextureManager().getTexture(resourceLocation);
-                int textureId;
-                if(textureObj != null)
+                AbstractTexture texture = new SimpleTexture(resource);
+                if(Minecraft.getMinecraft().getTextureManager().loadTexture(resource, texture))
                 {
-                    textureId = textureObj.getGlTextureId();
+                    return new CachedImage(texture.getGlTextureId(), 0, 0, false);
                 }
-                else
-                {
-                    texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
-                    textureId = texture.getGlTextureId();
-                }
-                CachedImage cachedImage = new CachedImage(textureId, 0, 0);
-                CACHE.put(resource, cachedImage);
-                return cachedImage;
-            }
-            catch(IOException e)
-            {
-                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0);
+                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0, false);
             }
         }
     }
@@ -437,13 +435,13 @@ public class Image extends Component
             try
             {
                 texture.loadTexture(Minecraft.getMinecraft().getResourceManager());
-                CachedImage cachedImage = new CachedImage(texture.getGlTextureId(), image.imageWidth, image.imageHeight);
+                CachedImage cachedImage = new CachedImage(texture.getGlTextureId(), image.imageWidth, image.imageHeight, true);
                 CACHE.put(url, cachedImage);
                 return cachedImage;
             }
             catch(IOException e)
             {
-                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0);
+                return new CachedImage(TextureUtil.MISSING_TEXTURE.getGlTextureId(), 0, 0, true);
             }
         }
     }
@@ -470,7 +468,7 @@ public class Image extends Component
 
         private ImageCache(final int capacity)
         {
-            super(capacity, 0.75F, true);
+            super(capacity, 1.0F, true);
             this.CAPACITY = capacity;
         }
 
@@ -486,18 +484,45 @@ public class Image extends Component
         }
     }
 
-    private static class CachedImage
+    public static class CachedImage
     {
         private final int textureId;
         private final int width;
         private final int height;
+        private boolean dynamic;
         private boolean delete = false;
 
-        private CachedImage(int textureId, int width, int height)
+        private CachedImage(int textureId, int width, int height, boolean dynamic)
         {
             this.textureId = textureId;
             this.width = width;
             this.height = height;
+            this.dynamic = dynamic;
+        }
+
+        public int getTextureId()
+        {
+            return textureId;
+        }
+
+        public void restore()
+        {
+            delete = false;
+        }
+
+        public void delete()
+        {
+            delete = true;
+        }
+
+        public boolean isDynamic()
+        {
+            return dynamic;
+        }
+
+        public boolean isPendingDeletion()
+        {
+            return delete;
         }
     }
 }

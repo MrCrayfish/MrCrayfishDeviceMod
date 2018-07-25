@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
@@ -10,6 +11,8 @@ import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.Settings;
+import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.Palette;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import net.minecraft.client.Minecraft;
@@ -18,6 +21,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.Stack;
@@ -41,7 +45,7 @@ public class ApplicationSettings extends SystemApplication
 	private Stack<Layout> predecessor = new Stack<>();
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		buttonPrevious = new Button(2, 2, Icons.ARROW_LEFT);
 		buttonPrevious.setVisible(false);
@@ -143,6 +147,16 @@ public class ApplicationSettings extends SystemApplication
         });
 		layoutPersonalise.addComponent(buttonWallpaperUrl);
 
+		Button buttonReset = new Button(6, 100, "Reset Color Scheme");
+		buttonReset.setClickListener((mouseX, mouseY, mouseButton) ->
+		{
+            if(mouseButton == 0)
+			{
+				Laptop.getSystem().getSettings().getColorScheme().resetDefault();
+			}
+        });
+		layoutPersonalise.addComponent(buttonReset);
+
 		layoutColorScheme = new Menu("UI Colors");
 		layoutPersonalise.addComponent(buttonPrevious);
 
@@ -223,8 +237,9 @@ public class ApplicationSettings extends SystemApplication
 		@Override
 		public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean windowActive, float partialTicks)
 		{
-			Gui.drawRect(x, y, x + width, y + 20, Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
-			Gui.drawRect(x, y + 20, x + width, y + 21, Color.DARK_GRAY.getRGB());
+			Color color = new Color(Laptop.getSystem().getSettings().getColorScheme().getHeaderColor());
+			Gui.drawRect(x, y, x + width, y + 20, color.getRGB());
+			Gui.drawRect(x, y + 20, x + width, y + 21, color.darker().getRGB());
 			mc.fontRenderer.drawString(title, x + 22, y + 6, Color.WHITE.getRGB(), true);
 			super.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 		}
@@ -255,5 +270,23 @@ public class ApplicationSettings extends SystemApplication
 		layout.addComponent(palette);
 
 		return colorPicker;
+	}
+
+	public static class SettingsTrayItem extends TrayItem
+	{
+		public SettingsTrayItem()
+		{
+			super(Icons.WRENCH);
+		}
+
+		@Override
+		public void handleClick(int mouseX, int mouseY, int mouseButton)
+		{
+			AppInfo info = ApplicationManager.getApplication("cdm:settings");
+			if(info != null)
+			{
+				Laptop.getSystem().openApplication(info);
+			}
+		}
 	}
 }

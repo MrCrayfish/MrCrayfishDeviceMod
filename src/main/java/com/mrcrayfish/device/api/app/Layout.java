@@ -2,11 +2,11 @@ package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.api.app.listener.InitListener;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
  * in your application to switch interfaces during runtime.
  * <p>
  * Use {@link com.mrcrayfish.device.api.app.Application#setCurrentLayout(Layout)} 
- * inside of {@link com.mrcrayfish.device.api.app.Application#init()}
+ * inside of {@link Wrappable#init(net.minecraft.nbt.NBTTagCompound)}
  * to set the current layout for your application.
  * <p>
  * Check out the example applications to get a better understand of
@@ -124,7 +124,7 @@ public class Layout extends Component
 	public void init(Layout layout) {}
 
 	@Override
-	protected void handleOnLoad()
+	public void handleLoad()
 	{
 		if(!initialized)
 		{
@@ -139,7 +139,16 @@ public class Layout extends Component
 
 		for(Component c : components)
 		{
-			c.handleOnLoad();
+			c.handleLoad();
+		}
+	}
+
+	@Override
+	protected void handleUnload()
+	{
+		for(Component c : components)
+		{
+			c.handleUnload();
 		}
 	}
 
@@ -167,9 +176,6 @@ public class Layout extends Component
 		if(!this.visible)
 			return;
 
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GLHelper.scissor(x, y, width, height);
-
 		if(background != null)
 		{
 			background.render(laptop, mc, x, y, width, height, mouseX, mouseY, windowActive);
@@ -179,16 +185,18 @@ public class Layout extends Component
 		for(Component c : components)
 		{
 			GlStateManager.disableDepth();
-			GLHelper.scissor(x, y, width, height);
-			c.render(laptop, mc, c.xPosition, c.yPosition, mouseX, mouseY, windowActive, partialTicks);
+			GLHelper.pushScissor(x, y, width, height);
+			c.render(laptop, mc, x + c.left, y + c.top, mouseX, mouseY, windowActive, partialTicks);
+			GLHelper.popScissor();
 		}
-
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 	}
 	
 	@Override
 	public void renderOverlay(Laptop laptop, Minecraft mc, int mouseX, int mouseY, boolean windowActive)
 	{
+		if(!visible)
+			return;
+
 		for(Component c : components)
 		{
 			c.renderOverlay(laptop, mc, mouseX, mouseY, windowActive);
@@ -198,6 +206,9 @@ public class Layout extends Component
 	@Override
 	public void handleKeyTyped(char character, int code)
 	{
+		if(!visible || !enabled)
+			return;
+
 		for(Component c : components)
 		{
 			c.handleKeyTyped(character, code);
@@ -207,6 +218,9 @@ public class Layout extends Component
 	@Override
 	public void handleKeyReleased(char character, int code)
 	{
+		if(!visible || !enabled)
+			return;
+
 		for(Component c : components)
 		{
 			c.handleKeyReleased(character, code);
@@ -216,6 +230,9 @@ public class Layout extends Component
 	@Override
 	public void handleMouseClick(int mouseX, int mouseY, int mouseButton)
 	{
+		if(!visible || !enabled)
+			return;
+
 		for(Component c : components)
 		{
 			c.handleMouseClick(mouseX, mouseY, mouseButton);
@@ -225,6 +242,9 @@ public class Layout extends Component
 	@Override
 	public void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
+		if(!visible || !enabled)
+			return;
+
 		for(Component c : components)
 		{
 			c.handleMouseDrag(mouseX, mouseY, mouseButton);
@@ -234,6 +254,9 @@ public class Layout extends Component
 	@Override
 	public void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
+		if(!visible || !enabled)
+			return;
+
 		for(Component c : components)
 		{
 			c.handleMouseRelease(mouseX, mouseY, mouseButton);
@@ -243,6 +266,9 @@ public class Layout extends Component
 	@Override
 	public void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
+		if(!visible || !enabled)
+			return;
+
 		for(Component c : components)
 		{
 			c.handleMouseScroll(mouseX, mouseY, direction);

@@ -6,13 +6,15 @@ import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.component.Button;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
 public class ApplicationTest extends Application
 {
     @Override
-    public void init()
+    public void init(@Nullable NBTTagCompound intent)
     {
         Button button = new Button(5, 5, Icons.PRINTER);
         button.setClickListener((mouseX, mouseY, mouseButton) ->

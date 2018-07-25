@@ -14,10 +14,24 @@ public interface IIcon
 	int getGridWidth();
 
 	int getGridHeight();
+
+	/**
+	 * Width of the source texture in pixels.
+	 * @return The source width.
+	 */
+	int getSourceWidth();
+
+	/**
+	 * Height of the source texture in pixels.
+	 * @return The source height.
+	 */
+	int getSourceHeight();
 	
 	int getU();
 
     int getV();
+
+    int getOrdinal();
 
     default void draw(Minecraft mc, int x, int y)
 	{

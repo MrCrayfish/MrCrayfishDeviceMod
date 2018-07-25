@@ -3,14 +3,21 @@ package com.mrcrayfish.device.core;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.System;
+import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.io.Drive;
+import com.mrcrayfish.device.api.io.File;
+import com.mrcrayfish.device.api.task.Callback;
+import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
+import com.mrcrayfish.device.core.task.TaskInstallApp;
+import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
@@ -23,17 +30,19 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
@@ -72,14 +81,16 @@ public class Laptop extends GuiScreen implements System
 	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
-	
+
+	protected List<AppInfo> installedApps = new ArrayList<>();
+
 	public Laptop(TileEntityLaptop laptop)
 	{
 		this.appData = laptop.getApplicationData();
 		this.systemData = laptop.getSystemData();
 		this.windows = new Window[5];
 		this.settings = Settings.fromTag(systemData.getCompoundTag("Settings"));
-		this.bar = new TaskBar(APPLICATIONS);
+		this.bar = new TaskBar(this);
 		this.currentWallpaper = systemData.getInteger("CurrentWallpaper");
 		if(currentWallpaper < 0 || currentWallpaper >= WALLPAPERS.size()) {
 			this.currentWallpaper = 0;
@@ -107,6 +118,18 @@ public class Laptop extends GuiScreen implements System
 		int posX = (width - DEVICE_WIDTH) / 2;
 		int posY = (height - DEVICE_HEIGHT) / 2;
 		bar.init(posX + BORDER, posY + DEVICE_HEIGHT - 28);
+
+		installedApps.clear();
+		NBTTagList tagList = systemData.getTagList("InstalledApps", Constants.NBT.TAG_STRING);
+		for(int i = 0; i < tagList.tagCount(); i++)
+		{
+			AppInfo info = ApplicationManager.getApplication(tagList.getStringTagAt(i));
+			if(info != null)
+			{
+				installedApps.add(info);
+			}
+		}
+		installedApps.sort(AppInfo.SORT_NAME);
 	}
 
 	@Override
@@ -115,7 +138,7 @@ public class Laptop extends GuiScreen implements System
         Keyboard.enableRepeatEvents(false);
 
         /* Close all windows and sendTask application data */
-        for(Window<Application> window : windows)
+        for(Window window : windows)
 		{
         	if(window != null)
 			{
@@ -124,21 +147,30 @@ public class Laptop extends GuiScreen implements System
 		}
 
 		/* Send system data */
-        NBTTagCompound systemData = new NBTTagCompound();
-        systemData.setInteger("CurrentWallpaper", currentWallpaper);
-        systemData.setTag("Settings", settings.toTag());
-        TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
+		this.updateSystemData();
 
 		Laptop.pos = null;
         Laptop.system = null;
 		Laptop.mainDrive = null;
     }
+
+    private void updateSystemData()
+	{
+		systemData.setInteger("CurrentWallpaper", currentWallpaper);
+		systemData.setTag("Settings", settings.toTag());
+
+		NBTTagList tagListApps = new NBTTagList();
+		installedApps.forEach(info -> tagListApps.appendTag(new NBTTagString(info.getFormattedId())));
+		systemData.setTag("InstalledApps", tagListApps);
+
+		TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
+	}
 	
 	@Override
 	public void onResize(Minecraft mcIn, int width, int height)
 	{
 		super.onResize(mcIn, width, height);
-		for(Window<Application> window : windows)
+		for(Window window : windows)
 		{
 			if(window != null)
 			{
@@ -166,6 +198,9 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) 
 	{
+		//Fixes the strange partialTicks that Forge decided to give us
+		partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+
 		this.drawDefaultBackground();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -209,6 +244,8 @@ public class Laptop extends GuiScreen implements System
 			insideContext = GuiHelper.isMouseInside(mouseX, mouseY, context.xPosition, context.yPosition, context.xPosition + context.width, context.yPosition + context.height);
 		}
 
+		Image.CACHE.forEach((s, cachedImage) -> cachedImage.delete());
+
 		/* Window */
 		for(int i = windows.length - 1; i >= 0; i--)
 		{
@@ -218,7 +255,7 @@ public class Laptop extends GuiScreen implements System
 				window.render(this, mc, posX + BORDER, posY + BORDER, mouseX, mouseY, i == 0 && !insideContext, partialTicks);
 			}
 		}
-		
+
 		/* Application Bar */
 		bar.render(this, mc, posX + 10, posY + DEVICE_HEIGHT - 28, mouseX, mouseY, partialTicks);
 
@@ -226,6 +263,21 @@ public class Laptop extends GuiScreen implements System
 		{
 			context.render(this, mc, context.xPosition, context.yPosition, mouseX, mouseY, true, partialTicks);
 		}
+
+		Image.CACHE.entrySet().removeIf(entry ->
+		{
+			Image.CachedImage cachedImage = entry.getValue();
+			if(cachedImage.isDynamic() && cachedImage.isPendingDeletion())
+			{
+				int texture = cachedImage.getTextureId();
+				if(texture != -1)
+				{
+					GL11.glDeleteTextures(texture);
+				}
+				return true;
+			}
+			return false;
+		});
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -408,32 +460,48 @@ public class Laptop extends GuiScreen implements System
 		super.drawHoveringText(textLines, x, y);
 	}
 
-	public void open(Application app)
+	public boolean sendApplicationToFront(AppInfo info)
 	{
-		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-		{
-			if(!MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(app.getInfo()))
-			{
-				return;
-			}
-		}
-
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window<Application> window = windows[i];
-			if(window != null && window.content.getInfo().getFormattedId().equals(app.getInfo().getFormattedId()))
+			Window window = windows[i];
+			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
 			{
 				windows[i] = null;
 				updateWindowStack();
 				windows[0] = window;
-				return;
+				return true;
 			}
 		}
+		return false;
+	}
 
-		app.setLaptopPosition(pos);
+	@Override
+	public void openApplication(AppInfo info)
+	{
+		openApplication(info, (NBTTagCompound) null);
+	}
+
+	@Override
+	public void openApplication(AppInfo info, NBTTagCompound intentTag)
+	{
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		optional.ifPresent(application -> openApplication(application, intentTag));
+	}
+
+	private void openApplication(Application app, NBTTagCompound intent)
+	{
+		if(!isApplicationInstalled(app.getInfo()))
+			return;
+
+		if(!isValidApplication(app.getInfo()))
+			return;
+
+		if(sendApplicationToFront(app.getInfo()))
+			return;
 
 		Window<Application> window = new Window<>(app, this);
-		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2);
+		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
 
 		if(appData.hasKey(app.getInfo().getFormattedId()))
 		{
@@ -454,8 +522,46 @@ public class Laptop extends GuiScreen implements System
 
 	    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
-	
-	public void close(Application app)
+
+	@Override
+	public boolean openApplication(AppInfo info, File file)
+	{
+		if(!isApplicationInstalled(info))
+			return false;
+
+		if(!isValidApplication(info))
+			return false;
+
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		if(optional.isPresent())
+		{
+			Application application = optional.get();
+			boolean alreadyRunning = isApplicationRunning(info);
+			openApplication(application, null);
+			if(isApplicationRunning(info))
+			{
+				if(!application.handleFile(file))
+				{
+					if(!alreadyRunning)
+					{
+						closeApplication(application);
+					}
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void closeApplication(AppInfo info)
+	{
+		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
+		optional.ifPresent(this::closeApplication);
+	}
+
+	private void closeApplication(Application app)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
@@ -555,11 +661,11 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
 	}
 
-	public boolean isApplicationRunning(String appId)
+	public boolean isApplicationRunning(AppInfo info)
 	{
 		for(Window window : windows) 
 		{
-			if(window != null && ((Application) window.content).getInfo().getFormattedId().equals(appId))
+			if(window != null && ((Application) window.content).getInfo() == info)
 			{
 				return true;
 			}
@@ -605,6 +711,67 @@ public class Laptop extends GuiScreen implements System
 	public Application getApplication(String appId)
 	{
 		return APPLICATIONS.stream().filter(app -> app.getInfo().getFormattedId().equals(appId)).findFirst().orElse(null);
+	}
+
+	@Override
+	public List<AppInfo> getInstalledApplications()
+	{
+		return ImmutableList.copyOf(installedApps);
+	}
+
+	public boolean isApplicationInstalled(AppInfo info)
+	{
+		return info.isSystemApp() || installedApps.contains(info);
+	}
+
+	private boolean isValidApplication(AppInfo info)
+	{
+		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
+		{
+			return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
+		}
+		return true;
+	}
+
+	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
+	{
+		if(!isValidApplication(info))
+			return;
+
+		Task task = new TaskInstallApp(info, pos, true);
+		task.setCallback((tagCompound, success) ->
+		{
+            if(success)
+			{
+				installedApps.add(info);
+				installedApps.sort(AppInfo.SORT_NAME);
+			}
+			if(callback != null)
+			{
+				callback.execute(null, success);
+			}
+        });
+		TaskManager.sendTask(task);
+	}
+
+	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
+	{
+		if(!isValidApplication(info))
+			return;
+
+		Task task = new TaskInstallApp(info, pos, false);
+		task.setCallback((tagCompound, success) ->
+		{
+			if(success)
+			{
+				installedApps.remove(info);
+			}
+			if(callback != null)
+			{
+				callback.execute(null, success);
+			}
+		});
+		TaskManager.sendTask(task);
 	}
 
 	public static System getSystem()

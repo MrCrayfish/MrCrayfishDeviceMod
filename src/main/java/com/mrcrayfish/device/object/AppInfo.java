@@ -12,11 +12,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AppInfo 
 {
+	public static final Comparator<AppInfo> SORT_NAME = Comparator.comparing(AppInfo::getName);
+
 	private transient final ResourceLocation APP_ID;
 	private transient int iconU = 0;
 	private transient int iconV = 0;

@@ -10,6 +10,7 @@ import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
+import com.mrcrayfish.device.programs.system.object.LocalEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,9 +34,12 @@ public class LayoutSearchApps extends StandardLayout
 
     private long lastClick = 0;
 
-    public LayoutSearchApps(Application app, Layout previous)
+    private ApplicationAppStore appStore;
+
+    public LayoutSearchApps(ApplicationAppStore appStore, Layout previous)
     {
-        super("Search", ApplicationAppStore.LAYOUT_WIDTH, ApplicationAppStore.LAYOUT_HEIGHT, app, previous);
+        super("Search", ApplicationAppStore.LAYOUT_WIDTH, ApplicationAppStore.LAYOUT_HEIGHT, appStore, previous);
+        this.appStore = appStore;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class LayoutSearchApps extends StandardLayout
         super.init();
 
         ItemList<AppInfo> itemListResults = new ItemList<>(5, 48, ApplicationAppStore.LAYOUT_WIDTH - 10, 5, true);
-        itemListResults.setItems(new ArrayList<>(ApplicationManager.getAvailableApplications()));
+        itemListResults.setItems(ApplicationManager.getAvailableApplications());
         itemListResults.sortBy(Comparator.comparing(AppInfo::getName));
         itemListResults.setListItemRenderer(new ListItemRenderer<AppInfo>(18)
         {
@@ -89,7 +93,7 @@ public class LayoutSearchApps extends StandardLayout
 
     private void openApplication(AppInfo info)
     {
-        Layout layout = new LayoutAppPage(null, info);
+        Layout layout = new LayoutAppPage(appStore.getLaptop(), new LocalEntry(info), appStore);
         app.setCurrentLayout(layout);
         Button btnPrevious = new Button(2, 2, Icons.ARROW_LEFT);
         btnPrevious.setClickListener((mouseX1, mouseY1, mouseButton1) ->

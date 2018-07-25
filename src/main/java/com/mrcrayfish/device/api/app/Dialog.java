@@ -22,6 +22,7 @@ import com.mrcrayfish.device.core.print.task.TaskPrint;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import com.mrcrayfish.device.tileentity.TileEntityPrinter;
+import com.mrcrayfish.device.util.GLHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
@@ -69,11 +70,11 @@ public abstract class Dialog extends Wrappable
 		this.width = layout.width;
 		this.height = layout.height;
 		this.pendingLayoutUpdate = true;
-		this.customLayout.handleOnLoad();
+		this.customLayout.handleLoad();
 	}
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		this.defaultLayout.clear();
 		this.setLayout(defaultLayout);
@@ -92,7 +93,14 @@ public abstract class Dialog extends Wrappable
 	@Override
 	public void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks)
 	{
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		
+		GLHelper.pushScissor(x, y, width, height);
 		customLayout.render(laptop, mc, x, y, mouseX, mouseY, active, partialTicks);
+		GLHelper.popScissor();
+
+		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
 		customLayout.renderOverlay(laptop, mc, mouseX, mouseY, active);
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -203,14 +211,14 @@ public abstract class Dialog extends Wrappable
 		}
 		
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 			
 			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
-			super.init();
+			super.init(intent);
 			
 			defaultLayout.setBackground(new Background()
 			{
@@ -268,14 +276,14 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 			
 			int lines = Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(messageText, getWidth() - 10).size();
 			defaultLayout.height += (lines - 1) * 9;
 			
-			super.init();
+			super.init(intent);
 
 			defaultLayout.setBackground(new Background()
 			{
@@ -305,7 +313,14 @@ public abstract class Dialog extends Wrappable
 			int negativeWidth = Math.max(20, Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText));
 			buttonNegative = new Button(getWidth() - DIVIDE_WIDTH - positiveWidth - DIVIDE_WIDTH - negativeWidth + 1, getHeight() - 20, negativeText);
 			buttonNegative.setSize(negativeWidth + 10, 16);
-			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) -> close());
+			buttonNegative.setClickListener((mouseX, mouseY, mouseButton) ->
+			{
+				if(negativeListener != null)
+				{
+					negativeListener.onClick(mouseX, mouseY, mouseButton);
+				}
+				close();
+			});
 			this.addComponent(buttonNegative);
 		}
 
@@ -376,9 +391,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 
 			int offset = 0;
 
@@ -389,7 +404,7 @@ public abstract class Dialog extends Wrappable
 				offset += lines * 9 + 5;
 			}
 
-			super.init();
+			super.init(intent);
 
 			defaultLayout.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) -> {
 				Gui.drawRect(x, y, x + width, y + height, Color.LIGHT_GRAY.getRGB());
@@ -512,9 +527,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 
 			main = new Layout(211, 126);
 
@@ -659,9 +674,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 			main = new Layout(211, 145);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
@@ -701,16 +716,17 @@ public abstract class Dialog extends Wrappable
 								dialog.setPositiveText("Override");
 								dialog.setPositiveListener((mouseX1, mouseY1, mouseButton1) ->
 								{
-									browser.removeFile(file.getName());
-									browser.addFile(file);
-									dialog.close();
-
-									//TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
-									if(SaveFile.this.responseHandler != null)
+									browser.addFile(file, true, (response1, success1) ->
 									{
-										SaveFile.this.responseHandler.onResponse(true, file);
-									}
-									SaveFile.this.close();
+                                        dialog.close();
+
+                                        //TODO Look into better handling. Get response from parent if should close. Maybe a response interface w/ generic
+                                        if(responseHandler != null)
+                                        {
+                                            responseHandler.onResponse(success1, file);
+                                        }
+                                        SaveFile.this.close();
+                                    });
 								});
 								app.openDialog(dialog);
 							}
@@ -828,9 +844,9 @@ public abstract class Dialog extends Wrappable
 		}
 
 		@Override
-		public void init()
+		public void init(@Nullable NBTTagCompound intent)
 		{
-			super.init();
+			super.init(intent);
 
 			layoutMain = new Layout(150, 132);
 
@@ -979,9 +995,9 @@ public abstract class Dialog extends Wrappable
 			}
 
 			@Override
-			public void init()
+			public void init(@Nullable NBTTagCompound intent)
 			{
-				super.init();
+				super.init(intent);
 
 				layoutMain = new Layout(120, 70);
 

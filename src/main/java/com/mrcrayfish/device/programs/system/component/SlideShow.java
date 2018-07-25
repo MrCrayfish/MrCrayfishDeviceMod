@@ -55,9 +55,9 @@ public class SlideShow extends Component
     }
 
     @Override
-    protected void handleOnLoad()
+    protected void handleLoad()
     {
-        image.handleOnLoad();
+        image.handleLoad();
     }
 
     @Override
@@ -68,26 +68,31 @@ public class SlideShow extends Component
 
         image.render(laptop, mc, x, y, mouseX, mouseY, windowActive, partialTicks);
 
-        if(GuiHelper.isMouseWithin(mouseX, mouseY, x, y, 15, height))
+        if(currentImage > 0)
         {
-            Gui.drawRect(x, y, x + 15, y + height, OVERLAY_HOVER.getRGB());
-        }
-        else
-        {
-            Gui.drawRect(x, y, x + 15, y + height, OVERLAY.getRGB());
-        }
-
-        if(GuiHelper.isMouseWithin(mouseX, mouseY, x + width - 15, y, 15, height))
-        {
-            Gui.drawRect(x + width - 15, y, x + width, y + height, OVERLAY_HOVER.getRGB());
-        }
-        else
-        {
-            Gui.drawRect(x + width - 15, y, x + width, y + height, OVERLAY.getRGB());
+            if(GuiHelper.isMouseWithin(mouseX, mouseY, x, y, 15, height))
+            {
+                Gui.drawRect(x, y, x + 15, y + height, OVERLAY_HOVER.getRGB());
+            }
+            else
+            {
+                Gui.drawRect(x, y, x + 15, y + height, OVERLAY.getRGB());
+            }
+            Icons.CHEVRON_LEFT.draw(mc, x + 2, y + (height - 10) / 2);
         }
 
-        Icons.CHEVRON_LEFT.draw(mc, x + 2, y + (height - 10) / 2);
-        Icons.CHEVRON_RIGHT.draw(mc, x + 3 + width - 15, y + (height - 10) / 2);
+        if(currentImage < IMAGES.size() - 1)
+        {
+            if(GuiHelper.isMouseWithin(mouseX, mouseY, x + width - 15, y, 15, height))
+            {
+                Gui.drawRect(x + width - 15, y, x + width, y + height, OVERLAY_HOVER.getRGB());
+            }
+            else
+            {
+                Gui.drawRect(x + width - 15, y, x + width, y + height, OVERLAY.getRGB());
+            }
+            Icons.CHEVRON_RIGHT.draw(mc, x + 3 + width - 15, y + (height - 10) / 2);
+        }
     }
 
     @Override

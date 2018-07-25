@@ -1,10 +1,9 @@
 package com.mrcrayfish.device.programs.email;
 
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.Dialog;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.*;
@@ -26,8 +25,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 public class ApplicationEmail extends Application
 {
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");
+	private static final ResourceLocation ENDER_MAIL_BACKGROUND = new ResourceLocation("cdm:textures/gui/ender_mail_background.png");
 
 	private static final Pattern EMAIL = Pattern.compile("^([a-zA-Z0-9]{1,10})@endermail\\.com$");
 	private final Color COLOR_EMAIL_CONTENT_BACKGROUND = new Color(160, 160, 160);
@@ -118,7 +119,7 @@ public class ApplicationEmail extends Application
 	private List<Contact> contacts;
 
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		/* Loading Layout */
 		layoutInit = new Layout(40, 40);
@@ -131,38 +132,48 @@ public class ApplicationEmail extends Application
 
 		
 		/* Main Menu Layout */
-		
-		layoutMainMenu = new Layout(100, 75);
 
-		logo = new Image(35, 5, 28, 28, info.getIconU(), info.getIconV(), 14, 14, Laptop.ICON_TEXTURES);
+		layoutMainMenu = new Layout(200, 113);
+
+		Image image = new Image(0, 0, layoutMainMenu.width, layoutMainMenu.height, 0, 0, 640, 360, 640, 360, ENDER_MAIL_BACKGROUND);
+		image.setAlpha(0.85F);
+		layoutMainMenu.addComponent(image);
+
+		logo = new Image(86, 20, 28, 28, info.getIconU(), info.getIconV(), 14, 14, 224, 224, Laptop.ICON_TEXTURES);
 		layoutMainMenu.addComponent(logo);
 
-		labelLogo = new Label("Ender Mail", 50, 35);
+		labelLogo = new Label("Ender Mail", 100, 46);
 		labelLogo.setAlignment(Component.ALIGN_CENTER);
 		layoutMainMenu.addComponent(labelLogo);
 
-		btnRegisterAccount = new Button(5, 50, "Register");
-		btnRegisterAccount.setSize(90, 20);
+		btnRegisterAccount = new Button(70, 65, "Register");
+		btnRegisterAccount.setSize(60, 16);
 		btnRegisterAccount.setClickListener((mouseX, mouseY, mouseButton) -> setCurrentLayout(layoutRegisterAccount));
-		btnRegisterAccount.setVisible(false);
 		layoutMainMenu.addComponent(btnRegisterAccount);
+
+		this.setCurrentLayout(layoutMainMenu);
 
 		
 		/* Register Account Layout */
 		
-		layoutRegisterAccount = new Layout(167, 60);
+		layoutRegisterAccount = new Layout(200, 113);
 
-		labelEmail = new Label("Email", 5, 5);
+		image = new Image(0, 0, layoutRegisterAccount.width, layoutRegisterAccount.height, 0, 0, 640, 360, 640, 360, ENDER_MAIL_BACKGROUND);
+		image.setAlpha(0.85F);
+		layoutRegisterAccount.addComponent(image);
+
+		labelEmail = new Label(TextFormatting.BOLD + "Choose your email", layoutRegisterAccount.width / 2, 30);
+		labelEmail.setAlignment(Component.ALIGN_CENTER);
 		layoutRegisterAccount.addComponent(labelEmail);
 
-		fieldEmail = new TextField(5, 15, 80);
+		fieldEmail = new TextField(20, 50, 80);
 		layoutRegisterAccount.addComponent(fieldEmail);
 
-		labelDomain = new Label("@endermail.com", 88, 18);
+		labelDomain = new Label("@endermail.com", 105, 54);
 		layoutRegisterAccount.addComponent(labelDomain);
 
-		btnRegister = new Button(5, 35, "Register");
-		btnRegister.setSize(157, 20);
+		btnRegister = new Button(70, 80, "Register");
+		btnRegister.setSize(60, 16);
 		btnRegister.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
 			int length = fieldEmail.getText().length();
@@ -189,7 +200,7 @@ public class ApplicationEmail extends Application
 		
 		/* Inbox Layout */
 		
-		layoutInbox = new Layout(300, 148);
+		layoutInbox = new Layout(260, 146);
 		layoutInbox.setInitListener(new InitListener()
 		{
 			@Override
@@ -207,8 +218,29 @@ public class ApplicationEmail extends Application
 				TaskManager.sendTask(taskUpdateInbox);
 			}
 		});
+		layoutInbox.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
+		{
+			mc.getTextureManager().bindTexture(ENDER_MAIL_BACKGROUND);
+			RenderUtil.drawRectWithTexture(x, y, 0, 0, width, height, 640, 360, 640, 360);
 
-		listEmails = new ItemList<Email>(5, 25, 275, 4);
+			Color temp = new Color(Laptop.getSystem().getSettings().getColorScheme().getBackgroundColor());
+			Color color = new Color(temp.getRed(), temp.getGreen(), temp.getBlue(), 150);
+			Gui.drawRect(x, y, x + 125, y + height, color.getRGB());
+			Gui.drawRect(x + 125, y, x + 126, y + height, color.darker().getRGB());
+
+			Email e = listEmails.getSelectedItem();
+			if(e != null)
+			{
+				Gui.drawRect(x + 130, y + 5, x + width - 5, y + 34, color.getRGB());
+				Gui.drawRect(x + 130, y + 34, x + width - 5, y + 35, color.darker().getRGB());
+				Gui.drawRect(x + 130, y + 35, x + width - 5, y + height - 5, new Color(1.0F, 1.0F, 1.0F, 0.25F).getRGB());
+				RenderUtil.drawStringClipped(e.getSubject(), x + 135, y + 10, 120, Color.WHITE.getRGB(), true);
+				RenderUtil.drawStringClipped(e.getAuthor() + "@endermail.com", x + 135, y + 22, 120, Color.LIGHT_GRAY.getRGB(), false);
+				Laptop.fontRenderer.drawSplitString(e.getMessage(), x + 135, y + 40, 115, Color.WHITE.getRGB());
+			}
+        });
+
+		listEmails = new ItemList<>(5, 25, 116, 4);
 		listEmails.setListItemRenderer(new ListItemRenderer<Email>(28)
 		{
 			@Override
@@ -218,21 +250,19 @@ public class ApplicationEmail extends Application
 
 				if (!e.isRead())
 				{
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-					mc.getTextureManager().bindTexture(ENDER_MAIL_ICONS);
-					gui.drawTexturedModalRect(x + 247, y + 8, 0, 10, 20, 12);
+					GlStateManager.color(1.0F, 1.0F, 1.0F);
+					RenderUtil.drawApplicationIcon(info, x + width - 16, y + 2);
 				}
 
 				if(e.getAttachment() != null)
 				{
 					GlStateManager.color(1.0F, 1.0F, 1.0F);
-					int posX = x + (!e.isRead() ? -30 : 0) + 255;
+					int posX = x + (!e.isRead() ? -12 : 0) + width;
 					mc.getTextureManager().bindTexture(ENDER_MAIL_ICONS);
-					gui.drawTexturedModalRect(posX, y + 5, 20, 10, 13, 20);
+					RenderUtil.drawRectWithTexture(posX, y + 16, 20, 10, 7, 10, 13, 20);
 				}
-
-				mc.fontRenderer.drawString(e.getSubject(), x + 5, y + 5, Color.WHITE.getRGB());
-				mc.fontRenderer.drawString(e.getAuthor() + "@endermail.com", x + 5, y + 18, Color.LIGHT_GRAY.getRGB());
+				RenderUtil.drawStringClipped(e.getSubject(), x + 5, y + 5, width - 20, Color.WHITE.getRGB(), false);
+				RenderUtil.drawStringClipped(e.getAuthor() + "@endermail.com", x + 5, y + 17, width - 20, Color.LIGHT_GRAY.getRGB(), false);
 			}
 		});
 		layoutInbox.addComponent(listEmails);
@@ -315,6 +345,9 @@ public class ApplicationEmail extends Application
 		});
 		btnRefresh.setToolTip("Refresh Inbox", "Checks for any new emails");
 		layoutInbox.addComponent(btnRefresh);
+
+		Button btnSettings = new Button(105, 5, Icons.WRENCH);
+		layoutInbox.addComponent(btnSettings);
 
 		
 		/* New Email Layout */
@@ -485,7 +518,7 @@ public class ApplicationEmail extends Application
 		labelAttachmentName.setAlignment(Component.ALIGN_RIGHT);
 		layoutViewEmail.addComponent(labelAttachmentName);
 
-		setCurrentLayout(layoutInit);
+		this.setCurrentLayout(layoutInit);
 
 		TaskCheckEmailAccount taskCheckAccount = new TaskCheckEmailAccount();
 		taskCheckAccount.setCallback((nbt, success) ->

@@ -3,6 +3,7 @@ package com.mrcrayfish.device.api.app.component;
 import com.mrcrayfish.device.api.app.Component;
 import com.mrcrayfish.device.api.app.interfaces.IHighlight;
 import com.mrcrayfish.device.api.app.listener.KeyListener;
+import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.GLHelper;
 import com.mrcrayfish.device.util.GuiHelper;
@@ -103,18 +104,18 @@ public class TextArea extends Component
 		if (this.visible)
 		{
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			Gui.drawRect(x, y, x + width, y + height, borderColor);
-			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, backgroundColor);
+
+			Color bgColor = new Color(color(backgroundColor, getColorScheme().getBackgroundColor()));
+			Gui.drawRect(x, y, x + width, y + height, bgColor.darker().darker().getRGB());
+			Gui.drawRect(x + 1, y + 1, x + width - 1, y + height - 1, bgColor.getRGB());
 
 			if(!isFocused && placeholder != null && (lines.isEmpty() || (lines.size() == 1 && lines.get(0).isEmpty())))
 			{
 				GlStateManager.enableBlend();
-				mc.fontRenderer.drawSplitString(placeholder, x + padding, y + padding, width - padding * 2 - 2, placeholderColor);
+				RenderUtil.drawStringClipped(placeholder, x + padding, y + padding, width - padding * 2, placeholderColor, false);
 			}
 
-			GL11.glEnable(GL11.GL_SCISSOR_TEST);
-			GLHelper.scissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
-
+			GLHelper.pushScissor(x + padding, y + padding, width - padding * 2, height - padding * 2);
 			for(int i = 0; i < visibleLines && i + verticalScroll < lines.size(); i++)
 			{
 				float scrollPercentage = (verticalScroll + verticalOffset) / (float) (lines.size() - visibleLines);
@@ -140,12 +141,12 @@ public class TextArea extends Component
 				}
 				else
 				{
-					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, textColor);
+					fontRenderer.drawString(lines.get(lineY), x + padding - scrollX, y + padding + i * fontRenderer.FONT_HEIGHT, color(textColor, getColorScheme().getTextColor()));
 				}
 			}
+			GLHelper.popScissor();
 
-			GLHelper.scissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
-
+			GLHelper.pushScissor(x + padding, y + padding - 1, width - padding * 2 + 1, height - padding * 2 + 1);
 			if(editable && isFocused)
 			{
 				float linesPerUnit = (float) lines.size() / (float) visibleLines;
@@ -160,12 +161,11 @@ public class TextArea extends Component
 						int stringWidth = fontRenderer.getStringWidth(subString);
 						int posX = x + padding + stringWidth - MathHelper.clamp(horizontalScroll + (int) (horizontalOffset * pixelsPerUnit), 0, Math.max(0, maxLineWidth - visibleWidth));
 						int posY = y + padding + (cursorY - scroll) * fontRenderer.FONT_HEIGHT;
-						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT - 1, Color.WHITE.getRGB());
+						Gui.drawRect(posX, posY - 1, posX + 1, posY + fontRenderer.FONT_HEIGHT, Color.WHITE.getRGB());
 					}
 				}
 			}
-
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			GLHelper.popScissor();
 
 			if(scrollBarVisible)
 			{
@@ -235,6 +235,7 @@ public class TextArea extends Component
 				cursorY = lineY;
 			}
 			cursorTick = 0;
+			updateScroll();
 		}
 	}
 
@@ -498,14 +499,14 @@ public class TextArea extends Component
 			return;
 		}
 
-		if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
+		/*if(activeLine.isEmpty() || (activeLine.length() == 1 && activeLine.charAt(0) == '\n'))
 		{
 			if(verticalScroll > 0)
 			{
 				scroll(-1);
 				moveYCursor(1);
 			}
-		}
+		}*/
 
 		if(wrapText)
 		{
@@ -530,11 +531,13 @@ public class TextArea extends Component
 				lines.set(cursorY, previousLine.substring(0, Math.max(previousLine.length() - 1, 0)));
 			}
 			lines.remove(cursorY + 1);
-			if(verticalScroll + visibleLines == lines.size() - 1)
-			{
-				scroll(-1);
-			}
 		}
+
+		if(verticalScroll > 0)
+		{
+			scroll(-1);
+		}
+
 		recalculateMaxWidth();
 	}
 
@@ -834,6 +837,10 @@ public class TextArea extends Component
 			do
 			{
 				String line = lines.get(lineIndex);
+				if(totalLength > 0)
+				{
+					builder.append(" ");
+				}
 				builder.append(line);
 
 				if(lineIndex == cursorY)
@@ -975,7 +982,7 @@ public class TextArea extends Component
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < lines.size() - 1; i++)
 		{
-			builder.append(lines.get(i)).append("\n");
+			builder.append(lines.get(i));
 		}
 		builder.append(lines.get(lines.size() - 1));
 		return builder.toString();
@@ -1000,6 +1007,7 @@ public class TextArea extends Component
 	public void setWrapText(boolean wrapText)
 	{
 		this.wrapText = wrapText;
+		this.horizontalScroll = 0;
 		updateText();
 	}
 

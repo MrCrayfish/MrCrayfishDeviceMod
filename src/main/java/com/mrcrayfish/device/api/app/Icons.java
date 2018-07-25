@@ -148,7 +148,10 @@ public enum Icons implements IIcon
     MICROPHONE_MUTE,
     HEADPHONES_MUTE,
     ZOOM_IN,
-    ZOOM_OUT;
+    ZOOM_OUT,
+    FILE,
+    FOLDER,
+    SAVE_AS;
 
     private static final ResourceLocation ICON_ASSET = new ResourceLocation("cdm:textures/gui/icons.png");
 
@@ -179,6 +182,24 @@ public enum Icons implements IIcon
         return GRID_SIZE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSourceHeight()
+    {
+        return ICON_SIZE * GRID_SIZE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSourceWidth()
+    {
+        return ICON_SIZE * GRID_SIZE;
+    }
+
     @Override
     public int getU()
     {
@@ -189,5 +210,11 @@ public enum Icons implements IIcon
     public int getV()
     {
         return (ordinal() / GRID_SIZE) * ICON_SIZE;
+    }
+
+    @Override
+    public int getOrdinal()
+    {
+	    return ordinal();
     }
 }

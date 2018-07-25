@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.programs.system;
 
-import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.Text;
@@ -22,7 +22,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
-import java.awt.*;
+import javax.annotation.Nullable;
+import java.awt.Color;
 
 public class ApplicationBank extends SystemApplication
 {
@@ -76,7 +77,7 @@ public class ApplicationBank extends SystemApplication
 	}
 	
 	@Override
-	public void init()
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		layoutStart = new Layout();
 		layoutStart.setBackground((gui, mc, x, y, width, height, mouseX, mouseY, windowActive) ->
@@ -197,16 +198,24 @@ public class ApplicationBank extends SystemApplication
 					return;
 				}
 
-				final int amount = Integer.parseInt(amountField.getText());
-				deposit(amount, (nbt, success) ->
+				try
 				{
-					if(success)
+					final int amount = Integer.parseInt(amountField.getText());
+					deposit(amount, (nbt, success) ->
 					{
-						int balance = nbt.getInteger("balance");
-						labelAmount.setText("$" + balance);
-						amountField.setText("0");
-					}
-				});
+						if(success)
+						{
+							int balance = nbt.getInteger("balance");
+							labelAmount.setText("$" + balance);
+							amountField.setText("0");
+						}
+					});
+				}
+				catch(NumberFormatException e)
+				{
+					amountField.setText("0");
+					openDialog(new Dialog.Message("Invalid amount. The maximum that you can deposit is " + Integer.MAX_VALUE));
+				}
 			}
 		});
 		layoutMain.addComponent(buttonDeposit);
@@ -222,15 +231,24 @@ public class ApplicationBank extends SystemApplication
 					return;
 				}
 
-				withdraw(Integer.parseInt(amountField.getText()), (nbt, success) ->
+				try
 				{
-					if(success)
+					final int amount = Integer.parseInt(amountField.getText());
+					withdraw(amount, (nbt, success) ->
 					{
-						int balance = nbt.getInteger("balance");
-						labelAmount.setText("$" + balance);
-						amountField.setText("0");
-					}
-				});
+						if(success)
+						{
+							int balance = nbt.getInteger("balance");
+							labelAmount.setText("$" + balance);
+							amountField.setText("0");
+						}
+					});
+				}
+				catch(NumberFormatException e)
+				{
+					amountField.setText("0");
+					openDialog(new Dialog.Message("Invalid amount. The maximum that you can withdraw is " + Integer.MAX_VALUE));
+				}
 			}
 		});
 		layoutMain.addComponent(buttonWithdraw);

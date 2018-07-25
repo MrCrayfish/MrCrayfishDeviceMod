@@ -8,16 +8,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 
 public class Window<T extends Wrappable>
 {
 	public static final ResourceLocation WINDOW_GUI = new ResourceLocation("cdm:textures/gui/application.png");
 	
-	public static final int COLOUR_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
+	public static final int Color_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
 	
 	T content;
 	int width, height;
@@ -54,10 +56,10 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	void init(int x, int y)
+	void init(int x, int y, @Nullable NBTTagCompound intent)
 	{
 		btnClose = new GuiButtonClose(0, x + offsetX + width - 12, y + offsetY + 1);
-		content.init();
+		content.init(intent);
 	}
 	
 	public void onTick() 
@@ -81,7 +83,7 @@ public class Window<T extends Wrappable>
 			content.clearPendingLayout();
 		}
 		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.enableBlend();
 		mc.getTextureManager().bindTexture(WINDOW_GUI);
 
@@ -118,7 +120,7 @@ public class Window<T extends Wrappable>
         
 		if(dialogWindow != null)
 		{
-			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, COLOUR_WINDOW_DARK);
+			Gui.drawRect(x + offsetX, y + offsetY, x + offsetX + width, y + offsetY + height, Color_WINDOW_DARK);
 			dialogWindow.render(gui, mc, x, y, mouseX, mouseY, active, partialTicks);
 		}
 	}
@@ -183,7 +185,7 @@ public class Window<T extends Wrappable>
 		{
 			if(content instanceof Application)
 			{
-				gui.close((Application) content);
+				gui.closeApplication(((Application) content).getInfo());
 				return;
 			}
 
@@ -253,7 +255,7 @@ public class Window<T extends Wrappable>
 		else
 		{
 			dialogWindow = new Window(dialog, null);
-			dialogWindow.init(0, 0);
+			dialogWindow.init(0, 0, null);
 			dialogWindow.setParent(this);
 		}
 	}
@@ -276,7 +278,7 @@ public class Window<T extends Wrappable>
 	{
 		if(content instanceof Application)
 		{
-			laptop.close((Application) content);
+			laptop.closeApplication(((Application) content).getInfo());
 			return;
 		}
 		if(parent != null)

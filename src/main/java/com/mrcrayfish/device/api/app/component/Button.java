@@ -5,6 +5,8 @@ import com.mrcrayfish.device.api.app.IIcon;
 import com.mrcrayfish.device.api.app.listener.ClickListener;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.util.GuiHelper;
+import com.mrcrayfish.device.util.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
@@ -12,8 +14,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Arrays;
 
 public class Button extends Component
@@ -201,32 +206,37 @@ I	 * @param top how many pixels from the top
 		if (this.visible)
         {
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = isInside(mouseX, mouseY) && windowActive;
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			Color bgColor = new Color(getColorScheme().getBackgroundColor()).brighter().brighter();
+			float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
+			bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1.0F));
+			GL11.glColor4f(bgColor.getRed() / 255F, bgColor.getGreen() / 255F, bgColor.getBlue() / 255F, 1.0F);
+			this.hovered = GuiHelper.isMouseWithin(mouseX, mouseY, x, y, width, height) && windowActive;
             int i = this.getHoverState(this.hovered);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
             
             /* Corners */
-            RenderUtil.drawRectWithTexture(xPosition, yPosition, 96 + i * 5, 12, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(xPosition + width - 2, yPosition, 99 + i * 5, 12, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(xPosition + width - 2, yPosition + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
-            RenderUtil.drawRectWithTexture(xPosition, yPosition + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(x, y, 96 + i * 5, 12, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(x + width - 2, y, 99 + i * 5, 12, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(x + width - 2, y + height - 2, 99 + i * 5, 15, 2, 2, 2, 2);
+            RenderUtil.drawRectWithTexture(x, y + height - 2, 96 + i * 5, 15, 2, 2, 2, 2);
 
             /* Middles */
-            RenderUtil.drawRectWithTexture(xPosition + 2, yPosition, 98 + i * 5, 12, width - 4, 2, 1, 2);
-            RenderUtil.drawRectWithTexture(xPosition + width - 2, yPosition + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
-            RenderUtil.drawRectWithTexture(xPosition + 2, yPosition + height - 2, 98 + i * 5, 15, width - 4, 2, 1, 2);
-            RenderUtil.drawRectWithTexture(xPosition, yPosition + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
+            RenderUtil.drawRectWithTexture(x + 2, y, 98 + i * 5, 12, width - 4, 2, 1, 2);
+            RenderUtil.drawRectWithTexture(x + width - 2, y + 2, 99 + i * 5, 14, 2, height - 4, 2, 1);
+            RenderUtil.drawRectWithTexture(x + 2, y + height - 2, 98 + i * 5, 15, width - 4, 2, 1, 2);
+            RenderUtil.drawRectWithTexture(x, y + 2, 96 + i * 5, 14, 2, height - 4, 2, 1);
             
             /* Center */
-            RenderUtil.drawRectWithTexture(xPosition + 2, yPosition + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
+            RenderUtil.drawRectWithTexture(x + 2, y + 2, 98 + i * 5, 14, width - 4, height - 4, 1, 1);
             
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             int contentWidth = (iconResource != null ? iconWidth: 0) + getTextWidth(text);
-            if(iconResource != null && text != null) contentWidth += 3;
+            if(iconResource != null && !StringUtils.isNullOrEmpty(text)) contentWidth += 3;
             int contentX = (int) Math.ceil((width - contentWidth) / 2.0);
 
             if(iconResource != null)
@@ -236,7 +246,7 @@ I	 * @param top how many pixels from the top
 				RenderUtil.drawRectWithTexture(x + contentX, y + iconY, iconU, iconV, iconWidth, iconHeight, iconWidth, iconHeight, iconSourceWidth, iconSourceHeight);
 			}
 
-			if(text != null)
+			if(!StringUtils.isNullOrEmpty(text))
 			{
 				int textY = (height - mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
 				int textOffsetX = iconResource != null ? iconWidth + 3 : 0;
@@ -342,6 +352,16 @@ I	 * @param top how many pixels from the top
 		return text;
 	}
 
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
 	public void setIcon(ResourceLocation iconResource, int iconU, int iconV, int iconWidth, int iconHeight)
 	{
 		this.iconU = iconU;
@@ -422,5 +442,5 @@ I	 * @param top how many pixels from the top
 		return width;
 	}
 	
-	//TODO add button text color and button color
+	//TODO add button text Color and button Color
 }

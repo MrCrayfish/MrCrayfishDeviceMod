@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.app;
 
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.programs.system.object.ColorScheme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -73,7 +74,12 @@ public abstract class Component extends Gui
 	 * Called when the Layout this component is bound to is set as the current layout in an
 	 * application.
 	 */
-	protected void handleOnLoad() {}
+	protected void handleLoad() {}
+
+	/**
+	 * TODO: finish docs
+	 */
+	protected void handleUnload() {}
 	
 	/**
 	 * Called when the game ticks
@@ -184,5 +190,19 @@ public abstract class Component extends Gui
 	public void setVisible(boolean visible)
 	{
 		this.visible = visible;
+	}
+
+	/**
+	 * Gets the laptop's Color scheme. A simple helper method to clean up code.
+	 * @return
+	 */
+	protected ColorScheme getColorScheme()
+	{
+		return Laptop.getSystem().getSettings().getColorScheme();
+	}
+
+	protected static int color(int personalColor, int systemColor)
+	{
+		return personalColor != -1 && personalColor >= 0 ? personalColor : systemColor;
 	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,10 +68,14 @@ public abstract class ComboBox<T> extends Component
         {
             mc.getTextureManager().bindTexture(Component.COMPONENTS_GUI);
 
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             GlStateManager.blendFunc(770, 771);
+
+            Color bgColor = new Color(getColorScheme().getBackgroundColor()).brighter().brighter();
+            float[] hsb = Color.RGBtoHSB(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), null);
+            bgColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], 1.0F));
+            GL11.glColor4f(bgColor.getRed() / 255F, bgColor.getGreen() / 255F, bgColor.getBlue() / 255F, 1.0F);
 
             this.hovered = isInside(mouseX, mouseY) && windowActive;
             int i = this.getHoverState(this.hovered);
@@ -91,14 +96,19 @@ public abstract class ComboBox<T> extends Component
             /* Center */
             RenderUtil.drawRectWithTexture(xPosition + 2 + xOffset, yPosition + 2, 98 + i * 5, 14, height - 4, height - 4, 1, 1);
 
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
             /* Icons */
             RenderUtil.drawRectWithTexture(xPosition + xOffset + 3, yPosition + 5, 111, 12, 8, 5, 8, 5);
 
+            Color boxColor = new Color(getColorScheme().getBackgroundColor());
+            Color borderColor = boxColor.darker().darker();
+
             /* Box */
-            drawHorizontalLine(xPosition, xPosition + xOffset, yPosition, Color.BLACK.getRGB());
-            drawHorizontalLine(xPosition, xPosition + xOffset, yPosition + height - 1, Color.BLACK.getRGB());
-            drawVerticalLine(xPosition, yPosition, yPosition + height - 1, Color.BLACK.getRGB());
-            drawRect(xPosition + 1, yPosition + 1, xPosition + xOffset, yPosition + height - 1, Color.DARK_GRAY.getRGB());
+            drawHorizontalLine(xPosition, xPosition + xOffset, yPosition, borderColor.getRGB());
+            drawHorizontalLine(xPosition, xPosition + xOffset, yPosition + height - 1, borderColor.getRGB());
+            drawVerticalLine(xPosition, yPosition, yPosition + height - 1, borderColor.getRGB());
+            drawRect(xPosition + 1, yPosition + 1, xPosition + xOffset, yPosition + height - 1, boxColor.getRGB());
 
             if(itemRenderer != null)
             {

@@ -9,6 +9,7 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public class ApplicationNoteStash extends Application
@@ -43,7 +44,7 @@ public class ApplicationNoteStash extends Application
 	}
 
 	@Override
-	public void init() 
+	public void init(@Nullable NBTTagCompound intent)
 	{
 		/* Main */
 		
