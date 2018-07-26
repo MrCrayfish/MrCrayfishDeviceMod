@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.api.task;
 
+import com.mrcrayfish.device.api.registry.ICDMRegistryItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
  * 
  * @author MrCrayfish
  */
-public abstract class Task 
+public abstract class Task
 {
 	private String name;
 	private Callback<NBTTagCompound> callback = null;

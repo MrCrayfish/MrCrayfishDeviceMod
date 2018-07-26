@@ -1,5 +1,6 @@
 package com.mrcrayfish.device.programs.email;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.*;
 import com.mrcrayfish.device.api.app.Component;
@@ -11,6 +12,8 @@ import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.app.component.TextArea;
 import com.mrcrayfish.device.api.app.component.TextField;
 import com.mrcrayfish.device.api.app.listener.InitListener;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import com.mrcrayfish.device.api.app.renderer.ListItemRenderer;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.api.task.TaskManager;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@CDMRegister(modId = Reference.MOD_ID, uid = "ender_mail", isSystem = true)
 public class ApplicationEmail extends Application
 {
 	private static final ResourceLocation ENDER_MAIL_ICONS = new ResourceLocation("cdm:textures/gui/ender_mail.png");

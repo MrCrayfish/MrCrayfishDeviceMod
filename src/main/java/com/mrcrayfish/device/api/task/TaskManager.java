@@ -1,6 +1,7 @@
 package com.mrcrayfish.device.api.task;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.api.registry.BasicContainer;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageRequest;
 
@@ -25,6 +26,10 @@ public final class TaskManager
 			instance = new TaskManager();
 		}
 		return instance;
+	}
+
+	public static void registerTask(BasicContainer<Task> taskContainer){
+		registerTask(taskContainer.getContainedClass());
 	}
 	
 	public static void registerTask(Class<? extends Task> clazz)
@@ -51,7 +56,7 @@ public final class TaskManager
 	{
 		TaskManager manager = get();
 		if(!manager.registeredRequests.containsKey(task.getName())) {
-			throw new RuntimeException("Unregistered Task: " + task.getClass().getName() + ". Use TaskManager#requestRequest to register your task.");
+			throw new RuntimeException("Unregistered Task: " + task.getClass().getName() + ". Use TaskManager#registerRequest to register your task.");
 		}
 		
 		int requestId = manager.currentId++;

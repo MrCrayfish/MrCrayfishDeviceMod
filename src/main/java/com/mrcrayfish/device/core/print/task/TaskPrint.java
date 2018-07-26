@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.core.print.task;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.network.NetworkDevice;
 import com.mrcrayfish.device.core.network.Router;
@@ -17,6 +19,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@CDMRegister(modId = Reference.MOD_ID, uid = "printer_print")
 public class TaskPrint extends Task
 {
     private BlockPos devicePos;

@@ -1,9 +1,12 @@
 package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.*;
+import com.mrcrayfish.device.api.registry.CDMRegister;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.io.FileSystem;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +15,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
+@CDMRegister(modId = Reference.MOD_ID, uid = "note_stash", isSystem = true)
 public class ApplicationNoteStash extends Application
 {
 	private static final Predicate<File> PREDICATE_FILE_NOTE = file -> !file.isFolder()

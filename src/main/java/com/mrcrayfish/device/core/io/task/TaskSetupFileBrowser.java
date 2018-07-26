@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
@@ -17,6 +19,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@CDMRegister(modId = Reference.MOD_ID, uid = "io_setup_file_browser")
 public class TaskSetupFileBrowser extends Task
 {
     private BlockPos pos;

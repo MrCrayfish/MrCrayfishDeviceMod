@@ -7,6 +7,7 @@ import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.print.IPrint;
 import com.mrcrayfish.device.api.print.PrintingManager;
+import com.mrcrayfish.device.api.registry.BasicContainer;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.client.ClientNotification;
 import com.mrcrayfish.device.object.AppInfo;
@@ -48,6 +49,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
     @Override
     public void init()
     {
+        super.init();
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaptop.class, new LaptopRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrinter.class, new PrinterRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPaper.class, new PaperRenderer());
@@ -142,11 +144,16 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
         ReflectionHelper.setPrivateValue(AppInfo.class, info, iconV, "iconV");
     }
 
+    @Override
+    public Application registerApplication(BasicContainer app){
+        return registerApplication(new AppInfo(app.getId(), app.isSystem()), app.getContainedClass());
+    }
+
     @Nullable
     @Override
-    public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
+    public Application registerApplication(AppInfo info, Class<? extends Application> clazz)
     {
-        if("minecraft".equals(identifier.getResourceDomain()))
+        if("minecraft".equals(info.getId().getResourceDomain()))
         {
             throw new IllegalArgumentException("Invalid identifier domain");
         }
@@ -164,7 +171,8 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
             modifiers.setAccessible(true);
             modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
-            field.set(application, generateAppInfo(identifier, clazz));
+            info.reload();
+            field.set(application, info);
 
             return application;
         }

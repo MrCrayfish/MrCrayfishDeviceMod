@@ -1,13 +1,16 @@
 package com.mrcrayfish.device.proxy;
 
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.registry.BasicContainer;
+import com.mrcrayfish.device.api.registry.DeviceModRegistry;
+import com.mrcrayfish.device.api.registry.app.ApplicationRegistry;
 import com.mrcrayfish.device.api.print.IPrint;
+import com.mrcrayfish.device.api.registry.task.TaskRegistry;
 import com.mrcrayfish.device.init.DeviceBlocks;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageSyncApplications;
 import com.mrcrayfish.device.network.task.MessageSyncConfig;
 import com.mrcrayfish.device.object.AppInfo;
-import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.mrcrayfish.device.MrCrayfishDeviceMod.asmTable;
+
 public class CommonProxy
 {
 	List<AppInfo> allowedApps;
@@ -32,27 +37,36 @@ public class CommonProxy
 	public void preInit()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+		registerRegistryPlugins();
 	}
 
-	public void init() {}
+	private void registerRegistryPlugins(){
+		DeviceModRegistry.addCDMRegistry(ApplicationRegistry.class);
+		DeviceModRegistry.addCDMRegistry(TaskRegistry.class);
+	}
+
+	public void init() {
+		DeviceModRegistry.startRegistries(asmTable);
+	}
 
 	public void postInit() {}
 
+	public Application registerApplication(BasicContainer app){
+		if(allowedApps == null){
+			allowedApps = new ArrayList<>();
+		}
+		allowedApps.add(new AppInfo(app.getId(), app.isSystem()));
+		return null;
+	}
+
 	@Nullable
-	public Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
+	public Application registerApplication(AppInfo info, Class<? extends Application> clazz)
 	{
 		if(allowedApps == null)
 		{
 			allowedApps = new ArrayList<>();
 		}
-		if(SystemApplication.class.isAssignableFrom(clazz))
-		{
-			allowedApps.add(new AppInfo(identifier, true));
-		}
-		else
-		{
-			allowedApps.add(new AppInfo(identifier, false));
-		}
+		allowedApps.add(info);
 		return null;
 	}
 

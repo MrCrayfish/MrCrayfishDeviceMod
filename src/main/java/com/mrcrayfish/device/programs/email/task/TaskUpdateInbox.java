@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.email.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.registry.CDMRegister;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.EmailManager;
@@ -10,6 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+@CDMRegister(modId = Reference.MOD_ID, uid = "email_update_inbox")
 public class TaskUpdateInbox extends Task
 {
 	private List<Email> emails;

@@ -2,6 +2,7 @@ package com.mrcrayfish.device.api;
 
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.app.Application;
+import com.mrcrayfish.device.api.registry.BasicContainer;
 import com.mrcrayfish.device.object.AppInfo;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,16 +24,27 @@ public final class ApplicationManager
 	 * <p>
 	 * Example: {@code new ResourceLocation("modid:appid");}
 	 *
-	 * @param identifier the
-	 * @param clazz
+	 * @param identifier the ID of the application. A resource location
+	 * @param clazz the application class being registered
 	 */
 	@Nullable
 	public static Application registerApplication(ResourceLocation identifier, Class<? extends Application> clazz)
 	{
-		Application application = MrCrayfishDeviceMod.proxy.registerApplication(identifier, clazz);
+		Application application = MrCrayfishDeviceMod.proxy.registerApplication(new AppInfo(identifier, Application.class.isAssignableFrom(clazz)), clazz);
 		if(application != null)
 		{
 			APP_INFO.put(identifier, application.getInfo());
+			return application;
+		}
+		return null;
+	}
+
+
+	@Nullable
+	public static Application registerApplication(BasicContainer app){
+		Application application = MrCrayfishDeviceMod.proxy.registerApplication(app);
+		if(application != null){
+			APP_INFO.put(app.getId(), application.getInfo());
 			return application;
 		}
 		return null;
