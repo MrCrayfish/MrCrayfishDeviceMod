@@ -1,33 +1,30 @@
 package com.mrcrayfish.device.core;
 
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.device.api.app.Dialog;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
-
-import javax.annotation.Nullable;
 
 public abstract class Wrappable
 {
 	private Window window;
 
 	/**
-	 * The default initialization method. Clears any components in the default
-	 * layout and sets it as the current layout. If you override this method and
-	 * are using the default layout, make sure you call it using
-	 * <code>super.init()</code>
+	 * The default initialization method. Clears any components in the default layout and sets it as the current layout. If you override this method and are using the default layout, make sure you call it using <code>super.init()</code>
+	 * 
 	 * @param intent
 	 */
 	public abstract void init(@Nullable NBTTagCompound intent);
 
 	/**
-	 * When the games ticks. Note if you override, make sure you call this super
-	 * method.
+	 * When the games ticks. Note if you override, make sure you call this super method.
 	 */
 	public abstract void onTick();
 
 	/**
-	 * The main render loop. Note if you override, make sure you call this super
-	 * method.
+	 * The main render loop. Note if you override, make sure you call this super method.
 	 * 
 	 * @param laptop
 	 *            laptop instance
@@ -49,8 +46,7 @@ public abstract class Wrappable
 	public abstract void render(Laptop laptop, Minecraft mc, int x, int y, int mouseX, int mouseY, boolean active, float partialTicks);
 
 	/**
-	 * Called when a key is typed from your keyboard. Note if you override, make
-	 * sure you call this super method.
+	 * Called when a key is typed from your keyboard. Note if you override, make sure you call this super method.
 	 * 
 	 * @param character
 	 *            the typed character
@@ -118,6 +114,17 @@ public abstract class Wrappable
 	public abstract void handleMouseScroll(int mouseX, int mouseY, boolean direction);
 
 	/**
+	 * Called when the window attempts to be resized.
+	 * 
+	 * @param width
+	 *            The new width for the window
+	 * @param height
+	 *            The new height for the window
+	 * @return Whether or not the window could be resized
+	 */
+	public abstract boolean resize(int width, int height);
+
+	/**
 	 * Gets the text in the title bar.
 	 * 
 	 * @return The display name
@@ -127,17 +134,30 @@ public abstract class Wrappable
 	/**
 	 * Gets the width of the content (application/dialog) including the border.
 	 *
-	 * @return the height
+	 * @return the width
 	 */
 	public abstract int getWidth();
 
 	/**
-	 * Gets the height of the content (application/dialog) including the title
-	 * bar.
+	 * Gets the height of the content (application/dialog) including the title bar.
 	 * 
 	 * @return the height
 	 */
 	public abstract int getHeight();
+
+	/**
+	 * Gets the whether or not the content (application/dialog) should have the borders and title.
+	 * 
+	 * @return if the content should render borders and title
+	 */
+	public abstract boolean isDecorated();
+
+	/**
+	 * Gets the whether or not the content (application/dialog) can be resized.
+	 * 
+	 * @return if the content can be resized
+	 */
+	public abstract boolean isResizable();
 
 	/**
 	 * Marks the content's layout for updating
@@ -169,7 +189,21 @@ public abstract class Wrappable
 	/**
 	 * Called when this content is closed
 	 */
-	public void onClose() {}
+	public void onClose()
+	{
+	}
+
+	/**
+	 * Called when the content is resized.
+	 * 
+	 * @param width
+	 *            The new width of the window
+	 * @param height
+	 *            The new height of the window
+	 */
+	public void onResize(int width, int height)
+	{
+	}
 
 	/**
 	 * Sets the Window instance. Used by the core.

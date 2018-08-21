@@ -6,9 +6,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class GuiButtonClose extends GuiButton
+public class GuiButtonWindow extends GuiButton
 {
-	public GuiButtonClose(int buttonId, int x, int y) 
+	public GuiButtonWindow(int buttonId, int x, int y) 
 	{
 		super(buttonId, x, y, 11, 11, "");
 	}
@@ -26,9 +26,9 @@ public class GuiButtonClose extends GuiButton
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			GlStateManager.blendFunc(770, 771);
-
+			
 			int state = this.getHoverState(this.hovered);
-			this.drawTexturedModalRect(this.x, this.y, state * this.width + 15, 0, this.width, this.height);
+			this.drawTexturedModalRect(this.x, this.y, state * this.width + 26, (2 - this.id) * this.height, this.width, this.height);
 		}
 	}
 }
