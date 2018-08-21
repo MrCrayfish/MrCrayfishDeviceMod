@@ -552,6 +552,7 @@ public class Laptop extends GuiScreen implements System
 			app.restoreDefaultLayout();
 		}
 
+		window.setPosition((SCREEN_WIDTH - app.getWidth()) / 2, (SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - app.getHeight()) / 2);
 		addWindow(window);
 
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));

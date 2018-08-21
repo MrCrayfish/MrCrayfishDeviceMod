@@ -89,8 +89,6 @@ public class Window<T extends Wrappable>
 		{
 			this.setWidth(content.getWidth());
 			this.setHeight(content.getHeight());
-			this.offsetX = (Laptop.SCREEN_WIDTH - width) / 2;
-			this.offsetY = (Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height) / 2;
 			updateComponents(x, y);
 			content.clearPendingLayout();
 		}
