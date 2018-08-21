@@ -436,10 +436,10 @@ public class Laptop extends GuiScreen implements System
 				{
 					if (dialogWindow == null)
 					{
-						window.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						window.handleWindowMove(-(lastMouseX - mouseX), -(lastMouseY - mouseY));
 					} else
 					{
-						dialogWindow.handleWindowMove(posX, posY, -(lastMouseX - mouseX), -(lastMouseY - mouseY));
+						dialogWindow.handleWindowMove(-(lastMouseX - mouseX), -(lastMouseY - mouseY));
 					}
 				} else
 				{
@@ -451,10 +451,10 @@ public class Laptop extends GuiScreen implements System
 				{
 					if (dialogWindow == null)
 					{
-						window.resize(posX, posY, stretchStartWidth - (stretchStartX - mouseX) - 2, stretchStartHeight - (stretchStartY - mouseY) - 14);
+						window.resize(stretchStartWidth - (stretchStartX - mouseX) - 2, stretchStartHeight - (stretchStartY - mouseY) - 14);
 					} else
 					{
-						dialogWindow.resize(posX, posY, 20, 100);
+						// dialogWindow.resize(20, 100);
 					}
 				} else
 				{

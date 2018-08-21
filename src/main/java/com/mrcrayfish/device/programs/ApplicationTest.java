@@ -68,6 +68,8 @@ public class ApplicationTest extends Application
 			}
 		});
 		super.addComponent(button4);
+		
+		this.setResizable(true);
 	}
 
 	@Override
@@ -80,5 +82,11 @@ public class ApplicationTest extends Application
 	public void save(NBTTagCompound tagCompound)
 	{
 
+	}
+	
+	@Override
+	public void onResize(int width, int height)
+	{
+		System.out.println("Resized to " + width + "," + height);
 	}
 }

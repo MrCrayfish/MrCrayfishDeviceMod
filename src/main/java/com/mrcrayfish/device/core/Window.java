@@ -175,27 +175,29 @@ public class Window<T extends Wrappable>
 		content.handleKeyReleased(character, code);
 	}
 
-	public void handleWindowMove(int screenStartX, int screenStartY, int mouseDX, int mouseDY)
+	public void handleWindowMove(int mouseDX, int mouseDY)
 	{
 		setPosition(offsetX + mouseDX, offsetY + mouseDY);
-		updateComponents(screenStartX, screenStartY);
 	}
 
-	public boolean resize(int screenStartX, int screenStartY, int width, int height)
+	public boolean resize(int width, int height)
 	{
 		boolean result = content.resize(width, height);
 		content.onResize(content.getWidth(), content.getHeight());
 		setWidth(content.getWidth());
 		setHeight(content.getHeight());
-		updateComponents(screenStartX, screenStartY);
+		updateComponents((laptop.width - Laptop.SCREEN_WIDTH) / 2, (laptop.height - Laptop.SCREEN_HEIGHT) / 2);
 		return result;
 	}
-	
-	private void setPosition(int newX, int newY) {
-		if (newX >= 0 && newX <= Laptop.SCREEN_WIDTH - width)
+
+	public void setPosition(int x, int y)
+	{
+		int screenStartX = (laptop.width - Laptop.SCREEN_WIDTH) / 2;
+		int screenStartY = (laptop.height - Laptop.SCREEN_HEIGHT) / 2;
+		if (x >= 0 && x <= Laptop.SCREEN_WIDTH - width)
 		{
-			this.offsetX = newX;
-		} else if (newX < 0)
+			this.offsetX = x;
+		} else if (x < 0)
 		{
 			this.offsetX = 0;
 		} else
@@ -203,48 +205,54 @@ public class Window<T extends Wrappable>
 			this.offsetX = Laptop.SCREEN_WIDTH - width;
 		}
 
-		if (newY >= 0 && newY <= Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height)
+		if (y >= 0 && y <= Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height)
 		{
-			this.offsetY = newY;
-		} else if (newY < 0)
+			this.offsetY = y;
+		} else if (y < 0)
 		{
 			this.offsetY = 0;
 		} else
 		{
 			this.offsetY = Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - height;
 		}
+		updateComponents(screenStartX, screenStartY);
+	}
+
+	public void setMaximized(boolean maximized)
+	{
+		int posX = (laptop.width - Laptop.SCREEN_WIDTH) / 2;
+		int posY = (laptop.height - Laptop.SCREEN_HEIGHT) / 2;
+
+		if (!this.maximized)
+		{
+			smallOffsetX = offsetX;
+			smallOffsetY = offsetY;
+			smallWidth = width;
+			smallHeight = height;
+			offsetX = 0;
+			offsetY = 0;
+			width = Laptop.SCREEN_WIDTH;
+			height = Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT;
+		} else
+		{
+			width = smallWidth - 2;
+			height = smallHeight - 14;
+			offsetX = smallOffsetX;
+			offsetY = smallOffsetY;
+		}
+		this.maximized = maximized;
+
+		this.resize(width, height);
+		this.updateComponents(posX, posY);
 	}
 
 	void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		int posX = (gui.width - Laptop.SCREEN_WIDTH) / 2;
-		int posY = (gui.height - Laptop.SCREEN_HEIGHT) / 2;
-
 		if (btnMaximize.isMouseOver())
 		{
 			if (content.isResizable())
 			{
-				if (!maximized)
-				{
-					smallOffsetX = offsetX;
-					smallOffsetY = offsetY;
-					smallWidth = width;
-					smallHeight = height;
-					offsetX = 0;
-					offsetY = 0;
-					width = Laptop.SCREEN_WIDTH;
-					height = Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT;
-				} else
-				{
-					width = smallWidth - 2;
-					height = smallHeight - 14;
-					offsetX = smallOffsetX;
-					offsetY = smallOffsetY;
-				}
-				maximized = !maximized;
-				
-				this.resize(posX, posY, width, height);
-				this.updateComponents(posX, posY);
+				this.setMaximized(!this.maximized);
 			}
 		}
 
