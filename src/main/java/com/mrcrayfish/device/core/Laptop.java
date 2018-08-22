@@ -87,10 +87,7 @@ public class Laptop extends GuiScreen implements System
 	private int lastMouseX, lastMouseY;
 	private boolean dragging = false;
 	private boolean stretching = false;
-	private int stretchStartX;
-	private int stretchStartY;
-	private int stretchStartWidth;
-	private int stretchStartHeight;
+	private boolean[] stretchDirections = new boolean[] { false, false, false, false };
 
 	protected List<AppInfo> installedApps = new ArrayList<>();
 
@@ -338,10 +335,10 @@ public class Laptop extends GuiScreen implements System
 					if (left || right || top || bottom)
 					{
 						this.stretching = true;
-						this.stretchStartX = mouseX;
-						this.stretchStartY = mouseY;
-						this.stretchStartWidth = window.getWidth();
-						this.stretchStartHeight = window.getHeight();
+						stretchDirections[0] = left;
+						stretchDirections[1] = right;
+						stretchDirections[2] = top;
+						stretchDirections[3] = bottom;
 						return;
 					}
 
@@ -449,12 +446,45 @@ public class Laptop extends GuiScreen implements System
 			{
 				if (isMouseOnScreen(mouseX, mouseY))
 				{
+					int newX = 0;
+					int newY = 0;
+					int newWidth = 0;
+					int newHeight = 0;
+
+					int deltaX = (lastMouseX - mouseX);
+					int deltaY = (lastMouseY - mouseY);
+
+					boolean left = stretchDirections[0];
+					boolean right = stretchDirections[1];
+					boolean top = stretchDirections[2];
+					boolean bottom = stretchDirections[3];
+
+					if (left)
+					{
+						newX = deltaX;
+						newWidth = deltaX;
+					} else if (right)
+					{
+						newWidth = -deltaX;
+					}
+
+					if (top)
+					{
+						newY = deltaY;
+						newHeight = deltaY;
+					} else if (bottom)
+					{
+						newHeight = -deltaY;
+					}
+					
 					if (dialogWindow == null)
 					{
-						window.resize(stretchStartWidth - (stretchStartX - mouseX) - 2, stretchStartHeight - (stretchStartY - mouseY) - 14);
+						window.resize(window.getWidth() + newWidth - 2, window.getHeight() + newHeight - 14);
+						window.setPosition(window.getOffsetX() - newX, window.getOffsetY() - newY);
 					} else
 					{
-						// dialogWindow.resize(20, 100);
+						dialogWindow.resize(dialogWindow.getWidth() + newWidth - 2, dialogWindow.getHeight() + newHeight - 14);
+						dialogWindow.setPosition(dialogWindow.getOffsetX() - newX, dialogWindow.getOffsetY() - newY);
 					}
 				} else
 				{
@@ -552,7 +582,7 @@ public class Laptop extends GuiScreen implements System
 			app.restoreDefaultLayout();
 		}
 
-		window.setPosition((SCREEN_WIDTH - app.getWidth()) / 2, (SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - app.getHeight()) / 2);
+		window.setPosition((SCREEN_WIDTH - app.getWidth()) / 2, (SCREEN_HEIGHT - app.getHeight()) / 2 - TaskBar.BAR_HEIGHT);
 		addWindow(window);
 
 		Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
