@@ -85,6 +85,7 @@ public class Laptop extends GuiScreen implements System
 
 	private int currentWallpaper;
 	private int lastMouseX, lastMouseY;
+	private long lastClick;
 	private boolean dragging = false;
 	private boolean stretching = false;
 	private boolean[] stretchDirections = new boolean[] { false, false, false, false };
@@ -181,7 +182,7 @@ public class Laptop extends GuiScreen implements System
 		{
 			if (window != null)
 			{
-				window.content.markForLayoutUpdate();
+				window.getContent().markForLayoutUpdate();
 			}
 		}
 	}
@@ -319,38 +320,49 @@ public class Laptop extends GuiScreen implements System
 			if (window != null)
 			{
 				Window<Dialog> dialogWindow = window.getContent().getActiveDialog();
-				if (isMouseWithinWindow(mouseX, mouseY, window) || isMouseWithinWindow(mouseX, mouseY, dialogWindow))
+				if (this.isMouseWithinWindow(mouseX, mouseY, window) || this.isMouseWithinWindow(mouseX, mouseY, dialogWindow))
 				{
 					windows[i] = null;
 					updateWindowStack();
 					windows[0] = window;
 
-					windows[0].handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
+					window.handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
 
-					boolean left = mouseX < posX + window.getOffsetX() + 1;
-					boolean right = mouseX > posX + window.getOffsetX() + window.getWidth() - 2;
-					boolean top = mouseY < posY + window.getOffsetY() + 1;
-					boolean bottom = mouseY > posY + window.getOffsetY() + window.getHeight() - 2;
-
-					if (left || right || top || bottom)
+					Window stretchingWindow = this.isMouseWithinWindow(mouseX, mouseY, window) ? window : dialogWindow;
+					if (stretchingWindow != null)
 					{
-						this.stretching = true;
-						stretchDirections[0] = left;
-						stretchDirections[1] = right;
-						stretchDirections[2] = top;
-						stretchDirections[3] = bottom;
-						return;
+						boolean left = mouseX < posX + stretchingWindow.getOffsetX() + 1;
+						boolean right = mouseX > posX + stretchingWindow.getOffsetX() + stretchingWindow.getWidth() - 2;
+						boolean top = mouseY < posY + stretchingWindow.getOffsetY() + 1;
+						boolean bottom = mouseY > posY + stretchingWindow.getOffsetY() + stretchingWindow.getHeight() - 2;
+
+						if (left || right || top || bottom)
+						{
+							this.stretching = true;
+							this.stretchDirections[0] = left;
+							this.stretchDirections[1] = right;
+							this.stretchDirections[2] = top;
+							this.stretchDirections[3] = bottom;
+							return;
+						}
 					}
 
-					if (isMouseWithinWindowBar(mouseX, mouseY, dialogWindow))
+					if (this.isMouseWithinWindowBar(mouseX, mouseY, dialogWindow) && dialogWindow.isDecorated())
 					{
 						this.dragging = true;
 						return;
 					}
 
-					if (isMouseWithinWindowBar(mouseX, mouseY, window) && window.content.isDecorated() && dialogWindow == null)
+					if (this.isMouseWithinWindowBar(mouseX, mouseY, window) && window.isDecorated() && dialogWindow == null)
 					{
-						this.dragging = true;
+						if (window.isResizable() && window.isDecorated() && java.lang.System.currentTimeMillis() - this.lastClick <= 200)
+						{
+							window.setMaximized(!window.isMaximized());
+						} else
+						{
+							this.lastClick = java.lang.System.currentTimeMillis();
+							this.dragging = true;
+						}
 						return;
 					}
 					break;
@@ -476,15 +488,15 @@ public class Laptop extends GuiScreen implements System
 					{
 						newHeight = -deltaY;
 					}
-					
+
 					if (dialogWindow == null)
 					{
-						if(window.resize(window.getWidth() + newWidth - 2, window.getHeight() + newHeight - 14))
-						window.setPosition(window.getOffsetX() - newX, window.getOffsetY() - newY);
+						if (window.resize(window.getWidth() + newWidth - 2, window.getHeight() + newHeight - 14))
+							window.setPosition(window.getOffsetX() - newX, window.getOffsetY() - newY);
 					} else
 					{
-						if(dialogWindow.resize(dialogWindow.getWidth() + newWidth - 2, dialogWindow.getHeight() + newHeight - 14))
-						dialogWindow.setPosition(dialogWindow.getOffsetX() - newX, dialogWindow.getOffsetY() - newY);
+						if (dialogWindow.resize(dialogWindow.getWidth() + newWidth - 2, dialogWindow.getHeight() + newHeight - 14))
+							dialogWindow.setPosition(dialogWindow.getOffsetX() - newX, dialogWindow.getOffsetY() - newY);
 					}
 				} else
 				{
@@ -500,6 +512,7 @@ public class Laptop extends GuiScreen implements System
 		}
 		this.lastMouseX = mouseX;
 		this.lastMouseY = mouseY;
+
 	}
 
 	@Override
@@ -529,7 +542,7 @@ public class Laptop extends GuiScreen implements System
 		for (int i = 0; i < windows.length; i++)
 		{
 			Window window = windows[i];
-			if (window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
+			if (window != null && window.getContent() instanceof Application && ((Application) window.getContent()).getInfo() == info)
 			{
 				windows[i] = null;
 				updateWindowStack();
@@ -633,7 +646,7 @@ public class Laptop extends GuiScreen implements System
 			Window<Application> window = windows[i];
 			if (window != null)
 			{
-				if (window.content.getInfo().equals(app.getInfo()))
+				if (window.getContent().getInfo().equals(app.getInfo()))
 				{
 					if (app.isDirty())
 					{
@@ -704,16 +717,16 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX, posY, posX + SCREEN_WIDTH, posY + SCREEN_HEIGHT);
 	}
 
-	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, Window window)
+	private boolean isMouseWithinWindowBar(int mouseX, int mouseY, @Nullable Window window)
 	{
 		if (window == null)
 			return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.getOffsetX() + 1, posY + window.getOffsetY() + 1, posX + window.getOffsetX() + window.getWidth() - 13, posY + window.getOffsetY() + 11);
+		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.getOffsetX() + 1, posY + window.getOffsetY() + 1, posX + window.getOffsetX() + window.getWidth() - 23, posY + window.getOffsetY() + 12);
 	}
 
-	private boolean isMouseWithinWindow(int mouseX, int mouseY, Window window)
+	private boolean isMouseWithinWindow(int mouseX, int mouseY, @Nullable Window window)
 	{
 		if (window == null)
 			return false;
@@ -722,8 +735,10 @@ public class Laptop extends GuiScreen implements System
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.getOffsetX(), posY + window.getOffsetY(), posX + window.getOffsetX() + window.getWidth(), posY + window.getOffsetY() + window.getHeight());
 	}
 
-	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window)
+	public boolean isMouseWithinApp(int mouseX, int mouseY, @Nullable Window window)
 	{
+		if (window == null)
+			return false;
 		int posX = (width - SCREEN_WIDTH) / 2;
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.getOffsetX() + 1, posY + window.getOffsetY() + 13, posX + window.getOffsetX() + window.getWidth() - 1, posY + window.getOffsetY() + window.getHeight() - 1);
@@ -733,7 +748,7 @@ public class Laptop extends GuiScreen implements System
 	{
 		for (Window window : windows)
 		{
-			if (window != null && ((Application) window.content).getInfo() == info)
+			if (window != null && ((Application) window.getContent()).getInfo() == info)
 			{
 				return true;
 			}
