@@ -479,11 +479,11 @@ public class Laptop extends GuiScreen implements System
 					
 					if (dialogWindow == null)
 					{
-						window.resize(window.getWidth() + newWidth - 2, window.getHeight() + newHeight - 14);
+						if(window.resize(window.getWidth() + newWidth - 2, window.getHeight() + newHeight - 14))
 						window.setPosition(window.getOffsetX() - newX, window.getOffsetY() - newY);
 					} else
 					{
-						dialogWindow.resize(dialogWindow.getWidth() + newWidth - 2, dialogWindow.getHeight() + newHeight - 14);
+						if(dialogWindow.resize(dialogWindow.getWidth() + newWidth - 2, dialogWindow.getHeight() + newHeight - 14))
 						dialogWindow.setPosition(dialogWindow.getOffsetX() - newX, dialogWindow.getOffsetY() - newY);
 					}
 				} else
