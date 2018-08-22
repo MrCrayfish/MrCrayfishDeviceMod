@@ -37,7 +37,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Block> event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering blocks");
+            MrCrayfishDeviceMod.logger().info("Registering blocks");
             BLOCKS.forEach(block -> event.getRegistry().register(block));
         }
     }
@@ -55,7 +55,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Item> event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering items");
+            MrCrayfishDeviceMod.logger().info("Registering items");
             ITEMS.forEach(item -> event.getRegistry().register(item));
         }
     }
@@ -73,7 +73,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<IRecipe> event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering recipes");
+            MrCrayfishDeviceMod.logger().info("Registering recipes");
             RECIPES.forEach(recipe -> event.getRegistry().register(recipe));
         }
     }
@@ -84,7 +84,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(ModelRegistryEvent event)
         {
-            MrCrayfishDeviceMod.getLogger().info("Registering models");
+            MrCrayfishDeviceMod.logger().info("Registering models");
             Items.ITEMS.forEach(Models::registerRender);
         }
 

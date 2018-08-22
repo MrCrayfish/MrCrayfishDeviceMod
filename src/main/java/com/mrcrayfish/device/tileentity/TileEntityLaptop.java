@@ -148,7 +148,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 	public void openClose()
 	{
 		open = !open;
-		pipeline.setBoolean("open", open);
+		this.getPipeline().setBoolean("open", open);
 		sync();
 	}
 

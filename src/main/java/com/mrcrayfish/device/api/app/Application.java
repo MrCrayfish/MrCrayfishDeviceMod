@@ -21,8 +21,11 @@ import net.minecraft.util.math.MathHelper;
 
 /**
  * The abstract base class for creating applications.
- *
- * @author MrCrayfish
+ * 
+ * <br>
+ * </br>
+ * 
+ * <b>Author: MrCrayfish</b>
  */
 public abstract class Application extends Wrappable
 {
@@ -144,7 +147,7 @@ public abstract class Application extends Wrappable
 
 		if (!GLHelper.isScissorStackEmpty())
 		{
-			MrCrayfishDeviceMod.getLogger().error("ERROR: A component is not popping it's scissor!");
+			MrCrayfishDeviceMod.logger().error("ERROR: A component is not popping it's scissor!");
 		}
 		GLHelper.clearScissorStack();
 
