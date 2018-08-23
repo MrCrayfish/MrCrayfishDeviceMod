@@ -42,7 +42,7 @@ public abstract class Application extends Wrappable
 	private int maximumWidth = Laptop.SCREEN_WIDTH;
 	private int maximumHeight = Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT;
 
-	private final Layout defaultLayout = new Layout();
+	protected Layout defaultLayout = new Layout();
 	private Layout currentLayout;
 
 	/** If set to true, will update NBT data for Application */
@@ -99,7 +99,7 @@ public abstract class Application extends Wrappable
 	}
 
 	/**
-	 * Gets the current layout being displayed
+	 * Gets the current layout being displayed.
 	 * 
 	 * @return the current layout
 	 */
@@ -109,7 +109,17 @@ public abstract class Application extends Wrappable
 	}
 
 	/**
-	 * Restores the current layout to the default layout
+	 * Gets the default layout.
+	 * 
+	 * @return The default layout
+	 */
+	public Layout getDefaultLayout()
+	{
+		return defaultLayout;
+	}
+
+	/**
+	 * Restores the current layout to the default layout.
 	 */
 	public final void restoreDefaultLayout()
 	{
@@ -123,6 +133,21 @@ public abstract class Application extends Wrappable
 	 */
 	@Override
 	public abstract void init(@Nullable NBTTagCompound intent);
+
+	/**
+	 * Called when the content is resized.
+	 * 
+	 * @param width
+	 *            The new width of the window
+	 * @param height
+	 *            The new height of the window
+	 */
+	@Override
+	public void onResize(int width, int height)
+	{
+		defaultLayout.width = width;
+		defaultLayout.height = height;
+	}
 
 	@Override
 	public void onTick()
@@ -373,7 +398,7 @@ public abstract class Application extends Wrappable
 	{
 		this.pendingLayoutUpdate = false;
 	}
-	
+
 	/**
 	 * Gets the whether or not the content (application/dialog) should have the borders and title.
 	 * 
@@ -471,12 +496,12 @@ public abstract class Application extends Wrappable
 	{
 		return false;
 	}
-	
+
 	public void setDecorated(boolean decorated)
 	{
 		this.decorated = decorated;
 	}
-	
+
 	public void setResizable(boolean resizable)
 	{
 		this.resizable = resizable;
@@ -487,14 +512,14 @@ public abstract class Application extends Wrappable
 		this.minimumWidth = MathHelper.clamp(minimumWidth, 21, 362);
 		this.minimumHeight = MathHelper.clamp(minimumHeight, 1, 164);
 	}
-	
+
 	public void setMaximumSize(int maximumWidth, int maximumHeight)
 	{
-		if(maximumWidth < this.minimumWidth)
+		if (maximumWidth < this.minimumWidth)
 			maximumWidth = this.minimumWidth + 21;
-		if(maximumHeight < this.minimumHeight)
+		if (maximumHeight < this.minimumHeight)
 			maximumHeight = this.minimumHeight + 1;
-		
+
 		this.maximumWidth = MathHelper.clamp(maximumWidth, 21, 362);
 		this.maximumHeight = MathHelper.clamp(maximumHeight, 1, 164);
 	}

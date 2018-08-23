@@ -646,6 +646,7 @@ public abstract class Dialog extends Wrappable
 		{
 			this.app = app;
 			this.setTitle("Open File");
+			this.setResizable(true);
 		}
 
 		@Override
@@ -654,6 +655,8 @@ public abstract class Dialog extends Wrappable
 			super.init(intent);
 
 			main = new Layout(211, 126);
+
+			this.setMinimumSize(main.width, main.height);
 
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.openFolder(FileSystem.DIR_HOME);
@@ -700,6 +703,23 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(buttonNegative);
 
 			this.setLayout(main);
+		}
+
+		@Override
+		public void onResize(int width, int height)
+		{
+			super.onResize(width, height);
+
+			main.width = width;
+			main.height = height;
+
+			browser.resize(width, height);
+
+			buttonNegative.left = defaultLayout.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText) - Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText) - 29;
+			buttonNegative.top = defaultLayout.height - 20;
+
+			buttonPositive.left = defaultLayout.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText) - 15;
+			buttonPositive.top = defaultLayout.height - 20;
 		}
 
 		/**
@@ -804,6 +824,8 @@ public abstract class Dialog extends Wrappable
 			super.init(intent);
 			main = new Layout(211, 145);
 
+			setMinimumSize(main.width, main.height);
+
 			browser = new FileBrowser(0, 0, app, FileBrowser.Mode.BASIC);
 			browser.setFilter(file -> filter == null || filter.test(file) || file.isFolder());
 			browser.openFolder(path);
@@ -878,6 +900,25 @@ public abstract class Dialog extends Wrappable
 			main.addComponent(textFieldFileName);
 
 			this.setLayout(main);
+		}
+
+		@Override
+		public void onResize(int width, int height)
+		{
+			super.onResize(width, height);
+
+			main.width = width;
+			main.height = height;
+			browser.resize(width, height - 19);
+			
+			textFieldFileName.setWidth(width - 31);
+			textFieldFileName.top = height - 40;
+			
+			buttonNegative.left = defaultLayout.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText) - Minecraft.getMinecraft().fontRenderer.getStringWidth(negativeText) - 29;
+			buttonNegative.top = defaultLayout.height - 20;
+
+			buttonPositive.left = defaultLayout.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(positiveText) - 15;
+			buttonPositive.top = defaultLayout.height - 20;
 		}
 
 		/**
