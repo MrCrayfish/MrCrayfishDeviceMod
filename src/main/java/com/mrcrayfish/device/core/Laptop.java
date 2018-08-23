@@ -328,8 +328,8 @@ public class Laptop extends GuiScreen implements System
 
 					window.handleMouseClick(this, posX, posY, mouseX, mouseY, mouseButton);
 
-					Window stretchingWindow = this.isMouseWithinWindow(mouseX, mouseY, window) ? window : dialogWindow;
-					if (stretchingWindow != null)
+					Window stretchingWindow = dialogWindow == null ? window : dialogWindow;
+					if (this.isMouseWithinWindow(mouseX, mouseY, stretchingWindow) && stretchingWindow.isDecorated() && !stretchingWindow.isMaximized())
 					{
 						boolean left = mouseX < posX + stretchingWindow.getOffsetX() + 1;
 						boolean right = mouseX > posX + stretchingWindow.getOffsetX() + stretchingWindow.getWidth() - 2;
@@ -349,7 +349,14 @@ public class Laptop extends GuiScreen implements System
 
 					if (this.isMouseWithinWindowBar(mouseX, mouseY, dialogWindow) && dialogWindow.isDecorated())
 					{
-						this.dragging = true;
+						if (dialogWindow.isResizable() && dialogWindow.isDecorated() && java.lang.System.currentTimeMillis() - this.lastClick <= 200)
+						{
+							dialogWindow.setMaximized(!dialogWindow.isMaximized());
+						} else
+						{
+							this.lastClick = java.lang.System.currentTimeMillis();
+							this.dragging = true;
+						}
 						return;
 					}
 
