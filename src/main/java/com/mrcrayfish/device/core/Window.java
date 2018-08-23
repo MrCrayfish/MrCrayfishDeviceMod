@@ -251,35 +251,35 @@ public class Window<T extends Wrappable>
 
 	protected void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
-		if (btnMaximize.isMouseOver())
+		if (dialogWindow == null)
 		{
-			if (content.isResizable())
+			if (btnMaximize.isMouseOver())
 			{
-				this.setMaximized(!this.maximized);
-			}
-		}
-
-		if (btnClose.isMouseOver())
-		{
-			if (content instanceof Application)
-			{
-				gui.closeApplication(((Application) content).getInfo());
-				return;
+				if (content.isResizable())
+				{
+					this.setMaximized(!this.maximized);
+				}
 			}
 
-			if (parent != null)
+			if (btnClose.isMouseOver())
 			{
-				parent.closeDialog();
-			}
-		}
+				if (content instanceof Application)
+				{
+					gui.closeApplication(((Application) content).getInfo());
+					return;
+				}
 
-		if (dialogWindow != null)
+				if (parent != null)
+				{
+					parent.closeDialog();
+				}
+			}
+
+			content.handleMouseClick(mouseX, mouseY, mouseButton);
+		} else
 		{
 			dialogWindow.handleMouseClick(gui, x, y, mouseX, mouseY, mouseButton);
-			return;
 		}
-
-		content.handleMouseClick(mouseX, mouseY, mouseButton);
 	}
 
 	protected void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
@@ -329,6 +329,11 @@ public class Window<T extends Wrappable>
 		btnMaximize.y = y + offsetY + 1;
 		btnClose.x = x + offsetX + width - 12;
 		btnClose.y = y + offsetY + 1;
+
+		if (dialogWindow != null)
+		{
+			dialogWindow.updateComponents(x, y);
+		}
 	}
 
 	public void openDialog(Dialog dialog)
@@ -338,8 +343,9 @@ public class Window<T extends Wrappable>
 			dialogWindow.openDialog(dialog);
 		} else
 		{
-			dialogWindow = new Window(dialog, null);
-			dialogWindow.init(0, 0, null);
+			dialogWindow = new Window(dialog, laptop);
+			dialogWindow.init((laptop.width - Laptop.SCREEN_WIDTH) / 2, (laptop.height - Laptop.SCREEN_HEIGHT) / 2, null);
+			dialogWindow.setPosition((Laptop.SCREEN_WIDTH - dialog.getWidth()) / 2, (Laptop.SCREEN_HEIGHT - dialog.getHeight()) / 2 - TaskBar.BAR_HEIGHT);
 			dialogWindow.setParent(this);
 		}
 	}
@@ -405,17 +411,17 @@ public class Window<T extends Wrappable>
 	{
 		return this.offsetY;
 	}
-	
+
 	public boolean isResizable()
 	{
 		return content.isResizable();
 	}
-	
+
 	public boolean isDecorated()
 	{
 		return content.isDecorated();
 	}
-	
+
 	public boolean isMaximized()
 	{
 		return maximized;
