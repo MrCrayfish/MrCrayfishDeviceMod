@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.utils.RenderUtil;
+import com.mrcrayfish.device.gui.GuiButtonMaximize;
 import com.mrcrayfish.device.gui.GuiButtonWindow;
 
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,7 @@ public class Window<T extends Wrappable>
 	protected Window<Dialog> dialogWindow = null;
 	protected Window<? extends Wrappable> parent = null;
 
-	protected GuiButton btnMaximize;
+	protected GuiButtonMaximize btnMaximize;
 	protected GuiButton btnClose;
 
 	public Window(T wrappable, Laptop laptop)
@@ -65,7 +66,7 @@ public class Window<T extends Wrappable>
 
 	protected void init(int x, int y, @Nullable NBTTagCompound intent)
 	{
-		btnMaximize = new GuiButtonWindow(1, x + offsetX + width - 12 * 2 + 1, y + offsetY + 1);
+		btnMaximize = new GuiButtonMaximize(1, x + offsetX + width - 12 * 2 + 1, y + offsetY + 1);
 		btnClose = new GuiButtonWindow(2, x + offsetX + width - 12, y + offsetY + 1);
 		content.init(intent);
 	}
@@ -225,7 +226,7 @@ public class Window<T extends Wrappable>
 	{
 		int posX = (laptop.width - Laptop.SCREEN_WIDTH) / 2;
 		int posY = (laptop.height - Laptop.SCREEN_HEIGHT) / 2;
-
+		
 		if (!this.maximized)
 		{
 			smallOffsetX = offsetX;
@@ -244,6 +245,7 @@ public class Window<T extends Wrappable>
 			offsetY = smallOffsetY;
 		}
 		this.maximized = maximized;
+		this.btnMaximize.setMaximized(this.maximized);
 
 		this.resize(width, height);
 		this.updateComponents(posX, posY);
