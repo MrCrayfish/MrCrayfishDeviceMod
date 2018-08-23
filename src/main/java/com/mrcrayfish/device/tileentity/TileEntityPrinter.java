@@ -43,7 +43,7 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
             {
                 if(remainingPrintTime % 20 == 0 || state == LOADING_PAPER)
                 {
-                    pipeline.setInteger("remainingPrintTime", remainingPrintTime);
+                	this.getPipeline().setInteger("remainingPrintTime", remainingPrintTime);
                     sync();
                     if(remainingPrintTime != 0 && state == PRINTING)
                     {
@@ -175,9 +175,9 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
         }
         totalPrintTime = remainingPrintTime;
 
-        pipeline.setInteger("state", state.ordinal());
-        pipeline.setInteger("totalPrintTime", totalPrintTime);
-        pipeline.setInteger("remainingPrintTime", remainingPrintTime);
+        this.getPipeline().setInteger("state", state.ordinal());
+        this.getPipeline().setInteger("totalPrintTime", totalPrintTime);
+        this.getPipeline().setInteger("remainingPrintTime", remainingPrintTime);
         sync();
     }
 
@@ -194,8 +194,8 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
         currentPrint = print;
         paperCount--;
 
-        pipeline.setInteger("paperCount", paperCount);
-        pipeline.setTag("currentPrint", IPrint.writeToTag(currentPrint));
+        this.getPipeline().setInteger("paperCount", paperCount);
+        this.getPipeline().setTag("currentPrint", IPrint.writeToTag(currentPrint));
         sync();
     }
 
@@ -234,7 +234,7 @@ public class TileEntityPrinter extends TileEntityNetworkDevice.Colored
                 stack.setCount(Math.max(0, paperCount - 64));
                 paperCount = Math.min(64, paperCount);
             }
-            pipeline.setInteger("paperCount", paperCount);
+            this.getPipeline().setInteger("paperCount", paperCount);
             sync();
             world.playSound(null, pos, SoundEvents.ENTITY_ITEMFRAME_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
             return true;

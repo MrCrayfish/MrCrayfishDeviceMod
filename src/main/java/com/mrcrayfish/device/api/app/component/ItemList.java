@@ -480,6 +480,16 @@ public class ItemList<E> extends Component implements Iterable<E>
 			layoutLoading.setVisible(loading);
 		}
 	}
+	
+	public void setWidth(int width)
+	{
+		this.width = width;
+	}
+	
+	public void setVisibleItems(int visibleItems)
+	{
+		this.visibleItems = visibleItems;
+	}
 
 	/**
 	 * Sets the sorter for this item list and updates straight away

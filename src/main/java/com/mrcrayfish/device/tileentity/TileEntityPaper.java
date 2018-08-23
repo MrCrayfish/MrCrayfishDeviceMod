@@ -24,7 +24,7 @@ public class TileEntityPaper extends TileEntitySync
         {
             rotation = 0;
         }
-        pipeline.setByte("rotation", rotation);
+        this.getPipeline().setByte("rotation", rotation);
         sync();
         playSound(SoundEvents.ENTITY_ITEMFRAME_ROTATE_ITEM);
     }
