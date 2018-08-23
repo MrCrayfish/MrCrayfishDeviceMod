@@ -12,6 +12,7 @@ import com.mrcrayfish.device.programs.gitweb.layout.TextLayout;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -78,8 +79,14 @@ public class ApplicationGitWeb extends Application
         btnSettings.setClickListener((mouseX, mouseY, mouseButton) -> this.setCurrentLayout(layoutPref));
         layoutBrowser.addComponent(btnSettings);
 
+        String site = "welcome.official";
+        
+        if(intent != null && intent.hasKey("website", Constants.NBT.TAG_STRING)) {
+        	site = intent.getString("website");
+        }
+        
         webFrame = new GitWebFrame(this, 0, 21, 362, 143);
-        webFrame.loadWebsite("welcome.official");
+        webFrame.loadWebsite(site);
         webFrame.setLoadingCallback((s, success) ->
         {
             spinnerLoading.setVisible(true);
