@@ -34,7 +34,7 @@ public class ApplicationTest extends Application
 		{
 			if (mouseButton == 0)
 			{
-				openDialog(new Dialog.Message("Test"));
+				openDialog(new Dialog.Message("est ultricies integer quis auctor elit sed vulputate mi sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum varius sit amet"));
 			}
 		});
 		super.addComponent(button1);

@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.io.File;
 import com.mrcrayfish.device.core.Laptop;
+import com.mrcrayfish.device.core.TaskBar;
 import com.mrcrayfish.device.core.Window;
 import com.mrcrayfish.device.core.Wrappable;
 import com.mrcrayfish.device.core.io.FileSystem;
@@ -35,6 +36,11 @@ public abstract class Application extends Wrappable
 	private int width, height;
 	private boolean resizable = false;
 	private boolean decorated = true;
+
+	private int minimumWidth = 21;
+	private int minimumHeight = 1;
+	private int maximumWidth = Laptop.SCREEN_WIDTH;
+	private int maximumHeight = Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT;
 
 	private final Layout defaultLayout = new Layout();
 	private Layout currentLayout;
@@ -474,6 +480,23 @@ public abstract class Application extends Wrappable
 	public void setResizable(boolean resizable)
 	{
 		this.resizable = resizable;
+	}
+
+	public void setMinimumSize(int minimumWidth, int minimumHeight)
+	{
+		this.minimumWidth = MathHelper.clamp(minimumWidth, 21, 362);
+		this.minimumHeight = MathHelper.clamp(minimumHeight, 1, 164);
+	}
+	
+	public void setMaximumSize(int maximumWidth, int maximumHeight)
+	{
+		if(maximumWidth < this.minimumWidth)
+			maximumWidth = this.minimumWidth + 21;
+		if(maximumHeight < this.minimumHeight)
+			maximumHeight = this.minimumHeight + 1;
+		
+		this.maximumWidth = MathHelper.clamp(maximumWidth, 21, 362);
+		this.maximumHeight = MathHelper.clamp(maximumHeight, 1, 164);
 	}
 
 	/**
