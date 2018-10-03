@@ -31,9 +31,9 @@ public class Window<T extends Wrappable>
 	private int smallWidth, smallHeight;
 	private boolean maximized;
 
-	protected final Laptop laptop;
-	protected Window<Dialog> dialogWindow = null;
-	protected Window<? extends Wrappable> parent = null;
+	final Laptop laptop;
+	Window<Dialog> dialogWindow = null;
+	Window<? extends Wrappable> parent = null;
 
 	protected GuiButton btnMaximize;
 	protected GuiButton btnClose;
@@ -45,7 +45,7 @@ public class Window<T extends Wrappable>
 		wrappable.setWindow(this);
 	}
 
-	protected void setWidth(int width)
+	void setWidth(int width)
 	{
 		this.width = width + 2;
 		if (this.width > Laptop.SCREEN_WIDTH - offsetX)
@@ -54,7 +54,7 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	protected void setHeight(int height)
+	void setHeight(int height)
 	{
 		this.height = height + 14;
 		if (this.height > 178 - offsetY)
@@ -181,16 +181,11 @@ public class Window<T extends Wrappable>
 	public boolean resize(int width, int height)
 	{
 		boolean result = content.resize(width, height);
-		boolean properSize = !(content.getWidth() != width || content.getHeight() != height);
 		content.onResize(content.getWidth(), content.getHeight());
-		if (properSize)
-		{
-			setWidth(content.getWidth());
-			setHeight(content.getHeight());
-			updateComponents((laptop.width - Laptop.SCREEN_WIDTH) / 2, (laptop.height - Laptop.SCREEN_HEIGHT) / 2);
-		}
-
-		return result && properSize;
+		setWidth(content.getWidth());
+		setHeight(content.getHeight());
+		updateComponents((laptop.width - Laptop.SCREEN_WIDTH) / 2, (laptop.height - Laptop.SCREEN_HEIGHT) / 2);
+		return result;
 	}
 
 	public void setPosition(int x, int y)
@@ -249,7 +244,7 @@ public class Window<T extends Wrappable>
 		this.updateComponents(posX, posY);
 	}
 
-	protected void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
+	void handleMouseClick(Laptop gui, int x, int y, int mouseX, int mouseY, int mouseButton)
 	{
 		if (btnMaximize.isMouseOver())
 		{
@@ -282,7 +277,7 @@ public class Window<T extends Wrappable>
 		content.handleMouseClick(mouseX, mouseY, mouseButton);
 	}
 
-	protected void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
+	void handleMouseDrag(int mouseX, int mouseY, int mouseButton)
 	{
 		if (dialogWindow != null)
 		{
@@ -292,7 +287,7 @@ public class Window<T extends Wrappable>
 		content.handleMouseDrag(mouseX, mouseY, mouseButton);
 	}
 
-	protected void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
+	void handleMouseRelease(int mouseX, int mouseY, int mouseButton)
 	{
 		if (dialogWindow != null)
 		{
@@ -302,7 +297,7 @@ public class Window<T extends Wrappable>
 		content.handleMouseRelease(mouseX, mouseY, mouseButton);
 	}
 
-	protected void handleMouseScroll(int mouseX, int mouseY, boolean direction)
+	void handleMouseScroll(int mouseX, int mouseY, boolean direction)
 	{
 		if (dialogWindow != null)
 		{
