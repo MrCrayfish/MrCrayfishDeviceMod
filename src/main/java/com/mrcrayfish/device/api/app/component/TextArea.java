@@ -1115,16 +1115,6 @@ public class TextArea extends Component
 		if(maxLines < 0) maxLines = 0;
 		this.maxLines = maxLines;
 	}
-	
-	public void setWidth(int width)
-	{
-		this.width = width;
-	}
-	
-	public void setHeight(int height)
-	{
-		this.height = height;
-	}
 
 	public void setKeyListener(KeyListener keyListener)
 	{

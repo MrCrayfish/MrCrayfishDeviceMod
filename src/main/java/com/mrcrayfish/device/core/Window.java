@@ -57,7 +57,7 @@ public class Window<T extends Wrappable>
 	protected void setHeight(int height)
 	{
 		this.height = height + 14;
-		if (this.height > Laptop.SCREEN_HEIGHT - TaskBar.BAR_HEIGHT - offsetY)
+		if (this.height > 178 - offsetY)
 		{
 			this.height = 178 - offsetY;
 		}
@@ -181,8 +181,8 @@ public class Window<T extends Wrappable>
 	public boolean resize(int width, int height)
 	{
 		boolean result = content.resize(width, height);
-		boolean properSize = content.getWidth() != width || content.getHeight() != height;
-		if (this.width - 2 != width || this.height - 14 != height)
+		boolean properSize = !(content.getWidth() != width || content.getHeight() != height);
+		if (properSize || this.maximized)
 		{
 			content.onResize(content.getWidth(), content.getHeight());
 			setWidth(content.getWidth());
@@ -190,7 +190,7 @@ public class Window<T extends Wrappable>
 			updateComponents((laptop.width - Laptop.SCREEN_WIDTH) / 2, (laptop.height - Laptop.SCREEN_HEIGHT) / 2);
 		}
 
-		return result && !(this.width - 2 != width || this.height - 14 != height);
+		return result && properSize || this.maximized;
 	}
 
 	public void setPosition(int x, int y)
