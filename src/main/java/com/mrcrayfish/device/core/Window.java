@@ -24,7 +24,7 @@ public class Window<T extends Wrappable>
 
 	public static final int Color_WINDOW_DARK = new Color(0F, 0F, 0F, 0.25F).getRGB();
 
-	private T content;
+	protected T content;
 	private int width, height;
 	private int offsetX, offsetY;
 	private int smallOffsetX, smallOffsetY;
@@ -63,7 +63,7 @@ public class Window<T extends Wrappable>
 		}
 	}
 
-	protected void init(int x, int y, @Nullable NBTTagCompound intent)
+	void init(int x, int y, @Nullable NBTTagCompound intent)
 	{
 		btnMaximize = new GuiButtonWindow(1, x + offsetX + width - 12 * 2 + 1, y + offsetY + 1);
 		btnClose = new GuiButtonWindow(2, x + offsetX + width - 12, y + offsetY + 1);
@@ -182,15 +182,15 @@ public class Window<T extends Wrappable>
 	{
 		boolean result = content.resize(width, height);
 		boolean properSize = !(content.getWidth() != width || content.getHeight() != height);
-		if (properSize || this.maximized)
+		content.onResize(content.getWidth(), content.getHeight());
+		if (properSize)
 		{
-			content.onResize(content.getWidth(), content.getHeight());
 			setWidth(content.getWidth());
 			setHeight(content.getHeight());
 			updateComponents((laptop.width - Laptop.SCREEN_WIDTH) / 2, (laptop.height - Laptop.SCREEN_HEIGHT) / 2);
 		}
 
-		return result && properSize || this.maximized;
+		return result && properSize;
 	}
 
 	public void setPosition(int x, int y)
@@ -404,20 +404,5 @@ public class Window<T extends Wrappable>
 	public int getOffsetY()
 	{
 		return this.offsetY;
-	}
-	
-	public boolean isResizable()
-	{
-		return content.isResizable();
-	}
-	
-	public boolean isDecorated()
-	{
-		return content.isDecorated();
-	}
-	
-	public boolean isMaximized()
-	{
-		return maximized;
 	}
 }
