@@ -27,21 +27,21 @@ public class PrintingManager
             classPrint.getConstructor().newInstance();
             if(MrCrayfishDeviceMod.proxy.registerPrint(identifier, classPrint))
             {
-                MrCrayfishDeviceMod.logger().info("Registering print '" + classPrint.getName() + "'");
+                MrCrayfishDeviceMod.getLogger().info("Registering print '" + classPrint.getName() + "'");
                 registeredPrints.put(identifier.toString(), classPrint);
             }
             else
             {
-                MrCrayfishDeviceMod.logger().error("The print '" + classPrint.getName() + "' could not be registered due to a critical error!");
+                MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' could not be registered due to a critical error!");
             }
         }
         catch(NoSuchMethodException e)
         {
-            MrCrayfishDeviceMod.logger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
+            MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
         }
         catch(InstantiationException | IllegalAccessException | InvocationTargetException e)
         {
-            MrCrayfishDeviceMod.logger().error("The print '" + classPrint.getName() + "' could not be registered due to a critical error!");
+            MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' could not be registered due to a critical error!");
         }
     }
 

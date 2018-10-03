@@ -1,6 +1,5 @@
 package com.mrcrayfish.device.tileentity;
 
-import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.util.IColored;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,12 +13,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
- * The tile entity that can be used as a device that can connect to the {@link Laptop}.
- * 
- * <br>
- * </br>
- * 
- * <b>Author: MrCrayfish</b>
+ * Author: MrCrayfish
  */
 public abstract class TileEntityDevice extends TileEntitySync implements ITickable
 {
@@ -103,14 +97,6 @@ public abstract class TileEntityDevice extends TileEntitySync implements ITickab
         return tag;
     }
 
-    /**
-     * The same as {@link TileEntityDevice}, but handles {@link IColored}.
-     * 
-     * <br>
-     * </br>
-     * 
-     * <b>Author: MrCrayfish</b>
-     */
     public static abstract class Colored extends TileEntityDevice implements IColored
     {
         private EnumDyeColor color = EnumDyeColor.RED;

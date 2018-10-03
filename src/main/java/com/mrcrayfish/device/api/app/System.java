@@ -9,12 +9,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
- * An abstract system that can handle apps.
- * 
- * <br>
- * </br>
- * 
- * <b>Author: MrCrayfish</b>
+ * Author: MrCrayfish
  */
 public interface System
 {
@@ -55,7 +50,7 @@ public interface System
      * @param info the app info instance of the application to be opened
      * @param intentTag the tag to pass data to the initialization of an application
      */
-    void openApplication(AppInfo info, @Nullable NBTTagCompound intentTag);
+    void openApplication(AppInfo info, NBTTagCompound intentTag);
 
     /**
      * Opens the specified application with a file

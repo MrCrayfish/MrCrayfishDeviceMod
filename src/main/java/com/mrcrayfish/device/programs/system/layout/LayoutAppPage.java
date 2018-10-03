@@ -216,7 +216,7 @@ public class LayoutAppPage extends Layout
         catch (Throwable throwable1)
         {
             Throwable throwable = throwable1.getCause();
-            MrCrayfishDeviceMod.logger().error("Couldn't open link: {}", (Object)(throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
+            MrCrayfishDeviceMod.getLogger().error("Couldn't open link: {}", (Object)(throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
         }
     }
 }

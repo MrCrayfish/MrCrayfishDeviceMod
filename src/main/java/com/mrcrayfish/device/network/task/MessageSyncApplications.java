@@ -53,7 +53,7 @@ public class MessageSyncApplications implements IMessage, IMessageHandler<Messag
             }
             else
             {
-                MrCrayfishDeviceMod.logger().error("Missing application '" + appId + "'");
+                MrCrayfishDeviceMod.getLogger().error("Missing application '" + appId + "'");
             }
         }
         allowedApps = builder.build();
