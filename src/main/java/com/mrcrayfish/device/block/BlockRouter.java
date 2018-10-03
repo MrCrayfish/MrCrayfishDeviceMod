@@ -19,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -96,7 +95,7 @@ public class BlockRouter extends BlockDevice.Colored
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
-        return state.withProperty(FACING, facing.getAxis() == Axis.Y ? placer.getHorizontalFacing() : facing.getOpposite()).withProperty(VERTICAL, facing.getAxis() != EnumFacing.Axis.Y);
+        return state.withProperty(VERTICAL, facing.getHorizontalIndex() != -1);
     }
 
     @Override
