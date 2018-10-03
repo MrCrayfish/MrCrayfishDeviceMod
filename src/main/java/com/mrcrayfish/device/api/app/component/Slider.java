@@ -104,7 +104,7 @@ public class Slider extends Component
 		this.prevSliderX = this.newSliderX;
 		if(releaseListener != null)
 		{
-			releaseListener.onRelease(mouseX, mouseY, 0);
+			releaseListener.onRelease(this, 0);
 		}
 	}
 	
