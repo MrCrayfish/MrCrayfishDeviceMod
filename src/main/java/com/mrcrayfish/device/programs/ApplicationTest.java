@@ -2,17 +2,12 @@ package com.mrcrayfish.device.programs;
 
 import javax.annotation.Nullable;
 
-import com.mrcrayfish.device.Reference;
-import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
-import com.mrcrayfish.device.api.app.Layout;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.core.Laptop;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextFormatting;
 
 /**
  * Author: MrCrayfish
@@ -22,8 +17,6 @@ public class ApplicationTest extends Application
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
 	{
-		defaultLayout = new Layout();
-
 		Button button = new Button(5, 5, Icons.PRINTER);
 		button.setClickListener((mouseX, mouseY, mouseButton) ->
 		{
@@ -75,20 +68,7 @@ public class ApplicationTest extends Application
 			}
 		});
 		super.addComponent(button4);
-
-		Button button5 = new Button(130, 5, Icons.EARTH);
-		button5.setToolTip("Open GitWeb", "Open " + TextFormatting.AQUA + "thegreatwiki.official" + TextFormatting.RESET + " in GitWeb");
-		button5.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			if (mouseButton == 0)
-			{
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setString("website", "thegreatwiki.official");
-				Laptop.getSystem().openApplication(ApplicationManager.getApplication(Reference.MOD_ID + ".gitweb"), nbt);
-			}
-		});
-		super.addComponent(button5);
-
+		
 		this.setResizable(true);
 	}
 

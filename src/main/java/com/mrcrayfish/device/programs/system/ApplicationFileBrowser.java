@@ -26,7 +26,7 @@ public class ApplicationFileBrowser extends SystemApplication
 	@Override
 	public void init(@Nullable NBTTagCompound intent)
 	{
-		this.defaultLayout = new Layout(211, 145);
+		this.defaultLayout = new Layout();
 		
 		browser = new FileBrowser(0, 0, this, FileBrowser.Mode.FULL);
 		browser.openFolder(FileSystem.DIR_HOME);
