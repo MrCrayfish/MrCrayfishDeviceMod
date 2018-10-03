@@ -75,10 +75,18 @@ public class ApplicationTest extends Application
 	@Override
 	public void load(NBTTagCompound tagCompound)
 	{
+
 	}
 
 	@Override
 	public void save(NBTTagCompound tagCompound)
 	{
+
+	}
+	
+	@Override
+	public void onResize(int width, int height)
+	{
+		System.out.println("Resized to " + width + "," + height);
 	}
 }
