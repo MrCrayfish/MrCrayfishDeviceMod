@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 
 public class TaskUpdateApplicationData extends Task
 {
-    private int x, y, z;
+    private BlockPos pos;
     private String appId;
     private NBTTagCompound data;
 
@@ -21,12 +21,10 @@ public class TaskUpdateApplicationData extends Task
         super("update_application_data");
     }
 
-    public TaskUpdateApplicationData(int x, int y, int z, @Nonnull String appId, @Nonnull NBTTagCompound data)
+    public TaskUpdateApplicationData(BlockPos pos, String appId, NBTTagCompound data)
     {
         this();
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
         this.appId = appId;
         this.data = data;
     }
@@ -34,9 +32,7 @@ public class TaskUpdateApplicationData extends Task
     @Override
     public void prepareRequest(NBTTagCompound tag)
     {
-        tag.setInteger("posX", this.x);
-        tag.setInteger("posY", this.y);
-        tag.setInteger("posZ", this.z);
+        tag.setLong("pos", this.pos.toLong());
         tag.setString("appId", this.appId);
         tag.setTag("appData", this.data);
     }
@@ -44,7 +40,8 @@ public class TaskUpdateApplicationData extends Task
     @Override
     public void processRequest(NBTTagCompound tag, World world, EntityPlayer player)
     {
-        TileEntity tileEntity = world.getTileEntity(new BlockPos(tag.getInteger("posX"), tag.getInteger("posY"), tag.getInteger("posZ")));
+    	BlockPos pos = BlockPos.fromLong(tag.getLong("pos"));
+        TileEntity tileEntity = world.getTileEntity(pos);
         if(tileEntity instanceof TileEntityLaptop)
         {
             TileEntityLaptop laptop = (TileEntityLaptop) tileEntity;

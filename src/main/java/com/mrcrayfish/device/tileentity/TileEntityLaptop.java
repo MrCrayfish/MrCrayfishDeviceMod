@@ -119,6 +119,7 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 		NBTTagCompound tag = super.writeSyncTag();
 		tag.setBoolean("open", open);
 		tag.setTag("system_data", getSystemData());
+		tag.setTag("application_data", getApplicationData());
 
 		if(getFileSystem().getAttachedDrive() != null)
 		{
@@ -164,25 +165,24 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 
 	public NBTTagCompound getSystemData()
 	{
-		if(systemData == null)
-		{
-			systemData = new NBTTagCompound();
-		}
-		return systemData;
+		return systemData != null ? systemData : new NBTTagCompound();
 	}
 
 	public FileSystem getFileSystem()
 	{
-		if(fileSystem == null)
-		{
-			fileSystem = new FileSystem(this, new NBTTagCompound());
-		}
-		return fileSystem;
+		return fileSystem != null ? fileSystem : new FileSystem(this, new NBTTagCompound());
+	}
+
+	public void setApplicationData(NBTTagCompound applicationData)
+	{
+		this.applicationData = applicationData;
+		markDirty();
+		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
 
 	public void setApplicationData(String appId, NBTTagCompound applicationData)
 	{
-		this.applicationData = applicationData;
+		this.applicationData.setTag(appId, applicationData);
 		markDirty();
 		TileEntityUtil.markBlockForUpdate(world, pos);
 	}
