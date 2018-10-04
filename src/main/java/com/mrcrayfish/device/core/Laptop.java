@@ -502,7 +502,7 @@ public class Laptop extends GuiScreen implements System
 
 		Window<Application> window = new Window<>(app, this);
 		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
-
+		
 		if(appData.hasKey(app.getInfo().getFormattedId()))
 		{
 			app.load(appData.getCompoundTag(app.getInfo().getFormattedId()));
@@ -576,7 +576,7 @@ public class Laptop extends GuiScreen implements System
 						app.save(container);
 						app.clean();
 						appData.setTag(app.getInfo().getFormattedId(), container);
-						TaskManager.sendTask(new TaskUpdateApplicationData(pos.getX(), pos.getY(), pos.getZ(), app.getInfo().getFormattedId(), container));
+						TaskManager.sendTask(new TaskUpdateApplicationData(pos, app.getInfo().getFormattedId(), container));
 					}
 
 					if(app instanceof SystemApplication)
