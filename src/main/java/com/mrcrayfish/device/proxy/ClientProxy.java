@@ -112,7 +112,7 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
                     BufferedImage icon = TextureUtil.readBufferedImage(input);
                     if(icon.getWidth() != ICON_SIZE || icon.getHeight() != ICON_SIZE)
                     {
-                        MrCrayfishDeviceMod.getLogger().error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
+                        MrCrayfishDeviceMod.logger().error("Incorrect icon size for " + identifier.toString() + " (Must be 14 by 14 pixels)");
                         continue;
                     }
                     int iconU = (index % 16) * ICON_SIZE;
@@ -123,12 +123,12 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
                 }
                 else
                 {
-                    MrCrayfishDeviceMod.getLogger().error("Icon for application '" + identifier.toString() +  "' could not be found at '" + path + "'");
+                    MrCrayfishDeviceMod.logger().error("Icon for application '" + identifier.toString() +  "' could not be found at '" + path + "'");
                 }
             }
             catch(Exception e)
             {
-                MrCrayfishDeviceMod.getLogger().error("Unable to load icon for " + identifier.toString());
+                MrCrayfishDeviceMod.logger().error("Unable to load icon for " + identifier.toString());
             }
         }
 
@@ -205,14 +205,14 @@ public class ClientProxy extends CommonProxy implements IResourceManagerReloadLi
             }
             catch(InstantiationException e)
             {
-                MrCrayfishDeviceMod.getLogger().error("The print renderer '" + classRenderer.getName() + "' is missing an empty constructor and could not be registered!");
+                MrCrayfishDeviceMod.logger().error("The print renderer '" + classRenderer.getName() + "' is missing an empty constructor and could not be registered!");
                 return false;
             }
             return true;
         }
         catch(Exception e)
         {
-            MrCrayfishDeviceMod.getLogger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
+            MrCrayfishDeviceMod.logger().error("The print '" + classPrint.getName() + "' is missing an empty constructor and could not be registered!");
         }
         return false;
     }

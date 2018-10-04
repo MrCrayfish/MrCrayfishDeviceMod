@@ -34,7 +34,7 @@ public final class TaskManager
 			Constructor<? extends Task> constructor = clazz.getDeclaredConstructor();
 			constructor.setAccessible(true);
 			Task task = constructor.newInstance();
-			MrCrayfishDeviceMod.getLogger().info("Registering task '" + task.getName() + "'");
+			MrCrayfishDeviceMod.logger().info("Registering task '" + task.getName() + "'");
 			get().registeredRequests.put(task.getName(), task);
 		} 
 		catch (InstantiationException e) 

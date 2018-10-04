@@ -84,7 +84,7 @@ public class TileEntityRouter extends TileEntityDevice.Colored
 
     public void syncDevicesToClient()
     {
-        pipeline.setTag("router", getRouter().toTag(true));
+        this.getPipeline().setTag("router", getRouter().toTag(true));
         sync();
     }
 

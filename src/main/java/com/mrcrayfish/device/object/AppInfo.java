@@ -217,7 +217,7 @@ public class AppInfo
 			}
 			catch(JsonParseException e)
 			{
-				MrCrayfishDeviceMod.getLogger().error("Malformed app info json for '" + info.getFormattedId() + "'");
+				MrCrayfishDeviceMod.logger().error("Malformed app info json for '" + info.getFormattedId() + "'");
 			}
 
 			return info;

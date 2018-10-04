@@ -155,6 +155,11 @@ public class Text extends Component
 	{
 		this.wordListener = wordListener;
 	}
+	
+	public void setWidth(int width)
+	{
+		this.width = width;
+	}
 
 	public interface WordListener
 	{

@@ -8,9 +8,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 
-
 /**
- * Author: MrCrayfish
+ * {@link MrCrayfishDeviceMod}'s configuration handler class. Nothing special going on here really...
+ * <br>
+ * </br>
+ * 
+ * <b>Author: MrCrayfish</b>
  */
 public class DeviceConfig
 {
