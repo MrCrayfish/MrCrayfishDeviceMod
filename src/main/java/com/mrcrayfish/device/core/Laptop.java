@@ -502,8 +502,6 @@ public class Laptop extends GuiScreen implements System
 
 		Window<Application> window = new Window<>(app, this);
 		window.init((width - SCREEN_WIDTH) / 2, (height - SCREEN_HEIGHT) / 2, intent);
-
-		java.lang.System.out.println(appData);
 		
 		if(appData.hasKey(app.getInfo().getFormattedId()))
 		{
