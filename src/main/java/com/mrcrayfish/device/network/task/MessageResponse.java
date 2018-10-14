@@ -22,6 +22,27 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 		this.id = id;
 		this.request = request;
 	}
+
+	@Override
+	public void toBytes(ByteBuf buf)
+	{
+		buf.writeInt(this.id);
+		buf.writeBoolean(this.request.isSucessful());
+		NBTTagCompound nbt = new NBTTagCompound();
+		this.request.prepareResponse(nbt);
+		ByteBufUtils.writeTag(buf, nbt);
+		this.request.complete();
+	}
+
+	@Override
+	public void fromBytes(ByteBuf buf)
+	{
+		this.id = buf.readInt();
+		boolean successful = buf.readBoolean();
+		this.request = TaskManager.getTaskAndRemove(this.id);
+		if(successful) this.request.setSuccessful();
+		this.nbt = ByteBufUtils.readTag(buf);
+	}
 	
 	@Override
 	public IMessage onMessage(MessageResponse message, MessageContext ctx) 
@@ -30,28 +51,4 @@ public class MessageResponse implements IMessage, IMessageHandler<MessageRespons
 		message.request.callback(message.nbt);
 		return null;
 	}
-
-	@Override
-	public void fromBytes(ByteBuf buf) 
-	{
-		this.id = buf.readInt();
-		boolean successful = buf.readBoolean();
-		this.request = TaskManager.getTaskAndRemove(this.id);
-		if(successful) this.request.setSuccessful();
-		String name = ByteBufUtils.readUTF8String(buf);
-		this.nbt = ByteBufUtils.readTag(buf);
-	}
-
-	@Override
-	public void toBytes(ByteBuf buf) 
-	{
-		buf.writeInt(this.id);
-		buf.writeBoolean(this.request.isSucessful());
-		ByteBufUtils.writeUTF8String(buf, this.request.getName());
-		NBTTagCompound nbt = new NBTTagCompound();
-		this.request.prepareResponse(nbt);
-		ByteBufUtils.writeTag(buf, nbt);
-		this.request.complete();
-	}
-
 }

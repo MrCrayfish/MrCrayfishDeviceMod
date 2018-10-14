@@ -8,7 +8,7 @@ import com.mrcrayfish.device.api.app.component.Image;
 import com.mrcrayfish.device.api.app.component.Label;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.programs.system.ApplicationAppStore;
 import com.mrcrayfish.device.programs.system.object.AppEntry;
 import com.mrcrayfish.device.programs.system.object.LocalEntry;

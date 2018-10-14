@@ -1,6 +1,8 @@
 package com.mrcrayfish.device.programs;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.*;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.ComboBox;
 import com.mrcrayfish.device.programs.system.layout.StandardLayout;
@@ -12,6 +14,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
+@DeviceApplication(modId = Reference.MOD_ID, appId = "icons", debug = true)
 public class ApplicationIcons extends Application
 {
     private int offset;

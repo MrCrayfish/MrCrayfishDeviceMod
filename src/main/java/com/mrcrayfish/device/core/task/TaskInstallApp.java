@@ -1,8 +1,9 @@
 package com.mrcrayfish.device.core.task;
 
-import com.mrcrayfish.device.api.ApplicationManager;
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,16 +17,14 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "install_app")
 public class TaskInstallApp extends Task
 {
     private String appId;
     private BlockPos laptopPos;
     private boolean install;
 
-    private TaskInstallApp()
-    {
-        super("install_app");
-    }
+    private TaskInstallApp() {}
 
     public TaskInstallApp(AppInfo info, BlockPos laptopPos, boolean install)
     {

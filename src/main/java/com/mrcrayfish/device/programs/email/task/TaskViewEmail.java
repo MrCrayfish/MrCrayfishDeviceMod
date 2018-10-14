@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.email.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.programs.email.object.Email;
 import com.mrcrayfish.device.programs.email.EmailManager;
@@ -9,14 +11,12 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "view_email")
 public class TaskViewEmail extends Task
 {
 	private int index;
 	
-	public TaskViewEmail() 
-	{
-		super("view_email");
-	}
+	public TaskViewEmail() {}
 	
 	public TaskViewEmail(int index) 
 	{

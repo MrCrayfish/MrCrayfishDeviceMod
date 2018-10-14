@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.Laptop;
@@ -15,6 +17,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "send_action")
 public class TaskSendAction extends Task
 {
     private String uuid;
@@ -23,10 +26,7 @@ public class TaskSendAction extends Task
 
     private FileSystem.Response response;
 
-    private TaskSendAction()
-    {
-        super("send_action");
-    }
+    private TaskSendAction() {}
 
     public TaskSendAction(Drive drive, FileAction action)
     {

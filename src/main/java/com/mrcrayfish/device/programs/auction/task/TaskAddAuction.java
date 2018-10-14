@@ -17,10 +17,7 @@ public class TaskAddAuction extends Task
 	
 	private AuctionItem item;
 	
-	public TaskAddAuction()
-	{
-		super("minebay_add_auction");
-	}
+	public TaskAddAuction() {}
 	
 	public TaskAddAuction(int slot, int amount, int price, int duration)
 	{

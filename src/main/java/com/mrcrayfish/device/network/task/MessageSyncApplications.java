@@ -3,7 +3,7 @@ package com.mrcrayfish.device.network.task;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.api.ApplicationManager;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.proxy.CommonProxy;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -62,7 +62,7 @@ public class MessageSyncApplications implements IMessage, IMessageHandler<Messag
     @Override
     public MessageSyncApplications onMessage(MessageSyncApplications message, MessageContext ctx)
     {
-        ReflectionHelper.setPrivateValue(CommonProxy.class, MrCrayfishDeviceMod.proxy, message.allowedApps, "allowedApps");
+        ReflectionHelper.setPrivateValue(ApplicationManager.class, null, message.allowedApps, "whitelistedApps");
         return null;
     }
 }

@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,15 +10,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "update_system_data")
 public class TaskUpdateSystemData extends Task
 {
     private BlockPos pos;
     private NBTTagCompound data;
 
-    public TaskUpdateSystemData()
-    {
-        super("update_system_data");
-    }
+    public TaskUpdateSystemData() {}
 
     public TaskUpdateSystemData(BlockPos pos, NBTTagCompound data)
     {

@@ -23,7 +23,7 @@ import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.task.TaskGetFiles;
 import com.mrcrayfish.device.core.io.task.TaskGetStructure;
 import com.mrcrayfish.device.core.io.task.TaskSetupFileBrowser;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -282,23 +282,25 @@ public class FileBrowser extends Component
                         Laptop laptop = systemApp.getLaptop();
                         if(laptop != null)
                         {
-                            //TODO change to check if application is installed
-                            Application targetApp = laptop.getApplication(file.getOpeningApp());
-                            if(targetApp != null)
+                            AppInfo info = ApplicationManager.getApplication(file.getOpeningApp());
+                            if(!laptop.getInstalledApplications().contains(info))
                             {
-                                if(!laptop.isApplicationInstalled(targetApp.getInfo()))
-                                {
-                                    createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + targetApp.getInfo().getName() + TextFormatting.RESET + "' is not installed.");
-                                }
-                                else if(!laptop.openApplication(targetApp.getInfo(), file))
-                                {
-                                    laptop.sendApplicationToFront(systemApp.getInfo());
-                                    createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
-                                }
+                                createErrorDialog("This file could not be open because the application '" + TextFormatting.YELLOW + info.getName() + TextFormatting.RESET + "' is not installed.");
                             }
                             else
                             {
-                                createErrorDialog("The application designed for this file does not exist.");
+                                Application targetApp = laptop.getOrCreateApplication(info);
+                                if(targetApp != null)
+                                {
+                                    if(!laptop.openApplication(targetApp.getInfo(), file))
+                                    {
+                                        createErrorDialog(targetApp.getInfo().getName() + " was unable to open the file.");
+                                    }
+                                }
+                                else
+                                {
+                                    createErrorDialog("The application designed for this file does not exist.");
+                                }
                             }
                         }
                     }

@@ -1,8 +1,10 @@
 package com.mrcrayfish.device.programs.gitweb;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
 import com.mrcrayfish.device.api.app.component.Spinner;
 import com.mrcrayfish.device.api.app.component.TextField;
@@ -20,6 +22,7 @@ import java.awt.*;
  * The Device Mod implementations of an internet browser. Originally created by MinecraftDoodler.
  * Licensed under GPL 3.0
  */
+@DeviceApplication(modId = Reference.MOD_ID, appId = "gitweb")
 public class ApplicationGitWeb extends Application
 {
     private Layout layoutBrowser;

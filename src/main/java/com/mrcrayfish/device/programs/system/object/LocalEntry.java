@@ -1,6 +1,6 @@
 package com.mrcrayfish.device.programs.system.object;
 
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 
 /**
  * Author: MrCrayfish

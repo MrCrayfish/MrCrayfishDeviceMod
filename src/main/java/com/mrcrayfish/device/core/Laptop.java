@@ -3,6 +3,7 @@ package com.mrcrayfish.device.core;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
 import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Application;
 import com.mrcrayfish.device.api.app.Dialog;
@@ -17,7 +18,6 @@ import com.mrcrayfish.device.api.task.TaskManager;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.client.LaptopFontRenderer;
 import com.mrcrayfish.device.core.task.TaskInstallApp;
-import com.mrcrayfish.device.object.AppInfo;
 import com.mrcrayfish.device.programs.system.SystemApplication;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import com.mrcrayfish.device.programs.system.task.TaskUpdateApplicationData;
@@ -40,9 +40,10 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO Intro message (created by mrcrayfish, donate here)
 
@@ -57,7 +58,6 @@ public class Laptop extends GuiScreen implements System
 
 	public static final FontRenderer fontRenderer = new LaptopFontRenderer(Minecraft.getMinecraft());
 
-	private static final List<Application> APPLICATIONS = new ArrayList<>();
 	private static final List<ResourceLocation> WALLPAPERS = new ArrayList<>();
 
 	private static final int BORDER = 10;
@@ -165,7 +165,7 @@ public class Laptop extends GuiScreen implements System
 
 		TaskManager.sendTask(new TaskUpdateSystemData(pos, systemData));
 	}
-	
+
 	@Override
 	public void onResize(Minecraft mcIn, int width, int height)
 	{
@@ -460,22 +460,6 @@ public class Laptop extends GuiScreen implements System
 		super.drawHoveringText(textLines, x, y);
 	}
 
-	public boolean sendApplicationToFront(AppInfo info)
-	{
-		for(int i = 0; i < windows.length; i++)
-		{
-			Window window = windows[i];
-			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
-			{
-				windows[i] = null;
-				updateWindowStack();
-				windows[0] = window;
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public void openApplication(AppInfo info)
 	{
@@ -485,16 +469,19 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public void openApplication(AppInfo info, NBTTagCompound intentTag)
 	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(application -> openApplication(application, intentTag));
+		Application application = getOrCreateApplication(info);
+		if(application != null)
+		{
+			openApplication(application, intentTag);
+		}
 	}
 
 	private void openApplication(Application app, NBTTagCompound intent)
 	{
-		if(!isApplicationInstalled(app.getInfo()))
+		if(!ApplicationManager.isApplicationWhitelisted(app.getInfo()))
 			return;
 
-		if(!isValidApplication(app.getInfo()))
+		if(!isApplicationInstalled(app.getInfo()))
 			return;
 
 		if(sendApplicationToFront(app.getInfo()))
@@ -526,49 +513,80 @@ public class Laptop extends GuiScreen implements System
 	@Override
 	public boolean openApplication(AppInfo info, File file)
 	{
-		if(!isApplicationInstalled(info))
-			return false;
-
-		if(!isValidApplication(info))
-			return false;
-
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		if(optional.isPresent())
+		Application application = getOrCreateApplication(info);
+		if(application != null)
 		{
-			Application application = optional.get();
-			boolean alreadyRunning = isApplicationRunning(info);
-			openApplication(application, null);
-			if(isApplicationRunning(info))
-			{
-				if(!application.handleFile(file))
-				{
-					if(!alreadyRunning)
-					{
-						closeApplication(application);
-					}
-					return false;
-				}
-				return true;
-			}
+			return openApplication(application, file);
 		}
 		return false;
+	}
+
+	private boolean openApplication(Application app, File file)
+	{
+		if(!ApplicationManager.isApplicationWhitelisted(app.getInfo()))
+			return false;
+
+		if(!isApplicationInstalled(app.getInfo()))
+			return false;
+
+		boolean alreadyRunning = isApplicationRunning(app.getInfo());
+		openApplication(app, (NBTTagCompound) null);
+		if(isApplicationRunning(app.getInfo()))
+		{
+			if(!app.handleFile(file))
+			{
+				if(!alreadyRunning)
+				{
+					closeApplication(app);
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Nullable
+	public Application getOrCreateApplication(AppInfo info)
+	{
+		Application application = getRunningApplication(info);
+		return application != null ? application : info.createInstance();
+	}
+
+	private Application getRunningApplication(AppInfo info)
+	{
+		for(Window window : windows)
+		{
+			if(window != null && window.content instanceof Application)
+			{
+				Application application = (Application) window.content;
+				if(application.getInfo() == info)
+				{
+					return application;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public void closeApplication(AppInfo info)
 	{
-		Optional<Application> optional = APPLICATIONS.stream().filter(app -> app.getInfo() == info).findFirst();
-		optional.ifPresent(this::closeApplication);
+		Application application = getRunningApplication(info);
+		if(application != null)
+		{
+			closeApplication(application);
+		}
 	}
 
 	private void closeApplication(Application app)
 	{
 		for(int i = 0; i < windows.length; i++)
 		{
-			Window<Application> window = windows[i];
-			if(window != null)
+			Window window = windows[i];
+			if(window != null && window.content instanceof Application)
 			{
-				if(window.content.getInfo().equals(app.getInfo()))
+				if(((Application) window.content).getInfo().equals(app.getInfo()))
 				{
 					if(app.isDirty())
 					{
@@ -591,7 +609,23 @@ public class Laptop extends GuiScreen implements System
 			}
 		}
 	}
-	
+
+	private boolean sendApplicationToFront(AppInfo info)
+	{
+		for(int i = 0; i < windows.length; i++)
+		{
+			Window window = windows[i];
+			if(window != null && window.content instanceof Application && ((Application) window.content).getInfo() == info)
+			{
+				windows[i] = null;
+				updateWindowStack();
+				windows[0] = window;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void addWindow(Window<Application> window)
 	{
 		if(hasReachedWindowLimit())
@@ -653,13 +687,6 @@ public class Laptop extends GuiScreen implements System
 		int posY = (height - SCREEN_HEIGHT) / 2;
 		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX, posY + window.offsetY, posX + window.offsetX + window.width, posY + window.offsetY + window.height);
 	}
-	
-	public boolean isMouseWithinApp(int mouseX, int mouseY, Window window)
-	{
-		int posX = (width - SCREEN_WIDTH) / 2;
-		int posY = (height - SCREEN_HEIGHT) / 2;
-		return GuiHelper.isMouseInside(mouseX, mouseY, posX + window.offsetX + 1, posY + window.offsetY + 13, posX + window.offsetX + window.width - 1, posY + window.offsetY + window.height - 1);
-	}
 
 	public boolean isApplicationRunning(AppInfo info)
 	{
@@ -707,12 +734,6 @@ public class Laptop extends GuiScreen implements System
 		return ImmutableList.copyOf(WALLPAPERS);
 	}
 
-	@Nullable
-	public Application getApplication(String appId)
-	{
-		return APPLICATIONS.stream().filter(app -> app.getInfo().getFormattedId().equals(appId)).findFirst().orElse(null);
-	}
-
 	@Override
 	public List<AppInfo> getInstalledApplications()
 	{
@@ -724,18 +745,9 @@ public class Laptop extends GuiScreen implements System
 		return info.isSystemApp() || installedApps.contains(info);
 	}
 
-	private boolean isValidApplication(AppInfo info)
-	{
-		if(MrCrayfishDeviceMod.proxy.hasAllowedApplications())
-		{
-			return MrCrayfishDeviceMod.proxy.getAllowedApplications().contains(info);
-		}
-		return true;
-	}
-
 	public void installApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
-		if(!isValidApplication(info))
+		if(!ApplicationManager.isApplicationWhitelisted(info))
 			return;
 
 		Task task = new TaskInstallApp(info, pos, true);
@@ -756,7 +768,7 @@ public class Laptop extends GuiScreen implements System
 
 	public void removeApplication(AppInfo info, @Nullable Callback<Object> callback)
 	{
-		if(!isValidApplication(info))
+		if(!ApplicationManager.isApplicationWhitelisted(info))
 			return;
 
 		Task task = new TaskInstallApp(info, pos, false);
@@ -791,11 +803,6 @@ public class Laptop extends GuiScreen implements System
 	public static Drive getMainDrive()
 	{
 		return mainDrive;
-	}
-
-	public List<Application> getApplications()
-	{
-		return APPLICATIONS;
 	}
 
 	public TaskBar getTaskBar()

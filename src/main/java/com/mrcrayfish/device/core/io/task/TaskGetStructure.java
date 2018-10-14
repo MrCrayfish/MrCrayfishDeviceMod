@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.io.Drive;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
@@ -17,6 +19,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "get_folder_structure")
 public class TaskGetStructure extends Task
 {
     private String uuid;
@@ -24,10 +27,7 @@ public class TaskGetStructure extends Task
 
     private ServerFolder folder;
 
-    private TaskGetStructure()
-    {
-        super("get_folder_structure");
-    }
+    private TaskGetStructure() {}
 
     public TaskGetStructure(Drive drive, BlockPos pos)
     {

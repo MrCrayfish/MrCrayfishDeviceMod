@@ -1,19 +1,26 @@
 package com.mrcrayfish.device.api.task;
 
+import com.google.common.collect.HashBiMap;
 import com.mrcrayfish.device.MrCrayfishDeviceMod;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.network.PacketHandler;
 import com.mrcrayfish.device.network.task.MessageRequest;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class TaskManager
 {
 	private static TaskManager instance = null;
 
-	private Map<String, Task> registeredRequests = new HashMap<String, Task>();
-	private Map<Integer, Task> requests = new HashMap<Integer, Task>();
+	private final HashBiMap<String, Class<? extends Task>> registeredTasks = HashBiMap.create();
+	private final Map<String, Task> instances = new HashMap<>();
+	private final Map<Integer, Task> pendingTasks = new HashMap<Integer, Task>();
 	private int currentId = 0;
 
 	private TaskManager() {}
@@ -26,46 +33,80 @@ public final class TaskManager
 		}
 		return instance;
 	}
-	
-	public static void registerTask(Class<? extends Task> clazz)
+
+	public static void init(ASMDataTable table)
 	{
-		try 
+		Set<ASMDataTable.ASMData> tasks = table.getAll(DeviceTask.class.getCanonicalName());
+		tasks.forEach(asmData ->
 		{
-			Constructor<? extends Task> constructor = clazz.getDeclaredConstructor();
-			constructor.setAccessible(true);
-			Task task = constructor.newInstance();
-			MrCrayfishDeviceMod.getLogger().info("Registering task '" + task.getName() + "'");
-			get().registeredRequests.put(task.getName(), task);
-		} 
-		catch (InstantiationException e) 
-		{	
-			System.err.println("- Missing constructor '" + clazz.getSimpleName() + "()'");
-		}
-		catch (Exception e)
+			try
+			{
+				Class clazz = Class.forName(asmData.getClassName());
+				if(Task.class.isAssignableFrom(clazz))
+				{
+					Constructor<?> constructor = getEmptyConstructor(clazz);
+					if(constructor == null)
+					{
+						throw new RuntimeException("The task " + clazz.getCanonicalName() + " is missing the constructor " + clazz.getSimpleName() + "()");
+					}
+					constructor.setAccessible(true);
+
+					DeviceTask deviceApp = (DeviceTask) clazz.getDeclaredAnnotation(DeviceTask.class);
+					Task task = (Task) constructor.newInstance();
+					ResourceLocation resource = new ResourceLocation(deviceApp.modId(), deviceApp.taskId());
+					get().registeredTasks.put(resource.toString(), clazz);
+					get().instances.put(resource.toString(), task);
+
+					MrCrayfishDeviceMod.getLogger().info("Successfully registered task " + deviceApp.modId() + ":" + deviceApp.taskId());
+				}
+				else
+				{
+					throw new ClassCastException("The class " + clazz.getCanonicalName() + " is annotated with DeviceApplication but does not extend Application!");
+				}
+			}
+			catch(ClassNotFoundException | IllegalAccessException | InstantiationException | InvocationTargetException e)
+			{
+				e.printStackTrace();
+			}
+		});
+	}
+
+	private static Constructor getEmptyConstructor(Class clazz)
+	{
+		for (Constructor<?> constructor : clazz.getDeclaredConstructors())
 		{
-			e.printStackTrace();
+			if (constructor.getParameterCount() == 0)
+			{
+				return constructor;
+			}
 		}
+		return null;
 	}
 
 	public static void sendTask(Task task)
 	{
 		TaskManager manager = get();
-		if(!manager.registeredRequests.containsKey(task.getName())) {
-			throw new RuntimeException("Unregistered Task: " + task.getClass().getName() + ". Use TaskManager#requestRequest to register your task.");
+		if(!manager.registeredTasks.values().contains(task.getClass())) {
+			throw new RuntimeException("Unregistered task '" + task.getClass().getName() + "'");
 		}
-		
+
 		int requestId = manager.currentId++;
-		manager.requests.put(requestId, task);
+		manager.pendingTasks.put(requestId, task);
 		PacketHandler.INSTANCE.sendToServer(new MessageRequest(requestId, task));
 	}
 	
 	public static Task getTask(String name)
 	{
-		return get().registeredRequests.get(name);
+		return get().instances.get(name);
 	}
 
 	public static Task getTaskAndRemove(int id)
 	{
-		return get().requests.remove(id);
+		return get().pendingTasks.remove(id);
+	}
+
+	public static String getTaskName(Task task)
+	{
+		return get().registeredTasks.inverse().get(task.getClass());
 	}
 }

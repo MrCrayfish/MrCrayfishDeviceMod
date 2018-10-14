@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.programs.system.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.tileentity.TileEntityLaptop;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,16 +12,14 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
+@DeviceTask(modId = Reference.MOD_ID, taskId = "update_application_data")
 public class TaskUpdateApplicationData extends Task
 {
     private int x, y, z;
     private String appId;
     private NBTTagCompound data;
 
-    public TaskUpdateApplicationData()
-    {
-        super("update_application_data");
-    }
+    public TaskUpdateApplicationData() {}
 
     public TaskUpdateApplicationData(int x, int y, int z, @Nonnull String appId, @Nonnull NBTTagCompound data)
     {

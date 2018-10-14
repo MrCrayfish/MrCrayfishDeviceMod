@@ -1,7 +1,7 @@
 package com.mrcrayfish.device.api.utils;
 
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;

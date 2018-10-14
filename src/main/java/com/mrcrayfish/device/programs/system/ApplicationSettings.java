@@ -1,17 +1,17 @@
 package com.mrcrayfish.device.programs.system;
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Dialog;
 import com.mrcrayfish.device.api.app.Icons;
 import com.mrcrayfish.device.api.app.Layout;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.api.app.component.Button;
-import com.mrcrayfish.device.api.app.component.CheckBox;
 import com.mrcrayfish.device.api.app.component.ComboBox;
 import com.mrcrayfish.device.api.app.renderer.ItemRenderer;
 import com.mrcrayfish.device.api.utils.RenderUtil;
 import com.mrcrayfish.device.core.Laptop;
-import com.mrcrayfish.device.core.Settings;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.Palette;
 import com.mrcrayfish.device.programs.system.object.ColorScheme;
@@ -26,13 +26,13 @@ import java.awt.*;
 import java.util.List;
 import java.util.Stack;
 
+@DeviceApplication(modId = Reference.MOD_ID, appId = "settings")
 public class ApplicationSettings extends SystemApplication
 {
 	private Button buttonPrevious;
 
 	private Layout layoutMain;
 	private Layout layoutGeneral;
-	private CheckBox checkBoxShowApps;
 
 	private Layout layoutPersonalise;
 	private Button buttonWallpaperLeft;
@@ -80,16 +80,6 @@ public class ApplicationSettings extends SystemApplication
 
 		layoutGeneral = new Menu("General");
 		layoutGeneral.addComponent(buttonPrevious);
-
-		checkBoxShowApps = new CheckBox("Show All Apps", 5, 5);
-		checkBoxShowApps.setSelected(Settings.isShowAllApps());
-		checkBoxShowApps.setClickListener((mouseX, mouseY, mouseButton) ->
-		{
-			Settings.setShowAllApps(checkBoxShowApps.isSelected());
-			Laptop laptop = getLaptop();
-			laptop.getTaskBar().setupApplications(laptop.getApplications());
-		});
-		layoutGeneral.addComponent(checkBoxShowApps);
 
 		layoutPersonalise = new Menu("Personalise");
 		layoutPersonalise.addComponent(buttonPrevious);

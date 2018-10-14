@@ -1,5 +1,7 @@
 package com.mrcrayfish.device.core.io.task;
 
+import com.mrcrayfish.device.Reference;
+import com.mrcrayfish.device.api.annotation.DeviceTask;
 import com.mrcrayfish.device.api.task.Task;
 import com.mrcrayfish.device.core.io.FileSystem;
 import com.mrcrayfish.device.core.io.drive.AbstractDrive;
@@ -17,6 +19,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
+@DeviceTask(modId = Reference.MOD_ID, taskId = "get_file_system")
 public class TaskSetupFileBrowser extends Task
 {
     private BlockPos pos;
@@ -25,10 +28,7 @@ public class TaskSetupFileBrowser extends Task
     private AbstractDrive mainDrive;
     private Map<UUID, AbstractDrive> availableDrives;
 
-    private TaskSetupFileBrowser()
-    {
-        super("get_file_system");
-    }
+    private TaskSetupFileBrowser() {}
 
     public TaskSetupFileBrowser(BlockPos pos, boolean includeMain)
     {

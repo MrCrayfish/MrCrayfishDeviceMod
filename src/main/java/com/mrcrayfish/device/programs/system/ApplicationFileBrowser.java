@@ -1,17 +1,20 @@
 package com.mrcrayfish.device.programs.system;
 
 
+import com.mrcrayfish.device.Reference;
 import com.mrcrayfish.device.api.ApplicationManager;
 import com.mrcrayfish.device.api.app.Icons;
+import com.mrcrayfish.device.api.annotation.DeviceApplication;
 import com.mrcrayfish.device.core.Laptop;
 import com.mrcrayfish.device.core.io.FileSystem;
-import com.mrcrayfish.device.object.AppInfo;
+import com.mrcrayfish.device.api.AppInfo;
 import com.mrcrayfish.device.object.TrayItem;
 import com.mrcrayfish.device.programs.system.component.FileBrowser;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nullable;
 
+@DeviceApplication(modId = Reference.MOD_ID, appId = "file_browser")
 public class ApplicationFileBrowser extends SystemApplication
 {
 	private FileBrowser browser;
