@@ -1,0 +1,70 @@
+itemGroup.cdmTabDevice=MrCrayfish's Device Mod
+
+tile.laptop.name=Ноутбук
+tile.router.name=Роутер
+tile.printer.name=Принтер
+tile.paper.name=Бумага
+tile.office_chair.name=Офисное кресло
+
+item.flash_drive.name=Флеш-накопитель
+item.printed_paper.name=Распечатанная бумага
+item.ethernet_cable.name=Интернет-кабель
+item.circuit_board.name=Печатная плата
+item.motherboard.name=Материнская плата
+item.cpu.name=Центральный процессор
+item.hard_drive.name=Жёсткий диск
+item.flash_chip.name=Флеш-память
+item.solid_state_drive.name=Твердотельный диск
+item.ram.name=Запоминающее устройство
+item.gpu.name=Графический процессор
+item.wifi.name=Модуль Wi-Fi
+item.battery.name=Батарея
+item.screen.name=Монитор
+item.controller_unit.name=Устройство управления
+item.small_electric_motor.name=Малый электромотор
+item.carriage.name=Повозка
+item.plastic_unrefined.name=Неочищенный пластик
+item.plastic.name=Пластик
+item.plastic_frame.name=Пластиковая рамка
+item.wheel.name=Колесо
+
+app.cdm.settings.name=Опции
+app.cdm.settings.Author=MrCrayfish
+
+app.cdm.app_store.name=Магазин приложений
+app.cdm.app_store.desc=null
+app.cdm.app_store.Author=MrCrayfish
+
+app.cdm.bank.name=Банк
+app.cdm.bank.desc=Официальный филиал банка в Device Mod. Позволяет Вам перевести изумруды в цифровую валюту.
+app.cdm.bank.author=MrCrayfish
+
+app.cdm.example.name=Компоненты UI
+app.cdm.example.author=MrCrayfish
+
+app.cdm.file_browser.name=Проводник
+app.cdm.file_browser.author=MrCrayfish
+
+app.cdm.note_stash.name=Note Stash
+app.cdm.note_stash.desc=Официальный текстовый редактор в Device Mod. Позволяет Вам хранить простые записки.
+app.cdm.note_stash.author=MrCrayfish
+
+app.cdm.pixel_painter.name=Pixel Painter
+app.cdm.pixel_painter.author=MrCrayfish
+
+app.cdm.ender_mail.name=EnderMail
+app.cdm.ender_mail.desc=Официальная электронная почта в Device Mod. Позволяет Вам отправлять электронные письма другим игрокам на сервере.
+app.cdm.ender_mail.author=MrCrayfish
+
+app.cdm.boat_racers.name=Boat Racers
+app.cdm.boat_racers.author=MrCrayfish
+
+app.cdm.mine_bay.name=MineBay
+app.cdm.mine_bay.author=MrCrayfish
+
+message.select_router=Теперь выберите роутер, к которому хотите присоединить данное устройство.
+message.invalid_cable=Пожалуйста, выберите нужное устройство прежде, чем присоединять его к роутеру.
+message.router_max_devices=К данному роутеру присоединено максимально возможное количество устройств.
+message.device_already_connected=Выбранное устройство уже присоединено к данному роутеру.
+message.successful_connection=Выбранное устройство успешно присоединено к данному роутеру.
+message.successful_registered=Выбранное устройство успешно зарегистрировано на этом роутере.
