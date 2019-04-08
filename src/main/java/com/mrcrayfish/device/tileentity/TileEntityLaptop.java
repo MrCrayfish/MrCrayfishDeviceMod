@@ -160,17 +160,17 @@ public class TileEntityLaptop extends TileEntityNetworkDevice.Colored
 
 	public NBTTagCompound getApplicationData()
     {
-		return applicationData != null ? applicationData : new NBTTagCompound();
+		return applicationData != null ? applicationData : applicationData = new NBTTagCompound();
     }
 
 	public NBTTagCompound getSystemData()
 	{
-		return systemData != null ? systemData : new NBTTagCompound();
+		return systemData != null ? systemData : systemData = new NBTTagCompound();
 	}
 
 	public FileSystem getFileSystem()
 	{
-		return fileSystem != null ? fileSystem : new FileSystem(this, new NBTTagCompound());
+		return fileSystem != null ? fileSystem : fileSystem = new FileSystem(this, new NBTTagCompound());
 	}
 
 	public void setApplicationData(NBTTagCompound applicationData)
