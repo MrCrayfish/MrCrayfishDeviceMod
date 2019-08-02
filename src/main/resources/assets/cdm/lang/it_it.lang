@@ -1,0 +1,70 @@
+itemGroup.cdmTabDevice=Mod dei dispositivi di MrCrayfish
+
+tile.laptop.name=Portatile
+tile.router.name=Router
+tile.printer.name=Stampante
+tile.paper.name=Carta
+tile.office_chair.name=Sedia da ufficio
+
+item.flash_drive.name=Penna USB
+item.printed_paper.name=Carta stampata
+item.ethernet_cable.name=Cavo Ethernet
+item.circuit_board.name=Scheda di circuiti
+item.motherboard.name=Scheda madre
+item.cpu.name=Unita' Elaborazione Centrale (CPU)
+item.hard_drive.name=Disco Rigido
+item.flash_chip.name=Memoria Flash
+item.solid_state_drive.name=Unita' di Memoria a Stato Solido
+item.ram.name=Memoria ad Accesso Casuale (RAM)
+item.gpu.name=Unita' Elaborazione Grafica (GPU)
+item.wifi.name=Modulo WiFI
+item.battery.name=Batteria
+item.screen.name=Schermo
+item.controller_unit.name=Unita di Controllo
+item.small_electric_motor.name=Piccolo motore elettrico
+item.carriage.name=Rullo di trasferimento
+item.plastic_unrefined.name=Plastica non rifinita
+item.plastic.name=Plastica
+item.plastic_frame.name=Struttura di plastica
+item.wheel.name=Ruota
+
+app.cdm.settings.name=Impostazioni
+app.cdm.settings.Author=MrCrayfish
+
+app.cdm.app_store.name=Mercato delle Applicazione
+app.cdm.app_store.desc=null
+app.cdm.app_store.Author=MrCrayfish
+
+app.cdm.bank.name=Banca
+app.cdm.bank.desc=L'applicazione ufficiale bancaria per la Mod dei dispositivi. Ti permette di convertire smeraldi in valuta virtuale.
+app.cdm.bank.author=MrCrayfish
+
+app.cdm.example.name=Componenti UI
+app.cdm.example.author=MrCrayfish
+
+app.cdm.file_browser.name=Navigatore File
+app.cdm.file_browser.author=MrCrayfish
+
+app.cdm.note_stash.name=Blocco Note
+app.cdm.note_stash.desc=L'applicazione ufficiale di note per la Mod dei dispositivi. Ti permette di immagazzinare semplici note.
+app.cdm.note_stash.author=MrCrayfish
+
+app.cdm.pixel_painter.name=Pixel Painter
+app.cdm.pixel_painter.author=MrCrayfish
+
+app.cdm.ender_mail.name=EnderMail
+app.cdm.ender_mail.desc=L'applicazione ufficiale di mail per la Mod dei dispositivi. Ti permette di mandare email ad altri giocatori sul server.
+app.cdm.ender_mail.author=MrCrayfish
+
+app.cdm.boat_racers.name=Corridori di Barche
+app.cdm.boat_racers.author=MrCrayfish
+
+app.cdm.mine_bay.name=MineBay
+app.cdm.mine_bay.author=MrCrayfish
+
+message.select_router=Ora seleziona un router da connettere a questo dispositivo.
+message.invalid_cable=Per favore prima seleziona un dispositivo, poi aggiungilo a questo router.
+message.router_max_devices=La quantita' massima di dispositivi e' stata raggiunta da questo router.
+message.device_already_connected=Il dispositivo selezionato e' gia' connesso a questo router.
+message.successful_connection=Dispositivo selezionato connesso al router con successo.
+message.successful_registered=Dispositivo selezionato registrato al router con successo.
