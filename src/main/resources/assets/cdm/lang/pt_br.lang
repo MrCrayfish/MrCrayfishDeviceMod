@@ -1,0 +1,70 @@
+itemGroup.cdmTabDevice=MrCrayfish's Device Mod
+
+tile.laptop.name=Notebook
+tile.router.name=Roteador
+tile.printer.name=Impressora
+tile.paper.name=Papel
+tile.office_chair.name=Cadeira de escritório
+
+item.flash_drive.name=PenDrive
+item.printed_paper.name=Papel impresso
+item.ethernet_cable.name=Cabo Ethernet
+item.circuit_board.name=Placa de circuito
+item.motherboard.name=Placa Mãe (moBo)
+item.cpu.name=Processador (CPU)
+item.hard_drive.name=HDD
+item.flash_chip.name=Memória Flash
+item.solid_state_drive.name=SSD
+item.ram.name=Memória RAM
+item.gpu.name=Placa de Vídeo (GPU)
+item.wifi.name=Modulo WiFi
+item.battery.name=Bateria
+item.screen.name=Tela
+item.controller_unit.name=Unidade Controladora (CU)
+item.small_electric_motor.name=Motor elétrico pequeno
+item.carriage.name=Transporte de Papel
+item.plastic_unrefined.name=Plástico não refinado
+item.plastic.name=Plástico
+item.plastic_frame.name=Armação de plástico
+item.wheel.name=Roda
+
+app.cdm.settings.name=Configurações
+app.cdm.settings.Author=MrCrayfish
+
+app.cdm.app_store.name=Cray Apps
+app.cdm.app_store.desc=Nulo
+app.cdm.app_store.Author=MrCrayfish
+
+app.cdm.bank.name=Banco
+app.cdm.bank.desc=O aplicativo oficial do banco para o Device Mod. Permite converter esmeraldas em moeda digital.
+app.cdm.bank.author=MrCrayfish
+
+app.cdm.example.name=UI Components
+app.cdm.example.author=MrCrayfish
+
+app.cdm.file_browser.name=File Browser
+app.cdm.file_browser.author=MrCrayfish
+
+app.cdm.note_stash.name=Note Stash
+app.cdm.note_stash.desc=O aplicativo oficial da nota para o Device Mod. Permite armazenar notas simples.
+app.cdm.note_stash.author=MrCrayfish
+
+app.cdm.pixel_painter.name=Pixel Painter
+app.cdm.pixel_painter.author=MrCrayfish
+
+app.cdm.ender_mail.name=EnderMail
+app.cdm.ender_mail.desc=O aplicativo de email oficial para o Device Mod. Permite enviar e-mails para outros jogadores no servidor.
+app.cdm.ender_mail.author=MrCrayfish
+
+app.cdm.boat_racers.name=Boat Racers
+app.cdm.boat_racers.author=MrCrayfish
+
+app.cdm.mine_bay.name=MineBay
+app.cdm.mine_bay.author=MrCrayfish
+
+message.select_router=Agora selecione um roteador ao qual queira conectar este dispositivo.
+message.invalid_cable=Selecione um dispositivo antes de adicioná-lo a este roteador.
+message.router_max_devices=A quantidade máxima de dispositivos foi atingida para este roteador.
+message.device_already_connected=O dispositivo selecionado já está conectado a este roteador.
+message.successful_connection=O dispositivo selecionado foi conectado com sucesso a este roteador.
+message.successful_registered=Registrou com êxito o dispositivo selecionado neste roteador.
