@@ -1,0 +1,70 @@
+itemGroup.cdmTabDevice=MrCrayfish's Geräte Mod
+
+tile.laptop.name=Laptop
+tile.router.name=Router
+tile.printer.name=Drucker
+tile.paper.name=Papier
+tile.office_chair.name=Bürostuhl
+
+item.flash_drive.name=USB-Stick
+item.printed_paper.name=Gedrucktes Papier
+item.ethernet_cable.name=Ethernet Kabel
+item.circuit_board.name=Leiterplatte
+item.motherboard.name=Hauptplatine
+item.cpu.name=Hauptprozessor
+item.hard_drive.name=Festplatte
+item.flash_chip.name=Flash-Speicher
+item.solid_state_drive.name=Solid State Drive
+item.ram.name=Arbeitsspeicher
+item.gpu.name=Grafikkarte
+item.wifi.name=WiFi-Modul
+item.battery.name=Batterie
+item.screen.name=Bildschirm
+item.controller_unit.name=Steuerungs-Einheit
+item.small_electric_motor.name=Kleiner Elektromotor
+item.carriage.name=Schlitten
+item.plastic_unrefined.name=Rohplastik
+item.plastic.name=Plastik
+item.plastic_frame.name=Plastik Rahmen
+item.wheel.name=Rolle
+
+app.cdm.settings.name=Einstellungen
+app.cdm.settings.Author=MrCrayfish
+
+app.cdm.app_store.name=Anwendungsmarkt
+app.cdm.app_store.desc=null
+app.cdm.app_store.Author=MrCrayfish
+
+app.cdm.bank.name=Bank
+app.cdm.bank.desc=Die offizielle Bankanwendung für die Geräte Mod. Es ermöglicht, Smaragde in digitale Währung umzuwandeln.
+app.cdm.bank.author=MrCrayfish
+
+app.cdm.example.name=UI-Komponenten
+app.cdm.example.author=MrCrayfish
+
+app.cdm.file_browser.name=Dateibrowser
+app.cdm.file_browser.author=MrCrayfish
+
+app.cdm.note_stash.name=Hinweis Versteck
+app.cdm.note_stash.desc=Die offizielle Notizanwendung für die Geräte Mod. Es ermöglicht einfache Notizen zu speichern.
+app.cdm.note_stash.author=MrCrayfish
+
+app.cdm.pixel_painter.name=Pixel Painter
+app.cdm.pixel_painter.author=MrCrayfish
+
+app.cdm.ender_mail.name=EnderMail
+app.cdm.ender_mail.desc=Die offizielle E-Mail Anwendung für die Geräte Mod. Es ermöglicht E-Mails zu anderen Spielern auf dem Server zu senden.
+app.cdm.ender_mail.author=MrCrayfish
+
+app.cdm.boat_racers.name=Bootsrennfahrer
+app.cdm.boat_racers.author=MrCrayfish
+
+app.cdm.mine_bay.name=MineBay
+app.cdm.mine_bay.author=MrCrayfish
+
+message.select_router=Wähle nun einen Router aus, um dieses Gerät damit zu verbinden.
+message.invalid_cable=Bitte wähle erst ein Gerät aus, bevor du es zum Router hinzufügst.
+message.router_max_devices=Die maximale Anzahl von Geräten wurde für diesen Router errreicht.
+message.device_already_connected=Das ausgewählte Gerät ist bereits mit diesem Router verbunden.
+message.successful_connection=Erfolgreich das ausgewählte Gerät mit dem Router verbunden.
+message.successful_registered=Erfolgreich das ausgewählte Gerät beim Router registriert.
