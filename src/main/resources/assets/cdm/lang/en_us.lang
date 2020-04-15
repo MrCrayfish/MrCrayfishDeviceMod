@@ -50,6 +50,7 @@ app.cdm.note_stash.desc=The official note application for the Device Mod. Allows
 app.cdm.note_stash.author=MrCrayfish
 
 app.cdm.pixel_painter.name=Pixel Painter
+app.cdm.pixel_painter.desc=The offical paint application for the Device Mod. Allows you to make simple drawings,
 app.cdm.pixel_painter.author=MrCrayfish
 
 app.cdm.ender_mail.name=EnderMail
